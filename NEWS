@@ -1,1 +1,19 @@
-2015-06-14	- 14 Jun 2015 version
+2015-06-15	Reorganized directories.  And, junk bytes.
+
+		include/biting-pear/omg.h :
+		- moved from biting-pear/ to include/biting-pear/
+		- added junk bytes
+		- added more types of indirect jumps
+
+		include/biting-pear/lolwut.h ,
+		include/biting-pear/kthxbai.h ,
+		include/biting-pear/bbq.h :
+		- moved from biting-pear/ to include/biting-pear/
+
+		test/test-1.ccc :
+		- moved from top directory
+
+		.gitignore :
+		- initial version
+
+2015-06-14	14 Jun 2015 version.

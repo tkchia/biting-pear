@@ -1,26 +1,26 @@
 CFLAGS = -std=c11 -O3 -fPIC -Wall
 CXXFLAGS = -std=c++11 -O3 -fPIC -Wall
-CPPFLAGS = -I.
+CPPFLAGS = -Iinclude
 LEX = flex
 LFLAGS = -CF -8 -b
 
 includes = \
-    biting-pear/bbq.h \
-    biting-pear/kthxbai.h \
-    biting-pear/lolwut.h \
-    biting-pear/omg.h
+    include/biting-pear/bbq.h \
+    include/biting-pear/kthxbai.h \
+    include/biting-pear/lolwut.h \
+    include/biting-pear/omg.h
 
-default all: test-1
+default all: test/test-1
 
 clean:
 	find . -name '*.[ios]' -o -name '*~' | \
 	    xargs rm -f helper/postproc.cc helper/postproc helper/crc64 \
-		lex.backup test-1
+		lex.backup test/test-1
 
-test-1: test-1.o
+test/test-1: test/test-1.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^
 
-test-1.o: test-1.i
+test/test-1.o: test/test-1.i
 
 %.o: %.i
 	$(CXX) $(CXXFLAGS) -c -o$@ $<

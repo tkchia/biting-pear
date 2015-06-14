@@ -21,6 +21,61 @@ struct lolwut;  // forward
 template<uint_least64_t Seed, class T, unsigned Levels>
 struct omg;
 
+#if defined __amd64__
+template<uint_least64_t Seed, unsigned Levels>
+struct omg_impl_0;
+
+template<uint_least64_t Seed>
+struct omg_impl_0<Seed, 0u>
+{
+	__attribute__((always_inline))
+	omg_impl_0()
+	{
+		constexpr uint_least64_t Seed2 = update_inner(Seed);
+		switch ((Seed2 >> 32) % 4) {
+		    case 0:
+			__asm __volatile("syscall" : : : "rax", "memory");
+			break;
+		    default:
+			__asm __volatile(".byte %c0"
+			    : /* no outputs */
+			    : "n" (pick_hi<uint8_t>(Seed ^ Seed2))
+			    : "memory");
+		}
+	}
+};
+
+template<uint_least64_t Seed, unsigned Levels>
+struct omg_impl_0
+{
+	__attribute__((always_inline))
+	omg_impl_0()
+	{
+		constexpr uint_least64_t Seed2 = update_inner(Seed);
+		constexpr uint_least64_t Seed3 = update_inner(Seed2);
+		constexpr uint_least64_t NewSeed = update_outer(Seed);
+		switch (Seed2 >> 32 % 3) {
+		    case 0:
+			{
+				omg<Seed3, unsigned, Levels - 1>();
+			}
+			break;
+		    case 1:
+			{
+				omg_impl_0<NewSeed, Levels - 1>();
+			} // fall through
+		    default:
+			{
+				omg_impl_0<Seed3, Levels - 1>();
+			}
+		}
+	}
+};
+#endif
+
+template<uint_least64_t Seed, class T, unsigned Levels>
+struct omg;
+
 template<uint_least64_t Seed, class T>
 struct omg<Seed, T, 0>
 {
@@ -91,7 +146,8 @@ struct omg
 		constexpr uint_least64_t Seed2 = update_inner(Seed);
 		constexpr uint_least64_t Seed3 = update_inner(Seed2);
 		constexpr uint_least64_t NewSeed = update_outer(Seed);
-		switch ((Seed2 >> 32) % 4) {
+		constexpr unsigned Which = (Seed2 >> 32) % 8;
+		switch ((Seed2 >> 32) % 5) {
 		    case 0:
 			{
 				omg<Seed3, T, Levels - 1>();
@@ -103,17 +159,44 @@ struct omg
 				omg<Seed3, T, Levels - 1> zomg(x);
 			}
 			break;
-#if defined __amd64__ || defined __i386__
+#if defined __amd64__
 		    case 2:
+		    case 3:
+		    case 4:
 			{
 				lolwut<Seed3, void, Levels - 1> p(&&foo, 1);
-				__asm goto("jmp%z0 *%0"
-				    : /* no outputs */
-				    : "r" ((void *)p)
-				    : /* no clobbers */
-				    : foo);
+				void *q = static_cast<void *>(p);
+				uint8_t x = static_cast<uint8_t>(Seed2 >> 24)
+				    / 2;
+				if (q) {
+					switch (Which) {
+					    default:
+						__asm goto("jmpq *%0"
+						    : /* no outputs */
+						    : "r" (q)
+						    : /* no clobbers */
+						    : foo);  break;
+					    case 3:
+						__asm goto("pushq %0; "
+							   "retq"
+						    : /* no outputs */
+						    : "r" (q)
+						    : /* no clobbers */
+						    : foo);  break;
+					    case 4:
+						__asm goto(
+						    "pushq %1; "
+						    "movq %0, (%%rsp); "
+						    "retq"
+						    : /* no outputs */
+						    : "r" (q),
+						      "g" ((uint64_t)x)
+						    : /* no clobbers */
+						    : foo);  break;
+					}
+				}
 				{
-					omg<NewSeed, T, Levels - 1>();
+					omg_impl_0<NewSeed, Levels - 1>();
 				}
 			    foo:
 				;
