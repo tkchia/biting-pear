@@ -4,19 +4,18 @@
 #include <cinttypes>
 #include "biting-pear/bbq.h"
 #include "biting-pear/kthxbai.h"
-#include "biting-pear/lolwut.h"
 
 namespace biting_pear
 {
+
+template<uint_least64_t Seed, class T, unsigned Levels>
+struct kthxbai;  // forward
 
 namespace impl
 {
 
 template<uint_least64_t Seed, class T, unsigned Levels>
 struct kthxbai_impl;  // forward
-
-template<uint_least64_t Seed, class T, unsigned Levels>
-struct lolwut;  // forward
 
 template<uint_least64_t Seed, class T, unsigned Levels>
 struct omg;
@@ -164,7 +163,7 @@ struct omg
 		    case 3:
 		    case 4:
 			{
-				lolwut<Seed3, void, Levels - 1> p(&&foo, 1);
+				kthxbai<Seed3, void *, Levels-1> p(&&foo, 1);
 				void *q = static_cast<void *>(p);
 				uint8_t x = static_cast<uint8_t>(Seed2 >> 24)
 				    / 2;

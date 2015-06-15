@@ -105,8 +105,6 @@ class lolwut
 
 } // biting_pear::impl
 
-using impl::lolwut;
-
 } // biting_pear
 
 #endif

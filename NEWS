@@ -6,7 +6,10 @@
 		- added more types of indirect jumps
 
 		include/biting-pear/lolwut.h ,
-		include/biting-pear/kthxbai.h ,
+		include/biting-pear/kthxbai.h :
+		- moved from biting-pear/ to include/biting-pear/
+		- kthxbai<> with pointer type now hands over to lolwut<>
+
 		include/biting-pear/bbq.h :
 		- moved from biting-pear/ to include/biting-pear/
 

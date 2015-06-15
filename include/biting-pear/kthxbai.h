@@ -134,6 +134,21 @@ struct kthxbai_impl
 } // biting_pear::impl
 
 template<uint_least64_t Seed, class T, unsigned Levels = 6u>
+class kthxbai;
+
+template<uint_least64_t Seed, class S, unsigned Levels>
+class kthxbai<Seed, S *, Levels> : public impl::lolwut<Seed, S, Levels>
+{
+    public:
+	__attribute__((always_inline))
+	kthxbai() : impl::lolwut<Seed, S, Levels>()
+		{ }
+	__attribute__((always_inline))
+	kthxbai(S *p, int mode = 0) : impl::lolwut<Seed, S, Levels>(p, mode)
+		{ }
+};
+
+template<uint_least64_t Seed, class T, unsigned Levels>
 class kthxbai
 {
 	static constexpr uint_least64_t Seed2 = impl::update_inner(Seed);
