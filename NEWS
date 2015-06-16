@@ -3,6 +3,9 @@
 		README.md :
 		- added documentation
 
+		helper/postproc.ll :
+		- fixed bugs in input parsing and output
+
 2015-06-15	Reorganized directories.  And, junk bytes.
 
 		include/biting-pear/omg.h :

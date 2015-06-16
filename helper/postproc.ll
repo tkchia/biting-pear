@@ -20,23 +20,40 @@ ws		([ \f\n\r\t\v]*)
 
 %%
 
-"?"{ws}"<"		{
-				char v[21];
+"?"{ws}"<"{ws}">"	{
+				char v[20];
+				if (write(1, yytext + 1, yyleng - 2)
+				    != yyleng - 2)
+					return 1;
 				int n = std::snprintf(v, sizeof v,
-				    "<0x%" PRIx64 ",", generator());
+				    "0x%" PRIx64 ">", generator());
 				if (n <= 0 || (size_t)n >= sizeof v) {
 					std::cerr << "lolwut?!?!?\n";
 					return 1;
 				}
 				if (write(1, v, (size_t)n) != n)
 					return 1;
-				if (write(1, yytext + 1, yyleng - 2)
-				    != yyleng - 2)
+			}
+"?"{ws}"<"{ws}		{
+				char v[20];
+				if (write(1, yytext + 1, yyleng - 1)
+				    != yyleng - 1)
+					return 1;
+				int n = std::snprintf(v, sizeof v,
+				    "0x%" PRIx64 ",", generator());
+				if (n <= 0 || (size_t)n >= sizeof v) {
+					std::cerr << "lolwut?!?!?\n";
+					return 1;
+				}
+				if (write(1, v, (size_t)n) != n)
 					return 1;
 			}
 "?"{ws}			|
-[^\"\'#?]+		|
+[^\"\'#?\n]+		|
+\"([^\"\\]|\\.|\\\n)*\"	|
+'([^'\\]|\\.|\\\n)*'	|
 ^{ws}"#".*		|
+\n+			|
 .			{
 				if (write(1, yytext, yyleng) != yyleng)
 					return 1;
