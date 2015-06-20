@@ -5,7 +5,7 @@
 
 		GNUmakefile :
 		- now tries to read from config.cache if present
-		- added `distclean' rule
+		- added `distclean', `install', and `uninstall' rules
 		- added $(..._FOR_BUILD) variables, for rudimentary support
 		  for cross-compilation
 		- now uses $(LDLIBS) (and $(LDLIBS_FOR_BUILD)) when linking

@@ -20,13 +20,25 @@ LDLIBS_FOR_BUILD ?= $(LDLIBS)
 prefix ?= /usr/local
 separate_build_dir ?= false
 
-includes = \
+includedir = $(prefix)/include
+
+headers = \
     include/biting-pear/bbq.h \
     include/biting-pear/kthxbai.h \
     include/biting-pear/lolwut.h \
     include/biting-pear/omg.h
 
 default all: test/test-1
+
+install: $(headers)
+	install -d $(includedir)/biting-pear
+	install -m 644 $^ $(includedir)/biting-pear
+
+uninstall:
+	$(foreach hdr,$(headers), \
+	    rm -f $(includedir)/biting-pear/$(notdir $(hdr)) &&) \
+	    true
+	-rmdir $(includedir)/biting-pear
 
 clean:
 	find . -name '*.[ios]' -o -name '*~' | \
@@ -54,7 +66,7 @@ test/test-1.o: test/test-1.i
 %.s: %.i
 	$(CXX) $(CXXFLAGS) -S -o$@ $<
 
-%.i: %.ccc $(includes) helper/postproc helper/crc64
+%.i: %.ccc $(headers) helper/postproc helper/crc64
 	mkdir -p $(@D)
 	$(CXX) -E -x c++ $(CPPFLAGS) $(CXXFLAGS) -o$@.tmp $<
 	helper/postproc "`helper/crc64 <$@.tmp`" <$@.tmp >$@.2.tmp
@@ -78,4 +90,4 @@ helper/postproc.cc: helper/postproc.lxx
 
 .PRECIOUS: %.i %.cc %.s
 
-.PHONY: default all clean distclean
+.PHONY: default all install uninstall clean distclean
