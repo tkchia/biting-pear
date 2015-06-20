@@ -1,5 +1,6 @@
 -include config.cache
 
+srcdir ?= .
 VPATH = $(srcdir)
 
 CC ?= gcc
