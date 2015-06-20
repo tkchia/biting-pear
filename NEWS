@@ -1,3 +1,25 @@
+2015-06-21	Autoconfiscated... well, not really.
+
+		configure :
+		- initial version; does --srcdir and --prefix
+
+		GNUmakefile :
+		- now tries to read from config.cache if present
+		- added `distclean' rule
+		- added $(..._FOR_BUILD) variables, for rudimentary support
+		  for cross-compilation
+		- now uses $(LDLIBS) (and $(LDLIBS_FOR_BUILD)) when linking
+		- added support for building outside of source tree, e.g.
+		  use of $(VPATH)
+		- updated name: helper/postproc.ll -> helper/postproc.lxx
+
+		helper/postproc.lxx :
+		- renamed from helper/postproc.ll, to avoid confusion with
+		  LLVM files
+
+		.gitignore :
+		- added config.cache
+
 2015-06-16	Added some semblance of documentation.
 
 		README.md :

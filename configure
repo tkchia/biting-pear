@@ -1,0 +1,78 @@
+#!/bin/sh
+
+set -e
+nl='
+'
+
+blare() {
+	echo "$*"
+}
+
+check_sane() {
+	case "$1" in
+	    *"$nl"*)
+		echo "ERROR: no newlines allowed in $2" >&2
+		exit 1;;
+	esac
+}
+
+say() {
+	local val
+	if eval test xy = x"\${$1+y}"; then
+		eval "val=\"\$$1\""
+		echo "$1=$val" | sed 's,[^-_+/=.$0-9A-Za-z],\\&,g; s,\$,$$,g'
+	fi
+}
+
+say_path() {
+	say "$1" | sed 's, ,\\ ,g'
+}
+
+unset srcdir
+unset prefix
+for opt in ${1+"$@"}; do
+	check_sane "$opt" arguments
+	case "$opt" in
+	    --srcdir=?*)
+		srcdir="`echo "$opt" | sed s,^[^=]*=,,`";;
+	    --prefix=?*)
+		prefix="`echo "$opt" | sed s,^[^=]*=,,`";;
+	    *)
+		echo "usage: `basename "$0"`" \
+		     "[--srcdir=(dir)] [--prefix=(dir)]" >&2
+		exit 1;;
+	esac
+done
+blare 'checking sanity of environment variables'
+use_vars="CC CPP CPPFLAGS CFLAGS CXX CXXCPP CXXFLAGS LEX MAKE \
+    CXX_FOR_BUILD CPPFLAGS_FOR_BUILD CXXFLAGS_FOR_BUILD LDFLAGS_FOR_BUILD \
+    LDLIBS_FOR_BUILD"
+for var in $use_vars; do
+	eval check_sane \"\$$var\" \'\$$var\'
+done
+blare 'writing config.cache'
+: "${srcdir=`dirname "$0"`}"
+if test \! . = "$srcdir" -a \! . -ef "$srcdir"; then
+	separate_build_dir=true
+else
+	separate_build_dir=false
+fi
+tmp="`mktemp config.cache.XXXXXXXXXX || echo config.cache.$$`"
+(
+	echo "###### AUTOMATICALLY GENERATED `date` ######"
+	say_path srcdir
+	say_path prefix
+	for var in $use_vars
+		do say $var; done
+	say separate_build_dir
+) >"$tmp" || \
+    rm -f "$tmp"
+mv "$tmp" config.cache
+if test true = "$separate_build_dir"; then
+	blare "linking GNUmakefile to $srcdir/GNUmakefile"
+	rm -f GNUmakefile
+	if ln -s "$srcdir"/GNUmakefile GNUmakefile; then :; else
+		blare "...failed, copying instead"
+		cp "$srcdir"/GNUmakefile GNUmakefile
+	fi
+fi

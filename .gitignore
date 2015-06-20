@@ -5,3 +5,4 @@ test-1
 postproc.cc
 postproc
 crc64
+config.cache
