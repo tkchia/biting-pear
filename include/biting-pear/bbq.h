@@ -10,23 +10,25 @@ namespace biting_pear
 namespace impl
 {
 
-inline constexpr uint_least64_t xorshr(uint_least64_t s, unsigned i)
+using rand_state_t = std::uint_least64_t;
+
+inline constexpr rand_state_t xorshr(rand_state_t s, unsigned i)
 {
 	return s ^ s >> i;
 }
 
-inline constexpr uint_least64_t xorshl(uint_least64_t s, unsigned i)
+inline constexpr rand_state_t xorshl(rand_state_t s, unsigned i)
 {
 	return s ^ s << i;
 }
 
-inline constexpr uint_least64_t update_outer(uint_least64_t s)
+inline constexpr rand_state_t update_outer(rand_state_t s)
 {
 	// arxiv.org/abs/1402.6246
 	return xorshr(xorshl(xorshr(s, 12), 25), 27) * 2685821657736338717ull;
 }
 
-inline constexpr uint_least64_t update_inner(uint_least64_t s)
+inline constexpr rand_state_t update_inner(rand_state_t s)
 {
 	return s * 6364136223846793005ull + 1ull;
 }
@@ -58,7 +60,7 @@ inline T do_inv_op(T x, T y)
 }
 
 template<class T>
-inline constexpr T pick_hi(uint_least64_t x)
+inline constexpr T pick_hi(rand_state_t x)
 {
 	return sizeof(T) >= sizeof(x) ? x :
 	    static_cast<T>(x >> ((sizeof(x) - sizeof(T)) * CHAR_BIT));

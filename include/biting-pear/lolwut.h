@@ -13,22 +13,22 @@ namespace biting_pear
 namespace impl
 {
 
-template<uint_least64_t Seed, class T, unsigned Levels>
+template<rand_state_t State, class T, unsigned Levels>
 struct kthxbai_impl;  // forward
 
-template<uint_least64_t Seed, class T, unsigned Levels = 6u>
+template<rand_state_t State, class T, unsigned Levels = 6u>
 class lolwut
 {
-	static constexpr uint_least64_t Seed2 = impl::update_inner(Seed);
-	static constexpr uint_least64_t NewSeed = impl::update_outer(Seed);
+	static constexpr rand_state_t State2 = impl::update_inner(State);
+	static constexpr rand_state_t NewState = impl::update_outer(State);
 	static constexpr unsigned Disp =
-	    impl::pick_hi<unsigned>(Seed2 ^ NewSeed) / 2u;
+	    impl::pick_hi<unsigned>(State2 ^ NewState) / 2u;
 	static constexpr bool Sign =
-	    impl::pick_hi<unsigned>(Seed2 ^ NewSeed) % 2u != 0;
+	    impl::pick_hi<unsigned>(State2 ^ NewState) % 2u != 0;
 #ifdef __amd64__
-	static constexpr uint_least64_t Seed3 = impl::update_inner(Seed2);
+	static constexpr rand_state_t State3 = impl::update_inner(State2);
 	static constexpr unsigned Disp2 = Disp > 2 ?
-	    impl::pick_hi<unsigned>(Seed2 ^ Seed3) % (Disp / 2) : 0;
+	    impl::pick_hi<unsigned>(State2 ^ State3) % (Disp / 2) : 0;
 #endif
 	char *p_;
     public:
@@ -53,7 +53,7 @@ class lolwut
 			 *
 			 * -- 20150614
 			 */
-			if (Disp < 0x7ffff000u && Seed2 > NewSeed) {
+			if (Disp < 0x7ffff000u && State2 > NewState) {
 				if (Sign)
 					__asm("leaq -%c1+%l2(%%rip), %0"
 					    : "=r" (p_)
@@ -96,7 +96,7 @@ class lolwut
 	operator T *() const
 	{
 		unsigned disp;
-		impl::kthxbai_impl<NewSeed, unsigned, Levels>(disp, Disp);
+		impl::kthxbai_impl<NewState, unsigned, Levels>(disp, Disp);
 		if (Sign)
 			return reinterpret_cast<T *>(p_ + disp);
 		else	return reinterpret_cast<T *>(p_ - disp);

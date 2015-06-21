@@ -1,3 +1,13 @@
+2015-06-22	Further internal cleanup.
+
+		include/biting-pear/bbq.h ,
+		include/biting-pear/kthxbai.h ,
+		include/biting-pear/lolwut.h , 
+		include/biting-pear/omg.h :
+		- internally set biting_pear_t::impl::rand_state_t =
+		  std::uint_least64_t
+		- internally renamed `Seed' variables to `State'
+
 2015-06-21	Autoconfiscated... well, not really.
 
 		configure :

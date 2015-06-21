@@ -8,81 +8,81 @@
 namespace biting_pear
 {
 
-template<uint_least64_t Seed, class T, unsigned Levels>
+template<impl::rand_state_t State, class T, unsigned Levels>
 struct kthxbai;  // forward
 
 namespace impl
 {
 
-template<uint_least64_t Seed, class T, unsigned Levels>
+template<rand_state_t State, class T, unsigned Levels>
 struct kthxbai_impl;  // forward
 
-template<uint_least64_t Seed, class T, unsigned Levels>
+template<rand_state_t State, class T, unsigned Levels>
 struct omg;
 
 #if defined __amd64__
-template<uint_least64_t Seed, unsigned Levels>
+template<rand_state_t State, unsigned Levels>
 struct omg_impl_0;
 
-template<uint_least64_t Seed>
-struct omg_impl_0<Seed, 0u>
+template<rand_state_t State>
+struct omg_impl_0<State, 0u>
 {
 	__attribute__((always_inline))
 	omg_impl_0()
 	{
-		constexpr uint_least64_t Seed2 = update_inner(Seed);
-		switch ((Seed2 >> 32) % 4) {
+		constexpr rand_state_t State2 = update_inner(State);
+		switch ((State2 >> 32) % 4) {
 		    case 0:
 			__asm __volatile("syscall" : : : "rax", "memory");
 			break;
 		    default:
 			__asm __volatile(".byte %c0"
 			    : /* no outputs */
-			    : "n" (pick_hi<uint8_t>(Seed ^ Seed2))
+			    : "n" (pick_hi<uint8_t>(State ^ State2))
 			    : "memory");
 		}
 	}
 };
 
-template<uint_least64_t Seed, unsigned Levels>
+template<rand_state_t State, unsigned Levels>
 struct omg_impl_0
 {
 	__attribute__((always_inline))
 	omg_impl_0()
 	{
-		constexpr uint_least64_t Seed2 = update_inner(Seed);
-		constexpr uint_least64_t Seed3 = update_inner(Seed2);
-		constexpr uint_least64_t NewSeed = update_outer(Seed);
-		switch (Seed2 >> 32 % 3) {
+		constexpr rand_state_t State2 = update_inner(State);
+		constexpr rand_state_t State3 = update_inner(State2);
+		constexpr rand_state_t NewState = update_outer(State);
+		switch (State2 >> 32 % 3) {
 		    case 0:
 			{
-				omg<Seed3, unsigned, Levels - 1>();
+				omg<State3, unsigned, Levels - 1>();
 			}
 			break;
 		    case 1:
 			{
-				omg_impl_0<NewSeed, Levels - 1>();
+				omg_impl_0<NewState, Levels - 1>();
 			} // fall through
 		    default:
 			{
-				omg_impl_0<Seed3, Levels - 1>();
+				omg_impl_0<State3, Levels - 1>();
 			}
 		}
 	}
 };
 #endif
 
-template<uint_least64_t Seed, class T, unsigned Levels>
+template<rand_state_t State, class T, unsigned Levels>
 struct omg;
 
-template<uint_least64_t Seed, class T>
-struct omg<Seed, T, 0>
+template<rand_state_t State, class T>
+struct omg<State, T, 0>
 {
 	__attribute__((always_inline))
 	omg()
 	{
-		constexpr uint_least64_t Seed2 = update_inner(Seed);
-		switch ((Seed2 >> 32) % 16) {
+		constexpr rand_state_t State2 = update_inner(State);
+		switch ((State2 >> 32) % 16) {
 #if defined __amd64__ || defined __i386__
 		    case 0:
 			__asm __volatile("clc" : : : "cc");  break;
@@ -119,43 +119,43 @@ struct omg<Seed, T, 0>
 	__attribute__((always_inline))
 	omg(T& x)
 	{
-		constexpr uint_least64_t Seed2 = update_inner(Seed);
-		constexpr uint_least64_t Seed3 = update_inner(Seed2);
-		switch ((Seed2 >> 32) % 2) {
+		constexpr rand_state_t State2 = update_inner(State);
+		constexpr rand_state_t State3 = update_inner(State2);
+		switch ((State2 >> 32) % 2) {
 		    case 0:
 			{
-				omg<Seed3, T, 0>();
+				omg<State3, T, 0>();
 			}
 			break;
 		    default:
 			{
-				constexpr T v = pick_hi<T>(Seed3);
-				kthxbai_impl<Seed3, T, 0>(x, v);
+				constexpr T v = pick_hi<T>(State3);
+				kthxbai_impl<State3, T, 0>(x, v);
 			}
 		}
 	}
 };
 
-template<uint_least64_t Seed, class T, unsigned Levels = 6u>
+template<rand_state_t State, class T, unsigned Levels = 6u>
 struct omg
 {
 	__attribute__((always_inline))
 	omg()
 	{
-		constexpr uint_least64_t Seed2 = update_inner(Seed);
-		constexpr uint_least64_t Seed3 = update_inner(Seed2);
-		constexpr uint_least64_t NewSeed = update_outer(Seed);
-		constexpr unsigned Which = (Seed2 >> 32) % 8;
-		switch ((Seed2 >> 32) % 5) {
+		constexpr rand_state_t State2 = update_inner(State);
+		constexpr rand_state_t State3 = update_inner(State2);
+		constexpr rand_state_t NewState = update_outer(State);
+		constexpr unsigned Which = (State2 >> 32) % 8;
+		switch ((State2 >> 32) % 5) {
 		    case 0:
 			{
-				omg<Seed3, T, Levels - 1>();
+				omg<State3, T, Levels - 1>();
 			}
 			break;
 		    case 1:
 			{
 				T x;
-				omg<Seed3, T, Levels - 1> zomg(x);
+				omg<State3, T, Levels - 1> zomg(x);
 			}
 			break;
 #if defined __amd64__
@@ -163,9 +163,9 @@ struct omg
 		    case 3:
 		    case 4:
 			{
-				kthxbai<Seed3, void *, Levels-1> p(&&foo, 1);
+				kthxbai<State3, void *, Levels-1> p(&&foo, 1);
 				void *q = static_cast<void *>(p);
-				uint8_t x = static_cast<uint8_t>(Seed2 >> 24)
+				uint8_t x = static_cast<uint8_t>(State2 >> 24)
 				    / 2;
 				if (q) {
 					switch (Which) {
@@ -195,7 +195,7 @@ struct omg
 					}
 				}
 				{
-					omg_impl_0<NewSeed, Levels - 1>();
+					omg_impl_0<NewState, Levels - 1>();
 				}
 			    foo:
 				;
@@ -204,8 +204,8 @@ struct omg
 #endif
 		    default:
 			{
-				omg<Seed3, T, Levels - 1>();
-				omg<NewSeed, T, Levels - 1>();
+				omg<State3, T, Levels - 1>();
+				omg<NewState, T, Levels - 1>();
 			}
 		}
 	}
@@ -213,23 +213,23 @@ struct omg
 	__attribute__((always_inline))
 	omg(T& x)
 	{
-		constexpr uint_least64_t Seed2 = update_inner(Seed);
-		constexpr uint_least64_t Seed3 = update_inner(Seed2);
-		switch ((Seed2 >> 32) % 3) {
+		constexpr rand_state_t State2 = update_inner(State);
+		constexpr rand_state_t State3 = update_inner(State2);
+		switch ((State2 >> 32) % 3) {
 		    case 0:
 			{
-				omg<Seed3, T, Levels - 1> zomg(x);
+				omg<State3, T, Levels - 1> zomg(x);
 			}
 			break;
 		    case 1:
 			{
-				omg<Seed3, T, Levels>();
+				omg<State3, T, Levels>();
 			}
 			break;
 		    default:
 			{
-				kthxbai_impl<Seed3, T, Levels - 1>(x,
-				    pick_hi<T>(Seed3));
+				kthxbai_impl<State3, T, Levels - 1>(x,
+				    pick_hi<T>(State3));
 			}
 		}
 	}
