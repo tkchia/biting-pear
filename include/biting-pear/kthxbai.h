@@ -3,9 +3,9 @@
 
 #include <cinttypes>
 #include <climits>
-#include "biting-pear/bbq.h"
-#include "biting-pear/lolwut.h"
-#include "biting-pear/omg.h"
+#include <biting-pear/bbq.h>
+#include <biting-pear/lolwut.h>
+#include <biting-pear/omg.h>
 
 namespace biting_pear
 {

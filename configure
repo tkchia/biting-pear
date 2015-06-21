@@ -28,8 +28,26 @@ say_path() {
 	say "$1" | sed 's, ,\\ ,g'
 }
 
+say_list() {
+	local buf buf2 thang
+	buf="   "
+	for thang in $1; do
+		buf2="$buf $thang"
+		if test ${#buf2} -ge 75; then
+			echo "$buf"
+			buf="    $thang"
+		else
+			buf="$buf2"
+		fi
+	done
+	echo "$buf"
+}
+
 unset srcdir
 unset prefix
+use_vars="CC CPP CPPFLAGS CFLAGS CXX CXXCPP CXXFLAGS LEX MAKE \
+    CXX_FOR_BUILD CPPFLAGS_FOR_BUILD CXXFLAGS_FOR_BUILD LDFLAGS_FOR_BUILD \
+    LDLIBS_FOR_BUILD"
 for opt in ${1+"$@"}; do
 	check_sane "$opt" arguments
 	case "$opt" in
@@ -40,13 +58,12 @@ for opt in ${1+"$@"}; do
 	    *)
 		echo "usage: `basename "$0"`" \
 		     "[--srcdir=(dir)] [--prefix=(dir)]" >&2
+		echo "environment variables used:" >&2
+		say_list "$use_vars" >&2
 		exit 1;;
 	esac
 done
 blare 'checking sanity of environment variables'
-use_vars="CC CPP CPPFLAGS CFLAGS CXX CXXCPP CXXFLAGS LEX MAKE \
-    CXX_FOR_BUILD CPPFLAGS_FOR_BUILD CXXFLAGS_FOR_BUILD LDFLAGS_FOR_BUILD \
-    LDLIBS_FOR_BUILD"
 for var in $use_vars; do
 	eval check_sane \"\$$var\" \'\$$var\'
 done

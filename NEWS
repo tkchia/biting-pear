@@ -17,6 +17,12 @@
 		- renamed from helper/postproc.ll, to avoid confusion with
 		  LLVM files
 
+		include/biting-pear/kthxbai.h ,
+		include/biting-pear/lolwut.h ,
+		include/biting-pear/omg.h ,
+		test/test-1.ccc :
+		- now use #include <...>, not #include "..."
+
 		.gitignore :
 		- added config.cache
 

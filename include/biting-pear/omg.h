@@ -2,8 +2,8 @@
 #define biting_pear_H_OMG
 
 #include <cinttypes>
-#include "biting-pear/bbq.h"
-#include "biting-pear/kthxbai.h"
+#include <biting-pear/bbq.h>
+#include <biting-pear/kthxbai.h>
 
 namespace biting_pear
 {

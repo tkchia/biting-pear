@@ -4,8 +4,8 @@
 #include <cinttypes>
 #include <climits>
 #include <cstdlib>
-#include "biting-pear/bbq.h"
-#include "biting-pear/kthxbai.h"
+#include <biting-pear/bbq.h>
+#include <biting-pear/kthxbai.h>
 
 namespace biting_pear
 {

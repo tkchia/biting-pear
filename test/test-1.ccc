@@ -1,6 +1,6 @@
 #include <iomanip>
 #include <iostream>
-#include "biting-pear/kthxbai.h"
+#include <biting-pear/kthxbai.h>
 
 int main(void)
 {
