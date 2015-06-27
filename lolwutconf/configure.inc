@@ -103,8 +103,6 @@ conf_begin() {
 		    *)
 			echo "usage: `basename "$0"`" \
 			     "[--srcdir=(dir)] [--prefix=(dir)]" >&2
-			echo "environment variables used:" >&2
-			conf__say_list "$conf__use_vars" >&2
 			exit 1;;
 		esac
 	done
