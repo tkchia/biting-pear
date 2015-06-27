@@ -1,32 +1,18 @@
 -include config.cache
 
 srcdir ?= .
-VPATH = $(srcdir)
 
-CC ?= gcc
-CFLAGS ?= -std=c11 -O3 -fPIC -Wall
-CXX ?= g++
-CXXFLAGS ?= -std=c++11 -O3 -fPIC -Wall
-CPPFLAGS ?= -I$(srcdir)/include
-LEX ?= flex
-LFLAGS ?= -CF -8 -b
-CC_FOR_BUILD ?= $(CC)
-CFLAGS_FOR_BUILD ?= $(CFLAGS)
-CPPFLAGS_FOR_BUILD ?= $(CPPFLAGS)
-CXX_FOR_BUILD ?= $(CXX)
-CXXFLAGS_FOR_BUILD ?= $(CXXFLAGS)
-LDFLAGS_FOR_BUILD ?= $(LDFLAGS)
-LDLIBS_FOR_BUILD ?= $(LDLIBS)
-prefix ?= /usr/local
-separate_build_dir ?= false
+include $(srcdir)/lolwutconf/lolwutconf.mk
 
 includedir = $(prefix)/include
 
+config.h = include/biting-pear/derp.h
 headers = \
     include/biting-pear/bbq.h \
     include/biting-pear/kthxbai.h \
     include/biting-pear/lolwut.h \
-    include/biting-pear/omg.h
+    include/biting-pear/omg.h \
+    $(config.h)
 
 default all: test/test-1
 
@@ -42,17 +28,34 @@ uninstall:
 
 clean:
 	find . -name '*.[ios]' -o -name '*~' | \
-	    xargs rm -f helper/postproc.cc helper/postproc helper/crc64 \
-		lex.backup test/test-1
-ifeq "$(separate_build_dir)" "true"
+	    xargs rm -f $(config.h) helper/postproc.cc helper/postproc \
+		helper/crc64 lex.backup test/test-1
+ifeq "$(separate_build_dir)" "yes"
 	-rmdir helper test
 endif
 
 distclean: clean
 	rm -f config.cache
-ifeq "$(separate_build_dir)" "true"
+ifeq "$(separate_build_dir)" "yes"
 	rm -f GNUmakefile
 endif
+
+$(config.h):
+	mkdir -p $(@D)
+	echo "/****** AUTOMATICALLY GENERATED `date` ******/" >$@.tmp
+ifeq "$(conf_Have_cxx_typ_std__uint_least64_t)" "yes"
+	echo '#include <cinttypes>' >>$@.tmp
+else
+	echo '#include <inttypes.h>' >>$@.tmp
+endif
+	echo 'namespace biting_pear { namespace impl {' >>$@.tmp
+ifeq "$(conf_Have_cxx_typ_std__uint_least64_t)" "yes"
+	echo 'using std::uint_least64_t;' >>$@.tmp
+else
+	echo 'using ::uint_least64_t;' >>$@.tmp
+endif
+	echo '} }' >>$@.tmp
+	mv $@.tmp $@
 
 test/test-1: test/test-1.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)
@@ -89,5 +92,3 @@ helper/postproc.cc: helper/postproc.lxx
 	mv $@.tmp $@
 
 .PRECIOUS: %.i %.cc %.s
-
-.PHONY: default all install uninstall clean distclean

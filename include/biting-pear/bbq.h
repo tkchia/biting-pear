@@ -3,6 +3,7 @@
 
 #include <cinttypes>
 #include <climits>
+#include <biting-pear/derp.h>
 
 namespace biting_pear
 {
@@ -10,7 +11,7 @@ namespace biting_pear
 namespace impl
 {
 
-using rand_state_t = std::uint_least64_t;
+typedef uint_least64_t rand_state_t;
 
 inline constexpr rand_state_t xorshr(rand_state_t s, unsigned i)
 {

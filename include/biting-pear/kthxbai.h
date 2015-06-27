@@ -3,6 +3,7 @@
 
 #include <cinttypes>
 #include <climits>
+#include <cstdlib>
 #include <biting-pear/bbq.h>
 #include <biting-pear/lolwut.h>
 #include <biting-pear/omg.h>
@@ -136,9 +137,24 @@ struct kthxbai_impl
 template<impl::rand_state_t State, class T, unsigned Levels = 6u>
 class kthxbai;
 
+template<impl::rand_state_t State, unsigned Levels>
+class kthxbai<State, void *, Levels> :
+    public impl::lolwut<State, void, Levels>
+{
+    public:
+	__attribute__((always_inline))
+	kthxbai() : impl::lolwut<State, void, Levels>()
+		{ }
+	__attribute__((always_inline))
+	kthxbai(void *p, int mode = 0) :
+	    impl::lolwut<State, void, Levels>(p, mode)
+		{ }
+};
+
 template<impl::rand_state_t State, class S, unsigned Levels>
 class kthxbai<State, S *, Levels> : public impl::lolwut<State, S, Levels>
 {
+	typedef kthxbai<State, S *, Levels> our_type;
     public:
 	__attribute__((always_inline))
 	kthxbai() : impl::lolwut<State, S, Levels>()
@@ -146,6 +162,23 @@ class kthxbai<State, S *, Levels> : public impl::lolwut<State, S, Levels>
 	__attribute__((always_inline))
 	kthxbai(S *p, int mode = 0) : impl::lolwut<State, S, Levels>(p, mode)
 		{ }
+	__attribute__((always_inline))
+	const our_type& operator+=(std::ptrdiff_t n)
+	{
+		this->advance_chars(n * sizeof(S));
+		return *this;
+	}
+	__attribute__((always_inline))
+	const our_type& operator-=(std::ptrdiff_t n)
+	{
+		this->advance_chars(-n * sizeof(S));
+		return *this;
+	}
+	__attribute__((always_inline))
+	const our_type& operator++()
+		{ return *this += 1; }
+	const our_type& operator--()
+		{ return *this -= 1; }
 };
 
 template<impl::rand_state_t State, class T, unsigned Levels>

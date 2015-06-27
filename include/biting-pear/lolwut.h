@@ -31,6 +31,9 @@ class lolwut
 	    impl::pick_hi<unsigned>(State2 ^ State3) % (Disp / 2) : 0;
 #endif
 	char *p_;
+    protected:
+	void advance_chars(std::ptrdiff_t n)
+		{ p_ += n; }
     public:
 	__attribute__((always_inline))
 	lolwut()

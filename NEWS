@@ -1,3 +1,27 @@
+2015-06-27	Pre-C++11 compiler support.  And, added +=, -=, ++, and --
+		for pointers.
+
+		include/biting-pear/bbq.h :
+		- now uses generated include/biting-pear/derp.h
+
+		include/biting-pear/kthxbai.h ,
+		include/biting-pear/lolwut.h ,
+		- added +=, -=, ++, and -- for pointers
+
+		lolwutconf/c++.inc ,
+		lolwutconf/configure.inc ,
+		lolwutconf/lolwutconf.mk :
+		- initial version
+
+		GNUmakefile :
+		- moved some logic into lolwutconf/lolwutconf.mk
+		- now checks for both <cinttypes> and <inttypes.h>
+		- now creates include/biting-pear/derp.h
+
+		configure :
+		- moved most logic into lolwutconf/*
+		- now checks for both <cinttypes> and <inttypes.h>
+
 2015-06-22	Further internal cleanup.
 
 		include/biting-pear/bbq.h ,
