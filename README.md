@@ -4,7 +4,7 @@
 
 `#include "biting-pear/kthxbai.h"`
 
-`template<uint_least64_t` *seed* `, class ` *typ*[`, unsigned ` *levels*]`>`<br>`class biting_pear::kthxbai;`
+`template<std::uint_least64_t` *seed* `, class ` *typ*[`, unsigned ` *levels*]`>`<br>`class biting_pear::kthxbai;`
 
 ## Description
 

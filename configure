@@ -1,6 +1,7 @@
 #!/bin/sh
 
 set -e
+: "${CXXFLAGS=-O3 -fPIC -Wall}"
 . "`dirname "$0"`"/lolwutconf/configure.inc
 conf_begin ${1+"$@"}
 conf_mod c++

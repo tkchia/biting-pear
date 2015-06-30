@@ -21,7 +21,7 @@ conf__blare_res() {
 }
 
 conf__barf() {
-	conf_blare "ERROR: $*"
+	conf__blare "ERROR: $*"
 	exit 1
 }
 

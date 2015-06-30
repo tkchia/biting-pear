@@ -6,3 +6,4 @@ postproc.cc
 postproc
 crc64
 config.cache
+derp.h

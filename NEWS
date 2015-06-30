@@ -1,3 +1,28 @@
+2015-06-30	`make check' now works.
+
+		GNUmakefile :
+		- added rule for `make check'
+		- added %.o to .PRECIOUS
+
+		configure ,
+		lolwutconf/c++.inc :
+		- moved most default CXXFLAGS flags into `configure'
+
+		lolwutconf/configure.inc :
+		- fixed bug in conf__barf()
+
+		lolwutconf/lolwutconf.mk :
+		- added `check' to .PHONY
+
+		README.md :
+		- `uint_least64_t' -> `std::uint_least64_t'
+
+		test/test-1.good :
+		- added
+
+		.gitignore :
+		- added derp.h
+
 2015-06-27	Pre-C++11 compiler support.  And, added +=, -=, ++, and --
 		for pointers.
 

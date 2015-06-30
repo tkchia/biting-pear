@@ -49,7 +49,7 @@ conf_cxx_chk_compiler() {
 	if test -n "$conf_Have_cxx_compiler"
 		then return 0; fi
 	: "${CXX=g++}"
-	: "${CXXFLAGS=-O3 -fPIC -Wall}"
+	: "${CXXFLAGS=-O3}"
 	conf__add_var CXX CPPFLAGS CXXFLAGS LDFLAGS LDLIBS \
 	    conf_Have_cxx_compiler
 	conf__blare_test 'checking if C++ compiler for host works'

@@ -26,4 +26,4 @@ includedir = $(prefix)/include
 
 .DEFAULT_GOAL := default
 
-.PHONY: default all install uninstall clean distclean
+.PHONY: default all check install uninstall clean distclean

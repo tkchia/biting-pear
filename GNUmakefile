@@ -13,8 +13,12 @@ headers = \
     include/biting-pear/lolwut.h \
     include/biting-pear/omg.h \
     $(config.h)
+tests = \
+    test/test-1
 
-default all: test/test-1
+default all: $(tests)
+
+check: $(tests:=.passed)
 
 install: $(headers)
 	install -d $(includedir)/biting-pear
@@ -29,7 +33,7 @@ uninstall:
 clean:
 	find . -name '*.[ios]' -o -name '*~' | \
 	    xargs rm -f $(config.h) helper/postproc.cc helper/postproc \
-		helper/crc64 lex.backup test/test-1
+		helper/crc64 lex.backup $(tests) $(tests:=.passed)
 ifeq "$(separate_build_dir)" "yes"
 	-rmdir helper test
 endif
@@ -57,10 +61,27 @@ endif
 	echo '} }' >>$@.tmp
 	mv $@.tmp $@
 
-test/test-1: test/test-1.o
+test/test-%.passed: test/test-% test/test-%.good
+	@echo "running test $<" >&2
+	@./$< >$(@:.passed=.1.tmp) 2>$(@:.passed=.2.tmp) || \
+	    (echo "$< exited with error: $$?" >&2 && \
+	     rm -f $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
+	     exit 1)
+	@diff -U2 /dev/null $(@:.passed=.2.tmp) || \
+	    (echo "$< produced output on stderr" >&2 && \
+	     rm -f $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
+	     exit 1)
+	@diff -U2 $<.good $(@:.passed=.1.tmp) || \
+	    (echo "$<'s expected output and actual output differ" >&2 && \
+	     rm -f $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
+	     exit 1)
+	@echo "$< passed"
+	@rm -f $(@:.passed=.1.tmp) $(@:.passed=.2.tmp)
+
+test/test-%: test/test-%.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)
 
-test/test-1.o: test/test-1.i
+test/test-%.o: test/test-%.i
 
 %.o: %.i
 	$(CXX) $(CXXFLAGS) -c -o$@ $<
@@ -91,4 +112,6 @@ helper/postproc.cc: helper/postproc.lxx
 	$(LEX) $(LFLAGS) -t -o$@ $< >$@.tmp
 	mv $@.tmp $@
 
-.PRECIOUS: %.i %.cc %.s
+.PHONY: test/test-%.passed
+
+.PRECIOUS: %.i %.cc %.s %.o
