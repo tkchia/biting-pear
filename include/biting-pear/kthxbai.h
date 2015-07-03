@@ -59,7 +59,7 @@ struct kthxbai_impl
 				constexpr unsigned WhichOp =
 				    (unsigned)(State3 >> 16);
 				T x1, x2;
-				constexpr T v2 = pick_hi<T>(State2 ^ NewState);
+				constexpr T v2 = pick_hi<T>(State2^NewState);
 				T v1 = static_cast<T>(do_op<WhichOp>(v, v2));
 				kthxbai_impl<State3, T, Levels - 1>(x1, v1);
 				kthxbai_impl<NewState, T, Levels - 1>(x2, v2);
@@ -71,7 +71,7 @@ struct kthxbai_impl
 			{
 				T x1, x2;
 				constexpr T v1 = pick_hi<T>(State2 ^ State3);
-				constexpr T v2 = pick_hi<T>(State2 ^ NewState);
+				constexpr T v2 = pick_hi<T>(State2^NewState);
 				kthxbai_impl<State3, T, Levels - 1>(x1,
 				    v1 & v);
 				kthxbai_impl<NewState, T, Levels - 1>(x2,
@@ -83,7 +83,7 @@ struct kthxbai_impl
 			{
 				T x1, x2;
 				constexpr T v1 = pick_hi<T>(State2 ^ State3);
-				constexpr T v2 = pick_hi<T>(State2 ^ NewState);
+				constexpr T v2 = pick_hi<T>(State2^NewState);
 				kthxbai_impl<State3, T, Levels - 1>(x1,
 				    v1 | v);
 				kthxbai_impl<NewState, T, Levels - 1>(x2,
@@ -150,6 +150,40 @@ class kthxbai<State, void *, Levels> :
 	    impl::lolwut<State, void, Levels>(p, mode)
 		{ }
 };
+
+#if __cplusplus >= 201103L
+template<impl::rand_state_t State, class RetT, unsigned Levels,
+    class... ArgT>
+class kthxbai<State, RetT (*)(ArgT...), Levels> :
+    public impl::lolwut<State, RetT(ArgT...), Levels>
+{
+	typedef RetT func_type(ArgT...);
+    public:
+	__attribute__((always_inline))
+	kthxbai() : impl::lolwut<State, func_type, Levels>()
+		{ }
+	__attribute__((always_inline))
+	kthxbai(func_type *p, int mode = 2) :
+	    impl::lolwut<State, func_type, Levels>(p, mode)
+		{ }
+};
+
+template<impl::rand_state_t State, class RetT, unsigned Levels,
+    class... ArgT>
+class kthxbai<State, RetT (*)(ArgT..., ...), Levels> :
+    public impl::lolwut<State, RetT(ArgT..., ...), Levels>
+{
+	typedef RetT func_type(ArgT..., ...);
+    public:
+	__attribute__((always_inline))
+	kthxbai() : impl::lolwut<State, func_type, Levels>()
+		{ }
+	__attribute__((always_inline))
+	kthxbai(func_type *p, int mode = 2) :
+	    impl::lolwut<State, func_type, Levels>(p, mode)
+		{ }
+};
+#endif
 
 template<impl::rand_state_t State, class S, unsigned Levels>
 class kthxbai<State, S *, Levels> : public impl::lolwut<State, S, Levels>

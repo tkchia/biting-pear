@@ -2,6 +2,7 @@
 *.[ios]
 lex.backup
 test-1
+test-2
 postproc.cc
 postproc
 crc64

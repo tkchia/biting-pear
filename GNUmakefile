@@ -14,9 +14,10 @@ headers = \
     include/biting-pear/omg.h \
     $(config.h)
 tests = \
-    test/test-1
+    test/test-1 \
+    test/test-2
 
-default all: $(tests)
+default all: check
 
 check: $(tests:=.passed)
 
@@ -114,4 +115,4 @@ helper/postproc.cc: helper/postproc.lxx
 
 .PHONY: test/test-%.passed
 
-.PRECIOUS: %.i %.cc %.s %.o
+.PRECIOUS: %.i %.cc %.s %.o $(tests)

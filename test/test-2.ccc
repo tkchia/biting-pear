@@ -1,0 +1,9 @@
+#include <cstdio>
+#include <biting-pear/kthxbai.h>
+
+int main(void)
+{
+	biting_pear::kthxbai?<__typeof &std::printf> pf(std::printf);
+	pf("Hello world!\n");
+	return 0;
+}
