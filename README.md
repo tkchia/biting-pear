@@ -13,6 +13,7 @@
 *typ* should be
 
 - either an unsigned integral type, e.g. `unsigned short`,
-- or a data pointer, e.g. `int *`, `void *`.
+- or a data pointer, e.g. `int *`, `void *`,
+- or a function pointer, e.g. `int (*)(const char *, ...)`.
 
 If *typ* is an integral type, then *val* should preferably be a constant known at compile time. *seed* says how to assign the value.
