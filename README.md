@@ -8,7 +8,7 @@
 
 ## Description
 
-`biting_pear::kthxbai<` *seed* `,  `*typ* `>` *var* `=` *val* `;` defines a type-*typ* variable, and gives it a value. The value is assigned in such a way that it is (somewhat) hard for an end-user to spot for *val* in the compiled program code.
+`biting_pear::kthxbai<` *seed* `,  `*typ* `>` *var* `(` *val* `);` defines a type-*typ* variable, and gives it a value. The value is assigned in such a way that it is (somewhat) hard for an end-user to spot for *val* in the compiled program code.
 
 *typ* should be
 
