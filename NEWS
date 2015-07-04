@@ -1,3 +1,11 @@
+2015-07-04	Better x86-32 support.
+
+		include/biting-pear/lolwut.h :
+		- added handling of code pointers for x86-32
+
+		include/biting-pear/omg.h :
+		- added x86-32 control flows and junk syscalls
+
 2015-07-03	Function pointers!
 
 		include/biting-pear/lolwut.h :

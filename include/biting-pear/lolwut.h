@@ -45,7 +45,7 @@ class lolwut
 	lolwut(T *v, int mode = 0)
 	{
 		switch (mode) {
-#ifdef __amd64__
+#if defined __amd64__
 		    case 1:
 			/*
 			 * Address of a g++ label.  We use the `%a' operand
@@ -141,6 +141,28 @@ class lolwut
 			}
 			break;
 #   endif
+#elif defined __i386__
+		    case 1:
+			__asm("" : "=r" (p_) : "0" (&&qux));
+			__asm("addl $%a3+%p4-%p2, %0"
+			    : "=r" (p_)
+			    : "0" (p_), "X" (&&qux),
+			      "n" (Sign ? -Disp : Disp), "X" (v));
+		    qux:
+			break;
+		    case 2:
+			__asm("" : "=r" (p_) : "0" (&&quux));
+			__asm(	".ifc \"$%p2\", \"\%2\"; "
+					"addl %3+%p2-%p4, %0; "
+				".else; "
+					"addl %2, %0; "
+					"subl $%p4-%a3, %0; "
+				".endif"
+			    : "=&r" (p_)
+			    : "0" (p_), "X" (v), "n" (Sign ? -Disp : Disp),
+			      "X" (&&quux));
+		    quux:
+			break;
 #endif
 		    default:
 			*this = v;
