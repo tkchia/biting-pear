@@ -6,6 +6,7 @@ set -e
 conf_begin ${1+"$@"}
 conf_mod c++
 conf_cxx_probe_cxx11
+conf_cxx_probe_build_cxx11
 conf_cxx_probe_typ std::uint_least64_t '#include <cinttypes>'
 conf_cxx_probe_typ ::uint_least64_t '#include <inttypes.h>'
 conf_cxx_chk_build_typ boost::mt19937_64 \

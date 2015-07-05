@@ -151,7 +151,7 @@ struct omg
 		constexpr rand_state_t State3 = update_inner(State2);
 		constexpr rand_state_t NewState = update_outer(State);
 		constexpr unsigned Which = (State2 >> 32) % 8;
-		switch ((State2 >> 32) % 5) {
+		switch (Which) {
 		    case 0:
 			{
 				omg<State3, T, Levels - 1>();

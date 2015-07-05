@@ -1,3 +1,22 @@
+2015-07-05	Somewhat better support for cross compilation in general.
+
+		configure :
+		- now checks for C++11 on build side
+
+		lolwutconf/configure.inc :
+		- added --host
+		- added build environment sanity checks
+		- now prefixes status messages with `* '
+		- now uses POSIX character classes for `sed'
+
+		lolwutconf/c++.inc :
+		- now handles --host input, with special case for x86-32
+		  compilation on x86-64
+		- now checks for C++11 on build side
+
+		include/biting-pear/omg.h :
+		- fixed a minor bug
+
 2015-07-04	Better x86-32 support.
 
 		include/biting-pear/lolwut.h :

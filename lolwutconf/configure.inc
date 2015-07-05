@@ -3,17 +3,17 @@
 set -e
 
 # unset any existing variables whose names begin with `conf_'
-eval "`set | sed '/^conf_/ { s,[^0-9a-zA-Z_].*,,g; s,^,unset ,; p; }'`"
+eval "`set | sed '/^conf_/ { s,[^[:alnum:]_].*,,g; s,^,unset ,; p; }'`"
 
 conf__nl='
 '
 
 conf__blare() {
-	echo "$*" >&2
+	echo "* $*" >&2
 }
 
 conf__blare_test() {
-	echo -n "$* ... " >&2
+	echo -n "* $* ... " >&2
 }
 
 conf__blare_res() {
@@ -23,6 +23,24 @@ conf__blare_res() {
 conf__barf() {
 	conf__blare "ERROR: $*"
 	exit 1
+}
+
+conf__app_exists() {
+	type "$1" >/dev/null 2>&1 || which "$1" >/dev/null 2>&1
+}
+
+conf__check_general_sanity() {
+	local app
+	for app in : cp echo ln mv rm test type; do
+		if conf__app_exists "$app"; then :; else
+			conf__barf "command line program \`$app' not found!"
+		fi
+	done
+	if test ab = "`echo -n a; echo b`"; then :; else
+		conf__barf "\`echo' does not understand \`-n'!"; fi
+	if test _ = "`echo z | sed s/[[:alpha:]]/_/g`"; then :; else
+		conf__barf \
+		    "\`sed' does not understand POSIX character classes!"; fi
 }
 
 conf__mktemp() {
@@ -54,77 +72,117 @@ conf__say() {
 	local val
 	if eval test xy = x"\${$1+y}"; then
 		eval "val=\"\$$1\""
-		echo "$1=$val" | sed 's,[^-_+/=.$0-9A-Za-z ],\\&,g; s,\$,$$,g'
+		echo "$1=$val" | \
+		    sed 's,[^-_+/=.$[:alnum:][:space:]],\\&,g; s,\$,$$,g'
 	fi
 }
 
-conf__say_path() {
-	conf__say "$1" | sed 's, ,\\ ,g'
+conf__say_single() {
+	conf__say "$1=$2" | sed 's,[[:space:]],\\ ,g'
 }
 
-conf__say_list() {
+conf__blare_list() {
 	local buf buf2 thang
 	buf="   "
 	for thang in $1; do
 		buf2="$buf $thang"
 		if test ${#buf2} -ge 75; then
-			echo "$buf"
+			conf__blare "$buf"
 			buf="    $thang"
 		else
 			buf="$buf2"
 		fi
 	done
-	echo "$buf"
+	conf__blare "$buf"
+}
+
+conf__in_help_mode() {
+	test help = "$conf_Mode"
 }
 
 conf__add_var() {
 	local var
 	for var in ${1+"$@"}; do
-		case "$conf__use_vars" in
-		    "$var" | "$var "* | *" $var" | *" $var "*)
+		case "$conf_Use_vars" in
+		    *" $var "*)
 			;;
-		    *)	conf__use_vars="$conf__use_vars $var";;
+		    *)	case "$var" in
+			    conf_*)
+				if conf__in_help_mode
+				then :
+				else conf_Use_vars="$conf_Use_vars$var "; fi;;
+			    *)	conf_Use_vars="$conf_Use_vars$var ";;
+			esac
+			eval conf__check_sane \"\$$var\" \'\$$var\';;
 		esac
 	done
 }
 
+conf__spirit_var() {
+	if eval test -n \"\${$2+set}\"; then
+		eval conf__check_sane \"\$$2\" \'\$$2\'
+		eval $1=\"\$$2\"
+	else
+		eval unset $1
+	fi
+	eval unset $2
+}
+
 conf_begin() {
 	local opt var
-	srcdir=.
-	prefix=/usr/local
-	conf__use_vars=separate_build_dir
+	conf__check_general_sanity
+	conf_Srcdir=.
+	conf_Prefix=/usr/local
+	conf_Cross_tag=
+	conf_Use_vars=' separate_build_dir '
+	conf_Mode=conf
 	for opt in ${1+"$@"}; do
 		conf__check_sane "$opt" arguments
 		case "$opt" in
 		    --srcdir=?*)
-			srcdir="`echo "$opt" | sed s,^[^=]*=,,`";;
+			conf_Srcdir="`echo "$opt" | sed s,^[^=]*=,,`";;
 		    --prefix=?*)
-			prefix="`echo "$opt" | sed s,^[^=]*=,,`";;
-		    *)
-			echo "usage: `basename "$0"`" \
-			     "[--srcdir=(dir)] [--prefix=(dir)]" >&2
-			exit 1;;
+			conf_Prefix="`echo "$opt" | sed s,^[^=]*=,,`";;
+		    --host=?*)
+			conf_Cross_tag="`echo "$opt" | sed s,^[^=]*=,,`"-;;
+		    *)	conf_Mode=help;;
 		esac
 	done
-	conf__blare 'checking sanity of environment variables'
-	for var in $conf__use_vars; do
-		eval conf__check_sane \"\$$var\" \'\$$var\'
-	done
+	if conf__in_help_mode
+		then return 0; fi
+	if test -n "$conf_Cross_tag"; then
+		conf__spirit_var CXX_FOR_BUILD CXX
+		conf__spirit_var CPPFLAGS_FOR_BUILD CPPFLAGS
+		conf__spirit_var CXXFLAGS_FOR_BUILD CXXFLAGS
+		conf__spirit_var LDFLAGS_FOR_BUILD LDFLAGS
+		conf__spirit_var LDLIBS_FOR_BUILD LDLIBS
+	fi
 }
 
 conf_mod() {
 	local mod
 	for mod in ${1+"$@"}; do
-		conf__blare "reading $srcdir/lolwutconf/$mod.inc"
-		. "$srcdir/lolwutconf/$mod.inc"
+		if conf__in_help_mode; then :; else
+			conf__blare "reading $conf_Srcdir/lolwutconf/$mod.inc"
+		fi
+		. "$conf_Srcdir/lolwutconf/$mod.inc"
 	done
 }
 
 conf_end() {
 	local var
+	if conf__in_help_mode; then
+		conf__blare "usage:"
+		conf__blare "    `basename $0` [--srcdir=(dir)] ` \
+		    `[--prefix=(dir)] [--host=(platform)]"
+		conf__blare
+		conf__blare "environment variables used:"
+		conf__blare_list "$conf_Use_vars"
+		exit 1
+	fi
 	conf__blare 'writing config.cache'
 	: "${srcdir=`dirname "$0"`}"
-	if test \! . = "$srcdir" -a \! . -ef "$srcdir"; then
+	if test \! . = "$conf_Srcdir" -a \! . -ef "$conf_Srcdir"; then
 		separate_build_dir=yes
 	else
 		separate_build_dir=no
@@ -132,18 +190,18 @@ conf_end() {
 	tmp="`conf__mktemp config.cache`"
 	(
 		echo "###### AUTOMATICALLY GENERATED `date` ######"
-		conf__say_path srcdir
-		conf__say_path prefix
-		for var in $conf__use_vars
+		conf__say_single srcdir "$conf_Srcdir"
+		conf__say_single prefix "$conf_Prefix"
+		for var in $conf_Use_vars
 			do conf__say $var; done
 	) >"$tmp"
 	mv "$tmp" config.cache
 	if test yes = "$separate_build_dir"; then
-		conf__blare "linking GNUmakefile to $srcdir/GNUmakefile"
+		conf__blare "linking GNUmakefile to $conf_Srcdir/GNUmakefile"
 		rm -f GNUmakefile
-		if ln -s "$srcdir"/GNUmakefile GNUmakefile; then :; else
+		if ln -s "$conf_Srcdir"/GNUmakefile GNUmakefile; then :; else
 			conf__blare "...failed, copying instead"
-			cp "$srcdir"/GNUmakefile GNUmakefile
+			cp "$conf_Srcdir"/GNUmakefile GNUmakefile
 		fi
 	fi
 }
