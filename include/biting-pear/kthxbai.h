@@ -134,7 +134,7 @@ struct kthxbai_impl
 
 } // biting_pear::impl
 
-template<impl::rand_state_t State, class T, unsigned Levels = 6u>
+template<impl::rand_state_t State, class T, unsigned Levels = 5u>
 class kthxbai;
 
 template<impl::rand_state_t State, unsigned Levels>

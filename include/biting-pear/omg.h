@@ -20,7 +20,7 @@ struct kthxbai_impl;  // forward
 template<rand_state_t State, class T, unsigned Levels>
 struct omg;
 
-#if defined __amd64__ || defined __i386__
+#if defined __amd64__ || defined __i386__ || defined __arm__
 template<rand_state_t State, unsigned Levels>
 struct omg_impl_0;
 
@@ -33,18 +33,32 @@ struct omg_impl_0<State, 0u>
 		constexpr rand_state_t State2 = update_inner(State);
 		switch ((State2 >> 32) % 4) {
 		    case 0:
-#ifdef __amd64__
+#if defined __amd64__
 			__asm __volatile("syscall" : : : "rax", "memory");
-#else
+#elif defined __i386__
 			__asm __volatile("call *%%gs:0x10" : : : "eax",
 			    "memory");
+#else
+			__asm __volatile("svc #0" : : : "r0", "memory");
 #endif
 			break;
 		    default:
+#if defined __arm__ && defined __thumb__
+			__asm __volatile(".inst.n %c0"
+			    : /* no outputs */
+			    : "n" ((uint32_t)pick_hi<uint16_t>(State^State2))
+			    : "memory");
+#elif defined __arm__
+			__asm __volatile(".inst %c0"
+			    : /* no outputs */
+			    : "n" (pick_hi<uint32_t>(State ^ State2))
+			    : "memory");
+#else
 			__asm __volatile(".byte %c0"
 			    : /* no outputs */
 			    : "n" (pick_hi<uint8_t>(State ^ State2))
 			    : "memory");
+#endif
 		}
 	}
 };
@@ -141,7 +155,7 @@ struct omg<State, T, 0>
 	}
 };
 
-template<rand_state_t State, class T, unsigned Levels = 6u>
+template<rand_state_t State, class T, unsigned Levels = 5u>
 struct omg
 {
 	__attribute__((always_inline))
@@ -213,6 +227,41 @@ struct omg
 				}
 				{
 					omg_impl_0<NewState, Levels - 1>();
+				}
+			    foo:
+				;
+			}
+			break;
+#elif defined __arm__ && defined __thumb__
+		    case 2:
+		    case 3:
+			{
+#   if defined __thumb__
+				kthxbai<State3, void *, Levels-1> p
+				    ((char *)&&foo + 1, 1);
+#   else
+				kthxbai<State3, void *, Levels-1> p(&&foo, 1);
+#   endif
+				void *q = static_cast<void *>(p);
+				if (q) {
+					switch (Which) {
+					    default:
+						__asm goto("bx %0"
+						    : /* no outputs */
+						    : "r" (q)
+						    : /* no clobbers */
+						    : foo);  break;
+					    case 3:
+						__asm goto("blx %0"
+						    : /* no outputs */
+						    : "r" (q)
+						    : "lr"
+						    : foo);  break;
+					}
+				}
+				{
+					omg_impl_0<NewState, Levels - 1>();
+					__asm __volatile(".ltorg");
 				}
 			    foo:
 				;

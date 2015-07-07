@@ -1,3 +1,27 @@
+2015-07-08	ARM Thumb-32 support.  Reduced number of recursion levels
+		from 6 to 5, so that compiler does not exhaust memory.
+
+		include/biting-pear/kthxbai.h :
+		- reduced recursion levels
+
+		include/biting-pear/lolwut.h :
+		- reduced recursion levels
+		- added ARM Thumb-32 handling for lolwut(, 1) and (, 2)
+
+		include/biting-pear/omg.h :
+		- reduced recursion levels
+		- ARM architecture: added ARM mode and Thumb mode handling
+
+		lolwutconf/c++.inc :
+		- now handles stuff like --host=armv7-a-linux-gnueabi
+		- now tries to turn on Thumb mode when compiling for ARM
+
+		lolwutconf/configure.inc :
+		- more useful --help
+
+		test/test-2.ccc :
+		- added a few more printf(...) calls
+
 2015-07-05	Somewhat better support for cross compilation in general.
 
 		configure :

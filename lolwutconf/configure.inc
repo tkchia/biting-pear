@@ -31,7 +31,7 @@ conf__app_exists() {
 
 conf__check_general_sanity() {
 	local app
-	for app in : cp echo ln mv rm test type; do
+	for app in : basename cp dirname echo ln mv rm test type; do
 		if conf__app_exists "$app"; then :; else
 			conf__barf "command line program \`$app' not found!"
 		fi
@@ -86,7 +86,7 @@ conf__blare_list() {
 	buf="   "
 	for thang in $1; do
 		buf2="$buf $thang"
-		if test ${#buf2} -ge 75; then
+		if test ${#buf2} -ge 63; then
 			conf__blare "$buf"
 			buf="    $thang"
 		else
@@ -128,13 +128,43 @@ conf__spirit_var() {
 	eval unset $2
 }
 
+conf__help() {
+	local me
+	me="`basename $0`"
+	conf__blare "usage:"
+	conf__blare "    $me [--srcdir=(dir)] [--prefix=(dir)] \\"
+	conf__blare "        [--host=(platform)]"
+	conf__blare
+	conf__blare "environment variables used:"
+	conf__blare_list "$conf_Use_vars"
+	conf__blare
+	conf__blare "cross compilation notes:"
+	conf__blare "  * If you specify --host=(platform), \`$me' will look"
+	conf__blare "    for cross compilers named (platform)-g++, etc."
+	conf__blare "    CXX, CXXFLAGS, and so on are treated as compiler"
+	conf__blare "    options on the _build_ side.  Also:"
+	conf__blare
+	conf__blare "    - If (platform) is i386-*, i486-*, i586-*, or"
+	conf__blare "      i686-*, e.g. i386-linux-gnu, \`$me' will also try"
+	conf__blare "      looking for a corresponding 64-bit compiler named"
+	conf__blare "      x86_64-*-g++, and pass it -m32, -march= flags."
+	conf__blare
+	conf__blare "    - If (platform) is armv4*, armv5*, armv6*, armv7*,"
+	conf__blare "      or armv8*, \`$me' will also look for arm-*-g++,"
+	conf__blare "      and try to use Thumb mode."
+	conf__blare
+	conf__blare "  * Alternatively, do not specify --host=, but provide"
+	conf__blare "    _host_ settings in CXX, CXXFLAGS, etc., and _build_"
+	conf__blare "    settings in CXX_FOR_BUILD, CXXFLAGS_FOR_BUILD, etc."
+}
+
 conf_begin() {
 	local opt var
 	conf__check_general_sanity
 	conf_Srcdir=.
 	conf_Prefix=/usr/local
 	conf_Cross_tag=
-	conf_Use_vars=' separate_build_dir '
+	conf_Use_vars=' '
 	conf_Mode=conf
 	for opt in ${1+"$@"}; do
 		conf__check_sane "$opt" arguments
@@ -172,12 +202,8 @@ conf_mod() {
 conf_end() {
 	local var
 	if conf__in_help_mode; then
-		conf__blare "usage:"
-		conf__blare "    `basename $0` [--srcdir=(dir)] ` \
-		    `[--prefix=(dir)] [--host=(platform)]"
-		conf__blare
-		conf__blare "environment variables used:"
-		conf__blare_list "$conf_Use_vars"
+		conf__help
+		exit 1
 		exit 1
 	fi
 	conf__blare 'writing config.cache'
@@ -192,6 +218,11 @@ conf_end() {
 		echo "###### AUTOMATICALLY GENERATED `date` ######"
 		conf__say_single srcdir "$conf_Srcdir"
 		conf__say_single prefix "$conf_Prefix"
+		if test \! . = "$conf_Srcdir" -a \! . -ef "$conf_Srcdir"; then
+			conf__say_single separate_build_dir yes
+		else
+			conf__say_single separate_build_dir no
+		fi
 		for var in $conf_Use_vars
 			do conf__say $var; done
 	) >"$tmp"

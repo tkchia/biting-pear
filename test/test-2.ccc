@@ -3,7 +3,11 @@
 
 int main(void)
 {
-	biting_pear::kthxbai?<__typeof &std::printf> pf(std::printf);
-	pf("Hello world!\n");
+	biting_pear::kthxbai?<__typeof &std::printf> f1(std::printf);
+	f1("Hello ");
+	biting_pear::kthxbai?<__typeof &std::printf> f2(std::printf);
+	f2("%s!", "world");
+	biting_pear::kthxbai?<__typeof &std::printf> f3(std::printf);
+	f3("%c", '\n');
 	return 0;
 }

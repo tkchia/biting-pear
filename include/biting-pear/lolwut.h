@@ -16,7 +16,7 @@ namespace impl
 template<rand_state_t State, class T, unsigned Levels>
 struct kthxbai_impl;  // forward
 
-template<rand_state_t State, class T, unsigned Levels = 6u>
+template<rand_state_t State, class T, unsigned Levels = 5u>
 class lolwut
 {
 	static constexpr rand_state_t State2 = impl::update_inner(State);
@@ -26,13 +26,19 @@ class lolwut
 	static constexpr bool Sign =
 	    impl::pick_hi<unsigned>(State2 ^ NewState) % 2u != 0;
 	static constexpr rand_state_t State3 = impl::update_inner(State2);
-	static constexpr rand_state_t State4 = impl::update_inner(State3);
 #ifdef __amd64__
 	static constexpr unsigned Disp2 = Disp > 2 ?
 	    impl::pick_hi<unsigned>(State2 ^ State3) % (Disp / 2) : 0;
 #endif
+#if defined __arm__ && defined __thumb2__
+	static constexpr rand_state_t State4 = impl::update_inner(State3);
+	static constexpr rand_state_t State5 = impl::update_inner(State4);
+	static constexpr unsigned Subsxn =
+	    impl::pick_hi<unsigned>(State3 ^ State4) % 4096u + 1u;
 	static constexpr unsigned Disp3 =
-	    impl::pick_hi<unsigned>(State3 ^ State4) / 2u;
+	    impl::pick_hi<unsigned>(State4 ^ State5);
+	static constexpr unsigned Levels2 = Levels ? Levels - 1 : 0;
+#endif
 	char *p_;
     protected:
 	void advance_chars(std::ptrdiff_t n)
@@ -162,6 +168,50 @@ class lolwut
 			    : "0" (p_), "X" (v), "n" (Sign ? -Disp : Disp),
 			      "X" (&&quux));
 		    quux:
+			break;
+#elif defined __arm__ && defined __thumb2__
+		    case 1:
+			{
+				uintptr_t scratch;
+				__asm("" : "=r" (p_) : "0" (&&qux));
+				__asm("movw %1, #:lower16:(%a4+%a5-%a3); "
+				      "movt %1, #:upper16:(%a4+%a5-%a3); "
+				      "add %0, %0, %1"
+				    : "=r" (p_), "=&r" (scratch)
+				    : "0" (p_), "X" (&&qux),
+				      "n" (Sign ? -Disp : Disp), "X" (v));
+			}
+		    qux:
+			break;
+		    case 2:
+			{
+				unsigned disp3, scratch;
+				impl::kthxbai_impl<State5, unsigned, Levels2>
+				    (disp3, Disp3);
+				__asm(".ifc \"#%a2\", \"\%2\"; "
+					".pushsection .text, %a3; "
+					".balign 4; "
+					".reloc ., R_ARM_GOT_PREL, %a2; "
+					"1: "
+					".long %a4; "
+					".popsection; "
+					"movw %0, #:lower16:(1b-2f-4); "
+					"movt %0, #:upper16:(1b-2f-4); "
+					"2: "
+					"add %0, %0, pc; "
+					"ldr %1, [%0]; "
+					"add %1, %1, %0; "
+					"ldr %0, [%5, %1]; "
+				      ".else; "  /* assume %2 is a reg...? */
+					"mov %0, %2; "
+				      ".endif"
+				    : "=&r" (p_), "=&r" (scratch)
+				    : "X" (v), "n" (Subsxn), "n" (-Disp3),
+				      "r" (disp3));
+				if (Sign)
+					p_ -= Disp;
+				else	p_ += Disp;
+			}
 			break;
 #endif
 		    default:

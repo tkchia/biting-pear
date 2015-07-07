@@ -46,13 +46,14 @@ conf__cxx_not_cross() {
 }
 
 conf_cxx_chk_compiler() {
-	local save_ifs arch rest
+	local save_ifs arch rest try_thumb
 	if test -n "$conf_Have_cxx_compiler"
 		then return 0; fi
 	conf__add_var CXX CPPFLAGS CXXFLAGS LDFLAGS LDLIBS \
 	    conf_Have_cxx_compiler
 	if conf__in_help_mode
 		then return 0; fi
+	try_thumb=no
 	conf__blare_test 'deciding C++ compiler for host'
 	if test -n "$conf_Cross_tag"; then
 		# handle x86-32 platforms specially
@@ -72,6 +73,27 @@ conf_cxx_chk_compiler() {
 				CXX="x86_64-$rest-g++"
 				CXXFLAGS="-m32 -march=$arch $CXXFLAGS"
 			fi;;
+		    armv[45678]*)
+			if conf__app_exists "${conf_Cross_tag}g++"; then
+				CXX="${conf_Cross_tag}g++"
+			else
+				save_ifs="$IFS"
+				IFS=-
+				set $conf_Cross_tag
+				case "$2" in
+				    m | a | r)
+					arch="$1-$2"
+					shift 2;;
+				    *)
+					arch="$1"
+					shift;;
+				esac
+				rest="$*"
+				IFS="$save_ifs"
+				CXX="arm-$rest-g++"
+				CXXFLAGS="-march=$arch $CXXFLAGS"
+				try_thumb=yes
+			fi;;
 		    *)	CXX="${conf_Cross_tag}g++";;
 		esac
 	else
@@ -88,6 +110,18 @@ conf_cxx_chk_compiler() {
 		conf__blare_res no
 		conf__barf 'C++ compiler does not work!'
 	fi
+	if test yes = "$try_thumb"; then
+		conf__blare_test \
+		    'checking command to enable Thumb mode for host'
+		# g++ normally only gives a warning if Thumb mode is not
+		# available.  Turn the warning into an error.
+		if conf__cxx_chk_compiler_with "$CXXFLAGS -mthumb -Werror";
+		then	CXXFLAGS="$CXXFLAGS -mthumb"
+			conf__blare_res "$CXX $CPPFLAGS $CXXFLAGS"
+			return 0
+		fi
+	fi
+	conf__blare_res '(failed; continuing)'
 }
 
 conf_cxx_chk_build_compiler() {
