@@ -7,6 +7,10 @@
 		- renamed from helper/crc64.c; C++-ized
 		- changed read(...) call to fread(...)
 
+		helper/postproc.lxx :
+		- removed parser backtracking
+		- newline can now follow backslash in "..." and '...'
+
 2015-07-08	ARM Thumb-32 support.  Reduced number of recursion levels
 		from 6 to 5, so that compiler does not exhaust memory.
 
