@@ -98,9 +98,9 @@ test/test-%.o: test/test-%.i
 	mv $@.2.tmp $@
 	rm $@.tmp
 
-helper/crc64: helper/crc64.c
+helper/crc64: helper/crc64.cc
 	mkdir -p $(@D)
-	$(CC_FOR_BUILD) $(CPPFLAGS_FOR_BUILD) $(CFLAGS_FOR_BUILD) \
+	$(CXX_FOR_BUILD) $(CPPFLAGS_FOR_BUILD) $(CXXFLAGS_FOR_BUILD) \
 	    $(LDFLAGS_FOR_BUILD) -o$@ $< $(LDLIBS_FOR_BUILD)
 
 helper/postproc: helper/postproc.cc

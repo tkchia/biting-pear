@@ -1,11 +1,12 @@
-#include <errno.h>
-#include <inttypes.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
+#include <cerrno>
+#include <cinttypes>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #define DEFAULT_POLY	0x42f0e1eba9ea3693u
+
+using namespace std;
 
 static void make_crc_table(uint64_t crc_table[256], uint64_t poly)
 {
@@ -46,7 +47,7 @@ int main(int argc, char **argv)
 	}
 	make_crc_table(crc_table, poly);
 	curr_crc = 0;
-	while ((n = read(0, buf, sizeof buf)) > 0)
+	while ((n = fread(buf, 1, sizeof buf, stdin)) > 0)
 		curr_crc = update_crc(curr_crc, buf, (size_t)n, crc_table);
 	if (n < 0) {
 		fprintf(stderr, "error: %s\n", strerror(errno));
