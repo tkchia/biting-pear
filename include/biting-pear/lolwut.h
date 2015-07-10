@@ -16,11 +16,14 @@ namespace impl
 template<rand_state_t State, class T, unsigned Levels>
 struct kthxbai_impl;  // forward
 
-template<rand_state_t State, class T, unsigned Levels = 5u>
-class lolwut
+template<rand_state_t State, class T, unsigned Levels>
+class lolwut_impl
 {
+    protected:
 	static constexpr rand_state_t State2 = impl::update_inner(State);
 	static constexpr rand_state_t NewState = impl::update_outer(State);
+	static constexpr rand_state_t NewNewState =
+	    impl::update_outer(NewState);
 	static constexpr unsigned Disp =
 	    impl::pick_hi<unsigned>(State2 ^ NewState) / 2u;
 	static constexpr bool Sign =
@@ -40,15 +43,13 @@ class lolwut
 	static constexpr unsigned Levels2 = Levels ? Levels - 1 : 0;
 #endif
 	char *p_;
-    protected:
 	void advance_chars(std::ptrdiff_t n)
 		{ p_ += n; }
-    public:
 	__attribute__((always_inline))
-	lolwut()
+	lolwut_impl()
 		{ }
 	__attribute__((always_inline))
-	lolwut(T *v, int mode = 0)
+	void set(T *v, int mode = 0)
 	{
 		switch (mode) {
 #if defined __amd64__
@@ -215,25 +216,78 @@ class lolwut
 			break;
 #endif
 		    default:
-			*this = v;
+			if (Sign)
+				__asm __volatile(""
+				    : "=r" (p_)
+				    : "0" (reinterpret_cast<char *>(v)-Disp));
+			else
+				__asm __volatile(""
+				    : "=r" (p_)
+				    : "0" (reinterpret_cast<char *>(v)+Disp));
 		}
 	}
+};
+
+template<rand_state_t State, class T, unsigned Levels = 5u>
+class lolwut;
+
+template<rand_state_t State, class T>
+class lolwut<State, T, 0u> : public lolwut_impl<State, T, 0u>
+{
+    public:
 	__attribute__((always_inline))
-	const lolwut& operator=(T *v)
+	lolwut()
+		{ }
+	__attribute__((always_inline))
+	lolwut(T *v, int mode = 0)
+		{ this->set(v, mode); }
+	__attribute__((always_inline))
+	lolwut& operator=(T *v)
 	{
-		if (Sign)
-			p_ = reinterpret_cast<char *>(v) - Disp;
-		else	p_ = reinterpret_cast<char *>(v) + Disp;
+		this->set(v);
+		return *this;
+	}
+	__attribute__((always_inline))
+	operator T *() const
+	{
+		if (this->Sign)
+			return reinterpret_cast<T *>(this->p_ + this->Disp);
+		else	return reinterpret_cast<T *>(this->p_ - this->Disp);
+	}
+};
+
+template<rand_state_t State, class T, unsigned Levels>
+class lolwut : public lolwut_impl<State, T, Levels>
+{
+    public:
+	__attribute__((always_inline))
+	lolwut()
+		{ }
+	__attribute__((always_inline))
+	lolwut(T *v, int mode = 0)
+		{ this->set(v, mode); }
+	__attribute__((always_inline))
+	lolwut& operator=(T *v)
+	{
+		this->set(v);
 		return *this;
 	}
 	__attribute__((always_inline))
 	operator T *() const
 	{
 		unsigned disp;
-		impl::kthxbai_impl<NewState, unsigned, Levels>(disp, Disp);
-		if (Sign)
-			return reinterpret_cast<T *>(p_ + disp);
-		else	return reinterpret_cast<T *>(p_ - disp);
+		kthxbai_impl<(this->NewState), unsigned, Levels>(disp,
+		    this->Disp);
+		char *p;
+		if ((this->NewState ^ this->NewNewState) >> 32 % 4) {
+			lolwut<(this->NewNewState), char, Levels - 1> thang
+			    (this->p_);
+			p = (char *)thang;
+		} else
+			p = this->p_;
+		if (this->Sign)
+			return reinterpret_cast<T *>(p + disp);
+		else	return reinterpret_cast<T *>(p - disp);
 	}
 };
 

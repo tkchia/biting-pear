@@ -11,6 +11,9 @@
 		- removed parser backtracking
 		- newline can now follow backslash in "..." and '...'
 
+		include/biting-pear/lolwut.h :
+		- multiple layers of pointer arithmetic
+
 2015-07-08	ARM Thumb-32 support.  Reduced number of recursion levels
 		from 6 to 5, so that compiler does not exhaust memory.
 
