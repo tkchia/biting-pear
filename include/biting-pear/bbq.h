@@ -67,6 +67,14 @@ inline constexpr T pick_hi(rand_state_t x)
 	    static_cast<T>(x >> ((sizeof(x) - sizeof(T)) * CHAR_BIT));
 }
 
+template<class T, T P = ((T)1 << (sizeof(T) * CHAR_BIT - 1)) - 1>
+inline constexpr T pow(T x)
+{
+	return P == 0 ? (T)1 :
+	    P % 2 == 0 ? pow<T, P / 2>(x * x) :
+			 pow<T, P / 2>(x * x) * x;
+}
+
 } // biting_pear::impl
 
 } // biting_pear

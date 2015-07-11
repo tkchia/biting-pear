@@ -118,6 +118,18 @@ struct kthxbai_impl
 				kthxbai_impl<0, T, 0>(x, x1);
 			}
 			break;
+		    case 7:
+			{
+				T x1, x2;
+				constexpr T v2 =
+				    pick_hi<T>(State2 ^ NewState) | 1;
+				constexpr T v2i = pow(v2);
+				T v1 = v * v2i;
+				kthxbai_impl<State3, T, Levels - 1>(x1, v1);
+				kthxbai_impl<NewState, T, Levels - 1>(x2, v2);
+				kthxbai_impl<0, T, 0>(x, x1 * x2);
+			}
+			break;
 		    default:
 			{
 				T x1;
