@@ -12,10 +12,13 @@ headers = \
     include/biting-pear/kthxbai.h \
     include/biting-pear/lolwut.h \
     include/biting-pear/omg.h \
+    include/biting-pear/orly.h \
+    include/biting-pear/yarly.h \
     $(config.h)
 tests = \
     test/test-1 \
-    test/test-2
+    test/test-2 \
+    test/test-3
 
 default all: check
 

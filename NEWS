@@ -1,3 +1,19 @@
+2015-07-17	o rly?  ya rly!
+
+		include/biting-pear/orly.h ,
+		include/biting-pear/yarly.h ,
+		test/test-3.ccc ,
+		test/test-3.good :
+		- new
+
+		GNUmakefile :
+		- added include/biting-pear/orly.h and include/biting-pear/
+		  yarly.h as dependencies in compilation
+		- added test-3
+
+		.gitignore :
+		- added test-3
+
 2015-07-11	Multiplication.
 
 		include/biting-pear/bbq.h ,
