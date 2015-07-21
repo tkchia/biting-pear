@@ -12,7 +12,7 @@ conf__cxx_chk_compiler_with() {
 		echo 'int main() { return 0; }'
 	) >"$src"
 	res=0
-	"$CXX" $CPPFLAGS $cxxflags $LDFLAGS -o"$prog" "$src" $LDLIBS \
+	$CXX $CPPFLAGS $cxxflags $LDFLAGS -o"$prog" "$src" $LDLIBS \
 	    >/dev/null 2>&1 || res=1
 	rm -f "$prog" "$src"
 	return $res
@@ -30,7 +30,7 @@ conf__cxx_chk_build_compiler_with() {
 		echo 'int main() { return 0; }'
 	) >"$src"
 	res=0
-	"$CXX_FOR_BUILD" $CPPFLAGS_FOR_BUILD $cxxflags $LDFLAGS_FOR_BUILD \
+	$CXX_FOR_BUILD $CPPFLAGS_FOR_BUILD $cxxflags $LDFLAGS_FOR_BUILD \
 	    -o"$prog" "$src" $LDLIBS_FOR_BUILD \
 	    >/dev/null 2>&1 || res=1
 	rm -f "$prog" "$src"
@@ -43,6 +43,43 @@ conf__cxx_not_cross() {
 	     x"${CXXFLAGS_FOR_BUILD-$CXXFLAGS}" = x"$CXXFLAGS" -a \
 	     x"${LDFLAGS_FOR_BUILD-$LDFLAGS}" = x"$LDFLAGS" -a \
 	     x"${LDLIBS_FOR_BUILD-$LDLIBS}" = x"$LDLIBS"
+}
+
+conf__cxx_compile_prog() {
+	local prog
+	conf_cxx_chk_compiler
+	if conf__in_help_mode
+		then return 0; fi
+	prog="$1"
+	shift
+	src="$prog.cc"
+	(
+		for line in ${1+"$@"}
+			do echo "$line"; done
+	) >"$src"
+	$CXX $CPPFLAGS $CXXFLAGS $LDFLAGS -o"$prog" "$src" $LDLIBS \
+	    >/dev/null 2>&1 || res=1
+	rm -f "$src"
+	return $res
+}
+
+conf__cxx_compile_build_prog() {
+	local prog
+	conf_cxx_chk_build_compiler
+	if conf__in_help_mode
+		then return 0; fi
+	prog="$1"
+	shift
+	src="$prog.cc"
+	(
+		for line in ${1+"$@"}
+			do echo "$line"; done
+	) >"$src"
+	$CXX_FOR_BUILD $CPPFLAGS_FOR_BUILD $CXXFLAGS_FOR_BUILD \
+	    $LDFLAGS_FOR_BUILD -o"$prog" "$src" $LDLIBS_FOR_BUILD \
+	    >/dev/null 2>&1 || res=1
+	rm -f "$src"
+	return $res
 }
 
 conf_cxx_chk_compiler() {
@@ -257,4 +294,116 @@ conf_cxx_chk_build_typ() {
 	conf_cxx_probe_build_typ "$@"
 	if eval test no = \"\$var\"
 		then conf__barf "type $1 not found!"; fi
+}
+
+conf_cxx_probe_build_endianness() {
+	conf_cxx_chk_build_compiler
+	if conf__in_help_mode
+		then return 0; fi
+	if test -n "$conf_Endianness_cxx_build"
+		then return 0; fi
+	conf__add_var conf_Endianness_cxx_build
+	conf__blare_test "testing build-side byte order"
+	prog="`conf__mktemp lolwutconf`"
+	if conf__cxx_compile_build_prog "$prog" \
+	    "#include <cstring>" \
+	    "#include <iostream>" \
+	    "using namespace std;" \
+	    "typedef unsigned char UC;" \
+	    "typedef unsigned int UI;" \
+	    "#define M  ((UI)1 + (UI)(UC)~(UC)0)" \
+	    "static union { UC c[4]; UI i; } u;" \
+	    "int main() {" \
+	    "  memset(&u, 0, sizeof u);" \
+	    "  u.i = (UC)'g' * M * M * M + (UC)'r' * M * M + \
+		     (UC)'o' * M + (UC)'k';" \
+	    "  if (memcmp(&u, \"grok\", 4) == 0)" \
+	    "    cout << \"big-endian\" << endl;" \
+	    "  else if (memcmp(&u, \"korg\", 4) == 0)" \
+	    "    cout << \"little-endian\" << endl;" \
+	    "  else if (memcmp(&u, \"rgko\", 4) == 0)" \
+	    "    cout << \"pdp-endian\" << endl;" \
+	    "  else" \
+	    "    return 1;" \
+	    "  return 0;" \
+	    "}"
+	then
+		conf_Endianness_cxx_build="`exec ./"$prog"`"
+		rm -f "$prog"
+		case "$conf_Endianness_cxx_build" in
+		    *-endian)	;;
+		    *)		conf_Endianness_cxx_build=unknown;;
+		esac
+	else
+		conf_Endianness_cxx_build=unknown
+	fi
+	conf__blare_res "$conf_Endianness_cxx_build"
+}
+
+conf_cxx_probe_endianness() {
+	local prog mm ii pp
+	conf_cxx_chk_compiler
+	if conf__in_help_mode
+		then return 0; fi
+	if test -n "$conf_Endianness_cxx"
+		then return 0; fi
+	conf__add_var conf_Endianness_cxx
+	if conf__cxx_not_cross; then
+		conf_cxx_probe_build_endianness
+		conf_Endianness_cxx="$conf_Endianness_cxx_build"
+		return 0
+	fi
+	conf__blare_test "testing host-side byte order"
+	#
+	# A somewhat more `portable' version of the grepping test used in
+	# autoconf, not relying in specific character sets or character
+	# sizes.  -- 20150718
+	#
+	prog="`conf__mktemp lolwutconf`"
+	if conf__cxx_compile_prog "$prog" \
+	    "typedef unsigned char UC;" \
+	    "typedef unsigned int UI;" \
+	    "#define M  ((UI)1 + (UI)(UC)~(UC)0)" \
+	    "#define B(w, x, y, z) \
+		((UI)(UC)(w) * M * M * M + \
+		 (UI)(UC)(x) * M * M + \
+		 (UI)(UC)(y) * M + \
+		 (UI)(UC)(z))" \
+	    "#define L(w, x, y, z)  B(z, y, x, w)" \
+	    "#define P(w, x, y, z)  B(x, w, z, y)" \
+	    "UI mm[] =" \
+	    "  { B('B', 'I', 'G', 'e'), B('n', 'D', 'i', 'a')," \
+	    "    B('n', 'S', 'y', 'S'), 0 };" \
+	    "UI ii[] =" \
+	    "  { L('L', 'i', 'T', 'T'), L('l', 'e', 'E', 'n')," \
+	    "    L('D', 'i', 'a', 'n'), 0 };" \
+	    "UI pp[] =" \
+	    "  { P('p', 'd', 'P', 'e'), P('N', 'd', 'i', 'a')," \
+	    "    P('n', 's', 'Y', 's'), 0 };" \
+	    "int main(int argc, char **argv)" \
+	    "  { return argc < 7 ? mm[argc] + ii[argc] + pp[argc] : 0; }"
+	then
+		if strings <"$prog" | grep BIGenDianSyS >/dev/null 2>&1
+			then mm=yes
+			else mm=no; fi
+		if strings <"$prog" | grep LiTTleEnDian >/dev/null 2>&1
+			then ii=yes
+			else ii=no; fi
+		if strings <"$prog" | grep pdPeNdiansYs >/dev/null 2>&1
+			then pp=yes
+			else pp=no; fi
+		rm -f "$prog"
+		case "$mm,$ii,$pp" in
+		    yes,no,no)
+			conf_Endianness_cxx=big-endian;;
+		    no,yes,no)
+			conf_Endianness_cxx=little-endian;;
+		    no,no,yes)
+			conf_Endianness_cxx=pdp-endian;;
+		    *)	conf_Endianness_cxx=unknown;;
+		esac
+	else
+		conf_Endianness_cxx=unknown
+	fi
+	conf__blare_res "$conf_Endianness_cxx"
 }

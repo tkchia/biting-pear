@@ -1,3 +1,48 @@
+2015-07-21	Added flags to specify which (erm) operations to allow.
+		And, now checks for runaway template recursion.
+
+		include/biting-pear/nowai.h :
+		- new
+
+		include/biting-pear/bbq.h :
+		- added biting_pear::impl::ops_flags_t and flags constants
+
+		include/biting-pear/kthxbai.h ,
+		include/biting-pear/lolwut.h ,
+		include/biting-pear/orly.h :
+		- added `Flags' template argument before `Levels'
+		- now uses nowai.h
+
+		include/biting-pear/omg.h :
+		- added `Flags' template argument before `Levels'
+		- now uses nowai.h
+		- now checks for and uses allow_signal_safes in flags
+		- tweaked distribution of types of operations
+
+		include/biting-pear/yarly.h :
+		- added `Flags' template argument before `Levels'
+		- now uses nowai.h
+		- reduced levels for kthxbai_impl from 4 to 3
+
+		test/test-1.ccc :
+		- h0, h1, and h2 are now initialized with <...allow_all>
+
+		README.md :
+		- updated synopsis to have `flags' template argument before
+		  `levels'
+
+		GNUmakefile :
+		- added include/biting-pear/nowai.h as a file to depend on
+		  and install
+
+		configure ,
+		lolwutconf/c++.inc :
+		- added host-side and build-side endianness detection (for
+		  use later)
+
+		lolwutconf/configure.inc :
+		- now tests for `grep' and `strings' utilities
+
 2015-07-17	o rly?  ya rly!
 
 		include/biting-pear/orly.h ,

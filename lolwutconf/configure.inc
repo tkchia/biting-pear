@@ -31,7 +31,8 @@ conf__app_exists() {
 
 conf__check_general_sanity() {
 	local app
-	for app in : basename cp dirname echo ln mv rm test type; do
+	for app in : basename cp dirname echo grep ln mv rm strings test \
+	    type; do
 		if conf__app_exists "$app"; then :; else
 			conf__barf "command line program \`$app' not found!"
 		fi

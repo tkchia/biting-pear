@@ -2,6 +2,7 @@
 #define biting_pear_H_ORLY
 
 #include <biting-pear/bbq.h>
+#include <biting-pear/nowai.h>
 #include <biting-pear/yarly.h>
 
 namespace biting_pear
@@ -11,11 +12,11 @@ namespace impl
 {
 
 template<rand_state_t State, class T = unsigned, bool Boreal = true,
-    bool BigBad = false, unsigned Levels = 2u>
+    bool BigBad = false, ops_flags_t Flags = 0, unsigned Levels = 2u>
 class orly;  // forward
 
 template<rand_state_t State, class T, bool Boreal, bool BigBad,
-    unsigned Levels>
+    ops_flags_t Flags, unsigned Levels>
 class orly_impl
 {
     protected:
@@ -38,16 +39,22 @@ class orly_impl
 			   DefX8 = pick_hi<T>(State10 ^ State11),
 			   DefX9 = pick_hi<T>(State11 ^ State12);
     public:
-	typedef orly<State, T, !Boreal, BigBad, Levels> inv;
-	typedef orly<State, T, Boreal, true, Levels> bad;
-	typedef orly<State, T, Boreal, false, Levels> unbad;
+	typedef orly<State, T, !Boreal, BigBad, Flags, Levels> inv;
+	typedef orly<State, T, Boreal, true, Flags, Levels> bad;
+	typedef orly<State, T, Boreal, false, Flags, Levels> unbad;
 };
 
-template<rand_state_t State, class T, bool Boreal, bool BigBad>
-class orly<State, T, Boreal, BigBad, 0u> :
-    public orly_impl<State, T, Boreal, BigBad, 0u>
+template<rand_state_t State, class T, bool Boreal, bool BigBad,
+    ops_flags_t Flags>
+class orly<State, T, Boreal, BigBad, Flags, ~0u> : public nowai
+	{ };
+
+template<rand_state_t State, class T, bool Boreal, bool BigBad,
+    ops_flags_t Flags>
+class orly<State, T, Boreal, BigBad, Flags, 0u> :
+    public orly_impl<State, T, Boreal, BigBad, Flags, 0u>
 {
-	typedef orly_impl<State, T, Boreal, BigBad, 0u> super;
+	typedef orly_impl<State, T, Boreal, BigBad, Flags, 0u> super;
     public:
 	__attribute__((always_inline))
 	T operator()(T x0 = super::DefX0,
@@ -57,8 +64,8 @@ class orly<State, T, Boreal, BigBad, 0u> :
 		     T x7 = super::DefX7, T x8 = super::DefX8,
 		     T x9 = super::DefX9)
 	{
-		T y = yarly<super::NewState, T, BigBad>()(x1, x2, x3, x4,
-							  x5, x6, x7, x8, x9);
+		T y = yarly<super::NewState, T, BigBad, Flags>()
+		    (x1, x2, x3, x4, x5, x6, x7, x8, x9);
 		if (Boreal)
 			return do_op<super::WhichOp>(x0, y);
 		else	return do_inv_op<super::WhichOp>(x0, y);
@@ -66,10 +73,10 @@ class orly<State, T, Boreal, BigBad, 0u> :
 };
 
 template<rand_state_t State, class T, bool Boreal, bool BigBad,
-    unsigned Levels>
-class orly : public orly_impl<State, T, Boreal, BigBad, Levels>
+    ops_flags_t Flags, unsigned Levels>
+class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 {
-	typedef orly_impl<State, T, Boreal, BigBad, Levels> super;
+	typedef orly_impl<State, T, Boreal, BigBad, Flags, Levels> super;
     public:
 	__attribute__((always_inline))
 	T operator()(T x0 = super::DefX0,
@@ -79,15 +86,17 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Levels>
 		     T x7 = super::DefX7, T x8 = super::DefX8,
 		     T x9 = super::DefX9)
 	{
-		T y = yarly<super::NewState, T, BigBad>()(x1, x2, x3, x4,
-							  x5, x6, x7, x8, x9);
+		T y = yarly<super::NewState, T, BigBad, Flags>()
+		    (x1, x2, x3, x4, x5, x6, x7, x8, x9);
 		if (Boreal) {
-			T z = orly<super::State12,T,true,BigBad,Levels-1>()
+			T z = orly<super::State12, T, true, BigBad,
+			    Flags, Levels - 1>()
 			    (x0, x1, x2, x3, x4, x5, x6, x7, x8, x9);
 			return do_op<super::WhichOp>(z, y);
 		} else {
 			T z = do_inv_op<super::WhichOp>(x0, y);
-			return orly<super::State12,T,false,BigBad,Levels-1>()
+			return orly<super::State12, T, false, BigBad,
+			    Flags, Levels - 1>()
 			    (z, x1, x2, x3, x4, x5, x6, x7, x8, x9);
 		}
 	}

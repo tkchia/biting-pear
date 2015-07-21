@@ -4,6 +4,7 @@
 #include <climits>
 #include <biting-pear/bbq.h>
 #include <biting-pear/kthxbai.h>
+#include <biting-pear/nowai.h>
 
 namespace biting_pear
 {
@@ -12,10 +13,11 @@ namespace impl
 {
 
 template<rand_state_t State, class T = unsigned, bool BigBad = false,
-    unsigned Levels = 2u>
+    ops_flags_t Flags = 0, unsigned Levels = 2u>
 class yarly;  // forward
 
-template<rand_state_t State, class T, bool BigBad, unsigned Levels>
+template<rand_state_t State, class T, bool BigBad, ops_flags_t Flags,
+    unsigned Levels>
 class yarly_impl
 {
     protected:
@@ -38,15 +40,19 @@ class yarly_impl
 			   DefX8 = pick_hi<T>(State9  ^ State10),
 			   DefX9 = pick_hi<T>(State10 ^ State11),
 			   DefRetVal = pick_hi<T>(State11 ^ State12);
-	typedef yarly<State, T, true, Levels> bad;
-	typedef yarly<State, T, false, Levels> unbad;
+	typedef yarly<State, T, true, Flags, Levels> bad;
+	typedef yarly<State, T, false, Flags, Levels> unbad;
 };
 
-template<rand_state_t State, class T, bool BigBad>
-class yarly<State, T, BigBad, 0u> :
-    public yarly_impl<State, T, BigBad, 0u>
+template<rand_state_t State, class T, bool BigBad, ops_flags_t Flags>
+class yarly<State, T, BigBad, Flags, ~0u> : public nowai
+	{ };
+
+template<rand_state_t State, class T, bool BigBad, ops_flags_t Flags>
+class yarly<State, T, BigBad, Flags, 0u> :
+    public yarly_impl<State, T, BigBad, Flags, 0u>
 {
-	typedef yarly_impl<State, T, BigBad, 0u> super;
+	typedef yarly_impl<State, T, BigBad, Flags, 0u> super;
     public:
 	__attribute__((always_inline))
 	T operator()(T x1 = super::DefX1, T x2 = super::DefX2,
@@ -68,7 +74,7 @@ class yarly<State, T, BigBad, 0u> :
 		    default:	if (BigBad) {
 					T y;
 					kthxbai_impl<super::State12, T,
-					    BigBad ? 4u : 0u>
+					    Flags, BigBad ? 3u : 0u>
 					    (y, super::DefRetVal);
 					return y;
 				} else
@@ -77,10 +83,11 @@ class yarly<State, T, BigBad, 0u> :
 	}
 };
 
-template<rand_state_t State, class T, bool BigBad, unsigned Levels>
-class yarly : public yarly_impl<State, T, BigBad, Levels>
+template<rand_state_t State, class T, bool BigBad, ops_flags_t Flags,
+    unsigned Levels>
+class yarly : public yarly_impl<State, T, BigBad, Flags, Levels>
 {
-	typedef yarly_impl<State, T, BigBad, Levels> super;
+	typedef yarly_impl<State, T, BigBad, Flags, Levels> super;
     public:
 	__attribute__((always_inline))
 	T operator()(T x1 = super::DefX1, T x2 = super::DefX2,
@@ -89,9 +96,9 @@ class yarly : public yarly_impl<State, T, BigBad, Levels>
 		     T x7 = super::DefX7, T x8 = super::DefX8,
 		     T x9 = super::DefX9)
 	{
-		T y1 = yarly<super::State12, T, BigBad, Levels - 1>()
+		T y1 = yarly<super::State12, T, BigBad, Flags, Levels - 1>()
 		    (x1, x2, x3, x4, x5, x6, x7, x8, x9);
-		T y2 = yarly<super::NewState, T, BigBad, Levels - 1>()
+		T y2 = yarly<super::NewState, T, BigBad, Flags, Levels - 1>()
 		    (x1, x2, x3, x4, x5, x6, x7, x8, x9);
 		switch ((State ^ super::State2) >> 48 % 16) {
 		    case 0:	return y1 + y2;

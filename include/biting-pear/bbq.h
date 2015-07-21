@@ -11,6 +11,7 @@ namespace biting_pear
 namespace impl
 {
 
+typedef uint_least32_t ops_flags_t;
 typedef uint_least64_t rand_state_t;
 
 inline constexpr rand_state_t xorshr(rand_state_t s, unsigned i)
@@ -76,6 +77,18 @@ inline constexpr T pow(T x)
 }
 
 } // biting_pear::impl
+
+namespace ops {
+
+static const biting_pear::impl::ops_flags_t
+    allow_signal_safes		= 0x00000001u,
+    allow_signal_unsafes	= 0x00000002u,
+    allow_debugger_unsafes	= 0x00000004u,
+    allow_emulator_unsafes	= 0x00000008u,
+    allow_resource_unsafes	= 0x00000010u,
+    allow_all			= 0xffffffffu;
+
+} // biting_pear::ops
 
 } // biting_pear
 

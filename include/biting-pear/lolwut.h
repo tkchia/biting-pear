@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <biting-pear/bbq.h>
 #include <biting-pear/kthxbai.h>
+#include <biting-pear/nowai.h>
 
 namespace biting_pear
 {
@@ -13,7 +14,7 @@ namespace biting_pear
 namespace impl
 {
 
-template<rand_state_t State, class T, unsigned Levels>
+template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
 struct kthxbai_impl;  // forward
 
 template<rand_state_t State, class T, unsigned Levels>
@@ -184,6 +185,7 @@ class lolwut_impl
 			}
 		    qux:
 			break;
+#   ifdef __ELF__
 		    case 2:
 			{
 				unsigned disp3, scratch;
@@ -214,6 +216,7 @@ class lolwut_impl
 				else	p_ += Disp;
 			}
 			break;
+#   endif
 #endif
 		    default:
 			if (Sign)
@@ -228,11 +231,16 @@ class lolwut_impl
 	}
 };
 
-template<rand_state_t State, class T, unsigned Levels = 5u>
+template<rand_state_t State, class T, ops_flags_t Flags = 0,
+    unsigned Levels = 5u>
 class lolwut;
 
-template<rand_state_t State, class T>
-class lolwut<State, T, 0u> : public lolwut_impl<State, T, 0u>
+template<rand_state_t State, class T, ops_flags_t Flags>
+class lolwut<State, T, Flags, ~0u> : public nowai
+	{ };
+
+template<rand_state_t State, class T, ops_flags_t Flags>
+class lolwut<State, T, Flags, 0u> : public lolwut_impl<State, T, 0u>
 {
     public:
 	__attribute__((always_inline))
@@ -256,7 +264,7 @@ class lolwut<State, T, 0u> : public lolwut_impl<State, T, 0u>
 	}
 };
 
-template<rand_state_t State, class T, unsigned Levels>
+template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
 class lolwut : public lolwut_impl<State, T, Levels>
 {
     public:
@@ -276,12 +284,12 @@ class lolwut : public lolwut_impl<State, T, Levels>
 	operator T *() const
 	{
 		unsigned disp;
-		kthxbai_impl<(this->NewState), unsigned, Levels>(disp,
+		kthxbai_impl<(this->NewState), unsigned, Flags, Levels>(disp,
 		    this->Disp);
 		char *p;
 		if ((this->NewState ^ this->NewNewState) >> 32 % 4) {
-			lolwut<(this->NewNewState), char, Levels - 1> thang
-			    (this->p_);
+			lolwut<(this->NewNewState), char, Flags, Levels - 1>
+			    thang(this->p_);
 			p = (char *)thang;
 		} else
 			p = this->p_;

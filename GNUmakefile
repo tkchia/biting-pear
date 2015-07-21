@@ -11,6 +11,7 @@ headers = \
     include/biting-pear/bbq.h \
     include/biting-pear/kthxbai.h \
     include/biting-pear/lolwut.h \
+    include/biting-pear/nowai.h \
     include/biting-pear/omg.h \
     include/biting-pear/orly.h \
     include/biting-pear/yarly.h \
