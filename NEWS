@@ -4,6 +4,9 @@
 		- biting_pear::kthxbai<> now allows operations other than
 		  +/- for the outermost step
 
+		configure :
+		- removed check for build-side endianness
+
 2015-07-21	Added flags to specify which (erm) operations to allow.
 		And, now checks for runaway template recursion.
 
