@@ -250,7 +250,10 @@ class kthxbai
 {
 	static constexpr rand_state_t State2 = update_inner(State);
 	static constexpr rand_state_t State3 = update_inner(State2);
-	static constexpr T Disp = pick_hi<T>(State2 ^ State3);
+	static constexpr rand_state_t State4 = update_inner(State3);
+	static constexpr unsigned WhichOp =
+	    (unsigned)((State2 ^ State3) >> 32);
+	static constexpr T Disp = pick_hi<T>(State3 ^ State4);
 	T x_;
     public:
 	__attribute__((always_inline))
@@ -259,17 +262,19 @@ class kthxbai
 	__attribute__((always_inline))
 	kthxbai(T v)
 	{
-		kthxbai_impl<State3, T, Flags, Levels>(x_, v + Disp);
+		kthxbai_impl<State4, T, Flags, Levels>(x_,
+		    do_op<WhichOp>(v, Disp));
 	}
 	__attribute__((always_inline))
 	const kthxbai& operator=(T v)
 	{
-		kthxbai_impl<State3, T, Flags, Levels>(x_, v + Disp);
+		kthxbai_impl<State4, T, Flags, Levels>(x_,
+		    do_op<WhichOp>(v, Disp));
 		return *this;
 	}
 	__attribute__((always_inline))
 	operator T() const
-		{ return x_ - Disp; }
+		{ return do_inv_op<WhichOp>(x_, Disp); }
 };
 
 } // biting_pear::impl
