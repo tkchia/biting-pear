@@ -1,3 +1,29 @@
+2015-09-19	Now cross-compiles everything or nothing.
+
+		GNUmakefile :
+		- helper/postproc* -> helper/postpreproc-2*
+		- now cross-compiles everything
+		- now uses $(conf_Host_exec) to run helper/crc64.cc and
+		  helper/postpreproc-2.cc
+
+		helper/postpreproc-2.lxx :
+		- renamed from helper/postproc.lxx
+
+		configure :
+		- removed checks for build-side stuff
+
+		lolwutconf/c++.inc :
+		- removed checks for build-side stuff
+
+		lolwutconf/configure.inc :
+		- added --host-exec
+
+		include/biting-pear/lolwut.h :
+		- fixed syntax bug in lolwut_impl<>
+
+		.gitignore :
+		- postproc* -> postpreproc-2*
+
 2015-08-07	Delirant isti Romani.
 
 		include/biting-pear/kthxbai.h :

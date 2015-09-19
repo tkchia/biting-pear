@@ -119,31 +119,20 @@ conf__add_var() {
 	done
 }
 
-conf__spirit_var() {
-	if eval test -n \"\${$2+set}\"; then
-		eval conf__check_sane \"\$$2\" \'\$$2\'
-		eval $1=\"\$$2\"
-	else
-		eval unset $1
-	fi
-	eval unset $2
-}
-
 conf__help() {
 	local me
 	me="`basename $0`"
 	conf__blare "usage:"
 	conf__blare "    $me [--srcdir=(dir)] [--prefix=(dir)] \\"
-	conf__blare "        [--host=(platform)]"
+	conf__blare "        [--host=(platform)] [--host-exec=[(runner)]]"
 	conf__blare
 	conf__blare "environment variables used:"
 	conf__blare_list "$conf_Use_vars"
 	conf__blare
 	conf__blare "cross compilation notes:"
 	conf__blare "  * If you specify --host=(platform), \`$me' will look"
-	conf__blare "    for cross compilers named (platform)-g++, etc."
-	conf__blare "    CXX, CXXFLAGS, and so on are treated as compiler"
-	conf__blare "    options on the _build_ side.  Also:"
+	conf__blare "    for cross compilers named (platform)-g++, etc. if"
+	conf__blare "    CXX is undefined.  Also:"
 	conf__blare
 	conf__blare "    - If (platform) is i386-*, i486-*, i586-*, or"
 	conf__blare "      i686-*, e.g. i386-linux-gnu, \`$me' will also try"
@@ -155,8 +144,13 @@ conf__help() {
 	conf__blare "      and try to use Thumb mode."
 	conf__blare
 	conf__blare "  * Alternatively, do not specify --host=, but provide"
-	conf__blare "    _host_ settings in CXX, CXXFLAGS, etc., and _build_"
-	conf__blare "    settings in CXX_FOR_BUILD, CXXFLAGS_FOR_BUILD, etc."
+	conf__blare "    compiler settings in CXX, CXXFLAGS, etc."
+	conf__blare
+	conf__blare "  * In addition, --host-exec=(runner) specifies a"
+	conf__blare "    command for running programs built for the host"
+	conf__blare "    system.  If --host= appears but not --host-exec,"
+	conf__blare "    \`$me' will try to look for a corresponding Qemu"
+	conf__blare "    user-mode emulator, e.g. qemu-arm."
 }
 
 conf_begin() {
@@ -165,6 +159,7 @@ conf_begin() {
 	conf_Srcdir=.
 	conf_Prefix=/usr/local
 	conf_Cross_tag=
+	unset conf_Host_exec
 	conf_Use_vars=' '
 	conf_Mode=conf
 	for opt in ${1+"$@"}; do
@@ -176,18 +171,13 @@ conf_begin() {
 			conf_Prefix="`echo "$opt" | sed s,^[^=]*=,,`";;
 		    --host=?*)
 			conf_Cross_tag="`echo "$opt" | sed s,^[^=]*=,,`"-;;
+		    --host-exec=*)
+			conf_Host_exec="`echo "$opt" | sed s,^[^=]*=,,`";;
 		    *)	conf_Mode=help;;
 		esac
 	done
 	if conf__in_help_mode
 		then return 0; fi
-	if test -n "$conf_Cross_tag"; then
-		conf__spirit_var CXX_FOR_BUILD CXX
-		conf__spirit_var CPPFLAGS_FOR_BUILD CPPFLAGS
-		conf__spirit_var CXXFLAGS_FOR_BUILD CXXFLAGS
-		conf__spirit_var LDFLAGS_FOR_BUILD LDFLAGS
-		conf__spirit_var LDLIBS_FOR_BUILD LDLIBS
-	fi
 }
 
 conf_mod() {

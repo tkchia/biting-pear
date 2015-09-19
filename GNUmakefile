@@ -37,8 +37,9 @@ uninstall:
 
 clean:
 	find . -name '*.[ios]' -o -name '*~' | \
-	    xargs rm -f $(config.h) helper/postproc.cc helper/postproc \
-		helper/crc64 lex.backup $(tests) $(tests:=.passed)
+	    xargs rm -f $(config.h) helper/postpreproc-2.cc \
+		helper/postpreproc-2 helper/crc64 lex.backup \
+		$(tests) $(tests:=.passed)
 ifeq "$(separate_build_dir)" "yes"
 	-rmdir helper test
 endif
@@ -68,7 +69,7 @@ endif
 
 test/test-%.passed: test/test-% test/test-%.good
 	@echo "running test $<" >&2
-	@./$< >$(@:.passed=.1.tmp) 2>$(@:.passed=.2.tmp) || \
+	@$(conf_Host_exec) ./$< >$(@:.passed=.1.tmp) 2>$(@:.passed=.2.tmp) ||\
 	    (echo "$< exited with error: $$?" >&2 && \
 	     rm -f $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
 	     exit 1)
@@ -95,28 +96,24 @@ test/test-%.o: test/test-%.i
 %.s: %.i
 	$(CXX) $(CXXFLAGS) -S -o$@ $<
 
-%.i: %.ccc $(headers) helper/postproc helper/crc64
+%.i: %.ccc $(headers) helper/postpreproc-2 helper/crc64
 	mkdir -p $(@D)
 	$(CXX) -E -x c++ $(CPPFLAGS) $(CXXFLAGS) -o$@.tmp $<
-	helper/postproc "`helper/crc64 <$@.tmp`" <$@.tmp >$@.2.tmp
+	$(conf_Host_exec) helper/postpreproc-2 \
+	    "`$(conf_Host_exec) helper/crc64 <$@.tmp`" <$@.tmp \
+	    >$@.2.tmp
 	mv $@.2.tmp $@
 	rm $@.tmp
 
-helper/crc64: helper/crc64.cc
+helper/%: helper/%.cc
 	mkdir -p $(@D)
-	$(CXX_FOR_BUILD) $(CPPFLAGS_FOR_BUILD) $(CXXFLAGS_FOR_BUILD) \
-	    $(LDFLAGS_FOR_BUILD) -o$@ $< $(LDLIBS_FOR_BUILD)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) -o$@ $< $(LDLIBS)
 
-helper/postproc: helper/postproc.cc
-	mkdir -p $(@D)
-	$(CXX_FOR_BUILD) $(CPPFLAGS_FOR_BUILD) $(CXXFLAGS_FOR_BUILD) \
-	    $(LDFLAGS_FOR_BUILD) -o$@ $< $(LDLIBS_FOR_BUILD)
-
-helper/postproc.cc: helper/postproc.lxx
+helper/postpreproc-2.cc: helper/postpreproc-2.lxx
 	mkdir -p $(@D)
 	$(LEX) $(LFLAGS) -t -o$@ $< >$@.tmp
 	mv $@.tmp $@
 
 .PHONY: test/test-%.passed
 
-.PRECIOUS: %.i %.cc %.s %.o $(tests)
+.PRECIOUS: %.i %.cc %.s %.o helper/% $(tests)

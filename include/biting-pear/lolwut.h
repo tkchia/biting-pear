@@ -17,7 +17,7 @@ namespace impl
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
 struct kthxbai_impl;  // forward
 
-template<rand_state_t State, class T, unsigned Levels>
+template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
 class lolwut_impl
 {
     protected:
@@ -189,8 +189,8 @@ class lolwut_impl
 		    case 2:
 			{
 				unsigned disp3, scratch;
-				impl::kthxbai_impl<State5, unsigned, Levels2>
-				    (disp3, Disp3);
+				impl::kthxbai_impl<State5, unsigned, Flags,
+				    Levels2>(disp3, Disp3);
 				__asm(".ifc \"#%a2\", \"\%2\"; "
 					".pushsection .text, %a3; "
 					".balign 4; "
@@ -240,7 +240,7 @@ class lolwut<State, T, Flags, ~0u> : public nowai
 	{ };
 
 template<rand_state_t State, class T, ops_flags_t Flags>
-class lolwut<State, T, Flags, 0u> : public lolwut_impl<State, T, 0u>
+class lolwut<State, T, Flags, 0u> : public lolwut_impl<State, T, Flags, 0u>
 {
     public:
 	__attribute__((always_inline))
@@ -265,7 +265,7 @@ class lolwut<State, T, Flags, 0u> : public lolwut_impl<State, T, 0u>
 };
 
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
-class lolwut : public lolwut_impl<State, T, Levels>
+class lolwut : public lolwut_impl<State, T, Flags, Levels>
 {
     public:
 	__attribute__((always_inline))

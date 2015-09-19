@@ -4,8 +4,8 @@ lex.backup
 test-1
 test-2
 test-3
-postproc.cc
-postproc
+postpreproc-2.cc
+postpreproc-2
 crc64
 config.cache
 derp.h
