@@ -1,3 +1,10 @@
+2015-09-20	Strings and lines.
+
+		helper/postpreproc-2.lxx :
+		- fixed corner cases in handling of strings
+		- now parses #line directives and outputs error messages
+		  according to them
+
 2015-09-19	Now cross-compiles everything or nothing.
 
 		GNUmakefile :
