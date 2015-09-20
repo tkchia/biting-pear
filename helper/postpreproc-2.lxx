@@ -2,29 +2,38 @@
 %option noyywrap
 %option yylineno
 
-ws1		([ \f\n\r\t\v])
+ws1		[ \f\n\r\t\v]
 ws		({ws1}*)
+lws1		[ \f\r\t\v]
+lws		({lws1}*)
 dd		[0123456789]
+od		[01234567]
+xd		[0123456789abcdefABCDEF]
 any		(.|\n)
+u8tl		[\x80-\xbf]
 
 %x Wow
 %x Very
+%x Much
 
 %{
 #include <cerrno>
 #include <cinttypes>
+#include <clocale>
 #include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
 #include <exception>
+#include <vector>
 #include <unistd.h>
 #include <boost/random/mersenne_twister.hpp>
 
-static std::string curr_fn;
+static std::string curr_fn, curr_str_enc;
 static long curr_ln_off = 0;
 static boost::mt19937_64 generator;
+static std::vector<std::string> curr_str_chars;
 
 static void warn(const char *fmt, ...)
 {
@@ -34,6 +43,7 @@ static void warn(const char *fmt, ...)
 		    curr_fn.c_str(), yylineno + curr_ln_off);
 	va_start(ap, fmt);
 	std::vfprintf(stderr, fmt, ap);
+	va_end(ap);
 	std::putc('\n', stderr);
 	std::fflush(stderr);
 }
@@ -47,6 +57,7 @@ static void die(const char *fmt, ...)
 	std::fputs("ERROR: ", stderr);
 	va_start(ap, fmt);
 	std::vfprintf(stderr, fmt, ap);
+	va_end(ap);
 	std::putc('\n', stderr);
 	std::fflush(stderr);
 	throw std::exception();
@@ -54,57 +65,130 @@ static void die(const char *fmt, ...)
 
 static void blurt(const char *s, size_t n)
 {
-	ssize_t r;
-	while (n != 0) {
-		r = write(1, s, n);
-		if (r < 0)
-			die("cannot write output: %s", std::strerror(errno));
-		/* note: r may be 0 */
-		s += r;
-		n -= r;
+	errno = 0;
+	if (fwrite(s, 1, n, stdout) != n)
+		die("cannot write output: %s", std::strerror(errno));
+}
+
+static void blurt(const std::string& s)
+{
+	errno = 0;
+	size_t n = s.size();
+	if (fwrite(s.c_str(), 1, n, stdout) != n)
+		die("cannot write output: %s", std::strerror(errno));
+}
+
+static void blurt(char c)
+{
+	errno = 0;
+	if (putchar((int)(unsigned char)c) == EOF)
+		die("cannot write output: %s", std::strerror(errno));
+}
+
+static void blurfl(const char *fmt, ...)
+{
+	va_list ap;
+	va_start(ap, fmt);
+	errno = 0;
+	if (std::vprintf(fmt, ap) < 0)
+		die("cannot write output: %s", std::strerror(errno));
+	va_end(ap);
+}
+
+static void flush_str()
+{
+	bool first = true;
+	std::vector<std::string>::const_iterator it;
+	for (it = curr_str_chars.begin(); it != curr_str_chars.end(); ++it) {
+		const std::string& wut = *it;
+		if ((unsigned char)wut[0] < 0x80u) {
+			if (first)
+				first = false;
+			else
+				blurt(',');
+			blurt(curr_str_enc);
+			blurt('\'');
+			blurt(wut);
+			blurt('\'');
+		} else if (curr_str_enc.empty()) {
+			for (size_t i = 0; i < wut.size(); ++i) {
+				if (first)
+					first = false;
+				else
+					blurt(',');
+				blurfl("(char)%d", (int)wut[i]);
+			}
+		} else { /* L"" */
+			std::mbstate_t state;
+			wchar_t wc;
+			const char *pnc = wut.c_str();
+			size_t r;
+			std::memset(&state, 0, sizeof state);
+			while ((r = std::mbsrtowcs(&wc,&pnc,1,&state)) != 0) {
+				if (r == (size_t)-1)
+					die("lolwut?!?!?  (%s)",
+					    std::strerror(errno));
+				if (first)
+					first = false;
+				else
+					blurt(',');
+				blurfl("%ld", (long)wc);
+			}
+		}
 	}
+	curr_str_chars.clear();
+	curr_str_enc = "";
 }
 %}
 
 %%
 
 "?"{ws}"<"{ws}">"	{
-				char v[20];
 				blurt(yytext + 1, yyleng - 2);
-				int n = std::snprintf(v, sizeof v,
-				    "0x%" PRIx64 ">", generator());
-				if (n <= 0 || (size_t)n >= sizeof v) {
-					std::cerr << "lolwut?!?!?\n";
-					return 1;
-				}
-				blurt(v, (size_t)n);
+				blurfl("0x%" PRIx64 ">", generator());
 			}
 "?"{ws}"<"{ws}		{
-				char v[20];
 				blurt(yytext + 1, yyleng - 1);
-				int n = std::snprintf(v, sizeof v,
-				    "0x%" PRIx64 ",", generator());
-				if (n <= 0 || (size_t)n >= sizeof v) {
-					std::cerr << "lolwut?!?!?\n";
-					return 1;
-				}
-				blurt(v, (size_t)n);
+				blurfl("0x%" PRIx64 ",", generator());
 			}
-^{ws}"#"{ws}		{
+"["{ws}"]"{ws}\"	{
+				char *p = strchr(yytext + 1, ']'),
+				     *q = yytext + yyleng - 1;
+				blurt(yytext + 1, p - yytext - 1);
+				blurt(p + 1, q - p - 1);
+				curr_str_enc = "";
+				BEGIN(Much);
+			}
+"["{ws}"]"{ws}L{ws}\"	{
+				char *p = strchr(yytext + 1, ']'),
+				     *q = strchr(p + 1, 'L'),
+				     *r = yytext + yyleng - 1;
+				blurt(yytext + 1, p - yytext - 1);
+				blurt(p + 1, q - p - 1);
+				blurt(q + 1, r - q - 1);
+				curr_str_enc = "L";
+				BEGIN(Much);
+			}
+"["{ws}"]"{ws}[uUR]	{
+				die("[]u\"\", []u8\"\", []U\"\", and "
+				    "[]R\"\" not supported");
+			}
+^{lws}"#"{ws}		{
 				blurt(yytext, yyleng);
 				BEGIN(Wow);
 			}
 "?"{ws}			|
-[^\"\'#?\n]+		|
+"["{ws}"]"{ws}L{ws}	|
+"["{ws}"]"{ws}		|
+"["{ws}			|
+[^\"'#?\[\n]+		|
 \"([^\"\\\n]|\\{any})*\"	|
 \"([^\"\\\n]|\\{any})*\\	|
 \"([^\"\\\n]|\\{any})*		|
 '([^'\\\n]|\\{any})*'	|
 '([^'\\\n]|\\{any})*\\	|
 '([^'\\\n]|\\{any})*	|
-^{ws1}{ws}		|
-\n+			|
-.			{ blurt(yytext, yyleng); }
+\n+			{ blurt(yytext, yyleng); }
 
 <Wow>line{ws}		{ blurt(yytext, yyleng); }
 <Wow>{dd}+{ws}		{
@@ -133,11 +217,78 @@ static void blurt(const char *s, size_t n)
 				BEGIN(INITIAL);
 			}
 <Very>\"([^\"\\\n]|\\.)*\\	|
-<Very>\"([^\"\\\n]|\\.)*	|
-<Very>[^\"]		{
+<Very>\"([^\"\\\n]|\\.)* {
 				warn("file name string not terminated on "
 				     "same line");
 				blurt(yytext, yyleng);
+				BEGIN(INITIAL);
+			}
+<Very>[^\"]		{
+				blurt(yytext, yyleng);
+				BEGIN(INITIAL);
+			}
+
+<Much>[^\"'\\\n\x80-\xff]			|
+<Much>\\[^01234567xXuU]				|
+<Much>\\{od}{od}?{od}?				|
+<Much>\\[xX]{xd}+				|
+<Much>[\xc0-\xdf]{u8tl}				|
+<Much>[\xe0-\xef]{u8tl}{u8tl}			|
+<Much>[\xf0-\xf7]{u8tl}{u8tl}{u8tl}		|
+<Much>[\xf8-\xfb]{u8tl}{u8tl}{u8tl}{u8tl}	|
+<Much>[\xfc-\xfd]{u8tl}{u8tl}{u8tl}{u8tl}{u8tl} {
+				curr_str_chars.push_back(yytext);
+			}
+<Much>\\u{xd}{xd}?{xd}?{xd}?	|
+<Much>\\U{xd}{xd}?{xd}?{xd}?{xd}?{xd}?{xd}?{xd}? {
+				unsigned long code = std::strtoul(yytext + 2,
+				    0, 16);
+				unsigned char ucode[7], *p = ucode + 7,
+				    m = 0xc0u;
+				if (code > 0x7ffffffful)
+					die("character code not in 31 bits");
+				if (code < 0x80ul)
+					curr_str_chars.push_back(yytext);
+				else {
+					*--p = 0;
+					while (code > 0xffu ||
+					    (code & m) != 0) {
+						*--p = 0x80u | (code & 0x3f);
+						code >>= 6;
+						m = 0x80u | (m >> 1);
+					}
+					*--p = m << 1 | code;
+					curr_str_chars.push_back((char *)p);
+				}
+			}
+<Much>'			{ curr_str_chars.push_back("\\'"); }
+<Much>\n				|
+<Much>\\				|
+<Much>\\[xXuU]				|
+<Much>[\x80-\xbf\xfe\xff]		|
+<Much>[\xc0-\xdf]			|
+<Much>[\xe0-\xef]{u8tl}?		|
+<Much>[\xf0-\xf7]{u8tl}?{u8tl}?		|
+<Much>[\xf8-\xfb]{u8tl}?{u8tl}?{u8tl}?	|
+<Much>[\xfc-\xfd]{u8tl}?{u8tl}?{u8tl}?{u8tl}? {
+				die("weirdness in string");
+			}
+<Much>\"{ws}\"		{ blurt(yytext + 1, yyleng - 2); }
+<Much>\"{ws}L{ws}\"	{
+				char *p = strchr(yytext + 1, 'L'),
+				     *q = yytext + yyleng - 1;
+				blurt(yytext + 1, p - yytext - 1);
+				blurt(p + 1, q - p - 1);
+				curr_str_enc = "L";
+			}
+<Much>\"{ws}[uUR]	{
+				die("[]u\"\", []u8\"\", []U\"\", and "
+				    "[]R\"\" not supported");
+			}
+<Much>\"{ws}		|
+<Much>\"{ws}L{ws}	{
+				blurt(yytext + 1, yyleng - 1);
+				flush_str();
 				BEGIN(INITIAL);
 			}
 
@@ -146,6 +297,10 @@ static void blurt(const char *s, size_t n)
 int main(int argc, char **argv)
 {
 	try {
+		if (!std::setlocale(LC_COLLATE, "en_US.UTF-8") ||
+		    !std::setlocale(LC_CTYPE, "en_US.UTF-8"))
+			die("cannot set locale to en_US.UTF-8: %s",
+			    std::strerror(errno));
 		switch (argc) {
 		    case 1:
 			generator.seed(std::time(0) << 12 ^ getpid());  break;

@@ -4,6 +4,7 @@
 		- fixed corner cases in handling of strings
 		- now parses #line directives and outputs error messages
 		  according to them
+		- added string splitting construct
 
 2015-09-19	Now cross-compiles everything or nothing.
 
