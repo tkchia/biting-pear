@@ -11,7 +11,8 @@
 
 		lolwutconf/c++.inc :
 		- added specific test for C++11 variadic templates
-		- fixed minor bug in conf_cxx_probe_endianness() 
+		- fixed minor bug in conf_cxx_probe_endianness()
+		- fixed minor bug in conf_cxx_chk_compiler_and_executor()
 
 		include/biting-pear/dawg.h ,
 		include/biting-pear/yodawg.h ,
@@ -28,6 +29,9 @@
 		include/biting-pear/lolwut.h ,
 		include/biting-pear/omg.h :
 		- reduced template recursion levels to 3
+
+		.gitignore :
+		- added test-extra-1 and test-extra-2
 
 2015-09-20	Strings and lines.
 

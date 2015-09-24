@@ -97,8 +97,12 @@ conf_cxx_chk_compiler_and_executor() {
 	conf__blare_res "$CXX $CPPFLAGS $CXXFLAGS"
 	conf__blare_test 'deciding host program executor'
 	if test set != "${conf_Host_exec+set}"; then
+		conf_Host_exec=
 		if test -z "$conf_Cross_tag"; then
-			conf_Host_exec=
+			:	# nothing to do
+		elif conf__cxx_chk_compiler_with "$CXXFLAGS"; then
+			:	# nothing to do too -- no need for a separate
+				# program to run host-side commands
 		else
 			case "$conf_Cross_tag" in
 			    i[3456]86-*)
@@ -116,13 +120,20 @@ conf_cxx_chk_compiler_and_executor() {
 				set '--' $conf_Cross_tag
 				conf_Host_exec=qemu-"$1"
 				IFS="$save_ifs";;
+			    *)	# OK, we do not really know what to do here...
+				;;
 			esac
-			# we cannot really rely on `realpath' or `readlink'
-			# being available, so do this nasty thang...
-			ld_prefix="`$CXX $CXXFLAGS -print-file-name=libc.so`"
-			ld_prefix="`echo "$ld_prefix" | xargs dirname`"
-			ld_prefix="`cd "$ld_prefix" && cd .. && pwd`"
-			conf_Host_exec="$conf_Host_exec -L $ld_prefix"
+			if test -n "$conf_Host_exec"; then
+				# we cannot really rely on `realpath' or
+				# `readlink' being available, so do this
+				# nasty thang...
+				ld_prefix="`$CXX $CXXFLAGS \
+				    -print-file-name=libc.so`"
+				ld_prefix="`echo "$ld_prefix" | \
+				    xargs dirname`"
+				ld_prefix="`cd "$ld_prefix" && cd .. && pwd`"
+				conf_Host_exec="$conf_Host_exec -L $ld_prefix"
+			fi
 		fi
 	fi
 	conf__blare_res "${conf_Host_exec:-(blank)}"
@@ -250,7 +261,7 @@ conf_cxx_probe_var_tpls()
 	if test -n "$conf_Have_cxx_var_tpls"
 		then return 0; fi
 	conf__add_var conf_Have_cxx_var_tpls
-	conf__blare_test 'checking if C++ compiler does variadic templates...'
+	conf__blare_test 'checking if C++ compiler does variadic templates'
 	if conf__cxx_chk_compiler_with "$CXXFLAGS" ${1+"$@"} \
 	    'template<class... T> class foo_t { };' \
 	    'template<int... V> class bar_t { };' \

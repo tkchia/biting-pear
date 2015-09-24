@@ -4,6 +4,8 @@ lex.backup
 test-1
 test-2
 test-3
+test-extra-1
+test-extra-2
 postpreproc-2.cc
 postpreproc-2
 crc64
