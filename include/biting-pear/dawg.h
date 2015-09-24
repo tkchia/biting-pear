@@ -41,15 +41,16 @@ class dawg_impl<State, CT, Flags, Ch, Chs...>
 	typedef __typeof(1u | (CT)1 << 0u) PCT; // N3797 5.8.2
 	static constexpr rand_state_t State2 = update_inner(State);
 	static constexpr rand_state_t State3 = update_inner(State2);
+	static constexpr rand_state_t State4 = update_inner(State3);
 	static constexpr rand_state_t NewState = update_outer(State2);
-	typedef dawg_impl<State3, CT, Flags, Chs...> rest_type;
+	typedef dawg_impl<State4, CT, Flags, Chs...> rest_type;
     public:
 	__attribute__((always_inline))
 	static CT front()
 	{
 		if (sizeof(CT) == sizeof(char))
 			return (CT)(PCT)kthxbai<NewState, PCT, Flags>(
-			    (pick_hi<PCT>(State2^State3) & ~(PCT)UCHAR_MAX) |
+			    (pick_hi<PCT>(State3^State4) & ~(PCT)UCHAR_MAX) |
 			    ((PCT)Ch & UCHAR_MAX));
 		else
 			return (CT)(PCT)kthxbai<NewState, PCT, Flags>(Ch);
@@ -87,9 +88,14 @@ __attribute__((always_inline))
 inline std::basic_ostream<CT>& operator<<(std::basic_ostream<CT>& os,
     const biting_pear::impl::dawg_impl<State, CT, Flags, Ch, Chs...>& s)
 {
-	if (os << s.front())
-		os << s.rest();
-	return os;
+	constexpr biting_pear::impl::rand_state_t
+	    State2 = biting_pear::impl::update_inner(State),
+	    State3 = biting_pear::impl::update_inner(State2),
+	    NewState2 = biting_pear::impl::update_outer(State3);
+	typedef std::basic_ostream<CT>& FT(std::basic_ostream<CT>&, CT);
+	biting_pear::impl::kthxbai<NewState2, FT *, Flags>
+	    f(static_cast<FT *>(&std::operator<<));
+	return f(os, s.front()) << s.rest();
 }
 
 #endif
