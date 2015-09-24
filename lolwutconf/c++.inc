@@ -198,6 +198,7 @@ conf_cxx_chk_typ() {
 }
 
 conf_cxx_probe_endianness() {
+	local prog
 	conf_cxx_chk_compiler_and_executor
 	if conf__in_help_mode
 		then return 0; fi
@@ -241,3 +242,22 @@ conf_cxx_probe_endianness() {
 	conf__blare_res "$conf_Endianness_cxx"
 }
 
+conf_cxx_probe_var_tpls()
+{
+	conf_cxx_probe_cxx11
+	if conf__in_help_mode
+		then return 0; fi
+	if test -n "$conf_Have_cxx_var_tpls"
+		then return 0; fi
+	conf__add_var conf_Have_cxx_var_tpls
+	conf__blare_test 'checking if C++ compiler does variadic templates...'
+	if conf__cxx_chk_compiler_with "$CXXFLAGS" ${1+"$@"} \
+	    'template<class... T> class foo_t { };' \
+	    'template<int... V> class bar_t { };' \
+	    'extern foo_t<int, char, void *> foo;' \
+	    'extern bar_t<1, -1, 6> bar;'
+	then	conf_Have_cxx_var_tpls=yes
+	else	conf_Have_cxx_var_tpls=no
+	fi
+	conf__blare_res "$conf_Have_cxx_var_tpls"
+}

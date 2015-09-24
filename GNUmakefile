@@ -9,17 +9,24 @@ includedir = $(prefix)/include
 config.h = include/biting-pear/derp.h
 headers = \
     include/biting-pear/bbq.h \
+    include/biting-pear/dawg.h \
     include/biting-pear/kthxbai.h \
     include/biting-pear/lolwut.h \
     include/biting-pear/nowai.h \
     include/biting-pear/omg.h \
     include/biting-pear/orly.h \
     include/biting-pear/yarly.h \
+    include/biting-pear/yodawg.h \
     $(config.h)
 tests = \
     test/test-1 \
     test/test-2 \
     test/test-3
+ifeq "$(conf_Have_cxx_var_tpls)" "yes"
+tests += \
+    test/test-extra-1 \
+    test/test-extra-2
+endif
 
 default all: check
 
@@ -37,7 +44,7 @@ uninstall:
 
 clean:
 	find . -name '*.[ios]' -o -name '*~' | \
-	    xargs rm -f $(config.h) helper/postpreproc-2.cc \
+	    xargs rm -f config.cache $(config.h) helper/postpreproc-2.cc \
 		helper/postpreproc-2 helper/crc64 lex.backup \
 		$(tests) $(tests:=.passed)
 ifeq "$(separate_build_dir)" "yes"
@@ -65,19 +72,25 @@ else
 	echo 'using ::uint_least64_t;' >>$@.tmp
 endif
 	echo '} }' >>$@.tmp
+ifeq "$(conf_Have_cxx_var_tpls)" "yes"
+	echo '#define biting_pear_HAVE_CXX_VAR_TPLS 1' >>$@.tmp
+else
+	echo '#undef biting_pear_HAVE_CXX_VAR_TPLS' >>$@.tmp
+endif
 	mv $@.tmp $@
 
 test/test-%.passed: test/test-% test/test-%.good
 	@echo "running test $<" >&2
-	@$(conf_Host_exec) ./$< >$(@:.passed=.1.tmp) 2>$(@:.passed=.2.tmp) ||\
+	@LANG=en_US.UTF-8 $(conf_Host_exec) ./$< >$(@:.passed=.1.tmp) \
+	    2>$(@:.passed=.2.tmp) ||\
 	    (echo "$< exited with error: $$?" >&2 && \
 	     rm -f $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
 	     exit 1)
-	@diff -U2 /dev/null $(@:.passed=.2.tmp) || \
+	@LANG=en_US.UTF-8 diff -U2 /dev/null $(@:.passed=.2.tmp) || \
 	    (echo "$< produced output on stderr" >&2 && \
 	     rm -f $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
 	     exit 1)
-	@diff -U2 $<.good $(@:.passed=.1.tmp) || \
+	@LANG=en_US.UTF-8 diff -U2 $<.good $(@:.passed=.1.tmp) || \
 	    (echo "$<'s expected output and actual output differ" >&2 && \
 	     rm -f $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
 	     exit 1)

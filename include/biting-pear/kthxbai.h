@@ -163,7 +163,7 @@ struct kthxbai_impl
 };
 
 template<rand_state_t State, class T, ops_flags_t Flags = 0,
-    unsigned Levels = 5u>
+    unsigned Levels = 3u>
 class kthxbai;
 
 template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
@@ -180,7 +180,7 @@ class kthxbai<State, void *, Flags, Levels> :
 		{ }
 };
 
-#if __cplusplus >= 201103L
+#ifdef biting_pear_HAVE_CXX_VAR_TPLS
 template<rand_state_t State, class RetT, ops_flags_t Flags, unsigned Levels,
     class... ArgT>
 class kthxbai<State, RetT (*)(ArgT...), Flags, Levels> :

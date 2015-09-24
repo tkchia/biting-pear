@@ -232,7 +232,7 @@ class lolwut_impl
 };
 
 template<rand_state_t State, class T, ops_flags_t Flags = 0,
-    unsigned Levels = 5u>
+    unsigned Levels = 3u>
 class lolwut;
 
 template<rand_state_t State, class T, ops_flags_t Flags>

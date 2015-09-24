@@ -1,3 +1,34 @@
+2015-09-24	Strings and more strings.
+
+		GNUmakefile :
+		- now outputs biting_pear_HAVE_CXX_VAR_TPLS macro
+		- now runs test programs under en_US.UTF-8 locale
+		- added <biting-pear/dawg.h>, <biting-pear/yodawg.h>,
+		  test/test-extra-1, test/test-extra-2
+
+		configure :
+		- added specific test for C++11 variadic templates
+
+		lolwutconf/c++.inc :
+		- added specific test for C++11 variadic templates
+		- fixed minor bug in conf_cxx_probe_endianness() 
+
+		include/biting-pear/dawg.h ,
+		include/biting-pear/yodawg.h ,
+		test/test-extra-1.ccc ,
+		test/test-extra-1.good ,
+		test/test-extra-2.ccc ,
+		test/test-extra-2.good :
+		- initial version
+
+		include/biting-pear/kthxbai.h :
+		- reduced template recursion levels to 3
+		- now uses biting_pear_HAVE_CXX_VAR_TPLS
+
+		include/biting-pear/lolwut.h ,
+		include/biting-pear/omg.h :
+		- reduced template recursion levels to 3
+
 2015-09-20	Strings and lines.
 
 		helper/postpreproc-2.lxx :
