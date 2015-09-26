@@ -186,7 +186,8 @@ class omg
 			if (!(Flags & allow_signal_safes))
 				return false;
 			else {
-				kthxbai<State3, __typeof &std::raise,
+				kthxbai<State3,
+				    biting_pear_decltype(&std::raise),
 				    Flags, Levels - 1> f(std::raise);
 				kthxbai<NewState, unsigned, Flags, Levels - 1>
 				    z(0);

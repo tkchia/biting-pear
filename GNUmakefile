@@ -77,6 +77,11 @@ ifeq "$(conf_Have_cxx_var_tpls)" "yes"
 else
 	echo '#undef biting_pear_HAVE_CXX_VAR_TPLS' >>$@.tmp
 endif
+ifeq "$(conf_Have_cxx_decltype)" "yes"
+	echo '#define biting_pear_decltype decltype' >>$@.tmp
+else
+	echo '#define biting_pear_decltype __typeof' >>$@.tmp
+endif
 	mv $@.tmp $@
 
 test/test-%.passed: test/test-% test/test-%.good

@@ -1,3 +1,18 @@
+2015-09-27	Minor improvement.
+
+		GNUmakefile :
+		- now makes $(config.h) define `biting_pear_decltype'
+
+		configure ,
+		lolwutconf/c++.inc :
+		- now checks for `decltype' support
+
+		include/biting-pear/dawg.h ,
+		include/biting-pear/omg.h ,
+		test/test-2.ccc :
+		- switched from using `__typeof' to using
+		  `biting_pear_decltype'
+
 2015-09-24	Strings and more strings.
 
 		GNUmakefile :

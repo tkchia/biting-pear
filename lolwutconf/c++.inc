@@ -272,3 +272,21 @@ conf_cxx_probe_var_tpls()
 	fi
 	conf__blare_res "$conf_Have_cxx_var_tpls"
 }
+
+conf_cxx_probe_decltype()
+{
+	conf_cxx_probe_cxx11
+	if conf__in_help_mode
+		then return 0; fi
+	if test -n "$conf_Have_cxx_decltype"
+		then return 0; fi
+	conf__add_var conf_Have_cxx_decltype
+	conf__blare_test "checking if C++ compiler understands decltype"
+	if conf__cxx_chk_compiler_with "$CXXFLAGS" ${1+"$@"} \
+	    'extern int foo;' \
+	    'extern decltype(foo << 1) bar;'
+	then	conf_Have_cxx_decltype=yes
+	else	conf_Have_cxx_decltype=no
+	fi
+	conf__blare_res "$conf_Have_cxx_decltype"
+}

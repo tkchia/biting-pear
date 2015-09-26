@@ -3,11 +3,12 @@
 
 int main(void)
 {
-	biting_pear::kthxbai?<__typeof &std::printf> f1(std::printf);
+	typedef biting_pear_decltype(&std::printf) pft;
+	biting_pear::kthxbai?<pft> f1(std::printf);
 	f1("Hello ");
-	biting_pear::kthxbai?<__typeof &std::printf> f2(std::printf);
+	biting_pear::kthxbai?<pft> f2(std::printf);
 	f2("%s!", "world");
-	biting_pear::kthxbai?<__typeof &std::printf> f3(std::printf);
+	biting_pear::kthxbai?<pft> f3(std::printf);
 	f3("%c", '\n');
 	return 0;
 }

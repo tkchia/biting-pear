@@ -38,7 +38,7 @@ class dawg_impl<State, CT, Flags>
 template<rand_state_t State, class CT, ops_flags_t Flags, CT Ch, CT... Chs>
 class dawg_impl<State, CT, Flags, Ch, Chs...>
 {
-	typedef __typeof(1u | (CT)1 << 0u) PCT; // N3797 5.8.2
+	typedef biting_pear_decltype(1u | (CT)1 << 0u) PCT; // N3797 5.8.2
 	static constexpr rand_state_t State2 = update_inner(State);
 	static constexpr rand_state_t State3 = update_inner(State2);
 	static constexpr rand_state_t State4 = update_inner(State3);
