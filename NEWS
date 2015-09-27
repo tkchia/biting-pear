@@ -13,6 +13,11 @@
 		- switched from using `__typeof' to using
 		  `biting_pear_decltype'
 
+		helper/postpreproc-2.lxx :
+		- now rejects non-shortest UTF-8 character encodings
+		- now checks for and rejects encodings of UTF-16
+		  surrogate code points (\ud800--\udfff)
+
 2015-09-24	Strings and more strings.
 
 		GNUmakefile :

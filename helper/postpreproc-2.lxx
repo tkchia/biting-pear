@@ -228,15 +228,26 @@ static void flush_str()
 				BEGIN(INITIAL);
 			}
 
-<Much>[^\"'\\\n\x80-\xff]			|
-<Much>\\[^01234567xXuU]				|
-<Much>\\{od}{od}?{od}?				|
-<Much>\\[xX]{xd}+				|
-<Much>[\xc0-\xdf]{u8tl}				|
-<Much>[\xe0-\xef]{u8tl}{u8tl}			|
-<Much>[\xf0-\xf7]{u8tl}{u8tl}{u8tl}		|
-<Much>[\xf8-\xfb]{u8tl}{u8tl}{u8tl}{u8tl}	|
-<Much>[\xfc-\xfd]{u8tl}{u8tl}{u8tl}{u8tl}{u8tl} {
+<Much>[^\"'\\\n\x80-\xff]		|
+<Much>\\[^01234567xXuU]			|
+<Much>\\{od}{od}?{od}?			|
+<Much>\\[xX]{xd}+			|
+<Much>[\xc2-\xdf]{u8tl}			|
+<Much>\xe0[\xa0-\xbf][\x80-\xbf]	|
+<Much>[\xe1-\xec\xee\xef]{u8tl}{u8tl}	|
+<Much>\xed[\x80-\x9f]{u8tl}		|
+<Much>\xf0[\x90-\xbf]{u8tl}{u8tl}	|
+<Much>[\xf1-\xf3]{u8tl}{u8tl}{u8tl}	|
+<Much>\xf4[\x80-\x8f]{u8tl}{u8tl}	{
+				/*
+				 * The above UTF-8 patterns are from the
+				 * flex 2.5.35 info file (A.4.2).  They
+				 * recognize only the shortest possible byte
+				 * sequence for each Unicode character. 
+				 * They also purposely leave out the codes
+				 * \ud800 to \udfff, which should never
+				 * appear outside of UTF-16 surrogate pairs.
+				 */
 				curr_str_chars.push_back(yytext);
 			}
 <Much>\\u{xd}{xd}?{xd}?{xd}?	|
@@ -247,6 +258,9 @@ static void flush_str()
 				    m = 0xc0u;
 				if (code > 0x7ffffffful)
 					die("character code not in 31 bits");
+				if (code >= 0xd800ul && code <= 0xdffful)
+					die("refusing to handle UTF-16 "
+					    "surrogate code point");
 				if (code < 0x80ul)
 					curr_str_chars.push_back(yytext);
 				else {
@@ -265,7 +279,7 @@ static void flush_str()
 <Much>\n				|
 <Much>\\				|
 <Much>\\[xXuU]				|
-<Much>[\x80-\xbf\xfe\xff]		|
+<Much>[\x80-\xbf\xfe-\xff]		|
 <Much>[\xc0-\xdf]			|
 <Much>[\xe0-\xef]{u8tl}?		|
 <Much>[\xf0-\xf7]{u8tl}?{u8tl}?		|
