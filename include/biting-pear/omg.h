@@ -180,7 +180,7 @@ class omg
 	bool unsafe()
 	{
 		using namespace biting_pear::ops;
-		constexpr unsigned Which2 = (State2 >> 56) % 1;
+		constexpr unsigned Which2 = (State2 >> 56) % 4;
 		switch (Which2) {
 		    case 0:
 			if (!(Flags & allow_signal_safes))
@@ -192,6 +192,17 @@ class omg
 				kthxbai<NewState, unsigned, Flags, Levels - 1>
 				    z(0);
 				f((int)z);
+				return true;
+			}
+		    case 1:
+		    case 2:
+			if (!(Flags & allow_signal_safes))
+				return false;
+			else {
+				kthxbai<State3, pid_t (*)(), Flags,
+				    Levels - 1>
+				    f(Which2 == 1 ? getpid : getppid);
+				f();
 				return true;
 			}
 		    default:
@@ -313,6 +324,7 @@ class omg
 		    case 3:
 		    case 4:
 		    case 5:
+		    case 6:
 			if (unsafe())
 				return;
 			// fall through

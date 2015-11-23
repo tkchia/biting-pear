@@ -1,3 +1,13 @@
+2015-11-24	getpid() and getppid().
+
+		include/biting-pear/omg.h :
+		- now makes bogus calls to getpid() and getppid() if signal-
+		  -safe calls are allowed
+
+		test/test-1.ccc ,
+		test/test-2.ccc :
+		- added allow_all tests
+
 2015-09-27	Minor improvement.
 
 		GNUmakefile :

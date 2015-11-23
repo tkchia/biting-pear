@@ -3,12 +3,13 @@
 
 int main(void)
 {
+	using biting_pear::ops::allow_all;
 	typedef biting_pear_decltype(&std::printf) pft;
-	biting_pear::kthxbai?<pft> f1(std::printf);
+	biting_pear::kthxbai?<pft, allow_all> f1(std::printf);
 	f1("Hello ");
-	biting_pear::kthxbai?<pft> f2(std::printf);
+	biting_pear::kthxbai?<pft, allow_all> f2(std::printf);
 	f2("%s!", "world");
-	biting_pear::kthxbai?<pft> f3(std::printf);
+	biting_pear::kthxbai?<pft, allow_all> f3(std::printf);
 	f3("%c", '\n');
 	return 0;
 }
