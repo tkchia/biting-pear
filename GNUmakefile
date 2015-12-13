@@ -25,7 +25,9 @@ tests = \
 ifeq "$(conf_Have_cxx_var_tpls)" "yes"
 tests += \
     test/test-extra-1 \
-    test/test-extra-2
+    test/test-extra-2 \
+    test/test-extra-3 \
+    test/test-extra-4
 endif
 
 default all: check
@@ -44,8 +46,8 @@ uninstall:
 
 clean:
 	find . -name '*.[ios]' -o -name '*~' | \
-	    xargs rm -f config.cache $(config.h) helper/postpreproc-2.cc \
-		helper/postpreproc-2 helper/crc64 lex.backup \
+	    xargs rm -f config.cache $(config.h) helper/postpreproc.cc \
+		helper/postpreproc helper/crc64 lex.backup \
 		$(tests) $(tests:=.passed)
 ifeq "$(separate_build_dir)" "yes"
 	-rmdir helper test
@@ -56,6 +58,9 @@ distclean: clean
 ifeq "$(separate_build_dir)" "yes"
 	rm -f GNUmakefile
 endif
+
+config.cache:
+	./configure
 
 $(config.h):
 	mkdir -p $(@D)
@@ -114,10 +119,10 @@ test/test-%.o: test/test-%.i
 %.s: %.i
 	$(CXX) $(CXXFLAGS) -S -o$@ $<
 
-%.i: %.ccc $(headers) helper/postpreproc-2 helper/crc64
+%.i: %.ccc $(headers) helper/postpreproc helper/crc64
 	mkdir -p $(@D)
 	$(CXX) -E -x c++ $(CPPFLAGS) $(CXXFLAGS) -o$@.tmp $<
-	$(conf_Host_exec) helper/postpreproc-2 \
+	$(conf_Host_exec) helper/postpreproc \
 	    "`$(conf_Host_exec) helper/crc64 <$@.tmp`" <$@.tmp \
 	    >$@.2.tmp
 	mv $@.2.tmp $@
@@ -127,11 +132,11 @@ helper/%: helper/%.cc
 	mkdir -p $(@D)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) -o$@ $< $(LDLIBS)
 
-helper/postpreproc-2.cc: helper/postpreproc-2.lxx
+helper/postpreproc.cc: helper/postpreproc.lxx
 	mkdir -p $(@D)
 	$(LEX) $(LFLAGS) -t -o$@ $< >$@.tmp
 	mv $@.tmp $@
 
 .PHONY: test/test-%.passed
 
-.PRECIOUS: %.i %.cc %.s %.o helper/% $(tests)
+.PRECIOUS: config.cache %.i %.cc %.s %.o helper/% $(tests)

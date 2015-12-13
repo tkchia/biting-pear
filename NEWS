@@ -1,3 +1,24 @@
+2015-12-13	Syntactic sugar for strings.
+
+		helper/postpreproc.lxx :
+		- renamed from helper/postpreproc-2.lxx
+		- added $"..." and $L"..."
+
+		GNUmakefile :
+		- added test cases for $"..." and $L"..."
+		- now automatically invokes ./configure if config.cache
+		  is absent
+		- now builds helper/postpreproc and not helper/postpreproc-2
+
+		test/test-extra-3.ccc ,
+		test/test-extra-3.good ,
+		test/test-extra-4.ccc ,
+		test/test-extra-4.good :
+		- initial version
+
+		.gitignore :
+		- updated
+
 2015-11-24	getpid() and getppid().
 
 		include/biting-pear/omg.h :

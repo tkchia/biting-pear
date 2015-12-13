@@ -15,6 +15,7 @@ u8tl		[\x80-\xbf]
 %x Wow
 %x Very
 %x Much
+%x Such
 
 %{
 #include <cerrno>
@@ -159,6 +160,13 @@ static void flush_str()
 				curr_str_enc = "";
 				BEGIN(Much);
 			}
+"$"{ws}\"		{
+				blurt(yytext + 1, yyleng - 2);
+				blurfl("::biting_pear::dawg<0x%" PRIx64
+				    ",0,", generator());
+				curr_str_enc = "";
+				BEGIN(Such);
+			}
 "["{ws}"]"{ws}L{ws}\"	{
 				char *p = strchr(yytext + 1, ']'),
 				     *q = strchr(p + 1, 'L'),
@@ -168,6 +176,16 @@ static void flush_str()
 				blurt(q + 1, r - q - 1);
 				curr_str_enc = "L";
 				BEGIN(Much);
+			}
+"$"{ws}L{ws}\"		{
+				char *p = strchr(yytext + 1, 'L'),
+				     *q = yytext + yyleng - 1;
+				blurt(yytext + 1, p - yytext - 1);
+				blurt(p + 1, q - p - 1);
+				blurfl("::biting_pear::yodawg<0x%" PRIx64
+				    ",0,", generator());
+				curr_str_enc = "L";
+				BEGIN(Such);
 			}
 "["{ws}"]"{ws}[uUR]	{
 				die("[]u\"\", []u8\"\", []U\"\", and "
@@ -181,7 +199,9 @@ static void flush_str()
 "["{ws}"]"{ws}L{ws}	|
 "["{ws}"]"{ws}		|
 "["{ws}			|
-[^\"'#?\[\n]+		|
+"$"{ws}L{ws}		|
+"$"{ws}			|
+[^\"'#$?\[\n]+		|
 \"([^\"\\\n]|\\{any})*\"	|
 \"([^\"\\\n]|\\{any})*\\	|
 \"([^\"\\\n]|\\{any})*		|
@@ -228,17 +248,17 @@ static void flush_str()
 				BEGIN(INITIAL);
 			}
 
-<Much>[^\"'\\\n\x80-\xff]		|
-<Much>\\[^01234567xXuU]			|
-<Much>\\{od}{od}?{od}?			|
-<Much>\\[xX]{xd}+			|
-<Much>[\xc2-\xdf]{u8tl}			|
-<Much>\xe0[\xa0-\xbf][\x80-\xbf]	|
-<Much>[\xe1-\xec\xee\xef]{u8tl}{u8tl}	|
-<Much>\xed[\x80-\x9f]{u8tl}		|
-<Much>\xf0[\x90-\xbf]{u8tl}{u8tl}	|
-<Much>[\xf1-\xf3]{u8tl}{u8tl}{u8tl}	|
-<Much>\xf4[\x80-\x8f]{u8tl}{u8tl}	{
+<Much,Such>[^\"'\\\n\x80-\xff]			|
+<Much,Such>\\[^01234567xXuU]			|
+<Much,Such>\\{od}{od}?{od}?			|
+<Much,Such>\\[xX]{xd}+				|
+<Much,Such>[\xc2-\xdf]{u8tl}			|
+<Much,Such>\xe0[\xa0-\xbf][\x80-\xbf]		|
+<Much,Such>[\xe1-\xec\xee\xef]{u8tl}{u8tl}	|
+<Much,Such>\xed[\x80-\x9f]{u8tl}		|
+<Much,Such>\xf0[\x90-\xbf]{u8tl}{u8tl}		|
+<Much,Such>[\xf1-\xf3]{u8tl}{u8tl}{u8tl}	|
+<Much,Such>\xf4[\x80-\x8f]{u8tl}{u8tl}	{
 				/*
 				 * The above UTF-8 patterns are from the
 				 * flex 2.5.35 info file (A.4.2).  They
@@ -250,8 +270,8 @@ static void flush_str()
 				 */
 				curr_str_chars.push_back(yytext);
 			}
-<Much>\\u{xd}{xd}?{xd}?{xd}?	|
-<Much>\\U{xd}{xd}?{xd}?{xd}?{xd}?{xd}?{xd}?{xd}? {
+<Much,Such>\\u{xd}{xd}?{xd}?{xd}?		|
+<Much,Such>\\U{xd}{xd}?{xd}?{xd}?{xd}?{xd}?{xd}?{xd}? {
 				unsigned long code = std::strtoul(yytext + 2,
 				    0, 16);
 				unsigned char ucode[7], *p = ucode + 7,
@@ -275,34 +295,40 @@ static void flush_str()
 					curr_str_chars.push_back((char *)p);
 				}
 			}
-<Much>'			{ curr_str_chars.push_back("\\'"); }
-<Much>\n				|
-<Much>\\				|
-<Much>\\[xXuU]				|
-<Much>[\x80-\xbf\xfe-\xff]		|
-<Much>[\xc0-\xdf]			|
-<Much>[\xe0-\xef]{u8tl}?		|
-<Much>[\xf0-\xf7]{u8tl}?{u8tl}?		|
-<Much>[\xf8-\xfb]{u8tl}?{u8tl}?{u8tl}?	|
-<Much>[\xfc-\xfd]{u8tl}?{u8tl}?{u8tl}?{u8tl}? {
+<Much,Such>'		{ curr_str_chars.push_back("\\'"); }
+<Much,Such>\n					|
+<Much,Such>\\					|
+<Much,Such>\\[xXuU]				|
+<Much,Such>\"{ws}L{ws}				|
+<Much,Such>[\x80-\xbf\xfe-\xff]			|
+<Much,Such>[\xc0-\xdf]				|
+<Much,Such>[\xe0-\xef]{u8tl}?			|
+<Much,Such>[\xf0-\xf7]{u8tl}?{u8tl}?		|
+<Much,Such>[\xf8-\xfb]{u8tl}?{u8tl}?{u8tl}?	|
+<Much,Such>[\xfc-\xfd]{u8tl}?{u8tl}?{u8tl}?{u8tl}? {
 				die("weirdness in string");
 			}
-<Much>\"{ws}\"		{ blurt(yytext + 1, yyleng - 2); }
-<Much>\"{ws}L{ws}\"	{
+<Much,Such>\"{ws}\"		{ blurt(yytext + 1, yyleng - 2); }
+<Much,Such>\"{ws}L{ws}\"	{
 				char *p = strchr(yytext + 1, 'L'),
 				     *q = yytext + yyleng - 1;
 				blurt(yytext + 1, p - yytext - 1);
 				blurt(p + 1, q - p - 1);
 				curr_str_enc = "L";
 			}
-<Much>\"{ws}[uUR]	{
+<Much,Such>\"{ws}[uUR]	{
 				die("[]u\"\", []u8\"\", []U\"\", and "
 				    "[]R\"\" not supported");
 			}
-<Much>\"{ws}		|
-<Much>\"{ws}L{ws}	{
+<Much>\"{ws}		{
 				blurt(yytext + 1, yyleng - 1);
 				flush_str();
+				BEGIN(INITIAL);
+			}
+<Such>\"{ws}		{
+				blurt(yytext + 1, yyleng - 1);
+				flush_str();
+				blurt(">()", 3);
 				BEGIN(INITIAL);
 			}
 
