@@ -1,3 +1,26 @@
+2015-12-26	And now for something remotely different.
+
+		util/biting-pear-doge.ccc :
+		- initial draft
+
+		GNUmakefile :
+		- now builds util/biting-pear-doge
+
+		configure :
+		- now probes for GNU BFD library
+
+		include/biting-pear/dawg.h :
+		- biting_pear::dawg_impl<...> now has default and copy
+		  constructors
+		- reduced template recursion levels, to make compilation
+		  tractable
+
+		lolwutconf/c++.inc :
+		- added conf_cxx_probe_lib()
+
+		.gitignore :
+		- updated
+
 2015-12-13	Syntactic sugar for strings.
 
 		helper/postpreproc.lxx :

@@ -1,9 +1,10 @@
 #!/bin/sh
 
 conf__cxx_chk_compiler_with() {
-	local cxxflags prog src res line
+	local cxxflags ldlibs prog src res line
 	cxxflags="$1"
-	shift
+	ldlibs="$2"
+	shift 2
 	prog="`conf__mktemp lolwutconf`"
 	src="$prog.cc"
 	(
@@ -12,7 +13,7 @@ conf__cxx_chk_compiler_with() {
 		echo 'int main() { return 0; }'
 	) >"$src"
 	res=0
-	if $CXX $CPPFLAGS $cxxflags $LDFLAGS -o"$prog" "$src" $LDLIBS \
+	if $CXX $CPPFLAGS $cxxflags $LDFLAGS -o"$prog" "$src" $ldlibs \
 	    >/dev/null 2>&1; then
 		$conf_Host_exec ./"$prog" >/dev/null 2>&1
 	else
@@ -100,7 +101,7 @@ conf_cxx_chk_compiler_and_executor() {
 		conf_Host_exec=
 		if test -z "$conf_Cross_tag"; then
 			:	# nothing to do
-		elif conf__cxx_chk_compiler_with "$CXXFLAGS"; then
+		elif conf__cxx_chk_compiler_with "$CXXFLAGS" "$LDLIBS"; then
 			:	# nothing to do too -- no need for a separate
 				# program to run host-side commands
 		else
@@ -138,7 +139,7 @@ conf_cxx_chk_compiler_and_executor() {
 	fi
 	conf__blare_res "${conf_Host_exec:-(blank)}"
 	conf__blare_test 'checking if C++ compiler and executor for host work'
-	if conf__cxx_chk_compiler_with "$CXXFLAGS"; then
+	if conf__cxx_chk_compiler_with "$CXXFLAGS" "$LDLIBS"; then
 		conf__blare_res yes
 		conf_Have_cxx_compiler=yes
 	else
@@ -150,8 +151,9 @@ conf_cxx_chk_compiler_and_executor() {
 		    'checking command to enable Thumb mode for host'
 		# g++ normally only gives a warning if Thumb mode is not
 		# available.  Turn the warning into an error.
-		if conf__cxx_chk_compiler_with "$CXXFLAGS -mthumb -Werror";
-		then	CXXFLAGS="$CXXFLAGS -mthumb"
+		if conf__cxx_chk_compiler_with "$CXXFLAGS -mthumb -Werror" \
+		    "$LDLIBS"; then
+			CXXFLAGS="$CXXFLAGS -mthumb"
 			conf__blare_res "$CXX $CPPFLAGS $CXXFLAGS"
 			return 0
 		fi
@@ -169,7 +171,7 @@ conf_cxx_probe_cxx11() {
 	conf__blare_test 'checking command to enable C++11 support for host'
 	conf__add_var conf_Have_cxx11_compiler
 	for extra in '' '-std=c++11' '-std=c++0x'; do
-		if conf__cxx_chk_compiler_with "$CXXFLAGS $extra" \
+		if conf__cxx_chk_compiler_with "$CXXFLAGS $extra" "$LDLIBS" \
 		    '#if __cplusplus < 201103L' '#error' '#endif'; then
 			CXXFLAGS="$CXXFLAGS $extra"
 			conf__blare_res "$CXX $CPPFLAGS $CXXFLAGS"
@@ -193,12 +195,40 @@ conf_cxx_probe_typ() {
 		then return 0; fi
 	conf__add_var "$var"
 	conf__blare_test "testing for host-side C++ type $typ"
-	if conf__cxx_chk_compiler_with "$CXXFLAGS" ${1+"$@"} \
+	if conf__cxx_chk_compiler_with "$CXXFLAGS" "$LDLIBS" ${1+"$@"} \
 	    "typedef $typ conf_foo_t;"
 	then	eval $var=yes
 	else	eval $var=no
 	fi
 	eval conf__blare_res \"\$$var\"
+}
+
+conf_cxx_probe_lib() {
+	local family libs lib
+	conf_cxx_chk_compiler_and_executor
+	if conf__in_help_mode
+		then return 0; fi
+	family="$1"
+	libs="$2"
+	shift 2
+	var="conf_Have_cxx_lib_`echo "$family" | \
+	    sed 's/[^a-zA-Z0-9]/_/g'`"
+	if eval test -n \"\$$var\"
+		then return 0; fi
+	conf__add_var "$var"
+	eval $var=no
+	for lib in $libs; do
+		conf__blare_test "testing for host-side library $lib"
+		if conf__cxx_chk_compiler_with "$CXXFLAGS" "-l$lib $LDLIBS" \
+		    ${1+"$@"}; then
+			LDLIBS="-l$lib $LDLIBS"
+			conf__blare_res yes
+			eval $var=yes
+			break
+		else
+			conf__blare_res no
+		fi
+	done
 }
 
 conf_cxx_chk_typ() {
@@ -262,7 +292,7 @@ conf_cxx_probe_var_tpls()
 		then return 0; fi
 	conf__add_var conf_Have_cxx_var_tpls
 	conf__blare_test 'checking if C++ compiler does variadic templates'
-	if conf__cxx_chk_compiler_with "$CXXFLAGS" ${1+"$@"} \
+	if conf__cxx_chk_compiler_with "$CXXFLAGS" "$LDLIBS" ${1+"$@"} \
 	    'template<class... T> class foo_t { };' \
 	    'template<int... V> class bar_t { };' \
 	    'extern foo_t<int, char, void *> foo;' \
@@ -282,7 +312,7 @@ conf_cxx_probe_decltype()
 		then return 0; fi
 	conf__add_var conf_Have_cxx_decltype
 	conf__blare_test "checking if C++ compiler understands decltype"
-	if conf__cxx_chk_compiler_with "$CXXFLAGS" ${1+"$@"} \
+	if conf__cxx_chk_compiler_with "$CXXFLAGS" "$LDLIBS" ${1+"$@"} \
 	    'extern int foo;' \
 	    'extern decltype(foo << 1) bar;'
 	then	conf_Have_cxx_decltype=yes

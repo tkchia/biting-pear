@@ -23,16 +23,19 @@ tests = \
     test/test-2 \
     test/test-3
 ifeq "$(conf_Have_cxx_var_tpls)" "yes"
-tests += \
-    test/test-extra-1 \
-    test/test-extra-2 \
-    test/test-extra-3 \
-    test/test-extra-4
+    tests += test/test-extra-1 test/test-extra-2 test/test-extra-3 \
+	test/test-extra-4
+endif
+utils =
+ifeq "$(conf_Have_cxx_typ_struct_bfd)" "yes"
+    ifeq "$(conf_Have_cxx_lib_bfd)" "yes"
+	utils += util/biting-pear-doge
+    endif
 endif
 
 default all: check
 
-check: $(tests:=.passed)
+check: $(tests:=.passed) $(utils)
 
 install: $(headers)
 	install -d $(includedir)/biting-pear
@@ -48,9 +51,9 @@ clean:
 	find . -name '*.[ios]' -o -name '*~' | \
 	    xargs rm -f config.cache $(config.h) helper/postpreproc.cc \
 		helper/postpreproc helper/crc64 lex.backup \
-		$(tests) $(tests:=.passed)
+		$(tests) $(tests:=.passed) $(utils)
 ifeq "$(separate_build_dir)" "yes"
-	-rmdir helper test
+	-rmdir helper test util
 endif
 
 distclean: clean
@@ -112,6 +115,11 @@ test/test-%: test/test-%.o
 
 test/test-%.o: test/test-%.i
 
+util/%.o: util/%.i
+
+util/%: util/%.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)
+
 %.o: %.i
 	$(CXX) $(CXXFLAGS) -c -o$@ $<
 
@@ -139,4 +147,4 @@ helper/postpreproc.cc: helper/postpreproc.lxx
 
 .PHONY: test/test-%.passed
 
-.PRECIOUS: config.cache %.i %.cc %.s %.o helper/% $(tests)
+.PRECIOUS: config.cache %.i %.cc %.s %.o helper/% $(tests) $(utils)

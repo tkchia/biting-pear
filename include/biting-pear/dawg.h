@@ -25,6 +25,12 @@ class dawg_impl<State, CT, Flags>
 {
     public:
 	__attribute__((always_inline))
+	dawg_impl()
+		{ }
+	__attribute__((always_inline))
+	dawg_impl(const dawg_impl<State, CT, Flags>& x)
+		{ }
+	__attribute__((always_inline))
 	static CT front()
 		{ __builtin_unreachable(); }
 	__attribute__((always_inline))
@@ -46,14 +52,23 @@ class dawg_impl<State, CT, Flags, Ch, Chs...>
 	typedef dawg_impl<State4, CT, Flags, Chs...> rest_type;
     public:
 	__attribute__((always_inline))
+	dawg_impl()
+		{ }
+	__attribute__((always_inline))
+	dawg_impl(const dawg_impl<State, CT, Flags, Ch, Chs...>& x)
+		{ }
+	__attribute__((always_inline))
 	static CT front()
 	{
+		static constexpr unsigned Levels =
+		    ((State ^ NewState) >> 48 & 7) <= 2 ? 2u : 1u;
 		if (sizeof(CT) == sizeof(char))
-			return (CT)(PCT)kthxbai<NewState, PCT, Flags>(
-			    (pick_hi<PCT>(State3^State4) & ~(PCT)UCHAR_MAX) |
-			    ((PCT)Ch & UCHAR_MAX));
+			return (CT)(PCT)kthxbai<NewState, PCT, Flags, Levels>
+			    ((pick_hi<PCT>(State3^State4) & ~(PCT)UCHAR_MAX) |
+				((PCT)Ch & UCHAR_MAX));
 		else
-			return (CT)(PCT)kthxbai<NewState, PCT, Flags>(Ch);
+			return (CT)(PCT)kthxbai<NewState, PCT, Flags, Levels>
+			    (Ch);
 	}
 	__attribute__((always_inline))
 	static rest_type rest()
@@ -93,7 +108,7 @@ inline std::basic_ostream<CT>& operator<<(std::basic_ostream<CT>& os,
 	    State3 = biting_pear::impl::update_inner(State2),
 	    NewState2 = biting_pear::impl::update_outer(State3);
 	typedef std::basic_ostream<CT>& FT(std::basic_ostream<CT>&, CT);
-	biting_pear::impl::kthxbai<NewState2, FT *, Flags>
+	biting_pear::impl::kthxbai<NewState2, FT *, Flags, 1u>
 	    f(static_cast<FT *>(&std::operator<<));
 	return f(os, s.front()) << s.rest();
 }

@@ -1,0 +1,282 @@
+#include <cstring>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <utility>
+#include <bfd.h>
+#include <biting-pear/dawg.h>
+
+template<class... Ts>
+__attribute__((always_inline))
+inline void excite(Ts...);
+
+__attribute__((always_inline))
+inline void excite()
+{
+}
+
+template<class T, class... Ts>
+__attribute__((always_inline))
+inline void excite(T x, Ts... xs)
+{
+	std::cerr << x;
+	excite(xs...);
+}
+
+template<class... Ts>
+__attribute__((always_inline))
+inline void very(Ts... xs)
+{
+	std::ios_base::fmtflags fl = std::cerr.flags();
+	excite(xs...);
+	std::cerr.flags(fl);
+}
+
+__attribute__((noinline))
+static void amaze()
+{
+	std::cerr << std::endl;
+	throw 1;
+}
+
+__attribute__((noinline))
+static void such()
+{
+	std::cerr << $"( ) failed: " << bfd_errmsg(bfd_get_error());
+	amaze();
+}
+
+template<class... Ts>
+__attribute__((always_inline))
+inline void much(Ts... msg)
+{
+	std::cerr << "ERROR: ";
+	very(msg...);
+	such();
+}
+
+template<class... Ts>
+__attribute__((always_inline))
+inline void many(Ts... msg)
+{
+	std::cerr << "ERROR: ";
+	very(msg...);
+	amaze();
+}
+
+template<class... Ts>
+inline void wow(Ts...);
+
+template<class... Ts>
+__attribute__((always_inline))
+inline void wow(Ts... msg)
+{
+	std::cerr << "INFO: ";
+	very(msg...);
+	std::cerr << std::endl;
+}
+
+static void check_object(bfd *ibfd)
+{
+	if (!bfd_check_format(ibfd, bfd_object))
+		much($"bfd_check_format");
+	const char *tgt = bfd_get_target(ibfd);
+	wow($"input file is for target ", tgt);
+	flagword fl = bfd_get_file_flags(ibfd);
+	if ((fl & HAS_RELOC) != 0)
+		many($"unsupported: object with relocation entries");
+	if (bfd_get_flavour(ibfd) == bfd_target_coff_flavour &&
+	    std::strncmp(tgt, "pei-", (size_t)4) == 0)
+		many($"unsupported: Windows PE object");
+}
+
+static void prep_sxn(bfd *ibfd, asection *isxn, void *cookie)
+{
+	bfd *obfd = (bfd *)cookie;
+	const char *name = bfd_section_name(ibfd, isxn);
+	flagword flags = bfd_get_section_flags(ibfd, isxn);
+	bfd_vma vma = bfd_section_vma(ibfd, isxn),
+		lma = bfd_section_lma(ibfd, isxn);
+	std::ostringstream oss;
+	wow($"\t", name, $": vma 0x", std::hex, vma,
+	    $", lma 0x", lma);
+	asection *osxn = bfd_make_section_anyway_with_flags(obfd,name,flags);
+	if (!osxn)
+		much($"bfd_make_section_anyway_with_flags");
+	if (!bfd_set_section_size(obfd, osxn, bfd_section_size(ibfd, isxn)))
+		much($"bfd_set_section_size");
+	if (!bfd_set_section_vma(obfd, osxn, vma))
+		much($"bfd_set_section_vma");
+	osxn->lma = lma;
+	if (!bfd_set_section_alignment(obfd, osxn,
+	    bfd_section_alignment(ibfd, isxn)))
+		much($"bfd_set_section_alignment");
+	isxn->output_section = osxn;
+	isxn->output_offset = 0;
+	if (!bfd_copy_private_section_data(ibfd, isxn, obfd, osxn))
+		much($"bfd_copy_private_section_data");
+}
+
+/* per phrack.org/issues/56/9.html */
+static void do_frob_1(bfd *ibfd, bfd *obfd)
+{
+	wow($"copying basic object attributes");
+	if (!bfd_set_format(obfd, bfd_get_format(ibfd)))
+		much($"bfd_set_format");
+	flagword fl = bfd_get_file_flags(ibfd);
+	if (!bfd_set_file_flags(obfd, fl & bfd_applicable_file_flags(obfd)))
+		much($"bfd_set_file_flags");
+	if (!bfd_set_start_address(obfd, bfd_get_start_address(ibfd)))
+		much($"bfd_set_start_address");
+	if (!bfd_set_arch_mach(obfd, bfd_get_arch(ibfd), bfd_get_mach(ibfd)))
+		much($"bfd_set_arch_mach");
+}
+
+static void do_frob_2(bfd *ibfd, bfd *obfd)
+{
+	wow($"preparing sections");
+	bfd_map_over_sections(ibfd, prep_sxn, obfd);
+}
+
+static void check_symbol(bfd *ibfd, asymbol *sym, const char *nm)
+{
+	if (!sym)
+		many($"symbol ", nm, $" is not defined");
+	asection *sxn = sym->section;
+	const char *name = bfd_section_name(ibfd, sxn);
+	if (bfd_is_const_section(sxn))
+		many($"symbol ", nm, $" is in special section ", name);
+	if ((bfd_get_section_flags(ibfd, sxn) & SEC_HAS_CONTENTS) == 0)
+		many($"symbol ", nm, $" is in non-content (possibly BSS) "
+		      "section ", name);
+	symvalue val = sym->value;
+	wow($"symbol ", nm, $" = ", name, ' ', val < 0 ? '-' : '+',
+	    $" 0x", std::hex, val < 0 ? -val : val);
+	if (val < 0 || val > bfd_section_size(ibfd, sxn))
+		many($"symbol ", nm, $" lies outside section content");
+}
+
+/* per phrack.org/issues/56/9.html */
+static void do_frob_3(bfd *ibfd, bfd *obfd, const char *bnm, const char *enm,
+    asymbol **p_bsym, asymbol **p_esym)
+{
+	*p_bsym = *p_esym = 0;
+	wow($"copying and scanning symbol table");
+	long symtab_sz = bfd_get_symtab_upper_bound(ibfd), n_syms, i;
+	if (symtab_sz < 0 || symtab_sz > SSIZE_MAX)
+		much($"bfd_get_symtab_upper_bound");
+	if (symtab_sz > SSIZE_MAX)
+		many($"bfd_get_symtab_upper_bound( ) returns bogus symbol "
+		      "table size");
+	asymbol **syms = new asymbol *[(symtab_sz + sizeof(asymbol *) - 1)
+	    / sizeof(asymbol *)];
+	n_syms = bfd_canonicalize_symtab(ibfd, syms);
+	if (n_syms < 0)
+		much($"bfd_canonicalize_symtab");
+	if (!bfd_set_symtab(obfd, syms, n_syms))
+		much($"bfd_set_symtab");
+	for (i = 0; i < n_syms; ++i) {
+		asymbol *sym = syms[i];
+		if (bfd_is_local_label(ibfd, sym) ||
+		    bfd_is_target_special_symbol(ibfd, sym))
+			continue;
+		if (std::strcmp(sym->name, bnm) == 0)
+			*p_bsym = sym;
+		if (std::strcmp(sym->name, enm) == 0)
+			*p_esym = sym;
+	}
+	check_symbol(ibfd, *p_bsym, bnm);
+	check_symbol(ibfd, *p_esym, enm);
+	if ((*p_bsym)->section != (*p_esym)->section)
+		many($"symbols ", bnm, $" and ", enm,
+		     $"are in different sections");
+	if ((*p_bsym)->value > (*p_esym)->value)
+		many($"symbol ", enm, $" is before ", bnm);
+}
+
+static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
+{
+	bfd *obfd = (bfd *)cookie;
+	asection *osxn = isxn->output_section;
+	wow($"\t", bfd_section_name(ibfd, osxn));
+	if ((bfd_get_section_flags(ibfd, isxn) & SEC_HAS_CONTENTS) == 0)
+		return;
+	bfd_size_type sz = bfd_section_size(ibfd, isxn);
+	if (sz) {
+		unsigned char stuff[sz];
+		if (!bfd_get_section_contents(ibfd, isxn, stuff, 0, sz))
+			much($"bfd_get_section_contents");
+		if (!bfd_set_section_contents(obfd, osxn, stuff, 0, sz))
+			much($"bfd_set_section_contents");
+	}
+}
+
+/* per phrack.org/issues/56/9.html */
+static void do_frob_4(bfd *ibfd, bfd *obfd, asymbol *bsym, asymbol *esym)
+{
+	wow($"copying sections");
+	bfd_map_over_sections(ibfd, copy_sxn, obfd);
+	asection *osxn = bsym->section->output_section;
+	wow($"frobbing section ", bfd_section_name(obfd, osxn));
+	file_ptr off = bsym->value;
+	bfd_size_type sz = esym->value - bsym->value;
+	unsigned char stuff[sz];
+	if (!bfd_get_section_contents(obfd, osxn, stuff, off, sz))
+		much($"bfd_get_section_contents");
+	memfrob(stuff, sz);
+	if (!bfd_set_section_contents(obfd, osxn, stuff, off, sz))
+		much($"bfd_set_section_contents");
+}
+
+/* per phrack.org/issues/56/9.html */
+static void do_frob_5(bfd *ibfd, bfd *obfd)
+{
+	wow($"copying BFD back-end data");
+	if (!bfd_copy_private_bfd_data(ibfd, obfd))
+		much($"bfd_copy_private_bfd_data");
+}
+
+static void copy_and_frob_object(bfd *ibfd, bfd *obfd, const char *bnm,
+    const char *enm)
+{
+	asymbol *bsym, *esym;
+	do_frob_1(ibfd, obfd);
+	do_frob_2(ibfd, obfd);
+	do_frob_3(ibfd, obfd, bnm, enm, &bsym, &esym);
+	do_frob_4(ibfd, obfd, bsym, esym);
+	do_frob_5(ibfd, obfd);
+}
+
+int main(int argc, char **argv)
+{
+	bfd *ibfd = 0, *obfd = 0;
+	int exit_status = 0;
+	bfd_init();
+	try {
+		if (argc != 5) {
+			std::cerr << $"ERROR: invalid arguments\n";
+			return 1;
+		}
+		const char *ifn = argv[1], *ofn = argv[2],
+		    *bnm = argv[3], *enm = argv[4];
+		ibfd = bfd_openr(ifn, 0);
+		if (!ibfd)
+			much($"bfd_openr");
+		check_object(ibfd);
+		obfd = bfd_openw(ofn, bfd_get_target(ibfd));
+		if (!obfd)
+			much($"bfd_openw");
+		copy_and_frob_object(ibfd, obfd, bnm, enm);
+		bfd_boolean closed = bfd_close(obfd);
+		obfd = 0;
+		if (!closed)
+			much($"bfd_close");
+		wow($"done");
+	} catch (int s)
+		{ exit_status = s; }
+	if (ibfd)
+		bfd_close(ibfd);
+	if (obfd)
+		bfd_close(obfd);
+	return exit_status;
+}
