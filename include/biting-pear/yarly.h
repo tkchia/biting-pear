@@ -61,7 +61,7 @@ class yarly<State, T, BigBad, Flags, 0u> :
 		     T x7 = super::DefX7, T x8 = super::DefX8,
 		     T x9 = super::DefX9)
 	{
-		switch ((State ^ super::State2) >> 48 % 16) {
+		switch (((State ^ super::State2) >> 48) % 16) {
 		    case 1:	return x1;
 		    case 2:	return x2;
 		    case 3:	return x3;
@@ -100,7 +100,7 @@ class yarly : public yarly_impl<State, T, BigBad, Flags, Levels>
 		    (x1, x2, x3, x4, x5, x6, x7, x8, x9);
 		T y2 = yarly<super::NewState, T, BigBad, Flags, Levels - 1>()
 		    (x1, x2, x3, x4, x5, x6, x7, x8, x9);
-		switch ((State ^ super::State2) >> 48 % 16) {
+		switch (((State ^ super::State2) >> 48) % 8) {
 		    case 0:	return y1 + y2;
 		    case 1:	return y1 - y2;
 		    case 2:	return y1 * y2;

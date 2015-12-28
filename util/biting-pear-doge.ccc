@@ -5,6 +5,7 @@
 #include <utility>
 #include <bfd.h>
 #include <biting-pear/dawg.h>
+#include <biting-pear/srsly.h>
 
 template<class... Ts>
 __attribute__((always_inline))
@@ -223,7 +224,7 @@ static void do_frob_4(bfd *ibfd, bfd *obfd, asymbol *bsym, asymbol *esym)
 	unsigned char stuff[sz];
 	if (!bfd_get_section_contents(obfd, osxn, stuff, off, sz))
 		much($"bfd_get_section_contents");
-	memfrob(stuff, sz);
+	biting_pear::srsly<unsigned char>(0).wut(stuff, stuff + sz);
 	if (!bfd_set_section_contents(obfd, osxn, stuff, off, sz))
 		much($"bfd_set_section_contents");
 }

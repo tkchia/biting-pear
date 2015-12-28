@@ -15,6 +15,8 @@ headers = \
     include/biting-pear/nowai.h \
     include/biting-pear/omg.h \
     include/biting-pear/orly.h \
+    include/biting-pear/rly.h \
+    include/biting-pear/srsly.h \
     include/biting-pear/yarly.h \
     include/biting-pear/yodawg.h \
     $(config.h)

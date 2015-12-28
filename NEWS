@@ -1,3 +1,19 @@
+2015-12-28	For great random.
+
+		include/biting-pear/rly.h ,
+		include/biting-pear/srsly.h :
+		- initial version
+
+		include/biting-pear/yarly.h :
+		- fixed really, really silly operator precedence bug
+		- fixed really, really silly modulo bug
+
+		util/biting-pear-doge.ccc :
+		- now uses srsly.h
+
+		GNUmakefile :
+		- added rly.h and srsly.h as header dependencies
+
 2015-12-26	And now for something remotely different.
 
 		util/biting-pear-doge.ccc :
