@@ -170,69 +170,50 @@ class srsly : public srsly_impl<T, Boreal>
 		{ return (*this)(x0, super::xd1_); }
 	T operator()()
 		{ return (*this)(super::xd0_); }
-    private:
-	void wut_t(T *p, T *q)
-	{
-		T y0,
-		  y1 = (*this)(),
-		  y2 = (*this)(y1),
-		  y3 = (*this)(y2, y1),
-		  y4 = (*this)(y3, y2, y1),
-		  y5 = (*this)(y4, y3, y2, y1),
-		  y6 = (*this)(y5, y4, y3, y2, y1),
-		  y7 = (*this)(y6, y5, y4, y3, y2, y1),
-		  y8 = (*this)(y7, y6, y5, y4, y3, y2, y1),
-		  y9 = (*this)(y8, y7, y6, y5, y4, y3, y2, y1);
-		if (sizeof(T) != 1)
-			q = p + (std::ptrdiff_t)(q - p);
-		while (p != q) {
-			y0 = (*this)(*p, y1, y2, y3, y4, y5, y6, y7, y8, y9);
-			y1 = y2;
-			y2 = y3;
-			y3 = y4;
-			y4 = y5;
-			y5 = y6;
-			y6 = y7;
-			y7 = y8;
-			y8 = y9;
-			*p++ = y9 = y0;
-		}
-	}
-	void wut_f(T *p, T *q)
-	{
-		T y0,
-		  y1 = (*this)(),
-		  y2 = (*this)(y1),
-		  y3 = (*this)(y2, y1),
-		  y4 = (*this)(y3, y2, y1),
-		  y5 = (*this)(y4, y3, y2, y1),
-		  y6 = (*this)(y5, y4, y3, y2, y1),
-		  y7 = (*this)(y6, y5, y4, y3, y2, y1),
-		  y8 = (*this)(y7, y6, y5, y4, y3, y2, y1),
-		  y9 = (*this)(y8, y7, y6, y5, y4, y3, y2, y1);
-		if (sizeof(T) != 1)
-			q = p + (std::ptrdiff_t)(q - p);
-		while (p != q) {
-			y0 = *p;
-			*p++ = (*this)(y0, y1, y2, y3, y4,
-				       y5, y6, y7, y8, y9);
-			y1 = y2;
-			y2 = y3;
-			y3 = y4;
-			y4 = y5;
-			y5 = y6;
-			y6 = y7;
-			y7 = y8;
-			y8 = y9;
-			y9 = y0;
-		}
-	}
-    public:
 	void wut(T *p, T *q)
 	{
-		if (Boreal)
-			wut_t(p, q);
-		else	wut_f(p, q);
+		T y0,
+		  y1 = (*this)(),
+		  y2 = (*this)(y1),
+		  y3 = (*this)(y2, y1),
+		  y4 = (*this)(y3, y2, y1),
+		  y5 = (*this)(y4, y3, y2, y1),
+		  y6 = (*this)(y5, y4, y3, y2, y1),
+		  y7 = (*this)(y6, y5, y4, y3, y2, y1),
+		  y8 = (*this)(y7, y6, y5, y4, y3, y2, y1),
+		  y9 = (*this)(y8, y7, y6, y5, y4, y3, y2, y1);
+		if (sizeof(T) != 1)
+			q = p + (std::ptrdiff_t)(q - p);
+		if (Boreal) {
+			while (p != q) {
+				y0 = (*this)(*p, y1, y2, y3, y4,
+					     y5, y6, y7, y8, y9);
+				y1 = y2;
+				y2 = y3;
+				y3 = y4;
+				y4 = y5;
+				y5 = y6;
+				y6 = y7;
+				y7 = y8;
+				y8 = y9;
+				*p++ = y9 = y0;
+			}
+		} else {
+			while (p != q) {
+				y0 = *p;
+				*p++ = (*this)(y0, y1, y2, y3, y4,
+					       y5, y6, y7, y8, y9);
+				y1 = y2;
+				y2 = y3;
+				y3 = y4;
+				y4 = y5;
+				y5 = y6;
+				y6 = y7;
+				y7 = y8;
+				y8 = y9;
+				y9 = y0;
+			}
+		}
 	}
 };
 
