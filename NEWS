@@ -1,3 +1,73 @@
+2016-01-03	Canadian cross.
+
+		.gitignore :
+		- updated
+
+		GNUmakefile :
+		- updated for "Canadian cross" setup
+		- updated names of helper programs
+		- now uses $(conf_Srcdir) etc. instead of $(srcdir) etc.
+
+		configure :
+		- updated for "Canadian cross" setup
+		- now probes precise type of wchar_t for host and target
+
+		lolwutconf/c++.common.inc :
+		- initial version; some routines split from lolwutconf/
+		  c++.inc
+
+		lolwutconf/c++.inc :
+		- updated for "Canadian cross" setup
+		- moved some logic out to lolwutconf/c++.common.inc
+		- conf_cxx_probe_endianness() now properly cleans up
+		  temporary file
+		- added conf_cxx_probe_wchar_typ()
+
+		lolwutconf/c++.target.inc :
+		- initial version; much code duplicated from lolwutconf/
+		  c++.inc
+
+		lolwutconf/configure.inc :
+		- updated for "Canadian cross" setup
+		- now uses $(conf_Srcdir) etc. instead of $(srcdir) etc.
+		- fixed silly bug in initial `unset'
+		- conf__mktemp() no longer uses `local -' --- bash
+		  does not understand it
+
+		lolwutconf/lolwutconf.mk :
+		- updated for "Canadian cross" setup
+		- now uses $(conf_Srcdir) etc. instead of $(srcdir) etc.
+
+		libexec/biting-pear/nomnom.cc :
+		- moved from helper/crc64.cc
+
+		libexec/biting-pear/omnomnom.lxx :
+		- moved from helper/postpreproc.lxx
+		- now checks host and target wchar_t compatibility for
+		  []L"..." and $L"..."
+
+		libexec/biting-pear/doge.ccc :
+		- moved from util/biting-pear-doge.ccc
+		- now includes <biting-pear/host/srsly.h> instead of
+		  <biting-pear/srsly.h>
+
+		include/biting-pear/bbq.h :
+		- now includes different configuration header files on
+		  host and target
+
+		include/biting-pear/host/rly.h :
+		- moved from include/biting-pear/rly.h
+
+		include/biting-pear/host/srsly.h :
+		- moved from include/biting-pear/srsly.h
+		- now includes <biting-pear/host/rly.h> instead of
+		  <biting-pear/rly.h>
+
+		include/biting-pear/lolwut.h ,
+		include/biting-pear/omg.h :
+		- now only uses certain __asm constructs when compiling
+		  with optimization
+
 2015-12-29	For great random.  (2)
 
 		include/biting-pear/srsly.h :

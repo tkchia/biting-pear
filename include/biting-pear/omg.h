@@ -51,21 +51,23 @@ struct omg_impl_0<State, 0u>
 #endif
 			break;
 		    default:
-#if defined __arm__ && defined __thumb__
+#ifdef __OPTIMIZE__
+#   if defined __arm__ && defined __thumb__
 			__asm __volatile(".inst.n %c0"
 			    : /* no outputs */
 			    : "n" ((uint32_t)pick_hi<uint16_t>(State^State2))
 			    : "memory");
-#elif defined __arm__
+#   elif defined __arm__ && defined __OPTIMIZE__
 			__asm __volatile(".inst %c0"
 			    : /* no outputs */
 			    : "n" (pick_hi<uint32_t>(State ^ State2))
 			    : "memory");
-#else
+#   else
 			__asm __volatile(".byte %c0"
 			    : /* no outputs */
 			    : "n" (pick_hi<uint8_t>(State ^ State2))
 			    : "memory");
+#   endif
 #endif
 		}
 	}

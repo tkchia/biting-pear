@@ -5,7 +5,7 @@
 #include <utility>
 #include <bfd.h>
 #include <biting-pear/dawg.h>
-#include <biting-pear/srsly.h>
+#include <biting-pear/host/srsly.h>
 
 template<class... Ts>
 __attribute__((always_inline))

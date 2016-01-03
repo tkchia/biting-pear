@@ -30,6 +30,8 @@ u8tl		[\x80-\xbf]
 #include <vector>
 #include <unistd.h>
 #include <boost/random/mersenne_twister.hpp>
+#define biting_pear_HOST_SIDE
+#include <biting-pear/bbq.h>
 
 static std::string curr_fn, curr_str_enc;
 static long curr_ln_off = 0;
@@ -120,6 +122,7 @@ static void flush_str()
 				blurfl("(char)%d", (int)wut[i]);
 			}
 		} else { /* L"" */
+#if biting_pear_TARGET_COMPATIBLE_WCHAR
 			std::mbstate_t state;
 			wchar_t wc;
 			const char *pnc = wut.c_str();
@@ -135,6 +138,10 @@ static void flush_str()
 					blurt(',');
 				blurfl("%ld", (long)wc);
 			}
+#else
+			die("internal error: host wchar_t incompatible with "
+			    "target wchar_t");
+#endif
 		}
 	}
 	curr_str_chars.clear();

@@ -3,7 +3,11 @@
 
 #include <cinttypes>
 #include <climits>
-#include <biting-pear/derp.h>
+#ifdef biting_pear_HOST_SIDE
+#   include <biting-pear/host/derp.h>
+#else
+#   include <biting-pear/derp.h>
+#endif
 
 namespace biting_pear
 {

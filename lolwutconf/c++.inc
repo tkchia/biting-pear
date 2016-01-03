@@ -1,26 +1,17 @@
 #!/bin/sh
 
+conf_mod c++.common
+
 conf__cxx_chk_compiler_with() {
-	local cxxflags ldlibs prog src res line
+	local cxxflags ldlibs
 	cxxflags="$1"
 	ldlibs="$2"
 	shift 2
-	prog="`conf__mktemp lolwutconf`"
-	src="$prog.cc"
-	(
-		for line in ${1+"$@"}
-			do echo "$line"; done
-		echo 'int main() { return 0; }'
-	) >"$src"
-	res=0
-	if $CXX $CPPFLAGS $cxxflags $LDFLAGS -o"$prog" "$src" $ldlibs \
-	    >/dev/null 2>&1; then
-		$conf_Host_exec ./"$prog" >/dev/null 2>&1
-	else
-		res=1
+	if conf__cxxc_chk_compiler_with "$CXX" "$CPPFLAGS" "$cxxflags" \
+	    "$LDFLAGS" "$ldlibs" "$conf_Host_exec" ${1+"$@"}
+	then	return 0
+	else	return $?
 	fi
-	rm -f "$prog" "$src"
-	return $res
 }
 
 conf__cxx_compile_prog() {
@@ -42,100 +33,25 @@ conf__cxx_compile_prog() {
 }
 
 conf_cxx_chk_compiler_and_executor() {
-	local save_ifs arch rest try_thumb ld_prefix
+	local save_ifs arch rest ld_prefix
 	if test -n "$conf_Have_cxx_compiler"
 		then return 0; fi
 	conf__add_var CXX CPPFLAGS CXXFLAGS LDFLAGS LDLIBS \
 	    conf_Have_cxx_compiler conf_Host_exec
 	if conf__in_help_mode
 		then return 0; fi
-	try_thumb=no
 	conf__blare_test 'deciding C++ compiler for host'
-	: "${CXXFLAGS=-O3}"
 	if test -n "$conf_Cross_tag" -a -z "$CXX"; then
-		# handle x86-32 platforms specially
-		case "$conf_Cross_tag" in
-		    i[3456]86-*)
-			if conf__app_exists "${conf_Cross_tag}g++"; then
-				CXX="${conf_Cross_tag}g++"
-			else
-				save_ifs="$IFS"
-				IFS=-
-				set '--' $conf_Cross_tag
-				arch="$1"
-				shift
-				rest="$*"
-				IFS="$save_ifs"
-				CXX="x86_64-$rest-g++"
-				CXXFLAGS="-m32 -march=$arch $CXXFLAGS"
-			fi;;
-		    armv[45678]*)
-			if conf__app_exists "${conf_Cross_tag}g++"; then
-				CXX="${conf_Cross_tag}g++"
-			else
-				save_ifs="$IFS"
-				IFS=-
-				set '--' $conf_Cross_tag
-				case "$2" in
-				    m | a | r)
-					arch="$1-$2"
-					shift 2;;
-				    *)
-					arch="$1"
-					shift;;
-				esac
-				rest="$*"
-				IFS="$save_ifs"
-				CXX="arm-$rest-g++"
-				CXXFLAGS="-march=$arch $CXXFLAGS"
-				try_thumb=yes
-			fi;;
-		    *)	CXX="${conf_Cross_tag}g++";;
-		esac
+		conf__cxxc_find_cross_compiler "$conf_Cross_tag" CXX CXXFLAGS
 	else
 		: "${CXX=g++}"
+		: "${CXXFLAGS=-O3}"
 	fi
 	conf__blare_res "$CXX $CPPFLAGS $CXXFLAGS"
 	conf__blare_test 'deciding host program executor'
 	if test set != "${conf_Host_exec+set}"; then
-		conf_Host_exec=
-		if test -z "$conf_Cross_tag"; then
-			:	# nothing to do
-		elif conf__cxx_chk_compiler_with "$CXXFLAGS" "$LDLIBS"; then
-			:	# nothing to do too -- no need for a separate
-				# program to run host-side commands
-		else
-			case "$conf_Cross_tag" in
-			    i[3456]86-*)
-				conf_Host_exec=qemu-i386;;
-			    armv[45678]* | arm-*)
-				conf_Host_exec=qemu-arm;;
-			    aarch64-* | armeb-* | cris-* | m68k-* | \
-			    microblaze-* | microblazeel-* | mips-* | \
-			    mips64-* | mips64el-* | mipsel-* | mipsn32-* | \
-			    mipsn32el-* | or32-* | ppc-* | ppc64-* | \
-			    ppc64abi32-* | s390x-* | sh4-* | sh4eb-* | \
-			    sparc-* | sparc32plus-* | sparc64-* | x86_64-*)
-				# the above pattern is not really tested...
-				save_ifs="$IFS"
-				set '--' $conf_Cross_tag
-				conf_Host_exec=qemu-"$1"
-				IFS="$save_ifs";;
-			    *)	# OK, we do not really know what to do here...
-				;;
-			esac
-			if test -n "$conf_Host_exec"; then
-				# we cannot really rely on `realpath' or
-				# `readlink' being available, so do this
-				# nasty thang...
-				ld_prefix="`$CXX $CXXFLAGS \
-				    -print-file-name=libc.so`"
-				ld_prefix="`echo "$ld_prefix" | \
-				    xargs dirname`"
-				ld_prefix="`cd "$ld_prefix" && cd .. && pwd`"
-				conf_Host_exec="$conf_Host_exec -L $ld_prefix"
-			fi
-		fi
+		conf__cxxc_find_execor "$conf_Cross_tag" "$CXX" "$CPPFLAGS" \
+		    "$CXXFLAGS" "$LDFLAGS" "$LDLIBS" conf_Host_exec
 	fi
 	conf__blare_res "${conf_Host_exec:-(blank)}"
 	conf__blare_test 'checking if C++ compiler and executor for host work'
@@ -146,19 +62,8 @@ conf_cxx_chk_compiler_and_executor() {
 		conf__blare_res no
 		conf__barf 'C++ compiler and/or executor does not work!'
 	fi
-	if test yes = "$try_thumb"; then
-		conf__blare_test \
-		    'checking command to enable Thumb mode for host'
-		# g++ normally only gives a warning if Thumb mode is not
-		# available.  Turn the warning into an error.
-		if conf__cxx_chk_compiler_with "$CXXFLAGS -mthumb -Werror" \
-		    "$LDLIBS"; then
-			CXXFLAGS="$CXXFLAGS -mthumb"
-			conf__blare_res "$CXX $CPPFLAGS $CXXFLAGS"
-			return 0
-		fi
-		conf__blare_res '(failed; continuing)'
-	fi
+	conf__cxxc_probe_thumb host "$CXX" "$CPPFLAGS" CXXFLAGS "$LDFLAGS" \
+	    "$LDLIBS" "$conf_Host_exec"
 }
 
 conf_cxx_probe_cxx11() {
@@ -272,26 +177,26 @@ conf_cxx_probe_endianness() {
 	    "}"
 	then
 		conf_Endianness_cxx="`$conf_Host_exec ./"$prog"`"
-		rm -f "$prog"
 		case "$conf_Endianness_cxx" in
 		    *-endian)	;;
-		    *)		conf_Endianness_cxx_=unknown;;
+		    *)		conf_Endianness_cxx=unknown;;
 		esac
 	else
 		conf_Endianness_cxx=unknown
 	fi
+	rm -f "$prog"
 	conf__blare_res "$conf_Endianness_cxx"
 }
 
-conf_cxx_probe_var_tpls()
-{
+conf_cxx_probe_var_tpls() {
 	conf_cxx_probe_cxx11
 	if conf__in_help_mode
 		then return 0; fi
 	if test -n "$conf_Have_cxx_var_tpls"
 		then return 0; fi
 	conf__add_var conf_Have_cxx_var_tpls
-	conf__blare_test 'checking if C++ compiler does variadic templates'
+	conf__blare_test \
+	    'checking if host-side C++ compiler does variadic templates'
 	if conf__cxx_chk_compiler_with "$CXXFLAGS" "$LDLIBS" ${1+"$@"} \
 	    'template<class... T> class foo_t { };' \
 	    'template<int... V> class bar_t { };' \
@@ -303,15 +208,15 @@ conf_cxx_probe_var_tpls()
 	conf__blare_res "$conf_Have_cxx_var_tpls"
 }
 
-conf_cxx_probe_decltype()
-{
+conf_cxx_probe_decltype() {
 	conf_cxx_probe_cxx11
 	if conf__in_help_mode
 		then return 0; fi
 	if test -n "$conf_Have_cxx_decltype"
 		then return 0; fi
 	conf__add_var conf_Have_cxx_decltype
-	conf__blare_test "checking if C++ compiler understands decltype"
+	conf__blare_test \
+	    "checking if host-side C++ compiler understands decltype"
 	if conf__cxx_chk_compiler_with "$CXXFLAGS" "$LDLIBS" ${1+"$@"} \
 	    'extern int foo;' \
 	    'extern decltype(foo << 1) bar;'
@@ -319,4 +224,44 @@ conf_cxx_probe_decltype()
 	else	conf_Have_cxx_decltype=no
 	fi
 	conf__blare_res "$conf_Have_cxx_decltype"
+}
+
+conf_cxx_probe_wchar_typ() {
+	conf_cxx_probe_cxx11
+	if conf__in_help_mode
+		then return 0; fi
+	if test -n "$conf_Typ_wchar_cxx"
+		then return 0; fi
+	conf__add_var conf_Typ_wchar_cxx
+	conf__blare_test 'checking host-side type equivalent to wchar_t'
+	prog="`conf__mktemp lolwutconf`"
+	if conf__cxx_compile_prog "$prog" \
+	    "#include <cstring>" \
+	    "#include <iostream>" \
+	    "using namespace std;" \
+	    "int main() {" \
+	    "  static const char16_t c16s[] = u\"\\u263a\\u0001f634\";" \
+	    "  static const char32_t c32s[] = U\"\\u263a\\U0001f634\";" \
+	    "  static const wchar_t wcs[] = L\"\\u263a\\U0001f634\";" \
+	    "  if (sizeof(c16s) == sizeof(wcs) &&" \
+	    "   memcmp(c16s, wcs, sizeof(c16s)) == 0)" \
+	    "    cout << \"char16_t\" << endl;" \
+	    "  else if (sizeof(c32s) == sizeof(wcs) &&" \
+	    "   memcmp(c32s, wcs, sizeof(c32s)) == 0)" \
+	    "    cout << \"char32_t\" << endl;" \
+	    "  else" \
+	    "    return 1;" \
+	    "  return 0;" \
+	    "}"
+	then
+		conf_Typ_wchar_cxx="`$conf_Host_exec ./"$prog"`"
+		case "$conf_Typ_wchar_cxx" in
+		    char16_t | char32_t)	;;
+		    *)				conf_Typ_wchar_cxx=unknown;;
+		esac
+	else
+		conf_Typ_wchar_cxx=unknown
+	fi
+	rm -f "$prog"
+	conf__blare_res "$conf_Typ_wchar_cxx"
 }

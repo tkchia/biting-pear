@@ -1,28 +1,15 @@
-VPATH = $(srcdir)
+VPATH = $(conf_Srcdir)
 
-export SHELL ?= /bin/sh
-export CC ?= gcc
-export CFLAGS ?= -std=c11 -O3 -fPIC -Wall
-export CXX ?= g++
-export CXXFLAGS ?= -std=c++11 -O3 -fPIC -Wall
-export CPPFLAGS ?= -I$(srcdir)/include
-export LEX ?= flex
-export LFLAGS ?= -CF -8 -b
-export CC_FOR_BUILD ?= $(CC)
-export CFLAGS_FOR_BUILD ?= $(CFLAGS)
-export CPPFLAGS_FOR_BUILD ?= $(CPPFLAGS)
-export CXX_FOR_BUILD ?= $(CXX)
-export CXXFLAGS_FOR_BUILD ?= $(CXXFLAGS)
-export LDFLAGS_FOR_BUILD ?= $(LDFLAGS)
-export LDLIBS_FOR_BUILD ?= $(LDLIBS)
+CPPFLAGS := -I$(conf_Srcdir)/include $(CPPFLAGS)
+CPPFLAGS_FOR_TARGET := -I$(conf_Srcdir)/include $(CPPFLAGS_FOR_TARGET)
 
-prefix ?= /usr/local
-ifeq "." "$(srcdir)"
-    separate_build_dir ?= no
+conf_Prefix ?= /usr/local
+ifeq "." "$(conf_Srcdir)"
+    conf_Separate_build_dir ?= no
 else
-    separate_build_dir ?= yes
+    conf_Separate_build_dir ?= yes
 endif
-includedir = $(prefix)/include
+includedir = $(conf_Prefix)/include
 
 .DEFAULT_GOAL := default
 

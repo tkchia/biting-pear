@@ -171,7 +171,7 @@ class lolwut_impl
 			      "X" (&&quux));
 		    quux:
 			break;
-#elif defined __arm__ && defined __thumb2__
+#elif defined __arm__ && defined __thumb2__ && defined __OPTIMIZE__
 		    case 1:
 			{
 				uintptr_t scratch;

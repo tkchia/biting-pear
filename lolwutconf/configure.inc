@@ -3,7 +3,7 @@
 set -e
 
 # unset any existing variables whose names begin with `conf_'
-eval "`set | sed '/^conf_/ { s,[^[:alnum:]_].*,,g; s,^,unset ,; p; }'`"
+eval "`set | sed -n '/^conf_/ { s,[^[:alnum:]_].*,,g; s,^,unset ,; p; }'`"
 
 conf__nl='
 '
@@ -45,20 +45,23 @@ conf__check_general_sanity() {
 }
 
 conf__mktemp() {
-	local - nm sfx
+	local nm sfx
 	if nm="`mktemp "$1".XXXXXXXXXX 2>/dev/null`"; then
 		echo "$nm"
 	else
-		set -C
-		sfx=$$
-		until : >"$1.$sfx" 2>/dev/null; do
-			sfx="$sfx+"
-			if test ${#sfx} -gt 1000; then
-				conf__barf "cannot create temporary file" \
-				    "with name starting $1...!"
-			fi
-		done
-		echo "$1.$sfx"
+		(
+			set -C
+			sfx=$$
+			until : >"$1.$sfx" 2>/dev/null; do
+				sfx="$sfx+"
+				if test ${#sfx} -gt 1000; then
+					conf__barf "cannot create" \
+					    "temporary file" \
+					    "with name starting $1...!"
+				fi
+			done
+			echo "$1.$sfx"
+		)
 	fi
 }
 
@@ -124,15 +127,34 @@ conf__help() {
 	me="`basename $0`"
 	conf__blare "usage:"
 	conf__blare "    $me [--srcdir=(dir)] [--prefix=(dir)] \\"
+    if test yes = "$conf_Is_canadian_cross"; then
+	conf__blare "        [--host=(platform)] [--host-exec=[(runner)]] \\"
+	conf__blare "        [--target-prefix=(dir)] \\"
+	conf__blare "        [--target=(platform)] [--target-exec=[(runner)]]"
+    else
 	conf__blare "        [--host=(platform)] [--host-exec=[(runner)]]"
+    fi
 	conf__blare
 	conf__blare "environment variables used:"
 	conf__blare_list "$conf_Use_vars"
 	conf__blare
 	conf__blare "cross compilation notes:"
+    if test yes = "$conf_Is_canadian_cross"; then
+	conf__blare "  * This project allows a \`Canadian cross' setup.  It"
+	conf__blare "    uses a \`build' platform to build development tools "
+	conf__blare "    for a \`host' platform, which can then create or"
+	conf__blare "    deal with programs for a \`target' platform.  Host ="
+	conf__blare "    build on default, and target = host on default."
+	conf__blare
+    fi
 	conf__blare "  * If you specify --host=(platform), \`$me' will look"
 	conf__blare "    for cross compilers named (platform)-g++, etc. if"
+    if test yes = "$conf_Is_canadian_cross"; then
+	conf__blare "    CXX is undefined.  Ditto for --target=(platform)."
+	conf__blare "    Also:"
+    else
 	conf__blare "    CXX is undefined.  Also:"
+    fi
 	conf__blare
 	conf__blare "    - If (platform) is i386-*, i486-*, i586-*, or"
 	conf__blare "      i686-*, e.g. i386-linux-gnu, \`$me' will also try"
@@ -146,11 +168,21 @@ conf__help() {
 	conf__blare "  * Alternatively, do not specify --host=, but provide"
 	conf__blare "    compiler settings in CXX, CXXFLAGS, etc."
 	conf__blare
+    if test yes = "$conf_Is_canadian_cross"; then
+	conf__blare "  * Instead of --target=, too, you can define"
+	conf__blare "    CXX_FOR_TARGET, CXXFLAGS_FOR_TARGET, etc."
+	conf__blare
+    fi
 	conf__blare "  * In addition, --host-exec=(runner) specifies a"
 	conf__blare "    command for running programs built for the host"
 	conf__blare "    system.  If --host= appears but not --host-exec,"
 	conf__blare "    \`$me' will try to look for a corresponding Qemu"
 	conf__blare "    user-mode emulator, e.g. qemu-arm."
+    if test yes = "$conf_Is_canadian_cross"; then
+	conf__blare
+	conf__blare "  * --target-exec=(runner) specifies a command for"
+	conf__blare "    running programs built for the target system."
+    fi
 }
 
 conf_begin() {
@@ -158,10 +190,14 @@ conf_begin() {
 	conf__check_general_sanity
 	conf_Srcdir=.
 	conf_Prefix=/usr/local
+	conf_Target_prefix=
 	conf_Cross_tag=
+	conf_Crosst_tag=
 	unset conf_Host_exec
-	conf_Use_vars=' '
+	conf_Use_vars=' conf_Srcdir conf_Prefix conf_Target_prefix '
+	conf_Use_mods=' '
 	conf_Mode=conf
+	conf_Is_canadian_cross=
 	for opt in ${1+"$@"}; do
 		conf__check_sane "$opt" arguments
 		case "$opt" in
@@ -170,9 +206,15 @@ conf_begin() {
 		    --prefix=?*)
 			conf_Prefix="`echo "$opt" | sed s,^[^=]*=,,`";;
 		    --host=?*)
-			conf_Cross_tag="`echo "$opt" | sed s,^[^=]*=,,`"-;;
+			conf_Cross_tag="`echo "$opt" | sed s,^[^=]*=,,`";;
 		    --host-exec=*)
 			conf_Host_exec="`echo "$opt" | sed s,^[^=]*=,,`";;
+		    --target-prefix=?*)
+			conf_Target_prefix="`echo "$opt" | sed s,^[^=]*=,,`";;
+		    --target=?*)
+			conf_Crosst_tag="`echo "$opt" | sed s,^[^=]*=,,`";;
+		    --target-exec=*)
+			conf_Target_exec="`echo "$opt" | sed s,^[^=]*=,,`";;
 		    *)	conf_Mode=help;;
 		esac
 	done
@@ -183,10 +225,17 @@ conf_begin() {
 conf_mod() {
 	local mod
 	for mod in ${1+"$@"}; do
-		if conf__in_help_mode; then :; else
-			conf__blare "reading $conf_Srcdir/lolwutconf/$mod.inc"
-		fi
-		. "$conf_Srcdir/lolwutconf/$mod.inc"
+		case "$conf_Use_mods" in
+		    *" $mod "*)
+			;;
+		    *)
+			if conf__in_help_mode; then :; else
+				conf__blare \
+				    "reading $conf_Srcdir/lolwutconf/$mod.inc"
+			fi
+			conf_Use_mods="$conf_Use_mods$mod "
+			. "$conf_Srcdir/lolwutconf/$mod.inc";;
+		esac
 	done
 }
 
@@ -200,25 +249,25 @@ conf_end() {
 	conf__blare 'writing config.cache'
 	: "${srcdir=`dirname "$0"`}"
 	if test \! . = "$conf_Srcdir" -a \! . -ef "$conf_Srcdir"; then
-		separate_build_dir=yes
+		conf_Separate_build_dir=yes
 	else
-		separate_build_dir=no
+		conf_Separate_build_dir=no
+	fi
+	conf__add_var conf_Separate_build_dir
+	if test -z "$conf_Target_prefix"; then
+		if test -n "$conf_Crosst_tag"; then
+			conf_Target_prefix="$conf_Prefix/$conf_Crosst_tag"
+		else	conf_Target_prefix="$conf_Prefix"
+		fi
 	fi
 	tmp="`conf__mktemp config.cache`"
 	(
 		echo "###### AUTOMATICALLY GENERATED `date` ######"
-		conf__say_single srcdir "$conf_Srcdir"
-		conf__say_single prefix "$conf_Prefix"
-		if test \! . = "$conf_Srcdir" -a \! . -ef "$conf_Srcdir"; then
-			conf__say_single separate_build_dir yes
-		else
-			conf__say_single separate_build_dir no
-		fi
 		for var in $conf_Use_vars
 			do conf__say $var; done
 	) >"$tmp"
 	mv "$tmp" config.cache
-	if test yes = "$separate_build_dir"; then
+	if test yes = "$conf_Separate_build_dir"; then
 		conf__blare "linking GNUmakefile to $conf_Srcdir/GNUmakefile"
 		rm -f GNUmakefile
 		if ln -s "$conf_Srcdir"/GNUmakefile GNUmakefile; then :; else
