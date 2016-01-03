@@ -57,7 +57,7 @@ struct omg_impl_0<State, 0u>
 			    : /* no outputs */
 			    : "n" ((uint32_t)pick_hi<uint16_t>(State^State2))
 			    : "memory");
-#   elif defined __arm__ && defined __OPTIMIZE__
+#   elif defined __arm__
 			__asm __volatile(".inst %c0"
 			    : /* no outputs */
 			    : "n" (pick_hi<uint32_t>(State ^ State2))
