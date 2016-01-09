@@ -1,3 +1,37 @@
+2016-01-09	Touch-ups.
+
+		GNUmakefile :
+		- now uses $conf_Host_exec when running $CXX_FOR_TARGET
+		- changed handling of target-side wchar_t
+		- `make clean' no longer zaps config.cache
+		- fixed bug in #define of biting_pear_decltype
+
+		configure :
+		- now looks for mbrtoc16(...) and mbrtoc32(...) in
+		  <cuchar> and <uchar.h>
+
+		libexec/biting-pear/omnomnom.lxx :
+		- changed handing of target-side wchar_t
+
+		lolwutconf/configure.inc :
+		- now looks for `seq' program
+		- now tries to derive target installation directory
+		  (--target-prefix=) more intelligently, with a
+		  conf__find_good_runtime_prefix() function
+		- now makes sure that host prefix (--prefix=) is absolute
+		- other minor fixes
+
+		lolwutconf/c++.common.inc :
+		- now uses conf__find_good_runtime_prefix() when determining
+		  host/target program executor command line
+
+		lolwutconf/c++.inc :
+		- added conf_cxx_probe_func()
+
+		lolwutconf/c++.target.inc :
+		- now uses $conf_Host_exec when running $CXX_FOR_TARGET
+		- fixed bug in conf_cxxt_probe_wchar_typ()
+
 2016-01-03	Canadian cross.
 
 		.gitignore :

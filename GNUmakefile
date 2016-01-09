@@ -68,7 +68,7 @@ uninstall:
 
 clean:
 	find . -name '*.[ios]' -o -name '*~' | \
-	    xargs rm -f config.cache $(config.h.host) $(config.h.target) \
+	    xargs rm -f $(config.h.host) $(config.h.target) \
 		lex.backup libexec/biting-pear/omnomnom.cc \
 		$(tests.target) $(utils.host)
 ifeq "$(conf_Separate_build_dir)" "yes"
@@ -96,6 +96,18 @@ $(config.h.host) $(config.h.target):
 	else \
 		echo '#include <inttypes.h>' >>$@.tmp; \
 	fi
+	if test \( \
+	    yes = '$(conf_Have_cxx_func_std__mbrtoc16)' -o \
+	    yes = '$(conf_Have_cxx_func_std__mbrtoc32)' \) -a \
+	    '$(config.h.host)' = '$@'; then \
+		echo '#include <cuchar>' >>$@.tmp; \
+	fi
+	if test \( \
+	    yes = '$(conf_Have_cxx_func___mbrtoc16)' -o \
+	    yes = '$(conf_Have_cxx_func___mbrtoc32)' \) -a \
+	    '$(config.h.host)' = '$@'; then \
+		echo '#include <uchar.h>' >>$@.tmp; \
+	fi
 	echo 'namespace biting_pear { namespace impl {' >>$@.tmp
 	if test '$(conf_Have_cxx_typ_std__uint_least64_t),$@' = \
 	    'yes,$(config.h.host)'; then \
@@ -106,15 +118,37 @@ $(config.h.host) $(config.h.target):
 	else \
 		echo 'using ::uint_least64_t;' >>$@.tmp; \
 	fi
-	echo '} }' >>$@.tmp
-	if test x'$@' = x'$(config.h.host)'; then \
-		if test '$(conf_Typ_wchar_cxx)' = '$(conf_Typ_wchar_cxxt)' \
-		     -a unknown != '$(conf_Typ_wchar_cxx)'; then \
-			echo '#define biting_pear_TARGET_COMPATIBLE_WCHAR 1';\
-		else \
-			echo '#define biting_pear_TARGET_COMPATIBLE_WCHAR 0';\
-		fi >>$@.tmp; \
+	if test 'yes,$(config.h.host)' = \
+	    '$(conf_Have_cxx_func_std__mbrtoc16),$@'; then \
+		echo 'using std::mbrtoc16;' >>$@.tmp; \
+	elif test 'yes,$(config.h.host)' = \
+	    '$(conf_Have_cxx_func___mbrtoc16),$@'; then \
+		echo 'using ::mbrtoc16;' >>$@.tmp; \
 	fi
+	if test 'yes,$(config.h.host)' = \
+	    '$(conf_Have_cxx_func_std__mbrtoc32),$@'; then \
+		echo 'using std::mbrtoc32;' >>$@.tmp; \
+	elif test 'yes,$(config.h.host)' = \
+	    '$(conf_Have_cxx_func___mbrtoc32),$@'; then \
+		echo 'using ::mbrtoc32;' >>$@.tmp; \
+	fi
+	echo '} }' >>$@.tmp
+ifeq "char16_t" "$(conf_Typ_wchar_cxxt)"
+	if test x'$@' = x'$(config.h.host)'; then \
+		echo "#define biting_pear_TARGET_WCHAR_IS_CHAR16 1"; \
+		echo "#undef biting_pear_TARGET_WCHAR_IS_CHAR32"; \
+	fi >>$@.tmp
+else ifeq "char32_t" "$(conf_Typ_wchar_cxxt)"
+	if test x'$@' = x'$(config.h.host)'; then \
+		echo "#undef biting_pear_TARGET_WCHAR_IS_CHAR16"; \
+		echo "#define biting_pear_TARGET_WCHAR_IS_CHAR32 1"; \
+	fi >>$@.tmp
+else
+	if test x'$@' = x'$(config.h.host)'; then \
+		echo "#undef biting_pear_TARGET_WCHAR_IS_CHAR16"; \
+		echo "#undef biting_pear_TARGET_WCHAR_IS_CHAR32"; \
+	fi >>$@.tmp
+endif
 	if test '$(conf_Have_cxx_var_tpls),$@' = 'yes,$(config.h.host)'; then\
 		echo '#define biting_pear_HAVE_CXX_VAR_TPLS 1' >>$@.tmp; \
 	elif test '$(conf_Have_cxxt_var_tpls),$@' = \
@@ -123,9 +157,9 @@ $(config.h.host) $(config.h.target):
 	else \
 		echo '#undef biting_pear_HAVE_CXX_VAR_TPLS' >>$@.tmp; \
 	fi
-	if test '$(conf_Have_cxx_decltype,$@)' = 'yes,$(config.h.host)'; then\
+	if test '$(conf_Have_cxx_decltype),$@' = 'yes,$(config.h.host)'; then\
 		echo '#define biting_pear_decltype decltype' >>$@.tmp; \
-	elif test '$(conf_Have_cxxt_decltype,$@)' = \
+	elif test '$(conf_Have_cxxt_decltype),$@' = \
 	    'yes,$(config.h.target)'; then\
 		echo '#define biting_pear_decltype decltype' >>$@.tmp; \
 	else \
@@ -152,8 +186,8 @@ test/test-%.passed: test/test-% test/test-%.good
 	@rm -f $(@:.passed=.1.tmp) $(@:.passed=.2.tmp)
 
 test/test-%: test/test-%.o
-	$(CXX_FOR_TARGET) $(CXXFLAGS_FOR_TARGET) $(LDFLAGS_FOR_TARGET) \
-	    -o$@ $^ $(LDLIBS_FOR_TARGET)
+	$(conf_Host_exec) $(CXX_FOR_TARGET) $(CXXFLAGS_FOR_TARGET) \
+	    $(LDFLAGS_FOR_TARGET) -o$@ $^ $(LDLIBS_FOR_TARGET)
 
 test/test-%.o: test/test-%.i
 
@@ -177,16 +211,16 @@ libexec/biting-pear/omnomnom.o: libexec/biting-pear/omnomnom.cc \
     $(config.h.host)
 
 %.o: %.i
-	$(CXX_FOR_TARGET) $(CXXFLAGS_FOR_TARGET) -c -o$@ $<
+	$(conf_Host_exec) $(CXX_FOR_TARGET) $(CXXFLAGS_FOR_TARGET) -c -o$@ $<
 
 # for debugging
 %.s: %.i
-	$(CXX_FOR_TARGET) $(CXXFLAGS_FOR_TARGET) -S -o$@ $<
+	$(conf_Host_exec) $(CXX_FOR_TARGET) $(CXXFLAGS_FOR_TARGET) -S -o$@ $<
 
 %.i: %.ccc $(headers.target) libexec/biting-pear/omnomnom \
     libexec/biting-pear/nomnom
 	mkdir -p $(@D)
-	$(CXX_FOR_TARGET) -E -x c++ $(CPPFLAGS_FOR_TARGET) \
+	$(conf_Host_exec) $(CXX_FOR_TARGET) -E -x c++ $(CPPFLAGS_FOR_TARGET) \
 	    $(CXXFLAGS_FOR_TARGET) -o$@.tmp $<
 	$(conf_Host_exec) libexec/biting-pear/omnomnom \
 	    "`$(conf_Host_exec) libexec/biting-pear/nomnom <$@.tmp`" \

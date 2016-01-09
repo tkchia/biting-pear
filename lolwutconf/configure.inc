@@ -31,8 +31,8 @@ conf__app_exists() {
 
 conf__check_general_sanity() {
 	local app
-	for app in : basename cp dirname echo grep ln mv rm strings test \
-	    type; do
+	for app in : basename cp dirname echo grep ln mv rm strings seq \
+	    test type; do
 		if conf__app_exists "$app"; then :; else
 			conf__barf "command line program \`$app' not found!"
 		fi
@@ -178,11 +178,92 @@ conf__help() {
 	conf__blare "    system.  If --host= appears but not --host-exec,"
 	conf__blare "    \`$me' will try to look for a corresponding Qemu"
 	conf__blare "    user-mode emulator, e.g. qemu-arm."
-    if test yes = "$conf_Is_canadian_cross"; then
 	conf__blare
+    if test yes = "$conf_Is_canadian_cross"; then
 	conf__blare "  * --target-exec=(runner) specifies a command for"
 	conf__blare "    running programs built for the target system."
+	conf__blare
+	conf__blare "  * The host installation directory (--prefix=) defaults"
+	conf__blare "    to /usr/local.  \`$me' tries to derive something"
+	conf__blare "    reasonable for the target installation directory"
+	conf__blare "    unless --target-prefix= is given."
+    else
+	conf__blare "  * The host installation directory (--prefix=) defaults"
+	conf__blare "    to /usr/local."
     fi
+}
+
+conf__find_good_runtime_prefix() {
+	local cxx cxxflags good_prefix prefix
+	cxx="$1"
+	cxxflags="$2"
+	good_prefix=
+	for arg in -print-file-name=libc.so \
+		   -print-file-name=libc.a \
+		   -print-libgcc-file-name \
+		   -print-file-name=crt1.o
+	do
+		# we cannot really rely on `realpath' or `readlink' being
+		# available, so do this nasty thang...
+		prefix="`$cxx $cxxflags $arg`"
+		prefix="`echo "$prefix" | xargs dirname`"
+		prefix="`cd "$prefix" && pwd`"
+		case "$prefix" in
+		    */lib)
+			prefix="`echo "$prefix" | xargs dirname`"
+			if test -z "$good_prefix" -o \
+			    ${#prefix} -lt ${#good_prefix}
+				then good_prefix="$prefix"; fi;;
+		esac
+		ld_prefix="`cd "$ld_prefix" && cd .. && pwd`"
+	done
+	echo "$good_prefix"
+}
+
+conf__tweak_host_prefix() {
+	conf__blare_test 'tweaking host installation directory'
+	case "$conf_Prefix" in
+	    /*)	;;
+	    *)	conf_Prefix="`pwd`/$conf_Prefix";;
+	esac
+	conf__blare_res "$conf_Prefix"
+	case "$conf_Prefix" in
+	    *[,\;:]*)
+		conf__blare 'WARNING: directory path contains characters from'
+		conf__blare 'WARNING: the set [,;:]; this may cause problems'
+		conf__blare 'WARNING: later on';;
+	esac
+}
+
+conf__tweak_target_prefix() {
+	if test -n "$conf_Target_prefix"; then
+		conf__blare_test 'tweaking target installation directory'
+		case "$conf_Target_prefix" in
+		    /*)	;;
+		    *)	conf_Target_prefix="`pwd`/$conf_Target_prefix";;
+		esac
+	else
+		conf__blare_test \
+		    'deriving a good target installation directory'
+		prefix="`conf__find_good_runtime_prefix \
+		    "$conf_Host_exec $CXX_FOR_TARGET" "$CXXFLAGS_FOR_TARGET"`"
+		case "$prefix" in
+		    /usr/local | /usr | /local)
+			conf_Target_prefix="$conf_Prefix";;
+		    /usr/local/*)
+			conf_Target_prefix="$conf_Prefix"/"`echo "$prefix" | \
+			    sed s,^/usr/local/,,`";;
+		    /usr/*)
+			conf_Target_prefix="$conf_Prefix"/"`echo "$prefix" | \
+			    sed s,^/usr/,,`";;
+		    /local/*)
+			conf_Target_prefix="$conf_Prefix"/"`echo "$prefix" | \
+			    sed s,^/local/,,`";;
+		    '')	conf_Target_prefix="$conf_Prefix/$conf_Crosst_tag";;
+		    *)	conf_Target_prefix="$prefix";;
+		esac
+	fi
+	conf__blare_res "$conf_Target_prefix"
 }
 
 conf_begin() {
@@ -195,9 +276,9 @@ conf_begin() {
 	conf_Crosst_tag=
 	unset conf_Host_exec
 	conf_Use_vars=' conf_Srcdir conf_Prefix conf_Target_prefix '
-	conf_Use_mods=' '
+	conf_Use_mods=' configure '
 	conf_Mode=conf
-	conf_Is_canadian_cross=
+	conf_Is_canadian_cross=no
 	for opt in ${1+"$@"}; do
 		conf__check_sane "$opt" arguments
 		case "$opt" in
@@ -244,8 +325,10 @@ conf_end() {
 	if conf__in_help_mode; then
 		conf__help
 		exit 1
-		exit 1
 	fi
+	conf__tweak_host_prefix
+	if test yes = "$conf_Is_canadian_cross"
+		then conf__tweak_target_prefix; fi
 	conf__blare 'writing config.cache'
 	: "${srcdir=`dirname "$0"`}"
 	if test \! . = "$conf_Srcdir" -a \! . -ef "$conf_Srcdir"; then

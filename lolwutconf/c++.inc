@@ -108,6 +108,51 @@ conf_cxx_probe_typ() {
 	eval conf__blare_res \"\$$var\"
 }
 
+conf_cxx_chk_typ() {
+	if conf_cxx_probe_typ ${1+"$@"}
+	then	:
+	else	conf__barf "type $1 not found!"
+	fi
+}
+
+conf_cxx_probe_func() {
+	local func n_args var templ proto args i
+	conf_cxx_chk_compiler_and_executor
+	if conf__in_help_mode
+		then return 0; fi
+	func="$1"
+	n_args="$2"
+	shift 2
+	var="conf_Have_cxx_func_`echo "$func" | sed 's/[^a-zA-Z0-9]/_/g'`"
+	if eval test -n \"\$$var\"
+		then return 0; fi
+	conf__add_var "$var"
+	conf__blare_test "testing for host-side C++ function $func"
+	templ=
+	proto=
+	args=
+	if test 0 = "$n_args"; then
+		templ=
+		proto=
+		args=
+	else
+		templ='class T1'
+		proto='T1 x1'
+		args='x1'
+		for i in `seq 2 "$n_args"`; do
+			templ="$templ,class T$i"
+			proto="$proto,T$i x$i"
+			args="$args,x$i"
+		done
+	fi
+	if conf__cxx_chk_compiler_with "$CXXFLAGS" "$LDLIBS" ${1+"$@"} \
+	    "template<$templ> void conf_foo($proto) { $func($args); }"
+	then	eval $var=yes
+	else	eval $var=no
+	fi
+	eval conf__blare_res \"\$$var\"
+}
+
 conf_cxx_probe_lib() {
 	local family libs lib
 	conf_cxx_chk_compiler_and_executor
@@ -116,8 +161,7 @@ conf_cxx_probe_lib() {
 	family="$1"
 	libs="$2"
 	shift 2
-	var="conf_Have_cxx_lib_`echo "$family" | \
-	    sed 's/[^a-zA-Z0-9]/_/g'`"
+	var="conf_Have_cxx_lib_`echo "$family" | sed 's/[^a-zA-Z0-9]/_/g'`"
 	if eval test -n \"\$$var\"
 		then return 0; fi
 	conf__add_var "$var"
@@ -134,13 +178,6 @@ conf_cxx_probe_lib() {
 			conf__blare_res no
 		fi
 	done
-}
-
-conf_cxx_chk_typ() {
-	if conf_cxx_probe_typ ${1+"$@"}
-	then	:
-	else	conf__barf "type $1 not found!"
-	fi
 }
 
 conf_cxx_probe_endianness() {

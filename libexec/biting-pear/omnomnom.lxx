@@ -33,6 +33,17 @@ u8tl		[\x80-\xbf]
 #define biting_pear_HOST_SIDE
 #include <biting-pear/bbq.h>
 
+#if defined biting_pear_TARGET_WCHAR_IS_CHAR16
+#   define target_wchar_t char16_t
+#   define target_mbrtowc ::biting_pear::impl::mbrtoc16
+#elif defined biting_pear_TARGET_WCHAR_IS_CHAR32
+#   define target_wchar_t char32_t
+#   define target_mbrtowc ::biting_pear::impl::mbrtoc32
+#else
+#   undef target_wchar_t
+#   undef target_mbrtowc
+#endif
+
 static std::string curr_fn, curr_str_enc;
 static long curr_ln_off = 0;
 static boost::mt19937_64 generator;
@@ -122,25 +133,36 @@ static void flush_str()
 				blurfl("(char)%d", (int)wut[i]);
 			}
 		} else { /* L"" */
-#if biting_pear_TARGET_COMPATIBLE_WCHAR
+#ifdef target_wchar_t
 			std::mbstate_t state;
-			wchar_t wc;
+			target_wchar_t wc;
 			const char *pnc = wut.c_str();
-			size_t r;
+			size_t n = wut.size() + 1, r;
 			std::memset(&state, 0, sizeof state);
-			while ((r = std::mbsrtowcs(&wc,&pnc,1,&state)) != 0) {
-				if (r == (size_t)-1)
+			while ((r = target_mbrtowc(&wc, pnc, n, &state)) != 0
+			    || wc != 0) {
+				switch (r) {
+				    case (size_t)-1:
+				    case (size_t)-2:
 					die("lolwut?!?!?  (%s)",
 					    std::strerror(errno));
-				if (first)
-					first = false;
-				else
-					blurt(',');
-				blurfl("%ld", (long)wc);
+				    default:
+					if (first)
+						first = false;
+					else
+						blurt(',');
+					if ((target_wchar_t)0 - 1 < 0)
+						blurfl("%ld", (long)wc);
+					else
+						blurfl("%lu",
+						    (unsigned long)wc);
+					pnc += r;
+					n -= r;
+				}
 			}
 #else
-			die("internal error: host wchar_t incompatible with "
-			    "target wchar_t");
+			die("wide character string support disabled -- "
+			    "target's wchar_t encoding unknown");
 #endif
 		}
 	}

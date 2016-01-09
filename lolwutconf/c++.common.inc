@@ -117,12 +117,10 @@ conf__cxxc_find_execor() {
 			;;
 		esac
 		if test -n "$execor"; then
-			# we cannot really rely on `realpath' or `readlink'
-			# being available, so do this nasty thang...
-			ld_prefix="`$cxx $cxxflags -print-file-name=libc.so`"
-			ld_prefix="`echo "$ld_prefix" | xargs dirname`"
-			ld_prefix="`cd "$ld_prefix" && cd .. && pwd`"
-			execor="$execor -L $ld_prefix"
+			ld_prefix="`conf__find_good_runtime_prefix \
+			    "$cxx" "$cxxflags"`"
+			if test -n "$ld_prefix"
+				then execor="$execor -L $ld_prefix"; fi
 		fi
 	fi
 	eval "$execor_var"='"$execor"'

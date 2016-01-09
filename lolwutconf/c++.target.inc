@@ -8,7 +8,7 @@ conf__cxxt_chk_compiler_with() {
 	cxxflags="$1"
 	ldlibs="$2"
 	shift 2
-	if conf__cxxc_chk_compiler_with "$CXX_FOR_TARGET" \
+	if conf__cxxc_chk_compiler_with "$conf_Host_exec $CXX_FOR_TARGET" \
 	    "$CPPFLAGS_FOR_TARGET" "$cxxflags" "$LDFLAGS_FOR_TARGET" \
 	    "$ldlibs" "$conf_Target_exec" ${1+"$@"}
 	then	return 0
@@ -28,9 +28,9 @@ conf__cxxt_compile_prog() {
 		for line in ${1+"$@"}
 			do echo "$line"; done
 	) >"$src"
-	$CXX_FOR_TARGET $CPPFLAGS_FOR_TARGET $CXXFLAGS_FOR_TARGET \
-	    $LDFLAGS_FOR_TARGET -o"$prog" "$src" $LDLIBS_FOR_TARGET \
-	    >/dev/null 2>&1 || res=1
+	$conf_Host_exec $CXX_FOR_TARGET $CPPFLAGS_FOR_TARGET \
+	    $CXXFLAGS_FOR_TARGET $LDFLAGS_FOR_TARGET -o"$prog" "$src" \
+	    $LDLIBS_FOR_TARGET >/dev/null 2>&1 || res=1
 	rm -f "$src"
 	return $res
 }
@@ -59,11 +59,12 @@ conf_cxxt_chk_compiler_and_executor() {
 	else
 		: "${CXXFLAGS_FOR_TARGET=-O3}"
 	fi
-	conf__blare_res \
-	    "$CXX_FOR_TARGET $CPPFLAGS_FOR_TARGET $CXXFLAGS_FOR_TARGET"
+	conf__blare_res "[$conf_Host_exec] $CXX_FOR_TARGET ` \
+	    `$CPPFLAGS_FOR_TARGET $CXXFLAGS_FOR_TARGET"
 	conf__blare_test 'deciding target program executor'
 	if test set != "${conf_Target_exec+set}"; then
-		conf__cxxc_find_execor "$conf_Crosst_tag" "$CXX_FOR_TARGET" \
+		conf__cxxc_find_execor "$conf_Crosst_tag" \
+		    "$conf_Host_exec $CXX_FOR_TARGET" \
 		    "$CPPFLAGS_FOR_TARGET" "$CXXFLAGS_FOR_TARGET" \
 		    "$LDFLAGS_FOR_TARGET" "$LDLIBS_FOR_TARGET" \
 		    conf_Target_exec
@@ -79,7 +80,7 @@ conf_cxxt_chk_compiler_and_executor() {
 		conf__blare_res no
 		conf__barf 'C++ compiler and/or executor does not work!'
 	fi
-	conf__cxxc_probe_thumb target "$CXX_FOR_TARGET" \
+	conf__cxxc_probe_thumb target "$conf_Host_exec $CXX_FOR_TARGET" \
 	    "$CPPFLAGS_FOR_TARGET" CXXFLAGS_FOR_TARGET \
 	    "$LDFLAGS_FOR_TARGET" "$LDLIBS_FOR_TARGET" "$conf_Target_exec"
 }
@@ -279,7 +280,7 @@ conf_cxxt_probe_wchar_typ() {
 	    "}"
 	then
 		conf_Typ_wchar_cxxt="`$conf_Target_exec ./"$prog"`"
-		case "$conf_Typ_wchar_cxx" in
+		case "$conf_Typ_wchar_cxxt" in
 		    char16_t | char32_t)	;;
 		    *)				conf_Typ_wchar_cxxt=unknown;;
 		esac
