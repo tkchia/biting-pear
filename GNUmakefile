@@ -52,20 +52,26 @@ utils.host += \
 endif
 endif
 endif
+installables.host = \
+    $(utils.host) \
+    share/biting-pear/calm.spec
 
 default all: check
 
-check: $(tests.target:=.passed) $(utils.host)
+check: $(tests.target:=.passed) $(installables.host)
 
 install: install-host-files install-target-files
 
-install-host-files: $(utils.host)
+install-host-files: $(installables.host)
 	install -d $(bindir) $(datarootdir)/biting-pear
 	for u in $^; do \
+		if test -x "$$u"; \
+		then	m=755; \
+		else	m=644; fi; \
 		case "$$u" in \
 		    bin/*) \
-			install -m 644 "$$u" $(bindir);; \
-		    *)	install -m 644 $^ $(datarootdir)/biting-pear;;
+			install -m "$$m" "$$u" $(bindir);; \
+		    *)	install -m "$$m" "$$u" $(datarootdir)/biting-pear;; \
 		esac; \
 	done
 
@@ -282,4 +288,4 @@ share/biting-pear/omnomnom.cc: share/biting-pear/omnomnom.lxx
 .PHONY: test/test-%.passed
 
 .PRECIOUS: config.cache %.ii %.cc %.s %.o bin/%.o share/biting-pear/%.o \
-    helper/% $(tests.target) $(utils.host)
+    helper/% $(tests.target) $(installables.host)

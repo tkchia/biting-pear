@@ -11,6 +11,7 @@
 		- $(config.h.host) and $(config.h.target) now depend on
 		  config.cache
 		- now defines biting_pear::impl::getenv(.) in $(config.h.host)
+		- fixed installation of host files
 
 		bin/biting-pear-c++.ccc ,
 		share/biting-pear/calm.ccc ,
