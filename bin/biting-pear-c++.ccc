@@ -49,7 +49,8 @@ static void curious(std::string& x, char *y)
 	}
 }
  
-static void grumpy(std::ostringstream& oss, const std::string& prefix)
+static void grumpy(std::ostringstream& oss, std::ostringstream& info_oss,
+    const std::string& prefix)
 {
 	std::string wrapper = prefix + "/share/biting-pear/calm";
 #ifdef __unix__
@@ -67,6 +68,7 @@ static void grumpy(std::ostringstream& oss, const std::string& prefix)
 			    foe.st_dev == fum.st_dev) {
 				close(fie);
 				oss << fd_str;
+				info_oss << ' ' << fee << "< " << wrapper;
 				return;
 			}
 		}
@@ -88,10 +90,11 @@ static bool grumpier(const char *opt, const char *wut, std::string& wot)
 int main(int argc, char **argv)
 {
 	struct {
-		unsigned moar : 1, pass : 1, caturday : 1, eleventy : 1;
-	} is = { false, false, false, false };
+		unsigned moar : 1, pass : 1, caturday : 1, eleventy : 1,
+			 grumpiest : 1;
+	} is = { false, false, false, false, false };
 	char *moar = 0, *burger[argc + 7], **cheese = burger, *ceiling;
-	std::ostringstream shocked;
+	std::ostringstream shocked, serious;
 	std::string kitteh, calm, caturday = biting_pear_HOST_PREFIX,
 	    meow = biting_pear_TARGET_PREFIX;
 	curious(me, *argv);
@@ -119,10 +122,24 @@ int main(int argc, char **argv)
 			continue;
 		} else if (opt[0] != '-' || opt[1] == 0)
 			;
-		  else if (opt[2] == 0 &&
-		    strchr("oxdAIDULlTu", (int)(unsigned char)opt[1]) != 0)
-			is.pass = true;
-		  else if (opt[1] == 'i' &&
+		  else if (opt[2] == 0) {
+			switch (opt[1]) {
+			    case 'o':
+			    case 'x':
+			    case 'd':
+			    case 'A':
+			    case 'I':
+			    case 'D':
+			    case 'U':
+			    case 'L':
+			    case 'l':
+			    case 'T':
+			    case 'u':
+				is.pass = true;  break;
+			    case 'v':
+				is.grumpiest = true;
+			}
+		} else if (opt[1] == 'i' &&
 			   (strcmp(opt + 2, "dirafter") == 0 ||
 			    strcmp(opt + 2, "nclude") == 0 ||
 			    strcmp(opt + 2, "macros") == 0 ||
@@ -139,7 +156,8 @@ int main(int argc, char **argv)
 			    strcmp(opt + 2, "assembler") == 0 ||
 			    strcmp(opt + 2, "linker") == 0))
 			is.pass = true;
-		  else if (strcmp(opt + 1, "aux-info") == 0 ||
+		  else if (strcmp(opt + 1, "arch") == 0 ||
+			   strcmp(opt + 1, "aux-info") == 0 ||
 			   strcmp(opt + 1, "-param") == 0)
 			is.pass = true;
 		  else if (strcmp(opt + 1, "wrapper") == 0) {
@@ -152,7 +170,7 @@ int main(int argc, char **argv)
 			is.eleventy = true;
 		*cheese++ = opt;
 	}
-	grumpy(shocked, caturday);
+	grumpy(shocked, serious, caturday);
 	if (moar)
 		shocked << ',' << moar;
 	kitteh = shocked.str();
@@ -174,6 +192,13 @@ int main(int argc, char **argv)
 			     biting_pear_CXX_FOR_TARGET " process"
 			  << std::endl;
 		return 1;
+	}
+	if (is.grumpiest) {
+		cheese = burger;
+		std::cerr << *cheese++;
+		while (*cheese)
+			std::cerr << ' ' << *cheese++;
+		std::cerr << serious.str() << std::endl;
 	}
 	execvp(biting_pear_CXX_FOR_TARGET, burger);
 	int err = errno;

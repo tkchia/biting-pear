@@ -83,7 +83,8 @@ uninstall:
 	$(foreach hdr,$(headers.target), \
 	    rm -f $(includedir.target)/biting-pear/$(notdir $(hdr)) &&) \
 	    true
-	-rmdir $(includedir.target)/biting-pear $(datarootdir)/biting-pear
+	-rmdir -p $(bindir) $(includedir.target)/biting-pear \
+	    $(datarootdir)/biting-pear
 
 clean:
 	find . -name '*.[ios]' -o -name '*~' -o -name '*.ii' | \
