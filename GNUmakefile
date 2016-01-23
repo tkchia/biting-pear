@@ -3,9 +3,13 @@
 conf_Srcdir ?= .
 include $(conf_Srcdir)/lolwutconf/lolwutconf.mk
 
-libexecdir = $(conf_Prefix)/libexec
+bindir = $(conf_Prefix)/bin
+datarootdir = $(conf_Prefix)/share
 includedir.target = $(conf_Target_prefix)/include
 
+wrap_cxx = bin/biting-pear-c++
+wrap_cxx.staged = $(wrap_cxx) \
+    -Xbiting-pear prefix=. -Xbiting-pear target-prefix=.
 config.h.host = include/biting-pear/host/derp.h
 headers.host = \
     include/biting-pear/bbq.h \
@@ -37,13 +41,14 @@ tests.target += \
     test/test-extra-4
 endif
 utils.host = \
-    libexec/biting-pear/nomnom \
-    libexec/biting-pear/omnomnom
+    bin/biting-pear-c++ \
+    share/biting-pear/calm \
+    share/biting-pear/omnomnom
 ifeq "$(conf_Have_cxx_typ_struct_bfd)" "yes"
 ifeq "$(conf_Have_cxx_lib_bfd)" "yes"
 ifeq "$(conf_Have_cxx_var_tpls)" "yes"
 utils.host += \
-    libexec/biting-pear/doge
+    share/biting-pear/doge
 endif
 endif
 endif
@@ -54,7 +59,15 @@ check: $(tests.target:=.passed) $(utils.host)
 
 install: install-host-files install-target-files
 
-install-host-files:
+install-host-files: $(utils.host)
+	install -d $(bindir) $(datarootdir)/biting-pear
+	for u in $^; do \
+		case "$$u" in \
+		    bin/*) \
+			install -m 644 "$$u" $(bindir);; \
+		    *)	install -m 644 $^ $(datarootdir)/biting-pear;;
+		esac; \
+	done
 
 install-target-files: $(headers.target)
 	install -d $(includedir.target)/biting-pear
@@ -64,12 +77,12 @@ uninstall:
 	$(foreach hdr,$(headers.target), \
 	    rm -f $(includedir.target)/biting-pear/$(notdir $(hdr)) &&) \
 	    true
-	-rmdir $(includedir.target)/biting-pear $(libexecdir)/biting-pear
+	-rmdir $(includedir.target)/biting-pear $(datarootdir)/biting-pear
 
 clean:
-	find . -name '*.[ios]' -o -name '*~' | \
+	find . -name '*.[ios]' -o -name '*~' -o -name '*.ii' | \
 	    xargs rm -f $(config.h.host) $(config.h.target) \
-		lex.backup libexec/biting-pear/omnomnom.cc \
+		lex.backup share/biting-pear/omnomnom.cc \
 		$(tests.target) $(utils.host)
 ifeq "$(conf_Separate_build_dir)" "yes"
 	-rmdir helper test util
@@ -84,9 +97,11 @@ endif
 config.cache:
 	./configure
 
-$(config.h.host) $(config.h.target):
+$(config.h.host) $(config.h.target): config.cache
 	mkdir -p $(@D)
 	echo "/****** AUTOMATICALLY GENERATED `date` ******/" >$@.tmp
+	if test '$(config.h.host)' = '$@'; \
+		then echo '#include <cstdlib>' >>$@.tmp; fi
 	if test '$(conf_Have_cxx_typ_std__uint_least64_t),$@' = \
 	    'yes,$(config.h.host)'; then \
 		echo '#include <cinttypes>' >>$@.tmp; \
@@ -131,6 +146,13 @@ $(config.h.host) $(config.h.target):
 	elif test 'yes,$(config.h.host)' = \
 	    '$(conf_Have_cxx_func___mbrtoc32),$@'; then \
 		echo 'using ::mbrtoc32;' >>$@.tmp; \
+	fi
+	if test 'yes,$(config.h.host)' = \
+	    '$(conf_Have_cxx_func___secure_getenv),$@'; then \
+		echo 'inline char *getenv(const char *name)' >>$@.tmp; \
+		echo '{ return ::secure_getenv(name); }' >>$@.tmp; \
+	elif test '$(config.h.host)' = '$@'; then \
+		echo 'using std::getenv;' >>$@.tmp; \
 	fi
 	echo '} }' >>$@.tmp
 ifeq "char16_t" "$(conf_Typ_wchar_cxxt)"
@@ -189,55 +211,75 @@ test/test-%: test/test-%.o
 	$(conf_Host_exec) $(CXX_FOR_TARGET) $(CXXFLAGS_FOR_TARGET) \
 	    $(LDFLAGS_FOR_TARGET) -o$@ $^ $(LDLIBS_FOR_TARGET)
 
-test/test-%.o: test/test-%.i
+test/test-%.o: test/test-%.ii
 
-libexec/biting-pear/%: libexec/biting-pear/%.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)
-
-libexec/biting-pear/%.o: libexec/biting-pear/%.i
-	$(CXX) $(CXXFLAGS) -c -o$@ $<
-
-libexec/biting-pear/%.i: libexec/biting-pear/%.ccc $(headers.host) \
-    $(headers.target) libexec/biting-pear/omnomnom libexec/biting-pear/nomnom
+define preproc_for_host
 	mkdir -p $(@D)
 	$(CXX) -E -x c++ $(CPPFLAGS) $(CXXFLAGS) -o$@.tmp $<
-	$(conf_Host_exec) libexec/biting-pear/omnomnom \
-	    "`$(conf_Host_exec) libexec/biting-pear/nomnom <$@.tmp`" \
-	    <$@.tmp >$@.2.tmp
+	$(conf_Host_exec) share/biting-pear/omnomnom <$@.tmp >$@.2.tmp
 	mv $@.2.tmp $@
 	rm $@.tmp
+endef
 
-libexec/biting-pear/omnomnom.o: libexec/biting-pear/omnomnom.cc \
+bin/biting-pear-c++.o: bin/biting-pear-c++.ii
+
+share/biting-pear/calm: share/biting-pear/calm.o share/biting-pear/nomnom.o
+
+share/biting-pear/calm.o: share/biting-pear/calm.ii
+
+share/biting-pear/doge.o: share/biting-pear/doge.ii
+
+bin/%.ii share/biting-pear/%.ii : \
+    CPPFLAGS += -Dbiting_pear_HOST_PREFIX=\"$(conf_Prefix)\" \
+		-Dbiting_pear_TARGET_PREFIX=\"$(conf_Target_prefix)\" \
+		-Dbiting_pear_CXX_FOR_TARGET=\"$(CXX_FOR_TARGET)\"
+
+bin/%: bin/%.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)
+
+bin/%.o: bin/%.ii
+	$(CXX) $(CXXFLAGS) -c -o$@ $<
+
+bin/%.ii: bin/%.ccc $(headers.host) $(headers.target) \
+    share/biting-pear/calm share/biting-pear/omnomnom
+	$(preproc_for_host)
+
+share/biting-pear/%: share/biting-pear/%.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)
+
+share/biting-pear/%.o: share/biting-pear/%.ii
+	$(CXX) $(CXXFLAGS) -c -o$@ $<
+
+share/biting-pear/%.ii: share/biting-pear/%.ccc $(headers.host) \
+    $(headers.target) share/biting-pear/omnomnom
+	$(preproc_for_host)
+
+share/biting-pear/omnomnom.o: share/biting-pear/omnomnom.cc \
     $(config.h.host)
 
-%.o: %.i
+%.o: %.ii
 	$(conf_Host_exec) $(CXX_FOR_TARGET) $(CXXFLAGS_FOR_TARGET) -c -o$@ $<
 
 # for debugging
-%.s: %.i
+%.s: %.ii
 	$(conf_Host_exec) $(CXX_FOR_TARGET) $(CXXFLAGS_FOR_TARGET) -S -o$@ $<
 
-%.i: %.ccc $(headers.target) libexec/biting-pear/omnomnom \
-    libexec/biting-pear/nomnom
+%.o: %.ccc $(headers.target) $(wrap_cxx) share/biting-pear/omnomnom \
+    share/biting-pear/calm share/biting-pear/calm.spec
 	mkdir -p $(@D)
-	$(conf_Host_exec) $(CXX_FOR_TARGET) -E -x c++ $(CPPFLAGS_FOR_TARGET) \
-	    $(CXXFLAGS_FOR_TARGET) -o$@.tmp $<
-	$(conf_Host_exec) libexec/biting-pear/omnomnom \
-	    "`$(conf_Host_exec) libexec/biting-pear/nomnom <$@.tmp`" \
-	    <$@.tmp >$@.2.tmp
-	mv $@.2.tmp $@
-	rm $@.tmp
+	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
+	    -c -o$@ $<
 
-libexec/biting-pear/%: libexec/biting-pear/%.cc
+share/biting-pear/%: share/biting-pear/%.cc
 	mkdir -p $(@D)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) -o$@ $< $(LDLIBS)
 
-libexec/biting-pear/omnomnom.cc: libexec/biting-pear/omnomnom.lxx
+share/biting-pear/omnomnom.cc: share/biting-pear/omnomnom.lxx
 	mkdir -p $(@D)
 	$(LEX) $(LFLAGS) -t -o$@ $< >$@.tmp
 	mv $@.tmp $@
 
 .PHONY: test/test-%.passed
 
-.PRECIOUS: config.cache %.i %.cc %.s %.o helper/% $(tests.target) \
-    $(utils.host)
+.PRECIOUS: config.cache %.ii %.cc %.s %.o bin/%.o share/biting-pear/%.o \
+    helper/% $(tests.target) $(utils.host)

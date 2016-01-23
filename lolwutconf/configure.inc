@@ -215,7 +215,6 @@ conf__find_good_runtime_prefix() {
 			    ${#prefix} -lt ${#good_prefix}
 				then good_prefix="$prefix"; fi;;
 		esac
-		ld_prefix="`cd "$ld_prefix" && cd .. && pwd`"
 	done
 	echo "$good_prefix"
 }
@@ -228,10 +227,10 @@ conf__tweak_host_prefix() {
 	esac
 	conf__blare_res "$conf_Prefix"
 	case "$conf_Prefix" in
-	    *[,\;:]*)
-		conf__blare 'WARNING: directory path contains characters from'
-		conf__blare 'WARNING: the set [,;:]; this may cause problems'
-		conf__blare 'WARNING: later on';;
+	    *[,\;:\'\"]*)
+		conf__blare "WARNING: directory path contains characters"
+		conf__blare "WARNING: from the set [,;:\'\"]; this may cause"
+		conf__blare "WARNING: problems later on";;
 	esac
 }
 
@@ -259,7 +258,11 @@ conf__tweak_target_prefix() {
 		    /local/*)
 			conf_Target_prefix="$conf_Prefix"/"`echo "$prefix" | \
 			    sed s,^/local/,,`";;
-		    '')	conf_Target_prefix="$conf_Prefix/$conf_Crosst_tag";;
+		    '')	if test -n "$conf_Crosst_tag"; then
+				conf_Target_prefix="$conf_Prefix/` \
+				    `$conf_Crosst_tag"
+			else	conf_Target_prefix="$conf_Prefix"
+			fi;;
 		    *)	conf_Target_prefix="$prefix";;
 		esac
 	fi
@@ -337,12 +340,6 @@ conf_end() {
 		conf_Separate_build_dir=no
 	fi
 	conf__add_var conf_Separate_build_dir
-	if test -z "$conf_Target_prefix"; then
-		if test -n "$conf_Crosst_tag"; then
-			conf_Target_prefix="$conf_Prefix/$conf_Crosst_tag"
-		else	conf_Target_prefix="$conf_Prefix"
-		fi
-	fi
 	tmp="`conf__mktemp config.cache`"
 	(
 		echo "###### AUTOMATICALLY GENERATED `date` ######"

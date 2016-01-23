@@ -372,7 +372,7 @@ int main(int argc, char **argv)
 			    std::strerror(errno));
 		switch (argc) {
 		    case 1:
-			generator.seed(std::time(0) << 12 ^ getpid());  break;
+			generator.seed(0x218384fc78e17428);  break;
 		    case 2:
 			generator.seed((uint64_t)std::strtoumax(argv[1],0,0));
 			break;

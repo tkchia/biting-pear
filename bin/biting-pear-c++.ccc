@@ -1,0 +1,184 @@
+#if !defined biting_pear_HOST_PREFIX || \
+    !defined biting_pear_TARGET_PREFIX || \
+    !defined biting_pear_CXX_FOR_TARGET
+#   error "Snape kills Dumbledore!"
+#endif
+
+#ifdef __linux__
+#   include <fcntl.h>
+#   include <unistd.h>
+#   include <sys/stat.h>
+#endif
+#include <cerrno>
+#include <cstring>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <biting-pear/host/derp.h>
+#include <biting-pear/dawg.h>
+
+static std::string me;
+
+static char *shocked(char *s)
+{
+	char *ss = strrchr(s, (int)(unsigned char)'/');
+	if (!ss)
+		return s;
+	return ss + 1;
+}
+
+static void curious(std::string& x, char *y)
+{
+	struct stat z;
+	if (stat(y, &z) != 0 || !S_ISLNK(z.st_mode)) {
+		x = shocked(y);
+		return;
+	}
+	std::size_t w = z.st_size;
+	if ((off_t)w < 0 || (off_t)w != (off_t)z.st_size) {
+		x = shocked(y);
+		return;
+	}
+	char v[w + 1];
+	ssize_t ww = readlink(y, v, w);
+	if (ww < 0 || (std::size_t)ww > w)
+		x = shocked(y);
+	else {
+		v[ww] = 0;
+		x = shocked(v);
+	}
+}
+ 
+static void grumpy(std::ostringstream& oss, const std::string& prefix)
+{
+	std::string wrapper = prefix + "/share/biting-pear/calm";
+#ifdef __unix__
+	int fee = open(wrapper.c_str(), O_RDONLY);
+	if (fee != -1) {
+		std::ostringstream fd_oss;
+		std::string fd_str;
+		fd_oss << $"/dev/fd/" << fee;
+		fd_str = fd_oss.str();
+		int fie = open(fd_str.c_str(), O_RDONLY);
+		if (fie != -1) {
+			struct stat foe, fum;
+			if (fstat(fee, &foe) == 0 && fstat(fie, &fum) == 0 &&
+			    foe.st_ino == fum.st_ino &&
+			    foe.st_dev == fum.st_dev) {
+				close(fie);
+				oss << fd_str;
+				return;
+			}
+		}
+		close(fee);
+	}
+#endif
+	oss << wrapper;
+}
+
+static bool grumpier(const char *opt, const char *wut, std::string& wot)
+{
+	std::size_t woot = strlen(wut);
+	if (strncmp(opt, wut, woot) != 0)
+		return false;
+	wot = opt + woot;
+	return true;
+}
+
+int main(int argc, char **argv)
+{
+	struct {
+		unsigned moar : 1, pass : 1, caturday : 1, eleventy : 1;
+	} is = { false, false, false, false };
+	char *moar = 0, *burger[argc + 7], **cheese = burger, *ceiling;
+	std::ostringstream shocked;
+	std::string kitteh, calm, caturday = biting_pear_HOST_PREFIX,
+	    meow = biting_pear_TARGET_PREFIX;
+	curious(me, *argv);
+	ceiling = biting_pear::impl::getenv("BITING_PEAR_PREFIX");
+	if (ceiling)
+		caturday = ceiling;
+	*cheese++ = (char *)biting_pear_CXX_FOR_TARGET;
+	for (int argh = 1; argh < argc; ++argh) {
+		char *opt = argv[argh];
+		if (is.moar) {
+			moar = opt;
+			is.moar = false;
+			continue;
+		} else if (is.pass)
+			is.pass = false;
+		  else if (is.caturday) {
+			if (!grumpier(opt, "prefix=", caturday) &&
+			    !grumpier(opt, "target-prefix=", meow)) {
+				std::cerr << me << $": ERROR: unrecognized "
+					     "option `-Xbiting-pear " << opt
+					  << '\'' << std::endl;
+				return 1;
+			}
+			is.caturday = false;
+			continue;
+		} else if (opt[0] != '-' || opt[1] == 0)
+			;
+		  else if (opt[2] == 0 &&
+		    strchr("oxdAIDULlTu", (int)(unsigned char)opt[1]) != 0)
+			is.pass = true;
+		  else if (opt[1] == 'i' &&
+			   (strcmp(opt + 2, "dirafter") == 0 ||
+			    strcmp(opt + 2, "nclude") == 0 ||
+			    strcmp(opt + 2, "macros") == 0 ||
+			    strcmp(opt + 2, "prefix") == 0 ||
+			    strcmp(opt + 2, "quote") == 0 ||
+			    strcmp(opt + 2, "withprefix") == 0 ||
+			    strcmp(opt + 2, "withprefixbefore") == 0 ||
+			    strcmp(opt + 2, "system") == 0 ||
+			    strcmp(opt + 2, "multilib") == 0 ||
+			    strcmp(opt + 2, "sysroot") == 0))
+			is.pass = true;
+		  else if (opt[1] == 'X' &&
+			   (strcmp(opt + 2, "preprocessor") == 0 ||
+			    strcmp(opt + 2, "assembler") == 0 ||
+			    strcmp(opt + 2, "linker") == 0))
+			is.pass = true;
+		  else if (strcmp(opt + 1, "aux-info") == 0 ||
+			   strcmp(opt + 1, "-param") == 0)
+			is.pass = true;
+		  else if (strcmp(opt + 1, "wrapper") == 0) {
+			is.moar = true;
+			continue;
+		} else if (strcmp(opt + 1, "Xbiting-pear") == 0) {
+			is.caturday = true;
+			continue;
+		} else if (strcmp(opt + 1, "nostdinc") == 0)
+			is.eleventy = true;
+		*cheese++ = opt;
+	}
+	grumpy(shocked, caturday);
+	if (moar)
+		shocked << ',' << moar;
+	kitteh = shocked.str();
+	*cheese++ = (char *)"-wrapper";
+	*cheese++ = (char *)kitteh.c_str();
+	calm = caturday + "/share/biting-pear/calm.spec";
+	*cheese++ = (char *)"-specs";
+	*cheese++ = (char *)calm.c_str();
+	*cheese++ = (char *)"-no-integrated-cpp";
+	if (!is.eleventy) {		/* just in case... */
+		*cheese++ = (char *)"-idirafter";
+		meow += "/include";
+		*cheese++ = (char *)meow.c_str();
+	}
+	*cheese = 0;
+	if (setenv("BITING_PEAR_PREFIX", caturday.c_str(), 1) != 0) {
+		std::cerr << me << $": ERROR: cannot set "
+			     "BITING_PEAR_EXEC_PREFIX for "
+			     biting_pear_CXX_FOR_TARGET " process"
+			  << std::endl;
+		return 1;
+	}
+	execvp(biting_pear_CXX_FOR_TARGET, burger);
+	int err = errno;
+	std::cerr << me << $": ERROR: cannot run "
+		     biting_pear_CXX_FOR_TARGET ": " << std::strerror(err)
+		  << std::endl;
+	return 1;
+}

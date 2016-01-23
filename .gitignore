@@ -1,5 +1,6 @@
 *~
 *.[ios]
+*.ii
 lex.backup
 test-1
 test-2
@@ -10,7 +11,8 @@ test-extra-3
 test-extra-4
 omnomnom.cc
 omnomnom
-nomnom
 config.cache
 derp.h
 doge
+calm
+biting-pear-c++

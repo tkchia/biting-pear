@@ -1,3 +1,41 @@
+2016-01-23	Nice wrapper.
+
+		.gitignore :
+		- added *.ii and calm, removed nomnom
+
+		GNUmakefile :
+		- updated to build and use wrapper
+		- now preprocesses to .ii files instead of .i files
+		- now builds internal passes from share/biting-pear/ rather
+		  than libexec/biting-pear/
+		- $(config.h.host) and $(config.h.target) now depend on
+		  config.cache
+		- now defines biting_pear::impl::getenv(.) in $(config.h.host)
+
+		bin/biting-pear-c++.ccc ,
+		share/biting-pear/calm.ccc ,
+		share/biting-pear/calm.spec :
+		- initial version
+
+		configure :
+		- now probes for secure_getenv(.)
+
+		share/biting-pear/doge.ccc :
+		- moved from libexec/biting-pear/doge.ccc
+
+		share/biting-pear/nomnom.cc :
+		- moved from libexec/biting-pear/nomnom.cc
+		- is now a module (used by calm.ccc) rather than a
+		  stand-alone program
+
+		share/biting-pear/omnomnom.lxx :
+		- moved from libexec/biting-pear/omnomnom.lxx
+		- now uses a default seed if no seed is specified, rather
+		  than a (half-baked) random seed
+
+		lolwutconf/configure.inc :
+		- minor fixes
+
 2016-01-09	Touch-ups.
 
 		GNUmakefile :
