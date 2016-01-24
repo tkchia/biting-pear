@@ -1,3 +1,14 @@
+2016-01-24	A bit of refactoring.
+
+		GNUmakefile ,
+		bin/biting-pear-c++.ccc ,
+		share/biting-pear/calm.ccc :
+		- factored out shocked(.) and curious(...) to share/biting-
+		  pear/epic.cc
+
+		share/biting-pear/epic.cc :
+		- initial version; split from share/biting-pear/calm.ccc
+
 2016-01-23	Nice wrapper.
 
 		.gitignore :

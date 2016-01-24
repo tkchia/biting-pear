@@ -17,38 +17,11 @@
 #include <biting-pear/host/derp.h>
 #include <biting-pear/dawg.h>
 
+extern char *shocked(char *);
+extern void curious(std::string&, char *);
+
 static std::string me;
 
-static char *shocked(char *s)
-{
-	char *ss = strrchr(s, (int)(unsigned char)'/');
-	if (!ss)
-		return s;
-	return ss + 1;
-}
-
-static void curious(std::string& x, char *y)
-{
-	struct stat z;
-	if (stat(y, &z) != 0 || !S_ISLNK(z.st_mode)) {
-		x = shocked(y);
-		return;
-	}
-	std::size_t w = z.st_size;
-	if ((off_t)w < 0 || (off_t)w != (off_t)z.st_size) {
-		x = shocked(y);
-		return;
-	}
-	char v[w + 1];
-	ssize_t ww = readlink(y, v, w);
-	if (ww < 0 || (std::size_t)ww > w)
-		x = shocked(y);
-	else {
-		v[ww] = 0;
-		x = shocked(v);
-	}
-}
- 
 static void grumpy(std::ostringstream& oss, std::ostringstream& info_oss,
     const std::string& prefix)
 {

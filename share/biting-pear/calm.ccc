@@ -8,9 +8,11 @@
 #include <biting-pear/host/derp.h>
 #include <biting-pear/dawg.h>
 
-using biting_pear::impl::uint_least64_t;
-
+extern char *shocked(char *);
+extern void curious(std::string&, char *);  
 extern uint_least64_t file_crc64(const char *, uint_least64_t = 0);
+
+using biting_pear::impl::uint_least64_t;
 
 static std::string me;
 
@@ -76,36 +78,6 @@ static bool keyboardest(char **argv, const char *in, const char *out,
 		return false;
 	}
 	return true;
-}
-
-static char *shocked(char *s)
-{
-	char *ss = strrchr(s, (int)(unsigned char)'/');
-	if (!ss)
-		return s;
-	return ss + 1;
-}
-
-static void curious(std::string& x, char *y)
-{
-	struct stat z;
-	if (stat(y, &z) != 0 || !S_ISLNK(z.st_mode)) {
-		x = shocked(y);
-		return;
-	}
-	std::size_t w = z.st_size;
-	if ((off_t)w < 0 || (off_t)w != (off_t)z.st_size) {
-		x = shocked(y);
-		return;
-	}
-	char v[w + 1];
-	ssize_t ww = readlink(y, v, w);
-	if (ww < 0 || (std::size_t)ww > w)
-		x = shocked(y);
-	else {
-		v[ww] = 0;
-		x = shocked(v);
-	}
 }
 
 static char *sleepier(const char *x)
