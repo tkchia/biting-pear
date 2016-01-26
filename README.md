@@ -2,13 +2,15 @@
 
 ## Synopsis
 
-#### Installation
+#### Shell side
 
 > *source-path*`/configure` [`--prefix=`*install-path*] [`--target=`*target-arch*]
 
 > `make install`
 
-#### Use
+> *install-path*`/bin/biting-pear-c++` [*g++-options*...]
+
+#### C++ side
 
 > `#include "biting-pear/kthxbai.h"`
 
