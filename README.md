@@ -2,9 +2,17 @@
 
 ## Synopsis
 
-`#include "biting-pear/kthxbai.h"`
+#### Installation
 
-`template<std::uint_least64_t` *seed* `, class ` *typ*[`, ` *flags* [`, unsigned ` *levels*]]`>`<br>`class biting_pear::kthxbai;`
+> *source-path*`/configure` [`--prefix=`*install-path*] [`--target=`*target-arch*]
+
+> `make install`
+
+#### Use
+
+> `#include "biting-pear/kthxbai.h"`
+
+> `template<std::uint_least64_t` *seed* `, class ` *typ*[`, ` *flags* [`, unsigned ` *levels*]]`>`<br>`class biting_pear::kthxbai;`
 
 ## Description
 

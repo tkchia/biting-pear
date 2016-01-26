@@ -1,3 +1,8 @@
+2016-01-27	Slightly better documentation.
+
+		README.md :
+		- added some installation instructions
+
 2016-01-24	A bit of refactoring.
 
 		GNUmakefile ,
