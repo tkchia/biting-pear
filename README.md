@@ -4,11 +4,13 @@
 
 #### Shell side
 
-> *source-path*`/configure` [`--prefix=`*install-path*] [`--target=`*target-arch*]
+> [*source-path*`/`]`configure` [`--prefix=`*install-path*] [`--target=`*target-arch*] [...]
+
+> `make check`
 
 > `make install`
 
-> *install-path*`/bin/biting-pear-c++` [*g++-options*...]
+> [*install-path*`/bin/`]biting-pear-c++` [*g++-options*...]
 
 #### C++ side
 
