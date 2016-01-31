@@ -1,3 +1,9 @@
+2016-01-31	A bit more refactoring.
+
+		share/biting-pear/calm.ccc :
+		- restructured code for invoking cc1plus and echoing command
+		  line arguments
+
 2016-01-27	Slightly better documentation.
 
 		README.md :
