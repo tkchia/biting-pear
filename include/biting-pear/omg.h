@@ -219,7 +219,7 @@ class omg
 	{
 		constexpr unsigned Which = (State2 >> 48) % 8;
 #if defined __amd64__ || defined __i386__
-		constexpr unsigned Which2 = (State2 >> 56) % 3;
+		constexpr unsigned Which2 = (State2 >> 56) % 5;
 #elif defined __arm__ && defined __thumb__
 		constexpr unsigned Which2 = (State2 >> 56) % 2;
 #endif
@@ -237,12 +237,16 @@ class omg
 			break;
 #if defined __amd64__ || defined __i386__
 		    case 2:
+		    case 3:
+		    case 4:
 			{
 				kthxbai<State3, void *, Flags, Levels - 1>
 				    p(&&foo, 1);
-				void *q = static_cast<void *>(p);
+				void *q, *r;
 				uint8_t x = static_cast<uint8_t>(State2 >> 24)
 				    / 2;
+				__asm("mov%z0 %%cs, %0" : "=r" (r));
+				q = static_cast<void *>(p);
 				if (q) {
 					switch (Which2) {
 					    default:
@@ -259,7 +263,15 @@ class omg
 						    : /* no clobbers */
 						    : foo);  break;
 					    case 2:
+						__asm goto("push%z0 %1; "
+							   "push%z0 %0; "
+							   "lret%z0"
+						    : /* no outputs */
+						    : "r" (q), "r" (r)
+						    : /* no clobbers */
+						    : foo);  break;
 #   ifdef __amd64__
+					    case 3:
 						__asm goto(
 						    "pushq %1; "
 						    "movq %0, (%%rsp); "
@@ -269,13 +281,36 @@ class omg
 						      "g" ((uint64_t)x)
 						    : /* no clobbers */
 						    : foo);  break;
+					    case 4:
+						__asm goto(
+						    "pushq %1; "
+						    "pushq %2; "
+						    "movq %0, (%%rsp); "
+						    "lretq"
+						    : /* no outputs */
+						    : "r" (q), "r" (r),
+						      "g" ((uint64_t)x)
+						    : /* no clobbers */
+						    : foo);  break;
 #   else
+					    case 3:
 						__asm goto(
 						    "pushl %1; "
 						    "movl %0, (%%esp); "
 						    "retl"
 						    : /* no outputs */
 						    : "r" (q),
+						      "g" ((uint32_t)x)
+						    : /* no clobbers */
+						    : foo);  break;
+					    case 4:
+						__asm goto(
+						    "pushl %1; "
+						    "pushl %2; "
+						    "movl %0, (%%esp); "
+						    "lretl"
+						    : /* no outputs */
+						    : "r" (q), "r" (r),
 						      "g" ((uint32_t)x)
 						    : /* no clobbers */
 						    : foo);  break;
@@ -291,6 +326,8 @@ class omg
 			break;
 #elif defined __arm__ && defined __thumb__
 		    case 2:
+		    case 3:
+		    case 4:
 			{
 #   if defined __thumb__
 				kthxbai<State3, void *, Flags, Levels - 1>
@@ -325,8 +362,6 @@ class omg
 			}
 			break;
 #endif
-		    case 3:
-		    case 4:
 		    case 5:
 		    case 6:
 			if (unsafe())
