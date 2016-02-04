@@ -240,12 +240,12 @@ class omg
 		    case 3:
 		    case 4:
 			{
-				kthxbai<State3, void *, Flags, Levels - 1>
-				    p(&&foo, 1);
 				void *q, *r;
+				__asm("mov%z0 %%cs, %0" : "=g" (r));
+				kthxbai<State3, void *, Flags, Levels>
+				    p(&&foo, 1);
 				uint8_t x = static_cast<uint8_t>(State2 >> 24)
 				    / 2;
-				__asm("mov%z0 %%cs, %0" : "=r" (r));
 				q = static_cast<void *>(p);
 				if (q) {
 					switch (Which2) {
@@ -360,7 +360,7 @@ class omg
 			    foo:
 				;
 			}
-			break;
+			// fall through
 #endif
 		    case 5:
 		    case 6:
@@ -374,7 +374,6 @@ class omg
 			}
 		}
 	}
-
 	__attribute__((always_inline))
 	omg(T& x)
 	{

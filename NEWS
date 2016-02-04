@@ -1,3 +1,18 @@
+2016-02-04	License change.  Indirect jumps, continued.
+
+		include/biting-pear/omg.h :
+		- try to move %cs read further away from its use
+
+		test/test-extra-3.ccc :
+		- now creates several "Hello, world!" strings to stress-test
+		  the scrambling
+
+		test/test-extra-3.good :
+		- updated
+
+		LICENSE :
+		- changed to the GNU GPL v3, for releases from here on
+
 2016-02-03	Yet another type of indirect jump.
 
 		include/biting-pear/omg.h :
