@@ -1,3 +1,8 @@
+2016-02-08	Ad astra per alas porci.
+
+		share/biting-pear/doge.ccc :
+		- now requires a `seed' argument
+
 2016-02-04	License change.  Indirect jumps, continued.
 
 		include/biting-pear/omg.h :

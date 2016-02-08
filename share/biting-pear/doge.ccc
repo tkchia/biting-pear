@@ -213,7 +213,8 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 }
 
 /* per phrack.org/issues/56/9.html */
-static void do_frob_4(bfd *ibfd, bfd *obfd, asymbol *bsym, asymbol *esym)
+static void do_frob_4(bfd *ibfd, bfd *obfd, asymbol *bsym, asymbol *esym,
+    biting_pear::impl::rand_state_t seed)
 {
 	wow($"copying sections");
 	bfd_map_over_sections(ibfd, copy_sxn, obfd);
@@ -224,7 +225,7 @@ static void do_frob_4(bfd *ibfd, bfd *obfd, asymbol *bsym, asymbol *esym)
 	unsigned char stuff[sz];
 	if (!bfd_get_section_contents(obfd, osxn, stuff, off, sz))
 		much($"bfd_get_section_contents");
-	biting_pear::srsly<unsigned char>(0).wut(stuff, stuff + sz);
+	biting_pear::srsly<unsigned char>(seed).wut(stuff, stuff + sz);
 	if (!bfd_set_section_contents(obfd, osxn, stuff, off, sz))
 		much($"bfd_set_section_contents");
 }
@@ -238,13 +239,13 @@ static void do_frob_5(bfd *ibfd, bfd *obfd)
 }
 
 static void copy_and_frob_object(bfd *ibfd, bfd *obfd, const char *bnm,
-    const char *enm)
+    const char *enm, biting_pear::impl::rand_state_t seed)
 {
 	asymbol *bsym, *esym;
 	do_frob_1(ibfd, obfd);
 	do_frob_2(ibfd, obfd);
 	do_frob_3(ibfd, obfd, bnm, enm, &bsym, &esym);
-	do_frob_4(ibfd, obfd, bsym, esym);
+	do_frob_4(ibfd, obfd, bsym, esym, seed);
 	do_frob_5(ibfd, obfd);
 }
 
@@ -252,14 +253,23 @@ int main(int argc, char **argv)
 {
 	bfd *ibfd = 0, *obfd = 0;
 	int exit_status = 0;
+	biting_pear::impl::rand_state_t seed = 0;
 	bfd_init();
 	try {
-		if (argc != 5) {
+		if (argc != 6 || *argv[5] == 0) {
 			std::cerr << $"ERROR: invalid arguments\n";
 			return 1;
 		}
 		const char *ifn = argv[1], *ofn = argv[2],
 		    *bnm = argv[3], *enm = argv[4];
+		char *ep;
+		errno = 0;
+		seed = (biting_pear::impl::rand_state_t)strtoumax(argv[5],
+		    &ep, 0);
+		if (*ep || errno != 0) {
+			std::cerr << $"ERROR: invalid arguments\n";
+			return 1;
+		}
 		ibfd = bfd_openr(ifn, 0);
 		if (!ibfd)
 			much($"bfd_openr");
@@ -267,7 +277,7 @@ int main(int argc, char **argv)
 		obfd = bfd_openw(ofn, bfd_get_target(ibfd));
 		if (!obfd)
 			much($"bfd_openw");
-		copy_and_frob_object(ibfd, obfd, bnm, enm);
+		copy_and_frob_object(ibfd, obfd, bnm, enm, seed);
 		bfd_boolean closed = bfd_close(obfd);
 		obfd = 0;
 		if (!closed)
