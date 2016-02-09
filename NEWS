@@ -1,3 +1,10 @@
+2016-02-09	Ad astra per alas porci.  (2)
+
+		bin/biting-pear-doge.ccc ,
+		GNUmakefile ,
+		.gitignore :
+		- share/biting-pear/doge.ccc -> bin/biting-pear-doge.ccc
+
 2016-02-08	Ad astra per alas porci.
 
 		share/biting-pear/doge.ccc :

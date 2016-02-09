@@ -48,7 +48,7 @@ ifeq "$(conf_Have_cxx_typ_struct_bfd)" "yes"
 ifeq "$(conf_Have_cxx_lib_bfd)" "yes"
 ifeq "$(conf_Have_cxx_var_tpls)" "yes"
 utils.host += \
-    share/biting-pear/doge
+    bin/biting-pear-doge
 endif
 endif
 endif
