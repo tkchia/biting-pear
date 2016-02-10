@@ -151,12 +151,14 @@ struct kthxbai_impl
 		    case 8:
 			if (sizeof(T) <= sizeof(unsigned)) {
 				unsigned x1, x2;
+				constexpr unsigned t =
+				    pick_hi<unsigned>(State3 ^ NewState);
 				unsigned v2 =
 				    (pick_hi<unsigned>(State2 ^ NewState)
 					& ~3u) | (v & 3u);
 				unsigned v1 = (v & ~3u) |
-				    (pick_hi<unsigned char>(State3 ^ NewState)
-					% ((v & 3u) + 1u));
+				    (t & ~(unsigned)(T)~(T)0u) |
+				    (t % ((v & 3u) + 1u));
 				kthxbai_impl<State3, T, Flags, Levels - 1>
 				    (x1, v1);
 				kthxbai_impl<NewState, T, Flags, Levels - 1>
@@ -164,6 +166,7 @@ struct kthxbai_impl
 				__asm("arplw %w2, %w0" : "=r,m" (x1)
 				    : "0,0" (x1), "r,r" (x2));
 				x = (T)x1;
+				break;
 			}
 			// else fall through
 #endif
