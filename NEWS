@@ -1,3 +1,14 @@
+2016-02-10	Ad astra per alas porci.  (3)
+
+		include/biting-pear/kthxbai.h :
+		- added arplw instruction for x86-32
+
+		include/biting-pear/omg.h :
+		- fixed mov %cs, ... assembly glitch for x86-32
+
+		GNUmakefile :
+		- fixed glitch in compiling bin/biting-pear-doge.ccc
+
 2016-02-09	Ad astra per alas porci.  (2)
 
 		bin/biting-pear-doge.ccc ,

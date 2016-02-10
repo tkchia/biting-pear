@@ -241,7 +241,11 @@ class omg
 		    case 4:
 			{
 				void *q, *r;
-				__asm("mov%z0 %%cs, %0" : "=g" (r));
+#   ifdef __i386__
+				__asm("movw %%cs, %w0" : "=r" (r));
+#   else
+				__asm("movq %%cs, %0" : "=g" (r));
+#   endif
 				kthxbai<State3, void *, Flags, Levels>
 				    p(&&foo, 1);
 				uint8_t x = static_cast<uint8_t>(State2 >> 24)

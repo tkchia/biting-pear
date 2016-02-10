@@ -232,14 +232,14 @@ bin/biting-pear-c++: bin/biting-pear-c++.o share/biting-pear/epic.o
 
 bin/biting-pear-c++.o: bin/biting-pear-c++.ii
 
+bin/biting-pear-doge.o: bin/biting-pear-doge.ii
+
 share/biting-pear/calm: share/biting-pear/calm.o share/biting-pear/epic.o \
     share/biting-pear/nomnom.o
 
 share/biting-pear/calm.o: share/biting-pear/calm.ii
 
 share/biting-pear/epic.o: share/biting-pear/epic.cc
-
-share/biting-pear/doge.o: share/biting-pear/doge.ii
 
 bin/%.ii share/biting-pear/%.ii : \
     CPPFLAGS += -Dbiting_pear_HOST_PREFIX=\"$(conf_Prefix)\" \

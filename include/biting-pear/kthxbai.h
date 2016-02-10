@@ -147,6 +147,26 @@ struct kthxbai_impl
 				kthxbai_impl<0, T, Flags, 0>(x, x1 * x2);
 			}
 			break;
+#ifdef __i386__
+		    case 8:
+			if (sizeof(T) <= sizeof(unsigned)) {
+				unsigned x1, x2;
+				unsigned v2 =
+				    (pick_hi<unsigned>(State2 ^ NewState)
+					& ~3u) | (v & 3u);
+				unsigned v1 = (v & ~3u) |
+				    (pick_hi<unsigned char>(State3 ^ NewState)
+					% ((v & 3u) + 1u));
+				kthxbai_impl<State3, T, Flags, Levels - 1>
+				    (x1, v1);
+				kthxbai_impl<NewState, T, Flags, Levels - 1>
+				    (x2, v2);
+				__asm("arplw %w2, %w0" : "=r,m" (x1)
+				    : "0,0" (x1), "r,r" (x2));
+				x = (T)x1;
+			}
+			// else fall through
+#endif
 		    default:
 			{
 				T x1;
