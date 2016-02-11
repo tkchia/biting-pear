@@ -220,8 +220,8 @@ class omg
 		constexpr unsigned Which = (State2 >> 48) % 8;
 #if defined __amd64__ || defined __i386__
 		constexpr unsigned Which2 = (State2 >> 56) % 5;
-#elif defined __arm__ && defined __thumb__
-		constexpr unsigned Which2 = (State2 >> 56) % 2;
+#elif defined __arm__ || defined __thumb__
+		constexpr unsigned Which2 = (State2 >> 56) % 3;
 #endif
 		switch (Which) {
 		    case 0:
@@ -328,7 +328,7 @@ class omg
 				;
 			}
 			break;
-#elif defined __arm__ && defined __thumb__
+#elif defined __arm__ || defined __thumb__
 		    case 2:
 		    case 3:
 		    case 4:
@@ -344,17 +344,28 @@ class omg
 				if (q) {
 					switch (Which2) {
 					    default:
+						__asm goto("mov pc, %0"
+						    : /* no outputs */
+						    : "r" (q)
+						    : /* no clobbers */
+						    : foo);  break;
+#   ifdef __THUMB_INTERWORK__
+					    case 1:
 						__asm goto("bx %0"
 						    : /* no outputs */
 						    : "r" (q)
 						    : /* no clobbers */
 						    : foo);  break;
-					    case 1:
+	// blx is supported only from ARMv5T onwards
+#	if !defined __ARM_ARCH_4__ && !defined __ARM_ARCH_4T__
+					    case 2:
 						__asm goto("blx %0"
 						    : /* no outputs */
 						    : "r" (q)
 						    : "lr"
 						    : foo);  break;
+#	endif
+#   endif
 					}
 				}
 				{

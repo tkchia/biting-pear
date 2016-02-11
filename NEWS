@@ -1,3 +1,9 @@
+2016-02-11	Ad astra per alas porci.  (4)
+
+		include/biting-pear/omg.h :
+		- now uses only `bx' and `blx' in ARM code when compiling
+		  for the appropriate platforms
+
 2016-02-10	Ad astra per alas porci.  (3)
 
 		include/biting-pear/kthxbai.h :
