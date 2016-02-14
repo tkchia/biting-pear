@@ -1,3 +1,14 @@
+2016-02-14	Position-independent executable support.
+
+		configure :
+		- now includes `-pie' in $CXXFLAGS and $CXXFLAGS_FOR_TARGET
+		  on default
+
+		include/biting-pear/lolwut.h :
+		- fixed handling of function pointers for x86-64 so that it
+		  works work `-pie'
+		- fixed precedence bug in lolwut<...>::operator T*()
+
 2016-02-11	Ad astra per alas porci.  (4)
 
 		include/biting-pear/omg.h :

@@ -125,25 +125,30 @@ class lolwut_impl
 			 * to obscure the reference to `printf'.
 			 *
 			 * -- 20150703
+			 *
+			 * Dang, apparently this no longer works: ld says
+			 * stuff like
+			 *
+			 *	relocation R_X86_64_PC32 against undefined
+			 *	symbol `_ZStlsISt11char_traitsIcEERSt
+			 *	13basic_ostreamIcT_ES5_c@@GLIBCXX_3.4' can
+			 *	not be used when making a shared object;
+			 *	recompile with -fPIC
+			 *
+			 * To work around this, make the PLT explicit:
+			 *
+			 *	leaq	some_constant+printf@PLT(%rip), %rdi
+			 *
+			 * -- 20160214
 			 */
 			if (Sign) {
-				__asm(	".ifc \"$%a1\", \"%1(%%rip)\"; "
-						"leaq -%a2+%a1, %0; "
-					".else; "
-						"movq %1, %0; "
-						"subq %2, %0; "
-					".endif"
-				    : "=&r" (p_)
+				__asm("leaq -%a2+%P1(%%rip), %0"
+				    : "=r" (p_)
 				    : "X" (v), "n" ((unsigned long)Disp2));
 				p_ -= Disp - Disp2;
 			} else {
-				__asm(	".ifc \"$%a1\", \"%1(%%rip)\"; "
-						"leaq %a2+%a1, %0; "
-					".else; "
-						"movq %1, %0; "
-						"addq %2, %0; "
-					".endif"
-				    : "=&r" (p_)
+				__asm("leaq %a2+%P1(%%rip), %0"
+				    : "=r" (p_)
 				    : "X" (v), "n" ((unsigned long)Disp2));
 				p_ += Disp - Disp2;
 			}
@@ -287,7 +292,7 @@ class lolwut : public lolwut_impl<State, T, Flags, Levels>
 		kthxbai_impl<(this->NewState), unsigned, Flags, Levels>(disp,
 		    this->Disp);
 		char *p;
-		if ((this->NewState ^ this->NewNewState) >> 32 % 4) {
+		if (((this->NewState ^ this->NewNewState) >> 32) % 4) {
 			lolwut<(this->NewNewState), char, Flags, Levels - 1>
 			    thang(this->p_);
 			p = (char *)thang;
