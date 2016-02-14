@@ -7,7 +7,10 @@
 		include/biting-pear/lolwut.h :
 		- fixed handling of function pointers for x86-64 so that it
 		  works work `-pie'
-		- fixed precedence bug in lolwut<...>::operator T*()
+		- fixed precedence bug in lolwut<...>::operator T *()
+
+		include/biting-pear/omg.h :
+		- fixed a minor assembly bug in omg_impl_0<..., 0u>
 
 2016-02-11	Ad astra per alas porci.  (4)
 

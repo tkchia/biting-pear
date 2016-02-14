@@ -46,7 +46,7 @@ struct omg_impl_0<State, 0u>
 #elif defined __i386__
 			__asm __volatile("call *%%gs:0x10" : : : "eax",
 			    "memory");
-#else
+#elif defined __arm__
 			__asm __volatile("svc #0" : : : "r0", "memory");
 #endif
 			break;
