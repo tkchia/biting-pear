@@ -166,6 +166,13 @@ int main(int argc, char **argv)
 			  << std::endl;
 		return 1;
 	}
+	if (setenv("BITING_PEAR_DRIVER_CXX", *argv, 1) != 0) {
+		std::cerr << me << $": ERROR: cannot set "
+			     "BITING_PEAR_DRIVER_CXX for "
+			     biting_pear_CXX_FOR_TARGET " process"
+			  << std::endl;
+		return 1;
+	}
 	if (is.grumpiest) {
 		cheese = burger;
 		std::cerr << *cheese++;

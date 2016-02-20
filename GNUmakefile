@@ -273,8 +273,8 @@ share/biting-pear/omnomnom.o: share/biting-pear/omnomnom.cc \
 	$(conf_Host_exec) $(CXX_FOR_TARGET) $(CXXFLAGS_FOR_TARGET) -c -o$@ $<
 
 # for debugging
-%.s: %.ii
-	$(conf_Host_exec) $(CXX_FOR_TARGET) $(CXXFLAGS_FOR_TARGET) -S -o$@ $<
+%.s: %.ccc
+	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) -S -o$@ $<
 
 %.o: %.ccc $(headers.target) $(wrap_cxx) share/biting-pear/omnomnom \
     share/biting-pear/calm share/biting-pear/calm.spec

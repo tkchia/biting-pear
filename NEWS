@@ -1,3 +1,22 @@
+2016-02-20	Some x86 and x86-64 enhancements, and a bit more.
+
+		GNUmakefile :
+		- updated %.s rule
+
+		include/biting-pear/omg.h :
+		- now adds a random prefix before `retl'/`retq'/`lretl'/
+		  `lretq' on x86 and x86-64
+		- now also adds junk bytes for x86-64
+
+		test/test-extra-3.ccc :
+		- really stress-test...
+
+		test/test-extra-3.good :
+		- updated
+
+		bin/biting-pear-c++.ccc :
+		- now sets $BITING_PEAR_DRIVER_CXX, for later use
+
 2016-02-14	Position-independent executable support.
 
 		configure :

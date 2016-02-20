@@ -2,28 +2,25 @@
 #include <locale>
 #include <biting-pear/dawg.h>
 
+#define BLARGH		std::cout << $"Hello, world!\n" \
+				  << $"Hello, world!\n" \
+				  << $"Hello, world!\n" \
+				  << $"Hello, world!\n" \
+				  << $"Hello, world!\n" \
+				  << $"Hello, world!\n" \
+				  << $"Hello, world!\n" \
+				  << $"Hello, world!\n"
+
 int main()
 {
 	std::locale::global(std::locale(""));
-	std::cout << $"Hello, world!\n"
-		  << $"Hello, world!\n"
-		  << $"Hello, world!\n"
-		  << $"Hello, world!\n"
-		  << $"Hello, world!\n"
-		  << $"Hello, world!\n"
-		  << $"Hello, world!\n"
-		  << $"Hello, world!\n"
-		  << $"Hello, world!\n"
-		  << $"Hello, world!\n"
-		  << $"Hello, world!\n"
-		  << $"Hello, world!\n"
-		  << $"Hello, world!\n"
-		  << $"Hello, world!\n"
-		  << $"Hello, world!\n"
-		  << $"Hello, world!\n"
-		  << $"Hello, world!\n"
-		  << $"Hello, world!\n"
-		  << $"Hello, world!\n"
-		  << $"Hello, world!\n";
+	BLARGH;
+	BLARGH;
+	BLARGH;
+	BLARGH;
+	BLARGH;
+	BLARGH;
+	BLARGH;
+	BLARGH;
 	return 0;
 }

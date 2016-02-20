@@ -62,7 +62,7 @@ struct omg_impl_0<State, 0u>
 			    : /* no outputs */
 			    : "n" (pick_hi<uint32_t>(State ^ State2))
 			    : "memory");
-#   elif defined __i386__
+#   elif defined __i386__ || defined __amd64__
 			__asm __volatile(".byte %c0"
 			    : /* no outputs */
 			    : "n" (pick_hi<uint8_t>(State ^ State2))
@@ -220,6 +220,7 @@ class omg
 		constexpr unsigned Which = (State2 >> 48) % 8;
 #if defined __amd64__ || defined __i386__
 		constexpr unsigned Which2 = (State2 >> 56) % 5;
+		constexpr unsigned Which3 = (State2 >> 51) % 8;
 #elif defined __arm__ || defined __thumb__
 		constexpr unsigned Which2 = (State2 >> 56) % 3;
 #endif
@@ -236,6 +237,25 @@ class omg
 			}
 			break;
 #if defined __amd64__ || defined __i386__
+#   ifdef __OPTIMIZE__
+#	define biting_pear_RET_PREFIX(o) ".if 0 == %c" #o "; " \
+						".byte 0x26; "	/* %es: */ \
+					 ".elseif 1 == %c" #o "; " \
+						".byte 0x2e; "	/* %cs: */ \
+					 ".elseif 2 == %c" #o "; " \
+						".byte 0x3e; "	/* %ds: */ \
+					 ".elseif 3 == %c" #o "; " \
+						".byte 0x64; "	/* %fs: */ \
+					 ".elseif 4 == %c" #o "; " \
+						".byte 0x65; "	/* %gs: */ \
+					 ".elseif 5 == %c" #o "; " \
+						"repz; " \
+					 ".elseif 6 == %c" #o "; " \
+						"repnz; " \
+					 ".endif; "
+#   else
+#	define biting_pear_RET_PREFIX(o) ""
+#   endif
 		    case 2:
 		    case 3:
 		    case 4:
@@ -251,76 +271,84 @@ class omg
 				uint8_t x = static_cast<uint8_t>(State2 >> 24)
 				    / 2;
 				q = static_cast<void *>(p);
-				if (q) {
-					switch (Which2) {
-					    default:
-						__asm goto("jmp%z0 *%0"
-						    : /* no outputs */
-						    : "r" (q)
-						    : /* no clobbers */
-						    : foo);  break;
-					    case 1:
-						__asm goto("push%z0 %0; "
-							   "ret%z0"
-						    : /* no outputs */
-						    : "r" (q)
-						    : /* no clobbers */
-						    : foo);  break;
-					    case 2:
-						__asm goto("push%z0 %1; "
-							   "push%z0 %0; "
-							   "lret%z0"
-						    : /* no outputs */
-						    : "r" (q), "r" (r)
-						    : /* no clobbers */
-						    : foo);  break;
+				if (!q)
+					goto bar;
+				switch (Which2) {
+				    default:
+					__asm goto("jmp%z0 *%0"
+					    : /* no outputs */
+					    : "r" (q)
+					    : /* no clobbers */
+					    : foo);  break;
+				    case 1:
+					__asm goto("push%z0 %0; "
+						   biting_pear_RET_PREFIX(1)
+						   "ret%z0"
+					    : /* no outputs */
+					    : "r" (q), "n" (Which3)
+					    : /* no clobbers */
+					    : foo);  break;
+				    case 2:
+					__asm goto("push%z0 %1; "
+						   "push%z0 %0; "
+						   biting_pear_RET_PREFIX(2)
+						   "lret%z0"
+					    : /* no outputs */
+					    : "r" (q), "r" (r), "n" (Which3)
+					    : /* no clobbers */
+					    : foo);  break;
 #   ifdef __amd64__
-					    case 3:
-						__asm goto(
-						    "pushq %1; "
-						    "movq %0, (%%rsp); "
-						    "retq"
-						    : /* no outputs */
-						    : "r" (q),
-						      "g" ((uint64_t)x)
-						    : /* no clobbers */
-						    : foo);  break;
-					    case 4:
-						__asm goto(
-						    "pushq %1; "
-						    "pushq %2; "
-						    "movq %0, (%%rsp); "
-						    "lretq"
-						    : /* no outputs */
-						    : "r" (q), "r" (r),
-						      "g" ((uint64_t)x)
-						    : /* no clobbers */
-						    : foo);  break;
+				    case 3:
+					__asm goto(
+					    "pushq %1; "
+					    "movq %0, (%%rsp); "
+					    biting_pear_RET_PREFIX(2)
+					    "retq"
+					    : /* no outputs */
+					    : "r" (q), "g" ((uint64_t)x),
+					      "n" (Which3)
+					    : /* no clobbers */
+					    : foo);  break;
+				    case 4:
+					__asm goto(
+					    "pushq %1; "
+					    "pushq %2; "
+					    "movq %0, (%%rsp); "
+					    biting_pear_RET_PREFIX(3)
+					    "lretq"
+					    : /* no outputs */
+					    : "r" (q), "r" (r),
+					      "g" ((uint64_t)x), "n" (Which3)
+					    : /* no clobbers */
+					    : foo);  break;
 #   else
-					    case 3:
-						__asm goto(
-						    "pushl %1; "
-						    "movl %0, (%%esp); "
-						    "retl"
-						    : /* no outputs */
-						    : "r" (q),
-						      "g" ((uint32_t)x)
-						    : /* no clobbers */
-						    : foo);  break;
-					    case 4:
-						__asm goto(
-						    "pushl %1; "
-						    "pushl %2; "
-						    "movl %0, (%%esp); "
-						    "lretl"
-						    : /* no outputs */
-						    : "r" (q), "r" (r),
-						      "g" ((uint32_t)x)
-						    : /* no clobbers */
-						    : foo);  break;
+				    case 3:
+					__asm goto(
+					    "pushl %1; "
+					    "movl %0, (%%esp); "
+					    biting_pear_RET_PREFIX(2)
+					    "retl"
+					    : /* no outputs */
+					    : "r" (q), "g" ((uint32_t)x),
+					      "n" (Which3)
+					    : /* no clobbers */
+					    : foo);  break;
+				    case 4:
+					__asm goto(
+					    "pushl %1; "
+					    "pushl %2; "
+					    "movl %0, (%%esp); "
+					    biting_pear_RET_PREFIX(3)
+					    "lretl"
+					    : /* no outputs */
+					    : "r" (q), "r" (r),
+					      "g" ((uint32_t)x), "n" (Which3)
+					    : /* no clobbers */
+					    : foo);  break;
 #   endif
-					}
+#   undef biting_pear_RET_PREFIX
 				}
+			    bar:
 				{
 					omg_impl_0<NewState, Levels - 1>();
 				}
