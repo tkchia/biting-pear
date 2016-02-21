@@ -30,15 +30,15 @@ headers.target = \
     include/biting-pear/yodawg.h \
     $(config.h.target)
 tests.target = \
-    test/test-1 \
-    test/test-2 \
-    test/test-3
+    test/test-kthxbai \
+    test/test-kthxbai-p \
+    test/test-orly
 ifeq "$(conf_Have_cxxt_var_tpls)" "yes"
 tests.target += \
-    test/test-extra-1 \
-    test/test-extra-2 \
-    test/test-extra-3 \
-    test/test-extra-4
+    test/test-dawg \
+    test/test-dawg-syn \
+    test/test-yodawg \
+    test/test-yodawg-syn
 endif
 utils.host = \
     bin/biting-pear-c++ \

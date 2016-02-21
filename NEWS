@@ -1,3 +1,37 @@
+2016-02-21	Renamed test cases.
+
+		test/test-kthxbai.ccc ,
+		test/test-kthxbai.good :
+		- renamed test-1 to test-kthxbai
+
+		test/test-kthxbai-p.ccc ,
+		test/test-kthxbai-p.good :
+		- renamed test-2 to test-kthxbai-p
+
+		test/test-orly.ccc ,
+		test/test-orly.good :
+		- renamed test-3 to test-orly
+
+		test/test-dawg.ccc ,
+		test/test-dawg.good :
+		- renamed test-extra-1 to test-dawg
+
+		test/test-yodawg.ccc ,
+		test/test-yodawg.good :
+		- renamed test-extra-2 to test-yodawg
+
+		test/test-dawg-syn.ccc ,
+		test/test-dawg-syn.good :
+		- renamed test-extra-3 to test-dawg-syn
+
+		test/test-yodawg-syn.ccc ,
+		test/test-yodawg-syn.good :
+		- renamed test-extra-4 to test-yodawg-syn
+
+		GNUmakefile ,
+		.gitignore :
+		- updated
+
 2016-02-20	Some x86 and x86-64 enhancements, and a bit more.
 
 		GNUmakefile :
