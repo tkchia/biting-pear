@@ -100,6 +100,55 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 			    (z, x1, x2, x3, x4, x5, x6, x7, x8, x9);
 		}
 	}
+	__attribute__((always_inline))
+	void wut(T *p, T *q, T *r)
+	{
+		T y0,
+		  y1 = (*this)(),
+		  y2 = (*this)(y1),
+		  y3 = (*this)(y2, y1),
+		  y4 = (*this)(y3, y2, y1),
+		  y5 = (*this)(y4, y3, y2, y1),
+		  y6 = (*this)(y5, y4, y3, y2, y1),
+		  y7 = (*this)(y6, y5, y4, y3, y2, y1),
+		  y8 = (*this)(y7, y6, y5, y4, y3, y2, y1),
+		  y9 = (*this)(y8, y7, y6, y5, y4, y3, y2, y1);
+		if (sizeof(T) != 1)
+			q = p + (std::ptrdiff_t)(q - p);
+		if (Boreal) {
+			while (p != q) {
+				y0 = (*this)(*p++, y1, y2, y3, y4,
+					     y5, y6, y7, y8, y9);
+				y1 = y2;
+				y2 = y3;
+				y3 = y4;
+				y4 = y5;
+				y5 = y6;
+				y6 = y7;
+				y7 = y8;
+				y8 = y9;
+				*r++ = y9 = y0;
+			}
+		} else {
+			while (p != q) {
+				y0 = *p++;
+				*r++ = (*this)(y0, y1, y2, y3, y4,
+					       y5, y6, y7, y8, y9);
+				y1 = y2;
+				y2 = y3;
+				y3 = y4;
+				y4 = y5;
+				y5 = y6;
+				y6 = y7;
+				y7 = y8;
+				y8 = y9;
+				y9 = y0;
+			}
+		}
+	}
+	__attribute__((always_inline))
+	void wut(T *p, T *q)
+		{ wut(p, q, p); }
 };
 
 } // biting_pear::impl

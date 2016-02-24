@@ -1,3 +1,19 @@
+2016-02-24	Confusion and enhancements.
+
+		bin/biting-pear-doge.ccc :
+		- now allows relocations in object file being frobbed ---
+		  only the frobbed section needs to be relocation-free
+
+		include/biting-pear/kthxbai.h :
+		- now deliberately emits constants in static read-only and
+		  read/write data section
+
+		include/biting-pear/orly.h :
+		- added orly<...>::wut(...)
+
+		GNUmakefile :
+		- fixed `%.s: %.ccc' rule
+
 2016-02-21	Renamed test cases.
 
 		test/test-kthxbai.ccc ,

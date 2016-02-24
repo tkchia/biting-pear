@@ -147,8 +147,36 @@ struct kthxbai_impl
 				kthxbai_impl<0, T, Flags, 0>(x, x1 * x2);
 			}
 			break;
-#ifdef __i386__
 		    case 8:
+			{
+				constexpr unsigned WhichOp =
+				    (unsigned)(State3 >> 16);
+				constexpr T v2 = pick_hi<T>(State2 ^ State3);
+				T x1;
+				static volatile T x2 = v2;
+				volatile T *p;
+				__asm("" : "=g" (p) : "0" (&x2));
+				kthxbai_impl<NewState, T, Flags, Levels - 1>
+				    (x1, do_op<WhichOp>(v, v2));
+				x = do_inv_op<WhichOp>(x1, *p);
+			}
+			break;
+		    case 9:
+			{
+				constexpr unsigned WhichOp =
+				    (unsigned)(State3 >> 16);
+				constexpr T v2 = pick_hi<T>(State2 ^ State3);
+				T x1;
+				static const T x2 = v2;
+				const T *p;
+				__asm("" : "=g" (p) : "0" (&x2));
+				kthxbai_impl<NewState, T, Flags, Levels - 1>
+				    (x1, do_op<WhichOp>(v, v2));
+				x = do_inv_op<WhichOp>(x1, *p);
+			}
+			break;
+#ifdef __i386__
+		    case 10:
 			if (sizeof(T) <= sizeof(unsigned)) {
 				unsigned x1, x2;
 				constexpr unsigned t =

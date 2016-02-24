@@ -7,6 +7,12 @@
 #include <biting-pear/dawg.h>
 #include <biting-pear/host/srsly.h>
 
+struct afortune
+{
+	bfd *obfd;
+	asymbol **syms;
+};
+
 template<class... Ts>
 __attribute__((always_inline))
 inline void excite(Ts...);
@@ -83,9 +89,6 @@ static void check_object(bfd *ibfd)
 		much($"bfd_check_format");
 	const char *tgt = bfd_get_target(ibfd);
 	wow($"input file is for target ", tgt);
-	flagword fl = bfd_get_file_flags(ibfd);
-	if ((fl & HAS_RELOC) != 0)
-		many($"unsupported: object with relocation entries");
 	if (bfd_get_flavour(ibfd) == bfd_target_coff_flavour &&
 	    std::strncmp(tgt, "pei-", (size_t)4) == 0)
 		many($"unsupported: Windows PE object");
@@ -147,9 +150,13 @@ static void check_symbol(bfd *ibfd, asymbol *sym, const char *nm)
 	const char *name = bfd_section_name(ibfd, sxn);
 	if (bfd_is_const_section(sxn))
 		many($"symbol ", nm, $" is in special section ", name);
-	if ((bfd_get_section_flags(ibfd, sxn) & SEC_HAS_CONTENTS) == 0)
+	flagword fl = bfd_get_section_flags(ibfd, sxn);
+	if ((fl & SEC_HAS_CONTENTS) == 0)
 		many($"symbol ", nm, $" is in non-content (possibly BSS) "
 		      "section ", name);
+	if ((fl & SEC_RELOC) != 0)
+		many($"symbol ", nm, $" is in a section that has "
+		      "relocations");
 	symvalue val = sym->value;
 	wow($"symbol ", nm, $" = ", name, ' ', val < 0 ? '-' : '+',
 	    $" 0x", std::hex, val < 0 ? -val : val);
@@ -159,16 +166,13 @@ static void check_symbol(bfd *ibfd, asymbol *sym, const char *nm)
 
 /* per phrack.org/issues/56/9.html */
 static void do_frob_3(bfd *ibfd, bfd *obfd, const char *bnm, const char *enm,
-    asymbol **p_bsym, asymbol **p_esym)
+    asymbol **p_bsym, asymbol **p_esym, asymbol ***p_syms)
 {
 	*p_bsym = *p_esym = 0;
 	wow($"copying and scanning symbol table");
 	long symtab_sz = bfd_get_symtab_upper_bound(ibfd), n_syms, i;
 	if (symtab_sz < 0 || symtab_sz > SSIZE_MAX)
 		much($"bfd_get_symtab_upper_bound");
-	if (symtab_sz > SSIZE_MAX)
-		many($"bfd_get_symtab_upper_bound( ) returns bogus symbol "
-		      "table size");
 	asymbol **syms = new asymbol *[(symtab_sz + sizeof(asymbol *) - 1)
 	    / sizeof(asymbol *)];
 	n_syms = bfd_canonicalize_symtab(ibfd, syms);
@@ -193,14 +197,18 @@ static void do_frob_3(bfd *ibfd, bfd *obfd, const char *bnm, const char *enm,
 		     $"are in different sections");
 	if ((*p_bsym)->value > (*p_esym)->value)
 		many($"symbol ", enm, $" is before ", bnm);
+	*p_syms = syms;
 }
 
 static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 {
-	bfd *obfd = (bfd *)cookie;
+	afortune *fortune = (afortune *)cookie;
+	bfd *obfd = fortune->obfd;
+	asymbol **syms = fortune->syms;
 	asection *osxn = isxn->output_section;
 	wow($"\t", bfd_section_name(ibfd, osxn));
-	if ((bfd_get_section_flags(ibfd, isxn) & SEC_HAS_CONTENTS) == 0)
+	flagword fl = bfd_get_section_flags(ibfd, isxn);
+	if ((fl & (SEC_HAS_CONTENTS | SEC_RELOC)) == 0)
 		return;
 	bfd_size_type sz = bfd_section_size(ibfd, isxn);
 	if (sz) {
@@ -210,14 +218,26 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 		if (!bfd_set_section_contents(obfd, osxn, stuff, 0, sz))
 			much($"bfd_set_section_contents");
 	}
+	if ((fl & SEC_RELOC) == 0)
+		return;
+	long rels_sz = bfd_get_reloc_upper_bound(ibfd, isxn);
+	if (rels_sz < 0 || rels_sz > SSIZE_MAX)
+		much($"bfd_get_reloc_upper_bound");
+	arelent **rels = new arelent *[(rels_sz + sizeof(arelent *) - 1)
+	    / sizeof(arelent *)];
+	long nrels = bfd_canonicalize_reloc(ibfd, isxn, rels, syms);
+	if (nrels < 0 || nrels != (unsigned)nrels)
+		much($"bfd_canonicalize_reloc");
+	bfd_set_reloc(obfd, osxn, rels, (unsigned)nrels);
 }
 
 /* per phrack.org/issues/56/9.html */
 static void do_frob_4(bfd *ibfd, bfd *obfd, asymbol *bsym, asymbol *esym,
-    biting_pear::impl::rand_state_t seed)
+    asymbol **syms, biting_pear::impl::rand_state_t seed)
 {
+	afortune fortune = { obfd, syms };
 	wow($"copying sections");
-	bfd_map_over_sections(ibfd, copy_sxn, obfd);
+	bfd_map_over_sections(ibfd, copy_sxn, &fortune);
 	asection *osxn = bsym->section->output_section;
 	wow($"frobbing section ", bfd_section_name(obfd, osxn));
 	file_ptr off = bsym->value;
@@ -241,11 +261,11 @@ static void do_frob_5(bfd *ibfd, bfd *obfd)
 static void copy_and_frob_object(bfd *ibfd, bfd *obfd, const char *bnm,
     const char *enm, biting_pear::impl::rand_state_t seed)
 {
-	asymbol *bsym, *esym;
+	asymbol *bsym, *esym, **syms;
 	do_frob_1(ibfd, obfd);
 	do_frob_2(ibfd, obfd);
-	do_frob_3(ibfd, obfd, bnm, enm, &bsym, &esym);
-	do_frob_4(ibfd, obfd, bsym, esym, seed);
+	do_frob_3(ibfd, obfd, bnm, enm, &bsym, &esym, &syms);
+	do_frob_4(ibfd, obfd, bsym, esym, syms, seed);
 	do_frob_5(ibfd, obfd);
 }
 
