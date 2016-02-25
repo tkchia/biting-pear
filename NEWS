@@ -1,3 +1,20 @@
+2016-02-25	Confusion and enhancements.  (2)
+
+		include/biting-pear/kthxbai.h :
+		- now obscures addresses of constants emitted in read-only
+		  and read/write data sections
+
+		include/biting-pear/lolwut.h :
+		- improved comments
+		- x86-64 `leaq' inline assembly statements are no longer
+		  marked as modifying the condition flags, while x86-32
+		  `addl' statements are thus marked
+		- added handling of addresses of static constants
+
+		GNUmakefile :
+		- added `share/biting-pear/%.s: share/biting-pear/%.ii' rule
+		  for debugging
+
 2016-02-24	Confusion and enhancements.
 
 		bin/biting-pear-doge.ccc :
@@ -6,7 +23,7 @@
 
 		include/biting-pear/kthxbai.h :
 		- now deliberately emits constants in static read-only and
-		  read/write data section
+		  read/write data sections
 
 		include/biting-pear/orly.h :
 		- added orly<...>::wut(...)

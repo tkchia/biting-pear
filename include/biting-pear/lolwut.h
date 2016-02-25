@@ -34,15 +34,15 @@ class lolwut_impl
 	static constexpr unsigned Disp2 = Disp > 2 ?
 	    impl::pick_hi<unsigned>(State2 ^ State3) % (Disp / 2) : 0;
 #endif
-#if defined __arm__ && defined __thumb2__
 	static constexpr rand_state_t State4 = impl::update_inner(State3);
+#if defined __arm__ && defined __thumb2__
 	static constexpr rand_state_t State5 = impl::update_inner(State4);
 	static constexpr unsigned Subsxn =
 	    impl::pick_hi<unsigned>(State3 ^ State4) % 4096u + 1u;
 	static constexpr unsigned Disp3 =
 	    impl::pick_hi<unsigned>(State4 ^ State5);
-	static constexpr unsigned Levels2 = Levels ? Levels - 1 : 0;
 #endif
+	static constexpr unsigned Levels2 = Levels ? Levels - 1 : 0;
 	char *p_;
 	void advance_chars(std::ptrdiff_t n)
 		{ p_ += n; }
@@ -87,16 +87,12 @@ class lolwut_impl
 				if (Sign) {
 					__asm("leaq -%a1+%l2(%%rip), %0; "
 					    : "=r" (p_)
-					    : "n" (Disp2),
-					      "p" (v)
-					    : "cc");
+					    : "n" (Disp2), "p" (v));
 					p_ -= Disp - Disp2;
 				} else {
 					__asm("leaq %a1+%l2(%%rip), %0; "
 					    : "=r" (p_)
-					    : "n" (Disp2),
-					      "p" (v)
-					    : "cc");
+					    : "n" (Disp2), "p" (v));
 					p_ += Disp - Disp2;
 				}
 			}
@@ -104,8 +100,9 @@ class lolwut_impl
 #   if defined __ELF__ && (defined __pic__ || defined __pie__)
 		    case 2:
 			/*
-			 * On Linux/x86-64 and possibly other ELF platforms
-			 * (?), an assembly operand of the form
+			 * Address of a named function.  On Linux/x86-64 and
+			 * possibly other ELF platforms (?), an assembly
+			 * operand of the form
 			 *
 			 *	"X" (printf)
 			 *
@@ -153,14 +150,28 @@ class lolwut_impl
 				p_ += Disp - Disp2;
 			}
 			break;
+		    case 3:
+			/* Address of a static variable.  -- 20160225 */
+			if (Sign) {
+				__asm("leaq -%a1+%a2, %0"
+				    : "=r" (p_) : "n" (Disp2), "X" (v));
+				p_ -= Disp - Disp2;
+			} else {
+				__asm("leaq %a1+%a2, %0"
+				    : "=r" (p_) : "n" (Disp2), "X" (v));
+				p_ += Disp - Disp2;
+			}
+			break;
 #   endif
 #elif defined __i386__
 		    case 1:
+		    case 3:
 			__asm("" : "=r" (p_) : "0" (&&qux));
 			__asm("addl $%a3+%p4-%p2, %0"
 			    : "=r" (p_)
 			    : "0" (p_), "X" (&&qux),
-			      "n" (Sign ? -Disp : Disp), "X" (v));
+			      "n" (Sign ? -Disp : Disp), "X" (v)
+			    : "cc");
 		    qux:
 			break;
 		    case 2:
@@ -173,11 +184,13 @@ class lolwut_impl
 				".endif"
 			    : "=&r" (p_)
 			    : "0" (p_), "X" (v), "n" (Sign ? -Disp : Disp),
-			      "X" (&&quux));
+			      "X" (&&quux)
+			    : "cc");
 		    quux:
 			break;
 #elif defined __arm__ && defined __thumb2__ && defined __OPTIMIZE__
 		    case 1:
+		    case 3:
 			{
 				uintptr_t scratch;
 				__asm("" : "=r" (p_) : "0" (&&qux));

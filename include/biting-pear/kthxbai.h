@@ -151,11 +151,12 @@ struct kthxbai_impl
 			{
 				constexpr unsigned WhichOp =
 				    (unsigned)(State3 >> 16);
-				constexpr T v2 = pick_hi<T>(State2 ^ State3);
+				constexpr T v2 = pick_hi<T>(State ^ State2
+				    ^ State3 ^ NewState);
 				T x1;
-				static volatile T x2 = v2;
-				volatile T *p;
-				__asm("" : "=g" (p) : "0" (&x2));
+				static T x2 = v2;
+				lolwut<State3, T, Flags, Levels - 1>
+				    p(&x2, 3);
 				kthxbai_impl<NewState, T, Flags, Levels - 1>
 				    (x1, do_op<WhichOp>(v, v2));
 				x = do_inv_op<WhichOp>(x1, *p);
@@ -165,11 +166,12 @@ struct kthxbai_impl
 			{
 				constexpr unsigned WhichOp =
 				    (unsigned)(State3 >> 16);
-				constexpr T v2 = pick_hi<T>(State2 ^ State3);
+				constexpr T v2 = pick_hi<T>(State ^ State2
+				    ^ State3 ^ NewState);
 				T x1;
 				static const T x2 = v2;
-				const T *p;
-				__asm("" : "=g" (p) : "0" (&x2));
+				lolwut<State3, T, Flags, Levels - 1>
+				    p((T *)&x2, 3);
 				kthxbai_impl<NewState, T, Flags, Levels - 1>
 				    (x1, do_op<WhichOp>(v, v2));
 				x = do_inv_op<WhichOp>(x1, *p);

@@ -262,6 +262,10 @@ share/biting-pear/%: share/biting-pear/%.o
 share/biting-pear/%.o: share/biting-pear/%.ii
 	$(CXX) $(CXXFLAGS) -c -o$@ $<
 
+# for debugging
+share/biting-pear/%.s: share/biting-pear/%.ii
+	$(CXX) $(CXXFLAGS) -S -o$@ $<
+
 share/biting-pear/%.ii: share/biting-pear/%.ccc $(headers.host) \
     $(headers.target) share/biting-pear/omnomnom
 	$(preproc_for_host)
