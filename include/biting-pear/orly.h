@@ -77,6 +77,7 @@ template<rand_state_t State, class T, bool Boreal, bool BigBad,
 class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 {
 	typedef orly_impl<State, T, Boreal, BigBad, Flags, Levels> super;
+	typedef orly<State, T, false, BigBad, Flags, Levels> austral;
     public:
 	__attribute__((always_inline))
 	T operator()(T x0 = super::DefX0,
@@ -104,15 +105,15 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 	void wut(T *p, T *q, T *r)
 	{
 		T y0,
-		  y1 = (*this)(),
-		  y2 = (*this)(y1),
-		  y3 = (*this)(y2, y1),
-		  y4 = (*this)(y3, y2, y1),
-		  y5 = (*this)(y4, y3, y2, y1),
-		  y6 = (*this)(y5, y4, y3, y2, y1),
-		  y7 = (*this)(y6, y5, y4, y3, y2, y1),
-		  y8 = (*this)(y7, y6, y5, y4, y3, y2, y1),
-		  y9 = (*this)(y8, y7, y6, y5, y4, y3, y2, y1);
+		  y1 = austral()(),
+		  y2 = austral()(y1),
+		  y3 = austral()(y2, y1),
+		  y4 = austral()(y3, y2, y1),
+		  y5 = austral()(y4, y3, y2, y1),
+		  y6 = austral()(y5, y4, y3, y2, y1),
+		  y7 = austral()(y6, y5, y4, y3, y2, y1),
+		  y8 = austral()(y7, y6, y5, y4, y3, y2, y1),
+		  y9 = austral()(y8, y7, y6, y5, y4, y3, y2, y1);
 		if (sizeof(T) != 1)
 			q = p + (std::ptrdiff_t)(q - p);
 		if (Boreal) {

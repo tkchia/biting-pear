@@ -22,7 +22,7 @@ template<class T, bool Boreal>
 class srsly_impl
 {
     protected:
-	rand_state_t st12_, new_st_;
+	rand_state_t st_, st12_, new_st_;
 	unsigned which_op_;
 	T xd0_, xd1_, xd2_, xd3_, xd4_, xd5_, xd6_, xd7_, xd8_, xd9_;
 	T do_op(T x, T y)
@@ -49,6 +49,7 @@ class srsly_impl
 	}
 	srsly_impl(rand_state_t st)
 	{
+		st_ = st;
 		rand_state_t st2 = update_inner(st);
 		rand_state_t st3 = update_inner(st2);
 		rand_state_t st4 = update_inner(st3);
@@ -127,6 +128,7 @@ template<class T, bool Boreal, unsigned Levels>
 class srsly : public srsly_impl<T, Boreal>
 {
 	typedef srsly_impl<T, Boreal> super;
+	typedef srsly<T, false, Levels> austral;
     public:
 	srsly(rand_state_t st) : super(st)
 		{ }
@@ -172,16 +174,17 @@ class srsly : public srsly_impl<T, Boreal>
 		{ return (*this)(super::xd0_); }
 	void wut(T *p, T *q)
 	{
+		austral a(this->st_);
 		T y0,
-		  y1 = (*this)(),
-		  y2 = (*this)(y1),
-		  y3 = (*this)(y2, y1),
-		  y4 = (*this)(y3, y2, y1),
-		  y5 = (*this)(y4, y3, y2, y1),
-		  y6 = (*this)(y5, y4, y3, y2, y1),
-		  y7 = (*this)(y6, y5, y4, y3, y2, y1),
-		  y8 = (*this)(y7, y6, y5, y4, y3, y2, y1),
-		  y9 = (*this)(y8, y7, y6, y5, y4, y3, y2, y1);
+		  y1 = a(),
+		  y2 = a(y1),
+		  y3 = a(y2, y1),
+		  y4 = a(y3, y2, y1),
+		  y5 = a(y4, y3, y2, y1),
+		  y6 = a(y5, y4, y3, y2, y1),
+		  y7 = a(y6, y5, y4, y3, y2, y1),
+		  y8 = a(y7, y6, y5, y4, y3, y2, y1),
+		  y9 = a(y8, y7, y6, y5, y4, y3, y2, y1);
 		if (sizeof(T) != 1)
 			q = p + (std::ptrdiff_t)(q - p);
 		if (Boreal) {

@@ -1,3 +1,25 @@
+2016-02-27	"Praise doge."
+
+		test/test-orly-wut.ccc ,
+		test/test-orly-wut.ld ,
+		test/test-orly-wut.good :
+		- initial version
+
+		include/biting-pear/host/srsly.h ,
+		include/biting-pear/orly.h :
+		- fixed rather dumb bug in wut(...) state initialization
+
+		include/biting-pear/kthxbai.h :
+		- fixed namespacing glitch for forward declaration of
+		  biting_pear::omg
+
+		GNUmakefile :
+		- added test-orly-wut test case
+		- fixed compilation of test cases
+
+		.gitignore :
+		- added test-orly-wut
+
 2016-02-26	Confusion and enhancements.  (3)
 
 		include/biting-pear/lolwut.h :

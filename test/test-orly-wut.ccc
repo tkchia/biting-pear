@@ -1,0 +1,13 @@
+#include <iostream>
+#include <biting-pear/orly.h>
+
+__attribute__((section(".biting_pear.test")))
+unsigned char msg[] = "SCIENTIA EST LVX LVCIS\n";
+
+int main()
+{
+	biting_pear::orly<STATE, unsigned char, false, true>().wut(msg,
+	    msg + sizeof msg);
+	std::cout << msg;
+	return 0;
+}

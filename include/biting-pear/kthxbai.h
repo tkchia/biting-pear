@@ -12,6 +12,9 @@
 namespace biting_pear
 {
 
+namespace impl
+{
+
 template<impl::rand_state_t State, class T, impl::ops_flags_t Flags,
     unsigned Levels>
 struct omg;  // forward
@@ -19,9 +22,6 @@ struct omg;  // forward
 template<impl::rand_state_t State, class T, impl::ops_flags_t Flags,
     unsigned Levels>
 struct lolwut;  // forward
-
-namespace impl
-{
 
 template<class T>
 bool hi_bit(T x)

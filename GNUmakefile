@@ -49,6 +49,8 @@ ifeq "$(conf_Have_cxx_lib_bfd)" "yes"
 ifeq "$(conf_Have_cxx_var_tpls)" "yes"
 utils.host += \
     bin/biting-pear-doge
+tests.target += \
+    test/test-orly-wut
 endif
 endif
 endif
@@ -218,7 +220,20 @@ test/test-%: test/test-%.o
 	$(conf_Host_exec) $(CXX_FOR_TARGET) $(CXXFLAGS_FOR_TARGET) \
 	    $(LDFLAGS_FOR_TARGET) -o$@ $^ $(LDLIBS_FOR_TARGET)
 
-test/test-%.o: test/test-%.ii
+test/test-%.o: test/test-%.ccc
+
+test/test-orly-wut test/test-orly-wut.o : state = 0x293c42fc93032e55
+
+test/test-orly-wut.o : CXXFLAGS_FOR_TARGET += -DSTATE=$(state)
+
+test/test-orly-wut: test/test-orly-wut.o test/test-orly-wut.ld \
+    bin/biting-pear-doge
+	$(conf_Host_exec) $(CXX_FOR_TARGET) $(CXXFLAGS_FOR_TARGET) \
+	    $(LDFLAGS_FOR_TARGET) -o$@.tmp $(filter %.o %.ld,$^) \
+	    $(LDLIBS_FOR_TARGET)
+	bin/biting-pear-doge $@.tmp $@.2.tmp __doge_start __doge_end $(state)
+	mv $@.2.tmp $@
+	rm $@.tmp
 
 define preproc_for_host
 	mkdir -p $(@D)
@@ -272,11 +287,6 @@ share/biting-pear/%.ii: share/biting-pear/%.ccc $(headers.host) \
 
 share/biting-pear/omnomnom.o: share/biting-pear/omnomnom.cc \
     $(config.h.host)
-
-%.o: %.ii
-	$(conf_Host_exec) $(CXX_FOR_TARGET) $(CXXFLAGS_FOR_TARGET) -c -o$@ $<
-
-test/test-orly-wut.o: test/test-orly-wut.ccc $(headers.target) $(wrap_cxx)
 
 %.o: %.ccc $(headers.target) $(wrap_cxx) share/biting-pear/omnomnom \
     share/biting-pear/calm share/biting-pear/calm.spec
