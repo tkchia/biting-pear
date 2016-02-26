@@ -1,3 +1,11 @@
+2016-02-26	Confusion and enhancements.  (3)
+
+		include/biting-pear/lolwut.h :
+		- x86-64:
+		  - simplified code for deriving `leaq' displacement
+		  - lowered threshold for splitting displacement into two
+		  - improved comments
+
 2016-02-25	Confusion and enhancements.  (2)
 
 		include/biting-pear/kthxbai.h :

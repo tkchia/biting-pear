@@ -31,8 +31,25 @@ class lolwut_impl
 	    impl::pick_hi<unsigned>(State2 ^ NewState) % 2u != 0;
 	static constexpr rand_state_t State3 = impl::update_inner(State2);
 #ifdef __amd64__
-	static constexpr unsigned Disp2 = Disp > 2 ?
-	    impl::pick_hi<unsigned>(State2 ^ State3) % (Disp / 2) : 0;
+	/*
+	 * `Disp2' is used as a random displacement to be added or
+	 * subtracted to (ASLR-slid) static addresses in `leaq'
+	 * instructions.
+	 *
+	 * In the unlikely case that the offset-from-%rip does not fit into
+	 * a signed 32-bit operand, we still need to output valid machine
+	 * instructions.  We thus split the +/- displacement `Disp' into two
+	 * parts, `Disp2' which can be stashed along with the static address
+	 * into the `leaq', and `Disp' - `Disp2' which is applied in a
+	 * separate instruction.
+	 *
+	 * If `Disp' is small enough, then we (sometimes) just stash the
+	 * whole displacement into the `leaq', i.e. set `Disp2' == `Disp'.
+	 */
+	static constexpr unsigned Disp2 =
+	    Disp < 0x60000000u && State2 > NewState ? Disp :
+		(Disp > 2 ?
+		 impl::pick_hi<unsigned>(State2 ^ State3) % (Disp / 2) : 0);
 #endif
 	static constexpr rand_state_t State4 = impl::update_inner(State3);
 #if defined __arm__ && defined __thumb2__
@@ -62,39 +79,17 @@ class lolwut_impl
 			 * gcc_asm/ .
 			 *
 			 * -- 20150703
-			 *
-			 * In the unlikely case that the offset-from-%rip
-			 * does not fit into a signed 32-bit operand, we
-			 * still need to output valid machine instructions.
-			 * We switch from doing a single `leaq' to building
-			 * up the offset inside a register in two parts.
-			 *
-			 * Sometimes, we do this even if the offset-from-
-			 * -%rip _does_ fit into a signed 32-bit. :-)
-			 *
-			 * -- 20150614
 			 */
-			if (Disp < 0x70000000u && State2 > NewState) {
-				if (Sign)
-					__asm("leaq -%a1+%l2(%%rip), %0"
-					    : "=r" (p_)
-					    : "n" (Disp), "p" (v));
-				else
-					__asm("leaq %a1+%l2(%%rip), %0"
-					    : "=r" (p_)
-					    : "n" (Disp), "p" (v));
+			if (Sign) {
+				__asm("leaq -%a1+%l2(%%rip), %0"
+				    : "=r" (p_)
+				    : "n" ((unsigned long)Disp2), "p" (v));
+				p_ -= Disp - Disp2;
 			} else {
-				if (Sign) {
-					__asm("leaq -%a1+%l2(%%rip), %0; "
-					    : "=r" (p_)
-					    : "n" (Disp2), "p" (v));
-					p_ -= Disp - Disp2;
-				} else {
-					__asm("leaq %a1+%l2(%%rip), %0; "
-					    : "=r" (p_)
-					    : "n" (Disp2), "p" (v));
-					p_ += Disp - Disp2;
-				}
+				__asm("leaq %a1+%l2(%%rip), %0"
+				    : "=r" (p_)
+				    : "n" ((unsigned long)Disp2), "p" (v));
+				p_ += Disp - Disp2;
 			}
 			break;
 #   if defined __ELF__ && (defined __pic__ || defined __pie__)
@@ -154,11 +149,13 @@ class lolwut_impl
 			/* Address of a static variable.  -- 20160225 */
 			if (Sign) {
 				__asm("leaq -%a1+%a2, %0"
-				    : "=r" (p_) : "n" (Disp2), "X" (v));
+				    : "=r" (p_)
+				    : "n" ((unsigned long)Disp2), "X" (v));
 				p_ -= Disp - Disp2;
 			} else {
 				__asm("leaq %a1+%a2, %0"
-				    : "=r" (p_) : "n" (Disp2), "X" (v));
+				    : "=r" (p_)
+				    : "n" ((unsigned long)Disp2), "X" (v));
 				p_ += Disp - Disp2;
 			}
 			break;
