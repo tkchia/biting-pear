@@ -187,7 +187,6 @@ class lolwut_impl
 			break;
 #elif defined __arm__ && defined __thumb2__ && defined __OPTIMIZE__
 		    case 1:
-		    case 3:
 			{
 				uintptr_t scratch;
 				__asm("" : "=r" (p_) : "0" (&&qux));
@@ -202,6 +201,7 @@ class lolwut_impl
 			break;
 #   ifdef __ELF__
 		    case 2:
+		    case 3:
 			{
 				unsigned disp3, scratch;
 				impl::kthxbai_impl<State5, unsigned, Flags,

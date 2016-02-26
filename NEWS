@@ -13,6 +13,9 @@
 		- fixed namespacing glitch for forward declaration of
 		  biting_pear::omg
 
+		include/biting-pear/lolwut.h :
+		- fixed lolwut(, 3) case for ARM
+
 		GNUmakefile :
 		- added test-orly-wut test case
 		- fixed compilation of test cases
