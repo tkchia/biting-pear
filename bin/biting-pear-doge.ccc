@@ -1,8 +1,11 @@
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <utility>
+#include <unistd.h>
 #include <bfd.h>
 #include <biting-pear/dawg.h>
 #include <biting-pear/host/srsly.h>
@@ -272,8 +275,8 @@ static void copy_and_frob_object(bfd *ibfd, bfd *obfd, const char *bnm,
 int main(int argc, char **argv)
 {
 	bfd *ibfd = 0, *obfd = 0;
-	int exit_status = 0;
 	biting_pear::impl::rand_state_t seed = 0;
+	char *tfn = 0;
 	bfd_init();
 	try {
 		if (argc != 6 || *argv[5] == 0) {
@@ -286,15 +289,21 @@ int main(int argc, char **argv)
 		errno = 0;
 		seed = (biting_pear::impl::rand_state_t)strtoumax(argv[5],
 		    &ep, 0);
-		if (*ep || errno != 0) {
-			std::cerr << $"ERROR: invalid arguments\n";
-			return 1;
-		}
+		if (*ep || errno != 0)
+			many($"invalid arguments");
 		ibfd = bfd_openr(ifn, 0);
 		if (!ibfd)
 			much($"bfd_openr");
 		check_object(ibfd);
-		obfd = bfd_openw(ofn, bfd_get_target(ibfd));
+		size_t tfnl = strlen(ofn) + 8;
+		tfn = new char[tfnl];
+		std::snprintf(tfn, tfnl, "%s.XXXXXX", ofn);
+		int fd = mkstemp(tfn);
+		if (fd < 0)
+			many($"mkstemp(\"", tfn, $"\" failed: ",
+			    strerror(errno));
+		close(fd);
+		obfd = bfd_openw(tfn, bfd_get_target(ibfd));
 		if (!obfd)
 			much($"bfd_openw");
 		copy_and_frob_object(ibfd, obfd, bnm, enm, seed);
@@ -302,12 +311,20 @@ int main(int argc, char **argv)
 		obfd = 0;
 		if (!closed)
 			much($"bfd_close");
-		wow($"done");
-	} catch (int s)
-		{ exit_status = s; }
-	if (ibfd)
+		if (std::rename(tfn, ofn) != 0)
+			many($"rename( ) failed: ", strerror(errno));
+		tfn = 0;
 		bfd_close(ibfd);
-	if (obfd)
-		bfd_close(obfd);
-	return exit_status;
+		ibfd = 0;
+		wow($"done");
+	} catch (int s) {
+		if (obfd)
+			bfd_close_all_done(obfd);
+		if (tfn)
+			std::remove(tfn);
+		if (ibfd)
+			bfd_close(ibfd);
+		return s;
+	}
+	return 0;
 }

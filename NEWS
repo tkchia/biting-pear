@@ -1,3 +1,9 @@
+2016-02-28	Yo doge, we herd you like doge...
+
+		bin/biting-pear-doge.ccc :
+		- fixed bug causing BFD internal errors
+		- now atomically creates output file
+
 2016-02-27	"Praise doge."
 
 		test/test-orly-wut.ccc ,
