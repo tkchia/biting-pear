@@ -1,3 +1,13 @@
+2016-02-29	Ad astra per alas porci.  (5)
+
+		configure ,
+		lolwutconf/c++.target.inc :
+		- now checks if target platform uses a __libc_csu_init(...)
+		  that is overridable
+
+		lolwutconf/configure.inc :
+		- slightly reformatted comments
+
 2016-02-28	Yo doge, we herd you like doge...
 
 		bin/biting-pear-doge.ccc :

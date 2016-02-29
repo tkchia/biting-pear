@@ -1,8 +1,9 @@
 #!/bin/sh
 
 set -e
-
-# unset any existing variables whose names begin with `conf_'
+#
+# Unset any existing variables whose names begin with `conf_'.
+#
 eval "`set | sed -n '/^conf_/ { s,[^[:alnum:]_].*,,g; s,^,unset ,; p; }'`"
 
 conf__nl='
@@ -203,8 +204,10 @@ conf__find_good_runtime_prefix() {
 		   -print-libgcc-file-name \
 		   -print-file-name=crt1.o
 	do
-		# we cannot really rely on `realpath' or `readlink' being
+		#
+		# We cannot really rely on `realpath' or `readlink' being
 		# available, so do this nasty thang...
+		#
 		prefix="`$cxx $cxxflags $arg`"
 		prefix="`echo "$prefix" | xargs dirname`"
 		prefix="`cd "$prefix" && pwd`"

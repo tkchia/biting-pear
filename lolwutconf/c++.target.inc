@@ -290,3 +290,33 @@ conf_cxxt_probe_wchar_typ() {
 	rm -f "$prog"
 	conf__blare_res "$conf_Typ_wchar_cxxt"
 }
+
+conf_cxxt_probe_overridable_csu_init() {
+	local prog
+	conf_cxxt_chk_compiler_and_executor
+	if conf__in_help_mode
+		then return 0; fi
+	conf__add_var conf_Have_overridable_csu_init_cxxt
+	conf__blare_test "checking if target's __libc_csu_init overridable"
+	prog="`conf__mktemp lolwutconf`"
+	#
+	# Although we only want to override __libc_csu_init(...), we need to
+	# also define __libc_csu_fini().  Both are likely to be defined in
+	# the same archive member in libc_nonshared.a, so overriding only
+	# __libc_csu_init(...) will cause a problem.
+	#
+	if conf__cxxt_compile_prog "$prog" \
+	    'extern "C" void _exit(int);' \
+	    'extern "C" void __libc_csu_init(int, char **, char **)' \
+	    '  { _exit(0); }' \
+	    'extern "C" void __libc_csu_fini()' \
+	    '  { _exit(1); }' \
+	    'int main()' \
+	    '  { return 2; }' && \
+	    $conf_Target_exec ./"$prog"
+	then	conf_Have_overridable_csu_init_cxxt=yes
+	else	conf_Have_overridable_csu_init_cxxt=no
+	fi
+	rm -f "$prog"
+	conf__blare_res "$conf_Have_overridable_csu_init_cxxt"
+}
