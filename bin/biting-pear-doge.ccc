@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <bfd.h>
 #include <biting-pear/dawg.h>
+#include <biting-pear/host/lolcat.h>
 #include <biting-pear/host/srsly.h>
 
 struct afortune
@@ -15,39 +16,6 @@ struct afortune
 	bfd *obfd;
 	asymbol **syms;
 };
-
-template<class... Ts>
-__attribute__((always_inline))
-inline void excite(Ts...);
-
-__attribute__((always_inline))
-inline void excite()
-{
-}
-
-template<class T, class... Ts>
-__attribute__((always_inline))
-inline void excite(T x, Ts... xs)
-{
-	std::cerr << x;
-	excite(xs...);
-}
-
-template<class... Ts>
-__attribute__((always_inline))
-inline void very(Ts... xs)
-{
-	std::ios_base::fmtflags fl = std::cerr.flags();
-	excite(xs...);
-	std::cerr.flags(fl);
-}
-
-__attribute__((noinline))
-static void amaze()
-{
-	std::cerr << std::endl;
-	throw 1;
-}
 
 __attribute__((noinline))
 static void such()
@@ -63,27 +31,6 @@ inline void much(Ts... msg)
 	std::cerr << "ERROR: ";
 	very(msg...);
 	such();
-}
-
-template<class... Ts>
-__attribute__((always_inline))
-inline void many(Ts... msg)
-{
-	std::cerr << "ERROR: ";
-	very(msg...);
-	amaze();
-}
-
-template<class... Ts>
-inline void wow(Ts...);
-
-template<class... Ts>
-__attribute__((always_inline))
-inline void wow(Ts... msg)
-{
-	std::cerr << "INFO: ";
-	very(msg...);
-	std::cerr << std::endl;
 }
 
 static void check_object(bfd *ibfd)
@@ -277,6 +224,7 @@ int main(int argc, char **argv)
 	bfd *ibfd = 0, *obfd = 0;
 	biting_pear::impl::rand_state_t seed = 0;
 	char *tfn = 0;
+	curious(*argv);
 	bfd_init();
 	try {
 		if (argc != 6 || *argv[5] == 0) {

@@ -1,7 +1,10 @@
 #include <cstring>
+#include <iostream>
 #include <string>
 #include <unistd.h>
 #include <sys/stat.h>
+
+static std::string me;
 
 char *shocked(char *s)
 {
@@ -11,24 +14,34 @@ char *shocked(char *s)
 	return ss + 1;
 }
 
-void curious(std::string& x, char *y)
+void curious(char *y)
 {
 	struct stat z;
 	if (stat(y, &z) != 0 || !S_ISLNK(z.st_mode)) {
-		x = shocked(y);
+		me = shocked(y);
 		return;
 	}
 	std::size_t w = z.st_size;
 	if ((off_t)w < 0 || (off_t)w != (off_t)z.st_size) {
-		x = shocked(y);
+		me = shocked(y);
 		return;
 	}
 	char v[w + 1];
 	ssize_t ww = readlink(y, v, w);
 	if (ww < 0 || (std::size_t)ww > w)
-		x = shocked(y);
+		me = shocked(y);
 	else {
 		v[ww] = 0;
-		x = shocked(v);
+		me = shocked(v);
 	}
+}
+
+std::string& curious()
+	{ return me; }
+
+__attribute__((noreturn))
+void amaze()
+{
+	std::cerr << std::endl;
+	throw 1;
 }

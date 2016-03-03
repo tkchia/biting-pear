@@ -1,3 +1,4 @@
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
@@ -5,16 +6,10 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
-#include <biting-pear/host/derp.h>
+#include <biting-pear/host/lolcat.h>
 #include <biting-pear/dawg.h>
 
-extern char *shocked(char *);
-extern void curious(std::string&, char *);  
-extern uint_least64_t file_crc64(const char *, uint_least64_t = 0);
-
 using biting_pear::impl::uint_least64_t;
-
-static std::string me;
 
 __attribute__((noreturn))
 static void keyboard(char **argv, const char *in, const char *out, bool v)
@@ -32,8 +27,7 @@ static void keyboard(char **argv, const char *in, const char *out, bool v)
 	}
 	execvp(*argv, argv);
 	int err = errno;
-	std::cerr << me << $": ERROR: cannot run " << *argv << $": "
-		  << std::strerror(err) << std::endl;
+	many($"cannot run ", *argv, $": ", std::strerror(err));
 	std::exit(1);
 }
 
@@ -46,28 +40,19 @@ static void keyboarder(int fd, const char *fn, int fl, mode_t mo)
 	if (!fn)
 		return;
 	int ofd = open(fn, fl, mo);
-	if (ofd == -1) {
-		std::cerr << me << $": ERROR: cannot open " << fn << $": "
-			  << std::strerror(errno) << std::endl;
-		std::exit(1);
-	}
-	if (dup2(ofd, fd) != fd) {
-		std::cerr << me << $": ERROR: dup2( ) failed: "
-			  << std::strerror(errno) << std::endl;
-		std::exit(1);
-	}
+	if (ofd == -1)
+		concern($"cannot open", fn);
+	if (dup2(ofd, fd) != fd)
+		concern($"dup2( ) failed");
 	close(ofd);
 }
 
-static bool keyboardest(char **argv, const char *in, const char *out,
-    bool v)
+static void keyboardest(char **argv, const char *in, const char *out, bool v)
 {
 	pid_t sleepy = fork();
 	switch (sleepy) {
 	    case -1:
-		std::cerr << me << $": ERROR: fork() failed: "
-			  << std::strerror(errno) << std::endl;
-		return false;
+		concern($"fork() failed");
 	    case 0:		/* child */
 		keyboarder(0, in, O_RDONLY, 0);
 		keyboarder(1, out, O_WRONLY | O_CREAT, 0600);
@@ -76,12 +61,8 @@ static bool keyboardest(char **argv, const char *in, const char *out,
 	/* parent */
 	int curiouser;
 	while (waitpid(sleepy, &curiouser, 0) != sleepy);
-	if (!WIFEXITED(curiouser) || WEXITSTATUS(curiouser) != 0) {
-		std::cerr << me << $": ERROR: " << *argv
-			  << $" exited abnormally" << std::endl;
-		return false;
-	}
-	return true;
+	if (!WIFEXITED(curiouser) || WEXITSTATUS(curiouser) != 0)
+		many(*argv, $" exited abnormally");
 }
 
 static char *sleepier(const char *x)
@@ -89,27 +70,21 @@ static char *sleepier(const char *x)
 	std::size_t ys = strlen(x) + 8;
 	char *y = new char[ys];
 	std::snprintf(y, ys, "%s.XXXXXX", x);
-	if (!mkstemp(y)) {
-		std::cerr << me << $": ERROR: cannot create temporary file "
-			     "with pattern " << y << std::endl;
-		return 0;
-	}
+	if (!mkstemp(y))
+		concern($"cannot create temporary file with pattern ", y);
 	return y;
 }
 
-int main(int argc, char **argv)
+static int main_(int argc, char **argv, char *& grumpy, char *& grumpier)
 {
 	const char *lulz = biting_pear::impl::getenv("BITING_PEAR_PREFIX");
 	enum { UNKNOWN, AS, CC1, CC1PLUS, LD } wut = UNKNOWN;
 	struct {
 		unsigned pass : 1, e : 1, v : 1;
 	} is = { false, false, false };
-	curious(me, *argv);
-	if (!lulz) {
-		std::cerr << me << $": ERROR: Snape kills Dumbledore!"
-			  << std::endl;
-		return 1;
-	}
+	curious(*argv);
+	if (!lulz)
+		many($"Snape kills Dumbledore!");
 	std::string lolz = lulz;
 	char *calm[argc + 2], **calmer = calm, **calmest = 0;
 	for (int argh = 1; argh < argc; ++argh) {
@@ -185,9 +160,7 @@ int main(int argc, char **argv)
 		{
 			if (!is.e)
 				keyboard(calm, is.v);
-			char *grumpy = sleepier(*calmest);
-			if (!grumpy)
-				return 1;
+			grumpy = sleepier(*calmest);
 			if (calmest) {
 				lulz = *calmest;
 				*calmest = grumpy;
@@ -196,40 +169,39 @@ int main(int argc, char **argv)
 				*calmer++ = grumpy;
 				*calmer = 0;
 			}
-			if (!keyboardest(calm, 0, 0, is.v)) {
-				unlink(grumpy);
-				return 1;
-			}
-			char *grumpier = 0;
-			if (calmest) {
+			keyboardest(calm, 0, 0, is.v);
+			if (calmest)
 				grumpier = sleepier(lulz);
-				if (!grumpier) {
-					unlink(grumpy);
-					return 1;
-				}
-			}
 			lolz += "/share/biting-pear/omnomnom";
 			calm[0] = (char *)lolz.c_str();
 			calm[1] = new char[19];
 			snprintf(calm[1], 19, "%#16" PRIxLEAST64,
 			    file_crc64(grumpy));
 			calm[2] = 0;
-			if (!keyboardest(calm, grumpy, grumpier, is.v)) {
-				unlink(grumpy);
-				unlink(grumpier);
-				return 1;
-			}
-			unlink(grumpy);
+			keyboardest(calm, grumpy, grumpier, is.v);
+			if (std::remove(grumpy) != 0)
+				concern($"cannot remove ", grumpy);
+			grumpy = 0;
 			if (!calmest)
 				return 0;
-			if (rename(grumpier, lulz) != 0) {
-				unlink(grumpier);
-				std::cerr << me << $": ERROR: cannot rename "
-					  << grumpier << $" to " << lulz
-					  << std::endl;
-				return 1;
-			}
+			if (rename(grumpier, lulz) != 0)
+				concern($"cannot rename ", grumpier, $" to ",
+				    lulz);
 			return 0;
 		}
+	}
+}
+
+int main(int argc, char **argv)
+{
+	char *grumpy = 0, *grumpier = 0;
+	try
+		{ return main_(argc, argv, grumpy, grumpier); }
+	catch (int ugh) {
+		if (grumpy)
+			std::remove(grumpy);
+		if (grumpier)
+			std::remove(grumpier);
+		return ugh;
 	}
 }

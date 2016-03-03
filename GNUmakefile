@@ -9,11 +9,12 @@ includedir.target = $(conf_Target_prefix)/include
 
 wrap_cxx = bin/biting-pear-c++
 wrap_cxx.staged = $(wrap_cxx) \
-    -Xbiting-pear prefix=. -Xbiting-pear target-prefix=.
+    -Xbiting-pear -prefix=. -Xbiting-pear -target-prefix=.
 config.h.host = include/biting-pear/host/derp.h
 headers.host = \
     include/biting-pear/bbq.h \
     include/biting-pear/nowai.h \
+    include/biting-pear/host/lolcat.h \
     include/biting-pear/host/rly.h \
     include/biting-pear/host/srsly.h \
     $(config.h.host)
@@ -231,8 +232,7 @@ test/test-orly-wut: test/test-orly-wut.o test/test-orly-wut.ld \
 	$(conf_Host_exec) $(CXX_FOR_TARGET) $(CXXFLAGS_FOR_TARGET) \
 	    $(LDFLAGS_FOR_TARGET) -o$@.tmp $(filter %.o %.ld,$^) \
 	    $(LDLIBS_FOR_TARGET)
-	bin/biting-pear-doge $@.tmp $@.2.tmp __doge_start __doge_end $(state)
-	mv $@.2.tmp $@
+	bin/biting-pear-doge $@.tmp $@ __doge_start __doge_end $(state)
 	rm $@.tmp
 
 define preproc_for_host
@@ -247,6 +247,8 @@ bin/biting-pear-c++: bin/biting-pear-c++.o share/biting-pear/epic.o
 
 bin/biting-pear-c++.o: bin/biting-pear-c++.ii
 
+bin/biting-pear-doge: bin/biting-pear-doge.o share/biting-pear/epic.o
+
 bin/biting-pear-doge.o: bin/biting-pear-doge.ii
 
 share/biting-pear/calm: share/biting-pear/calm.o share/biting-pear/epic.o \
@@ -254,7 +256,7 @@ share/biting-pear/calm: share/biting-pear/calm.o share/biting-pear/epic.o \
 
 share/biting-pear/calm.o: share/biting-pear/calm.ii
 
-share/biting-pear/epic.o: share/biting-pear/epic.cc
+share/biting-pear/epic.o: share/biting-pear/epic.ii
 
 bin/%.ii share/biting-pear/%.ii : \
     CPPFLAGS += -Dbiting_pear_HOST_PREFIX=\"$(conf_Prefix)\" \

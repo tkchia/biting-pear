@@ -1,3 +1,33 @@
+2016-03-03	Ad astra per alas porci.  (6)
+
+		include/biting-pear/host/lolcat.h :
+		- initial version; declarations split and modified from bin/
+		  biting-pear-doge.ccc
+
+		bin/biting-pear-c++.ccc :
+		- changed `-Xbiting-pear prefix=...' and `-Xbiting-pear
+		  target-prefix=...' to `-Xbiting-pear -prefix=...' and
+		  `-Xbiting-pear -target-prefix=...'
+		- added `-Xbiting-pear -doge', still unimplemented
+		- refactored per lolcat.h
+
+		bin/biting-pear-doge.ccc ,
+		share/biting-pear/calm.ccc ,
+		share/biting-pear/nomnom.cc :
+		- refactored per lolcat.h
+
+		share/biting-pear/epic.ccc :
+		- renamed from epic.cc to epic.ccc
+		- refactored per lolcat.h
+
+		GNUmakefile :
+		- changed `-Xbiting-pear prefix=...' and `-Xbiting-pear
+		  target-prefix=...' to `-Xbiting-pear -prefix=...' and
+		  `-Xbiting-pear -target-prefix=...'
+		- modified biting-pear-doge invocation not to use temporary
+		  file name
+		- fixed dependencies
+
 2016-02-29	Ad astra per alas porci.  (5)
 
 		configure ,

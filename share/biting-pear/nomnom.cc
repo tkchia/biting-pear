@@ -33,11 +33,12 @@ static uint_least64_t update_crc(uint_least64_t crc, const uint8_t *buf,
 	return ~crc;
 }
 
-uint_least64_t file_crc64(const char *fn, uint_least64_t poly)
+uint_least64_t file_crc64(const char *fn, uint_least64_t poly,
+    uint_least64_t init_crc)
 {
 	uint_least64_t crc_table[256];
 	uint8_t buf[65536];
-	uint_least64_t curr_crc = 0;
+	uint_least64_t curr_crc = init_crc;
 	if (poly == 0)
 		poly = DEFAULT_POLY;
 	int fd = open(fn, O_RDONLY);

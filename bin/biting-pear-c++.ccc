@@ -14,13 +14,8 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <biting-pear/host/derp.h>
+#include <biting-pear/host/lolcat.h>
 #include <biting-pear/dawg.h>
-
-extern char *shocked(char *);
-extern void curious(std::string&, char *);
-
-static std::string me;
 
 static void grumpy(std::ostringstream& oss, std::ostringstream& info_oss,
     const std::string& prefix)
@@ -60,17 +55,33 @@ static bool grumpier(const char *opt, const char *wut, std::string& wot)
 	return true;
 }
 
-int main(int argc, char **argv)
+static bool grumpier(const char *opt, const char *wut, bool& wot)
+{
+	if (strcmp(opt, wut) != 0)
+		return false;
+	wot = true;
+	return true;
+}
+
+static int main_(int argc, char **argv)
 {
 	struct {
 		unsigned moar : 1, pass : 1, caturday : 1, eleventy : 1,
-			 grumpiest : 1;
-	} is = { false, false, false, false, false };
+			 grumpiest : 1, doge : 1, link : 1;
+	} is = { false, false, false, false, false, false, false };
+	/*
+	 * Why 7?  2 for `-wrapper ...', 2 for `-specs ...', 1 for
+	 * `-no-integrated-cpp', 2 for `-idirafter ...'.
+	 *
+	 * We also need a terminating null pointer, but since we do not pass
+	 * our own *argv to execvp...
+	 */
 	char *moar = 0, *burger[argc + 7], **cheese = burger, *ceiling;
 	std::ostringstream shocked, serious;
 	std::string kitteh, calm, caturday = biting_pear_HOST_PREFIX,
 	    meow = biting_pear_TARGET_PREFIX;
-	curious(me, *argv);
+	bool doge = false;
+	curious(*argv);
 	ceiling = biting_pear::impl::getenv("BITING_PEAR_PREFIX");
 	if (ceiling)
 		caturday = ceiling;
@@ -84,13 +95,11 @@ int main(int argc, char **argv)
 		} else if (is.pass)
 			is.pass = false;
 		  else if (is.caturday) {
-			if (!grumpier(opt, "prefix=", caturday) &&
-			    !grumpier(opt, "target-prefix=", meow)) {
-				std::cerr << me << $": ERROR: unrecognized "
-					     "option `-Xbiting-pear " << opt
-					  << '\'' << std::endl;
-				return 1;
-			}
+			if (!grumpier(opt, "-prefix=", caturday) &&
+			    !grumpier(opt, "-target-prefix=", meow) &&
+			    !grumpier(opt, "-doge", doge))
+				many($"unrecognized option `-Xbiting-pear ",
+				    opt, '\'');
 			is.caturday = false;
 			continue;
 		} else if (opt[0] != '-' || opt[1] == 0)
@@ -109,6 +118,10 @@ int main(int argc, char **argv)
 			    case 'T':
 			    case 'u':
 				is.pass = true;  break;
+			    case 'c':
+			    case 'S':
+			    case 'E':
+				is.link = false;  break;
 			    case 'v':
 				is.grumpiest = true;
 			}
@@ -158,21 +171,15 @@ int main(int argc, char **argv)
 		meow += "/include";
 		*cheese++ = (char *)meow.c_str();
 	}
+	if (is.doge)
+		many($"`-Xbiting-pear -doge' not yet implemented");
 	*cheese = 0;
-	if (setenv("BITING_PEAR_PREFIX", caturday.c_str(), 1) != 0) {
-		std::cerr << me << $": ERROR: cannot set "
-			     "BITING_PEAR_EXEC_PREFIX for "
-			     biting_pear_CXX_FOR_TARGET " process"
-			  << std::endl;
-		return 1;
-	}
-	if (setenv("BITING_PEAR_DRIVER_CXX", *argv, 1) != 0) {
-		std::cerr << me << $": ERROR: cannot set "
-			     "BITING_PEAR_DRIVER_CXX for "
-			     biting_pear_CXX_FOR_TARGET " process"
-			  << std::endl;
-		return 1;
-	}
+	if (setenv("BITING_PEAR_PREFIX", caturday.c_str(), 1) != 0)
+		concern($"cannot set BITING_PEAR_EXEC_PREFIX for "
+		    biting_pear_CXX_FOR_TARGET " process");
+	if (setenv("BITING_PEAR_DRIVER_CXX", *argv, 1) != 0)
+		concern($"cannot set BITING_PEAR_DRIVER_CXX for "
+		    biting_pear_CXX_FOR_TARGET " process");
 	if (is.grumpiest) {
 		cheese = burger;
 		std::cerr << *cheese++;
@@ -181,9 +188,14 @@ int main(int argc, char **argv)
 		std::cerr << serious.str() << std::endl;
 	}
 	execvp(biting_pear_CXX_FOR_TARGET, burger);
-	int err = errno;
-	std::cerr << me << $": ERROR: cannot run "
-		     biting_pear_CXX_FOR_TARGET ": " << std::strerror(err)
-		  << std::endl;
+	concern($"cannot run " biting_pear_CXX_FOR_TARGET);
 	return 1;
+}
+
+int main(int argc, char **argv)
+{
+	try
+		{ return main_(argc, argv); }
+	catch (int ugh)
+		{ return ugh; }
 }
