@@ -200,21 +200,21 @@ endif
 	mv $@.tmp $@
 
 test/test-%.passed: test/test-% test/test-%.good
-	@echo "running test $<" >&2
+	@echo "* running test $<" >&2
 	@LANG=en_US.UTF-8 $(conf_Target_exec) ./$< >$(@:.passed=.1.tmp) \
 	    2>$(@:.passed=.2.tmp) ||\
-	    (echo "$< exited with error: $$?" >&2 && \
+	    (echo "* $< exited with error: $$?" >&2 && \
 	     rm -f $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
 	     exit 1)
 	@LANG=en_US.UTF-8 diff -U2 /dev/null $(@:.passed=.2.tmp) || \
-	    (echo "$< produced output on stderr" >&2 && \
+	    (echo "* $< produced output on stderr" >&2 && \
 	     rm -f $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
 	     exit 1)
 	@LANG=en_US.UTF-8 diff -U2 $<.good $(@:.passed=.1.tmp) || \
-	    (echo "$<'s expected output and actual output differ" >&2 && \
+	    (echo "* $<'s expected output and actual output differ" >&2 && \
 	     rm -f $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
 	     exit 1)
-	@echo "$< passed"
+	@echo "* $< passed" >&2
 	@rm -f $(@:.passed=.1.tmp) $(@:.passed=.2.tmp)
 
 test/test-%: test/test-%.o

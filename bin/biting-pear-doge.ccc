@@ -227,10 +227,8 @@ int main(int argc, char **argv)
 	curious(*argv);
 	bfd_init();
 	try {
-		if (argc != 6 || *argv[5] == 0) {
-			std::cerr << $"ERROR: invalid arguments\n";
-			return 1;
-		}
+		if (argc != 6 || *argv[5] == 0)
+			many($"invalid arguments");
 		const char *ifn = argv[1], *ofn = argv[2],
 		    *bnm = argv[3], *enm = argv[4];
 		char *ep;

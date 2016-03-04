@@ -1,3 +1,18 @@
+2016-03-04	Squirrel!
+
+		include/biting-pear/host/lolcat.h ,
+		share/biting-pear/epic.ccc :
+		- added squirrel(...)
+
+		bin/biting-pear-c++.ccc ,
+		bin/biting-pear-doge.ccc ,
+		share/biting-pear/calm.ccc :
+		- now uses squirrel(...); removed all direct dealings with
+		  std::cerr
+
+		GNUmakefile :
+		- tweaked test output
+
 2016-03-03	Ad astra per alas porci.  (6)
 
 		include/biting-pear/host/lolcat.h :

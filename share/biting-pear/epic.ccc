@@ -39,6 +39,15 @@ void curious(char *y)
 std::string& curious()
 	{ return me; }
 
+void squirrel(char **y, std::string z)
+{
+	char *x;
+	std::cerr << me << ':';
+	while ((x = *y++) != 0)
+		std::cerr << ' ' << x;
+	std::cerr << z << std::endl;
+}
+
 __attribute__((noreturn))
 void amaze()
 {

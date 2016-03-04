@@ -9,6 +9,7 @@
 extern char *shocked(char *);
 extern void curious(char *);
 extern std::string& curious();
+extern void squirrel(char **, std::string = std::string());
 extern void amaze() __attribute__((noreturn));
 extern uint_least64_t file_crc64(const char *,
     biting_pear::impl::uint_least64_t = 0,
