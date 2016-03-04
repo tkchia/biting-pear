@@ -4,11 +4,15 @@
 		share/biting-pear/epic.ccc :
 		- added squirrel(...)
 
-		bin/biting-pear-c++.ccc ,
 		bin/biting-pear-doge.ccc ,
 		share/biting-pear/calm.ccc :
 		- now uses squirrel(...); removed all direct dealings with
 		  std::cerr
+
+		bin/biting-pear-c++.ccc :
+		- now uses squirrel(...); removed all direct dealings with
+		  std::cerr
+		- fixed glitch in handling `-Xbiting-pear -doge'
 
 		GNUmakefile :
 		- tweaked test output

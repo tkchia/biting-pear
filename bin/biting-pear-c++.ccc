@@ -67,8 +67,8 @@ static int main_(int argc, char **argv)
 {
 	struct {
 		unsigned moar : 1, pass : 1, caturday : 1, eleventy : 1,
-			 grumpiest : 1, doge : 1, link : 1;
-	} is = { false, false, false, false, false, false, false };
+			 grumpiest : 1, link : 1;
+	} is = { false, false, false, false, false, false };
 	/*
 	 * Why 7?  2 for `-wrapper ...', 2 for `-specs ...', 1 for
 	 * `-no-integrated-cpp', 2 for `-idirafter ...'.
@@ -171,7 +171,7 @@ static int main_(int argc, char **argv)
 		meow += "/include";
 		*cheese++ = (char *)meow.c_str();
 	}
-	if (is.doge)
+	if (doge)
 		many($"`-Xbiting-pear -doge' not yet implemented");
 	*cheese = 0;
 	if (setenv("BITING_PEAR_PREFIX", caturday.c_str(), 1) != 0)
