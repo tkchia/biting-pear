@@ -14,6 +14,12 @@ extern void amaze() __attribute__((noreturn));
 extern uint_least64_t file_crc64(const char *,
     biting_pear::impl::uint_least64_t = 0,
     biting_pear::impl::uint_least64_t = 0);
+extern void keyboard(char **, const char *, const char *, bool)
+    __attribute__((noreturn));
+extern void keyboard(char **, bool) __attribute__((noreturn));
+extern void keyboarder(int, const char *, int, mode_t);
+extern void keyboardest(char **, const char *, const char *, bool);
+extern char *sleepier(const char *);
 
 template<class... Ts>
 __attribute__((always_inline))

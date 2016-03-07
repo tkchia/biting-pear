@@ -1,3 +1,26 @@
+2016-03-07	Compiler wrapper front-end now understands and processes
+		`-Xbiting-pear -doge'.  Back-end, not so much.
+
+		bin/biting-pear-c++.ccc :
+		- now processes `-Xbiting-pear -doge'
+
+		include/biting-pear/host/lolcat.h ,
+		share/biting-pear/calm.ccc ,
+		share/biting-pear/keyboard.ccc :
+		- factored out keyboard(...), keyboarder(...),
+		  keyboardest(...), and sleepier(...) from share/biting-
+		  pear/calm.ccc
+
+		share/biting-pear/nomnom.cc :
+		- bug fix: file_crc64(...) now returns init_crc instead of 0
+		  if the file cannot be opened
+
+		GNUmakefile :
+		- now defines biting_pear_CXXFLAGS_FOR_TARGET in
+		  $(config.h.host)
+		- updated dependencies for bin/biting-pear-c++ and share/
+		  biting-pear/calm
+
 2016-03-04	Squirrel!
 
 		include/biting-pear/host/lolcat.h ,
@@ -13,6 +36,7 @@
 		- now uses squirrel(...); removed all direct dealings with
 		  std::cerr
 		- fixed glitch in handling `-Xbiting-pear -doge'
+		- fixed glitch in handling `-c', `-S', and `-E'
 
 		GNUmakefile :
 		- tweaked test output

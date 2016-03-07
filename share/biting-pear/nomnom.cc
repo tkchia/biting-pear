@@ -43,7 +43,7 @@ uint_least64_t file_crc64(const char *fn, uint_least64_t poly,
 		poly = DEFAULT_POLY;
 	int fd = open(fn, O_RDONLY);
 	if (fd == -1)
-		return 0;
+		return init_crc;
 	make_crc_table(crc_table, poly);
 	ssize_t r;
 	while ((r = read(fd, buf, sizeof buf)) > 0)

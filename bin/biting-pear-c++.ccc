@@ -10,7 +10,9 @@
 #   include <sys/stat.h>
 #endif
 #include <cerrno>
+#include <cstdio>
 #include <cstring>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -63,20 +65,74 @@ static bool grumpier(const char *opt, const char *wut, bool& wot)
 	return true;
 }
 
-static int main_(int argc, char **argv)
+template<class... Ts>
+inline void push(std::ostringstream&, Ts...);
+
+__attribute__((always_inline))
+inline void push(std::ostringstream&)
+	{ }
+
+template<class T, class... Ts>
+__attribute__((always_inline))
+inline void push(std::ostringstream& oss, T x, Ts... xs)
+{
+	oss << x;
+	push(oss, xs...);
+}
+
+template<class... Ts>
+inline char *pusheen(Ts...);
+
+template<class... Ts>
+__attribute__((always_inline))
+inline char *pusheen(Ts... msg)
+{
+	std::ostringstream oss;
+	push(oss, msg...);
+	std::string *s = new std::string(oss.str());
+	return (char *)s->c_str();
+}
+
+static void nyan(char *& cheesy, const char *cheeses,
+    biting_pear::impl::rand_state_t state, char *cheesier, bool v)
+{
+	if (cheeses) {
+		char cheese[strlen(cheeses) + 17];
+		std::snprintf(cheese, sizeof cheese, "%s.biting-pear.tmp",
+		    cheeses);
+		cheesy = sleepier(cheeses);
+	} else
+		cheesy = sleepier("biting-pear.tmp");
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wwrite-strings"
+	char *cheesiest[] = {
+		biting_pear_CXX_FOR_TARGET,
+		biting_pear_CXXFLAGS_FOR_TARGET /* ... */,
+		pusheen($"-Dbiting_pear_DOGE_STATE=0x", std::hex, state),
+		"-c", cheesier, "-o", cheesy, 0
+	    };
+#pragma GCC diagnostic pop
+	keyboardest(cheesiest, 0, 0, v);
+}
+
+static int main_(int argc, char **argv, char *& doge_1, char *& doge_i,
+    char *& doge_n)
 {
 	struct {
 		unsigned moar : 1, pass : 1, caturday : 1, eleventy : 1,
-			 grumpiest : 1, link : 1;
-	} is = { false, false, false, false, false, false };
+			 grumpiest : 1, link : 1, starts : 1, o : 1 ;
+	} is = { false, false, false, false, false, true, true, false };
 	/*
-	 * Why 7?  2 for `-wrapper ...', 2 for `-specs ...', 1 for
-	 * `-no-integrated-cpp', 2 for `-idirafter ...'.
+	 * Why 11?  2 for `-wrapper ...', 2 for `-specs ...', 1 for
+	 * `-no-integrated-cpp', 2 for `-idirafter ...', 4 (== 6 - 2) for
+	 * `-Wl,-z,biting-pear-doge=...', (doge-1.o), (doge-i.o), `-x'
+	 * `-none', and (doge-n.o), minus the `-Xbiting-pear' `-doge'.
 	 *
 	 * We also need a terminating null pointer, but since we do not pass
 	 * our own *argv to execvp...
 	 */
-	char *moar = 0, *burger[argc + 7], **cheese = burger, *ceiling;
+	char *moar = 0, *burger[argc + 11], **cheese = burger, *cheeses = 0,
+	    *burgery[argc], **cheesy = burgery, *ceiling;
 	std::ostringstream shocked, serious;
 	std::string kitteh, calm, caturday = biting_pear_HOST_PREFIX,
 	    meow = biting_pear_TARGET_PREFIX;
@@ -94,7 +150,10 @@ static int main_(int argc, char **argv)
 			continue;
 		} else if (is.pass)
 			is.pass = false;
-		  else if (is.caturday) {
+		  else if (is.o) {
+			cheeses = opt;
+			is.o = false;
+		} else if (is.caturday) {
 			if (!grumpier(opt, "-prefix=", caturday) &&
 			    !grumpier(opt, "-target-prefix=", meow) &&
 			    !grumpier(opt, "-doge", doge))
@@ -103,10 +162,9 @@ static int main_(int argc, char **argv)
 			is.caturday = false;
 			continue;
 		} else if (opt[0] != '-' || opt[1] == 0)
-			;
+			*cheesy++ = opt;
 		  else if (opt[2] == 0) {
 			switch (opt[1]) {
-			    case 'o':
 			    case 'x':
 			    case 'd':
 			    case 'A':
@@ -118,6 +176,8 @@ static int main_(int argc, char **argv)
 			    case 'T':
 			    case 'u':
 				is.pass = true;  break;
+			    case 'o':
+				is.o = true;  break;
 			    case 'c':
 			    case 'S':
 			    case 'E':
@@ -137,6 +197,10 @@ static int main_(int argc, char **argv)
 			    strcmp(opt + 2, "multilib") == 0 ||
 			    strcmp(opt + 2, "sysroot") == 0))
 			is.pass = true;
+		  else if (opt[1] == 'n' &&
+			   (strcmp(opt + 2, "ostartfiles") == 0 ||
+			    strcmp(opt + 2, "ostdlib") == 0))
+			is.starts = false;
 		  else if (opt[1] == 'X' &&
 			   (strcmp(opt + 2, "preprocessor") == 0 ||
 			    strcmp(opt + 2, "assembler") == 0 ||
@@ -171,8 +235,6 @@ static int main_(int argc, char **argv)
 		meow += "/include";
 		*cheese++ = (char *)meow.c_str();
 	}
-	if (doge)
-		many($"`-Xbiting-pear -doge' not yet implemented");
 	*cheese = 0;
 	if (setenv("BITING_PEAR_PREFIX", caturday.c_str(), 1) != 0)
 		concern($"cannot set BITING_PEAR_EXEC_PREFIX for "
@@ -180,17 +242,75 @@ static int main_(int argc, char **argv)
 	if (setenv("BITING_PEAR_DRIVER_CXX", *argv, 1) != 0)
 		concern($"cannot set BITING_PEAR_DRIVER_CXX for "
 		    biting_pear_CXX_FOR_TARGET " process");
+	if (doge && is.link) {
+		using biting_pear::impl::uint_least64_t;
+		using biting_pear::impl::rand_state_t;
+		uint_least64_t crc = 0;
+		while (cheesy != burgery) {
+			--cheesy;
+			crc = file_crc64(*cheesy, 0, crc);
+		}
+		if (is.starts) {
+			nyan(doge_1, cheeses, (rand_state_t)crc, pusheen(
+			    caturday, $"/share/biting-pear/doge-1.cc"),
+			    is.grumpiest);
+			nyan(doge_i, cheeses, (rand_state_t)crc, pusheen(
+			    caturday, $"/share/biting-pear/doge-i.cc"),
+			    is.grumpiest);
+			nyan(doge_n, cheeses, (rand_state_t)crc, pusheen(
+			    caturday, $"/share/biting-pear/doge-n.cc"),
+			    is.grumpiest);
+			std::memmove(burger + 4, burger + 1,
+			    (cheese - burger - 1) * sizeof(char *));
+			cheese += 3;
+			burger[1] = pusheen($"-Wl,-z,-biting-pear-doge=0x",
+			    std::hex, crc);
+			burger[2] = doge_1;
+			burger[3] = doge_i;
+			*cheese++ = (char *)"-x";
+			*cheese++ = (char *)"none";
+			*cheese++ = doge_n;
+		} else {
+			std::memmove(burger + 2, burger + 1,
+			    (cheese - burger - 1) * sizeof(char *));
+			++cheese;
+			burger[1] = pusheen($"-Wl,-z,-biting-pear-doge=0x",
+			    std::hex, crc);
+		}
+	}
 	if (is.grumpiest)
 		squirrel(burger, serious.str());
-	execvp(biting_pear_CXX_FOR_TARGET, burger);
-	concern($"cannot run " biting_pear_CXX_FOR_TARGET);
-	return 1;
+	if (!doge_i) {
+		execvp(biting_pear_CXX_FOR_TARGET, burger);
+		concern($"cannot run " biting_pear_CXX_FOR_TARGET);
+		return 1;
+	} else {
+		keyboardest(burger, 0, 0, is.grumpiest);
+		if (std::remove(doge_1) != 0)
+			concern($"cannot remove ", doge_1);
+		doge_1 = 0;
+		if (std::remove(doge_i) != 0)
+			concern($"cannot remove ", doge_i);
+		doge_i = 0;
+		if (std::remove(doge_n) != 0)
+			concern($"cannot remove ", doge_n);
+		doge_n = 0;
+		return 0;
+	}
 }
 
 int main(int argc, char **argv)
 {
+	char *doge_1 = 0, *doge_i = 0, *doge_n = 0;
 	try
-		{ return main_(argc, argv); }
-	catch (int ugh)
-		{ return ugh; }
+		{ return main_(argc, argv, doge_1, doge_i, doge_n); }
+	catch (int ugh) {
+		if (doge_1)
+			std::remove(doge_1);
+		if (doge_i)
+			std::remove(doge_i);
+		if (doge_n)
+			std::remove(doge_n);
+		return ugh;
+	}
 }

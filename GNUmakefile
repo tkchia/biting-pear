@@ -197,6 +197,21 @@ endif
 	else \
 		echo '#define biting_pear_decltype __typeof' >>$@.tmp; \
 	fi
+	set -e; \
+	if test '$(config.h.host)' = '$@'; then \
+		echo "#define biting_pear_CXXFLAGS_FOR_TARGET \\" >>$@.tmp; \
+		set -- $(CXXFLAGS_FOR_TARGET); \
+		if test 0 != $$#; then \
+			echo "$$1" | \
+			    sed 's/["\\]/\\&/g; s/^/"/; s/$$/"\\/'; \
+			shift; \
+			for arg; do \
+				echo "$$arg" | \
+				    sed 's/["\\]/\\&/g; s/^/,"/; s/$$/"\\/';\
+			done; \
+		fi >>$@.tmp; \
+		echo '/* done */' >>$@.tmp; \
+	fi
 	mv $@.tmp $@
 
 test/test-%.passed: test/test-% test/test-%.good
@@ -243,7 +258,8 @@ define preproc_for_host
 	rm $@.tmp
 endef
 
-bin/biting-pear-c++: bin/biting-pear-c++.o share/biting-pear/epic.o
+bin/biting-pear-c++: bin/biting-pear-c++.o share/biting-pear/epic.o \
+    share/biting-pear/nomnom.o share/biting-pear/keyboard.o
 
 bin/biting-pear-c++.o: bin/biting-pear-c++.ii
 
@@ -252,11 +268,7 @@ bin/biting-pear-doge: bin/biting-pear-doge.o share/biting-pear/epic.o
 bin/biting-pear-doge.o: bin/biting-pear-doge.ii
 
 share/biting-pear/calm: share/biting-pear/calm.o share/biting-pear/epic.o \
-    share/biting-pear/nomnom.o
-
-share/biting-pear/calm.o: share/biting-pear/calm.ii
-
-share/biting-pear/epic.o: share/biting-pear/epic.ii
+    share/biting-pear/nomnom.o share/biting-pear/keyboard.o
 
 bin/%.ii share/biting-pear/%.ii : \
     CPPFLAGS += -Dbiting_pear_HOST_PREFIX=\"$(conf_Prefix)\" \
