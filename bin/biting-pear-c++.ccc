@@ -94,7 +94,7 @@ inline char *pusheen(Ts... msg)
 }
 
 static void nyan(char *& cheesy, const char *cheeses,
-    biting_pear::impl::rand_state_t state, char *cheesier, bool v)
+    biting_pear::impl::rand_state_t state, char *cheesier, bool v, bool sta)
 {
 	if (cheeses) {
 		char cheese[strlen(cheeses) + 17];
@@ -109,7 +109,11 @@ static void nyan(char *& cheesy, const char *cheeses,
 		biting_pear_CXX_FOR_TARGET,
 		biting_pear_CXXFLAGS_FOR_TARGET /* ... */,
 		pusheen($"-Dbiting_pear_DOGE_STATE=0x", std::hex, state),
-		"-c", cheesier, "-o", cheesy, 0
+		sta ? (char *)"-Ubiting_pear_DYN_LD_CXX_TARGET" :
+		      (char *)"-Dbiting_pear_DYN_LD_CXX_TARGET",
+		"-c", cheesier, "-o", cheesy,
+		sta ? (char *)"-static" : 0,
+		0
 	    };
 #pragma GCC diagnostic pop
 	keyboardest(cheesiest, 0, 0, v);
@@ -120,8 +124,15 @@ static int main_(int argc, char **argv, char *& doge_1, char *& doge_i,
 {
 	struct {
 		unsigned moar : 1, pass : 1, caturday : 1, eleventy : 1,
-			 grumpiest : 1, link : 1, starts : 1, o : 1 ;
-	} is = { false, false, false, false, false, true, true, false };
+			 grumpiest : 1, link : 1, starts : 1, o : 1,
+			 sta : 1;
+	} is = { false, false, false, false, false, true, true, false,
+#ifdef biting_pear_DYN_LD_CXX_TARGET
+		 false
+#else
+		 true
+#endif
+		 };
 	/*
 	 * Why 11?  2 for `-wrapper ...', 2 for `-specs ...', 1 for
 	 * `-no-integrated-cpp', 2 for `-idirafter ...', 4 (== 6 - 2) for
@@ -218,6 +229,10 @@ static int main_(int argc, char **argv, char *& doge_1, char *& doge_i,
 			continue;
 		} else if (strcmp(opt + 1, "nostdinc") == 0)
 			is.eleventy = true;
+#ifdef biting_pear_DYN_LD_CXX_TARGET
+		  else if (strcmp(opt + 1, "static") == 0)
+			is.sta = true;
+#endif
 		*cheese++ = opt;
 	}
 	grumpy(shocked, serious, caturday);
@@ -253,13 +268,13 @@ static int main_(int argc, char **argv, char *& doge_1, char *& doge_i,
 		if (is.starts) {
 			nyan(doge_1, cheeses, (rand_state_t)crc, pusheen(
 			    caturday, $"/share/biting-pear/doge-1.cc"),
-			    is.grumpiest);
+			    is.grumpiest, is.sta);
 			nyan(doge_i, cheeses, (rand_state_t)crc, pusheen(
 			    caturday, $"/share/biting-pear/doge-i.cc"),
-			    is.grumpiest);
+			    is.grumpiest, is.sta);
 			nyan(doge_n, cheeses, (rand_state_t)crc, pusheen(
 			    caturday, $"/share/biting-pear/doge-n.cc"),
-			    is.grumpiest);
+			    is.grumpiest, is.sta);
 			std::memmove(burger + 4, burger + 1,
 			    (cheese - burger - 1) * sizeof(char *));
 			cheese += 3;

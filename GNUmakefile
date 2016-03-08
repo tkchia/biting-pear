@@ -45,6 +45,14 @@ utils.host = \
     bin/biting-pear-c++ \
     share/biting-pear/calm \
     share/biting-pear/omnomnom
+modules.host = \
+    bin/biting-pear-c++.o \
+    bin/biting-pear-doge.o \
+    share/biting-pear/calm.o \
+    share/biting-pear/epic.o \
+    share/biting-pear/keyboard.o \
+    share/biting-pear/nomnom.o \
+    share/biting-pear/omnomnom.o
 ifeq "$(conf_Have_cxx_typ_struct_bfd)" "yes"
 ifeq "$(conf_Have_cxx_lib_bfd)" "yes"
 ifeq "$(conf_Have_cxx_var_tpls)" "yes"
@@ -261,19 +269,21 @@ endef
 bin/biting-pear-c++: bin/biting-pear-c++.o share/biting-pear/epic.o \
     share/biting-pear/nomnom.o share/biting-pear/keyboard.o
 
-bin/biting-pear-c++.o: bin/biting-pear-c++.ii
-
 bin/biting-pear-doge: bin/biting-pear-doge.o share/biting-pear/epic.o
-
-bin/biting-pear-doge.o: bin/biting-pear-doge.ii
 
 share/biting-pear/calm: share/biting-pear/calm.o share/biting-pear/epic.o \
     share/biting-pear/nomnom.o share/biting-pear/keyboard.o
 
+$(foreach m,$(modules.host), \
+    $(eval $m: $(m:.o=.ii)))
+
 bin/%.ii share/biting-pear/%.ii : \
     CPPFLAGS += -Dbiting_pear_HOST_PREFIX=\"$(conf_Prefix)\" \
 		-Dbiting_pear_TARGET_PREFIX=\"$(conf_Target_prefix)\" \
-		-Dbiting_pear_CXX_FOR_TARGET=\"$(CXX_FOR_TARGET)\"
+		-Dbiting_pear_CXX_FOR_TARGET=\"$(CXX_FOR_TARGET)\" \
+		$(if $(filter yes,$(conf_Dyn_ld_cxxt)), \
+		    -Dbiting_pear_DYN_LD_CXX_TARGET, \
+		    -Ubiting_pear_DYN_LD_CXX_TARGET)
 
 bin/%: bin/%.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)
@@ -298,6 +308,11 @@ share/biting-pear/%.s: share/biting-pear/%.ii
 share/biting-pear/%.ii: share/biting-pear/%.ccc $(headers.host) \
     $(headers.target) share/biting-pear/omnomnom
 	$(preproc_for_host)
+
+share/biting-pear/%.ii: share/biting-pear/%.cc $(headers.host) \
+    $(headers.target)
+	mkdir -p $(@D)
+	$(CXX) -E $(CPPFLAGS) $(CXXFLAGS) -o$@ $<
 
 share/biting-pear/omnomnom.o: share/biting-pear/omnomnom.cc \
     $(config.h.host)
