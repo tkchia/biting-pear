@@ -27,4 +27,5 @@ conf_cxx_probe_typ 'struct bfd' '#include <bfd.h>'
 conf_cxx_probe_lib bfd 'bfd-multiarch bfd' \
     '#include <bfd.h>' 'void foo() { bfd_openr("/dev/null", "binary"); }'
 conf_cxxt_probe_overridable_csu_init
+conf_cxxt_probe_dyn_ld
 conf_end

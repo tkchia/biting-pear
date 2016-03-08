@@ -1,3 +1,10 @@
+2016-03-08	Squirrel!  (2)
+
+		configure ,
+		lolwutconf/c++.target.inc :
+		- now tries to detect if target compiler produces shared or
+		  static executables
+
 2016-03-07	Compiler wrapper front-end now understands and processes
 		`-Xbiting-pear -doge'.  Back-end, not so much.
 

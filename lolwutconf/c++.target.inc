@@ -320,3 +320,42 @@ conf_cxxt_probe_overridable_csu_init() {
 	rm -f "$prog"
 	conf__blare_res "$conf_Have_overridable_csu_init_cxxt"
 }
+
+conf_cxxt_probe_dyn_ld() {
+	local prog
+	conf_cxxt_chk_compiler_and_executor
+	if conf__in_help_mode
+		then return 0; fi
+	if test -n "$conf_Dyn_ld_cxxt"
+		then return 0; fi
+	conf__add_var conf_Dyn_ld_cxxt
+	conf__blare_test \
+	    "checking if target produces dynamically linked executables"
+	#
+	# If linking works even if we specify a bogus dynamic interpreter,
+	# then conclude that we are creating statically linked programs.
+	#
+	# If linking works when we try to rope in the <dlfcn.h> routines,
+	# then conclude that we are creating dynamically linked programs.
+	#
+	# Otherwise, we are unsure.
+	#
+	if conf__cxxt_chk_compiler_with \
+	    "$CXXFLAGS_FOR_TARGET -Wl,--dynamic-linker=/" "$LDLIBS_FOR_TARGET"
+	then
+		conf__blare_res no
+		conf_Dyn_ld_cxxt=no
+	elif conf__cxxt_chk_compiler_with "$CXXFLAGS_FOR_TARGET" \
+	    "$LDLIBS_FOR_TARGET -ldl" \
+	    '#include <dlfcn.h>' \
+	    'void *foo()' \
+	    '  { return dlopen(0, RTLD_LAZY); }'
+	then
+		conf__blare_res yes
+		conf_Dyn_ld_cxxt=yes
+	else
+		conf__blare_res unknown
+		conf__barf 'cannot tell if target produces' \
+		    'dynamic or static programs!'
+	fi
+}
