@@ -12,7 +12,7 @@
 
 		bin/biting-pear-c++.ccc :
 		- now defines biting_pear_DYN_LD_CXX_TARGET macro for
-		  host-side C++ files, when using `-Xbiting-pear -doge'
+		  target-side C++ files, when using `-Xbiting-pear -doge'
 
 2016-03-07	Compiler wrapper front-end now understands and processes
 		`-Xbiting-pear -doge'.  Back-end, not so much.
