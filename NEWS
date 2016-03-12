@@ -26,6 +26,9 @@
 		share/biting-pear/epic.ccc :
 		- fixed curious(.) to call lstat(...) instead of stat(...)
 
+		.gitignore :
+		- added test-doge
+
 2016-03-08	Squirrel!  (2)
 
 		configure ,
