@@ -17,7 +17,7 @@ char *shocked(char *s)
 void curious(char *y)
 {
 	struct stat z;
-	if (stat(y, &z) != 0 || !S_ISLNK(z.st_mode)) {
+	if (lstat(y, &z) != 0 || !S_ISLNK(z.st_mode)) {
 		me = shocked(y);
 		return;
 	}

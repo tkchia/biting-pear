@@ -1,0 +1,19 @@
+#include <iostream>
+#include <locale>
+#include <biting-pear/dawg.h>
+
+struct hello_t
+{
+	__attribute__((always_inline))
+	hello_t()
+	{
+		std::cout << "Hello world!\n";
+	}
+};
+
+hello_t hello;
+
+int main()
+{
+	return 0;
+}

@@ -59,13 +59,18 @@ ifeq "$(conf_Have_cxx_var_tpls)" "yes"
 utils.host += \
     bin/biting-pear-doge
 tests.target += \
-    test/test-orly-wut
+    test/test-orly-wut \
+    test/test-doge
 endif
 endif
 endif
 installables.host = \
     $(utils.host) \
-    share/biting-pear/calm.spec
+    share/biting-pear/calm.spec \
+    share/biting-pear/doge-1.cc \
+    share/biting-pear/doge-2.cc \
+    share/biting-pear/doge-8.cc \
+    share/biting-pear/doge-9.cc
 
 default all: check
 
@@ -101,7 +106,7 @@ clean:
 	find . -name '*.[ios]' -o -name '*~' -o -name '*.ii' | \
 	    xargs rm -f $(config.h.host) $(config.h.target) \
 		lex.backup share/biting-pear/omnomnom.cc \
-		$(tests.target) $(utils.host)
+		$(tests.target) $(utils.host) lolwutconf.*
 ifeq "$(conf_Separate_build_dir)" "yes"
 	-rmdir helper test util
 endif
@@ -241,22 +246,28 @@ test/test-%.passed: test/test-% test/test-%.good
 	@rm -f $(@:.passed=.1.tmp) $(@:.passed=.2.tmp)
 
 test/test-%: test/test-%.o
-	$(conf_Host_exec) $(CXX_FOR_TARGET) $(CXXFLAGS_FOR_TARGET) \
+	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
 	    $(LDFLAGS_FOR_TARGET) -o$@ $^ $(LDLIBS_FOR_TARGET)
 
 test/test-%.o: test/test-%.ccc
 
-test/test-orly-wut test/test-orly-wut.o : state = 0x293c42fc93032e55
+test/test-orly-wut \
+test/test-orly-wut.o \
+test/test-orly-wut.s : state = 0x293c42fc93032e55
 
 test/test-orly-wut.o : CXXFLAGS_FOR_TARGET += -DSTATE=$(state)
 
 test/test-orly-wut: test/test-orly-wut.o test/test-orly-wut.ld \
     bin/biting-pear-doge
-	$(conf_Host_exec) $(CXX_FOR_TARGET) $(CXXFLAGS_FOR_TARGET) \
+	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
 	    $(LDFLAGS_FOR_TARGET) -o$@.tmp $(filter %.o %.ld,$^) \
 	    $(LDLIBS_FOR_TARGET)
 	bin/biting-pear-doge $@.tmp $@ __doge_start __doge_end $(state)
 	rm $@.tmp
+
+test/test-doge \
+test/test-doge.o \
+test/test-doge.s : CXXFLAGS_FOR_TARGET += -Xbiting-pear -doge -v
 
 define preproc_for_host
 	mkdir -p $(@D)
@@ -317,15 +328,13 @@ share/biting-pear/%.ii: share/biting-pear/%.cc $(headers.host) \
 share/biting-pear/omnomnom.o: share/biting-pear/omnomnom.cc \
     $(config.h.host)
 
-%.o: %.ccc $(headers.target) $(wrap_cxx) share/biting-pear/omnomnom \
-    share/biting-pear/calm share/biting-pear/calm.spec
+%.o: %.ccc $(headers.target) $(installables.host)
 	mkdir -p $(@D)
 	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
 	    -c -o$@ $<
 
 # for debugging
-%.s: %.ccc $(headers.target) $(wrap_cxx) share/biting-pear/omnomnom \
-    share/biting-pear/calm share/biting-pear/calm.spec
+%.s: %.ccc $(headers.target) $(installables.host)
 	mkdir -p $(@D)
 	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
 	    -S -o$@ $<

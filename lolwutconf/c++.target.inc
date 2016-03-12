@@ -359,3 +359,30 @@ conf_cxxt_probe_dyn_ld() {
 		    'dynamic or static programs!'
 	fi
 }
+
+conf_cxxt_probe_ctor_priority() {
+	local prog
+	conf_cxxt_chk_compiler_and_executor
+	if conf__in_help_mode
+		then return 0; fi
+	if test -n "$conf_Have_ctor_priority_cxxt"
+		then return 0; fi
+	conf__add_var conf_Have_ctor_priority_cxxt
+	conf__blare_test \
+	    "checking if target supports __attribute__((constructor(.)))"
+	prog="`conf__mktemp lolwutconf`"
+	if conf__cxxt_compile_prog "$prog" \
+	    'static int baz = 2;' \
+	    '__attribute__((constructor(456))) void foo(void)' \
+	    '  { if (baz == 1) baz = 0; }' \
+	    '__attribute__((constructor(123))) void bar(void)' \
+	    '  { if (baz == 2) baz = 1; }' \
+	    'int main()' \
+	    '  { return baz; }' && \
+	    $conf_Target_exec ./"$prog"
+	then	conf_Have_ctor_priority_cxxt=yes
+	else	conf_Have_ctor_priority_cxxt=no
+	fi
+	rm -f "$prog"
+	conf__blare_res "$conf_Have_ctor_priority_cxxt"
+}

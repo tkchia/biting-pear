@@ -1,3 +1,31 @@
+2016-03-12	Now implements `-Xbiting-pear -doge'!
+
+		GNUmakefile :
+		- got `-Xbiting-pear -doge' working
+		- added test-doge test case
+
+		bin/biting-pear-c++.ccc :
+		- got `-Xbiting-pear -doge' working
+
+		include/biting-pear/doge.h ,
+		share/biting-pear/doge-1.cc ,
+		share/biting-pear/doge-2.cc ,
+		share/biting-pear/doge-8.cc ,
+		share/biting-pear/doge-9.cc ,
+		test/test-doge.ccc ,
+		test/test-doge.good :
+		- initial version
+
+		configure :
+		- added check for __attribute__((constructor(.))) support
+		- turned off check for overridable __libc_csu_init(...)
+
+		lolwutconf/c++.target.inc :
+		- added conf_cxxt_probe_ctor_priority()
+
+		share/biting-pear/epic.ccc :
+		- fixed curious(.) to call lstat(...) instead of stat(...)
+
 2016-03-08	Squirrel!  (2)
 
 		configure ,
