@@ -207,12 +207,12 @@ class lolwut_impl
 				impl::kthxbai_impl<State5, unsigned, Flags,
 				    Levels2>(disp3, Disp3);
 				__asm(".ifc \"#%a2\", \"\%2\"; "
-					".pushsection .text, %a3; "
+					".subsection %a3; "
 					".balign 4; "
 					".reloc ., R_ARM_GOT_PREL, %a2; "
 					"1: "
 					".long %a4; "
-					".popsection; "
+					".previous; "
 					"movw %0, #:lower16:(1b-2f-4); "
 					"movt %0, #:upper16:(1b-2f-4); "
 					"2: "
