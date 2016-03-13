@@ -6,6 +6,9 @@
 		  relocated constants, to allow these constants to appear in
 		  text sections other than `.text'
 
+		GNUmakefile :
+		- minor debugging patch
+
 2016-03-12	Now implements `-Xbiting-pear -doge'!
 
 		GNUmakefile :

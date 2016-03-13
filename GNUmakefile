@@ -255,7 +255,8 @@ test/test-orly-wut \
 test/test-orly-wut.o \
 test/test-orly-wut.s : state = 0x293c42fc93032e55
 
-test/test-orly-wut.o : CXXFLAGS_FOR_TARGET += -DSTATE=$(state)
+test/test-orly-wut.o \
+test/test-orly-wut.s : CXXFLAGS_FOR_TARGET += -DSTATE=$(state)
 
 test/test-orly-wut: test/test-orly-wut.o test/test-orly-wut.ld \
     bin/biting-pear-doge
