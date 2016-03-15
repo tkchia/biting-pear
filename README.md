@@ -4,17 +4,17 @@
 
 #### Shell side
 
-> [*source-path*`/`]`configure` [`--prefix=`*install-path*] [`--target=`*target-arch*] [...]
+> [*source-path*`/`]`configure` [`--prefix=`*install-path*] [`--target=`*target-arch*] [`--target-dir=`*target-install-path*] [...]
 
 > `make check`
 
 > `make install`
 
-> [*install-path*`/bin/`]`biting-pear-c++` [*g++-options*...]
+> [*install-path*`/bin/`]`biting-pear-c++` [`-Xbiting-pear -doge`] [...] [*g++-options*...]
 
 #### C++ side
 
-> `#include "biting-pear/kthxbai.h"`
+> `#include <biting-pear/kthxbai.h>`
 
 > `template<std::uint_least64_t` *seed* `, class ` *typ*[`, ` *flags* [`, unsigned ` *levels*]]`>`<br>`class biting_pear::kthxbai;`
 

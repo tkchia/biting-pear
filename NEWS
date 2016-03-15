@@ -1,3 +1,11 @@
+2016-03-15	Beefed up on the documentation a bit.
+
+		README.md :
+		- added `-Xbiting-pear -doge' option for `biting-pear-c++'
+		- added `--target-dir=...' option for `configure'
+		- corrected C++ usage to use `#include <...>', not `#include
+		  "..."'
+
 2016-03-13	ELF/ARM assembly tweak.
 
 		include/biting-pear/lolwut.h :
