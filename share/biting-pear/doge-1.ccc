@@ -18,13 +18,15 @@ __attribute__((constructor))
 #endif
 static void unscramble()
 {
-	uintptr_t pg_sz = (uintptr_t)getpagesize();
+	using biting_pear::ops::allow_all;
+	uintptr_t pg_sz = (uintptr_t)(biting_pear::kthxbai?<
+	    biting_pear_decltype(&getpagesize), allow_all>(getpagesize))();
 	uintptr_t prot_start = (uintptr_t)startup_text_start & -pg_sz;
 	uintptr_t prot_end = ((uintptr_t)startup_text_end + pg_sz - 1)
 	    & -pg_sz;
 	mprotect((void *)prot_start, (std::size_t)(prot_end - prot_start),
 	    PROT_READ | PROT_WRITE | PROT_EXEC);
 	biting_pear::orly<biting_pear_DOGE_STATE, unsigned char, false,
-	    true>().wut(startup_text_start, startup_text_end);
+	    true, allow_all>().wut(startup_text_start, startup_text_end);
 	__builtin___clear_cache(startup_text_start, startup_text_end);
 }

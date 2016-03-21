@@ -67,7 +67,7 @@ endif
 installables.host = \
     $(utils.host) \
     share/biting-pear/calm.spec \
-    share/biting-pear/doge-1.cc \
+    share/biting-pear/doge-1.ccc \
     share/biting-pear/doge-2.cc \
     share/biting-pear/doge-8.cc \
     share/biting-pear/doge-9.cc

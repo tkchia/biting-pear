@@ -95,7 +95,8 @@ inline char *pusheen(Ts... msg)
 
 static void nyan(char *& cheesy, const char *cheeses,
     biting_pear::impl::rand_state_t state, char *cheesier,
-    const std::string& meow, bool v, bool sta)
+    char *me, const std::string& caturday, const std::string& meow, bool v,
+    bool sta)
 {
 	char cheese[strlen(cheeses) + 17];
 	std::snprintf(cheese, sizeof cheese, "%s.biting-pear.tmp", cheeses);
@@ -103,14 +104,17 @@ static void nyan(char *& cheesy, const char *cheeses,
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wwrite-strings"
 	char *cheesiest[] = {
-		biting_pear_CXX_FOR_TARGET,
+		me,
 		biting_pear_CXXFLAGS_FOR_TARGET /* ... */,
+		"-Xbiting-pear", pusheen($"-prefix=", caturday),
+		"-Xbiting-pear", pusheen($"-target-prefix=", meow),
 		pusheen($"-Dbiting_pear_DOGE_STATE=0x", std::hex, state),
 		sta ? (char *)"-Ubiting_pear_DYN_LD_CXX_TARGET" :
 		      (char *)"-Dbiting_pear_DYN_LD_CXX_TARGET",
-		"-idirafter", (char *)meow.c_str(),
 		"-c", cheesier, "-o", cheesy,
-		sta ? (char *)"-static" : 0,
+		"-fno-stack-protector",
+		v ? (char *)"-v" : (char *)"-fno-stack-protector",
+		sta ? (char *)"-static" : (char *)"-fno-stack-protector",
 		0
 	    };
 #pragma GCC diagnostic pop
@@ -171,7 +175,7 @@ static int main_(int argc, char **argv, char *& doge_1, char *& doge_2,
 	    *burgery[argc], **cheesy = burgery, *ceiling, *real_a = 0;
 	std::ostringstream shocked, serious;
 	std::string kitteh, calm, caturday = biting_pear_HOST_PREFIX,
-	    meow = biting_pear_TARGET_PREFIX;
+	    meow = biting_pear_TARGET_PREFIX, meowmeow;
 	bool doge = false;
 	curious(*argv);
 	ceiling = biting_pear::impl::getenv("BITING_PEAR_PREFIX");
@@ -277,10 +281,10 @@ static int main_(int argc, char **argv, char *& doge_1, char *& doge_2,
 	*cheese++ = (char *)"-specs";
 	*cheese++ = (char *)calm.c_str();
 	*cheese++ = (char *)"-no-integrated-cpp";
-	meow += "/include";
+	meowmeow = meow + "/include";
 	if (!is.eleventy) {		/* just in case... */
 		*cheese++ = (char *)"-idirafter";
-		*cheese++ = (char *)meow.c_str();
+		*cheese++ = (char *)meowmeow.c_str();
 	}
 	if (setenv("BITING_PEAR_PREFIX", caturday.c_str(), 1) != 0)
 		concern($"cannot set BITING_PEAR_EXEC_PREFIX for "
@@ -303,17 +307,17 @@ static int main_(int argc, char **argv, char *& doge_1, char *& doge_2,
 		}
 		if (is.link && is.starts) {
 			nyan(doge_1, *cheeses, (rand_state_t)crc, pusheen(
-			    caturday, $"/share/biting-pear/doge-1.cc"),
-			    meow, is.grumpiest, is.sta);
+			    caturday, $"/share/biting-pear/doge-1.ccc"),
+			    *argv, caturday, meow, is.grumpiest, is.sta);
 			nyan(doge_2, *cheeses, (rand_state_t)crc, pusheen(
 			    caturday, $"/share/biting-pear/doge-2.cc"),
-			    meow, is.grumpiest, is.sta);
+			    *argv, caturday, meow, is.grumpiest, is.sta);
 			nyan(doge_8, *cheeses, (rand_state_t)crc, pusheen(
 			    caturday, $"/share/biting-pear/doge-8.cc"),
-			    meow, is.grumpiest, is.sta);
+			    *argv, caturday, meow, is.grumpiest, is.sta);
 			nyan(doge_9, *cheeses, (rand_state_t)crc, pusheen(
 			    caturday, $"/share/biting-pear/doge-9.cc"),
-			    meow, is.grumpiest, is.sta);
+			    *argv, caturday, meow, is.grumpiest, is.sta);
 			doge_a = sleepier(*cheeses);
 			real_a = *cheeses;
 			*cheeses = doge_a;
@@ -321,7 +325,7 @@ static int main_(int argc, char **argv, char *& doge_1, char *& doge_2,
 			    (cheese - burger - 1) * sizeof(char *));
 			cheese += 4;
 			burger[1] = (char *)"-include";
-			burger[2] = pusheen(meow, $"/biting-pear/doge.h");
+			burger[2] = pusheen(meowmeow, $"/biting-pear/doge.h");
 			burger[3] = doge_1;
 			burger[4] = doge_2;
 			*cheese++ = (char *)"-x";
@@ -333,7 +337,7 @@ static int main_(int argc, char **argv, char *& doge_1, char *& doge_2,
 			    (cheese - burger - 1) * sizeof(char *));
 			cheese += 2;
 			burger[1] = (char *)"-include";
-			burger[2] = pusheen(meow, $"/biting-pear/doge.h");
+			burger[2] = pusheen(meowmeow, $"/biting-pear/doge.h");
 		}
 	}
 	*cheese = 0;
