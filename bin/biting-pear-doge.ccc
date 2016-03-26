@@ -36,7 +36,7 @@ inline void much(Ts... msg)
 static void check_object(bfd *ibfd)
 {
 	if (!bfd_check_format(ibfd, bfd_object))
-		much($"bfd_check_format");
+		much("bfd_check_format");
 	const char *tgt = bfd_get_target(ibfd);
 	wow($"input file is for target ", tgt);
 	if (bfd_get_flavour(ibfd) == bfd_target_coff_flavour &&
@@ -56,19 +56,19 @@ static void prep_sxn(bfd *ibfd, asection *isxn, void *cookie)
 	    $", lma 0x", lma);
 	asection *osxn = bfd_make_section_anyway_with_flags(obfd,name,flags);
 	if (!osxn)
-		much($"bfd_make_section_anyway_with_flags");
+		much("bfd_make_section_anyway_with_flags");
 	if (!bfd_set_section_size(obfd, osxn, bfd_section_size(ibfd, isxn)))
-		much($"bfd_set_section_size");
+		much("bfd_set_section_size");
 	if (!bfd_set_section_vma(obfd, osxn, vma))
-		much($"bfd_set_section_vma");
+		much("bfd_set_section_vma");
 	osxn->lma = lma;
 	if (!bfd_set_section_alignment(obfd, osxn,
 	    bfd_section_alignment(ibfd, isxn)))
-		much($"bfd_set_section_alignment");
+		much("bfd_set_section_alignment");
 	isxn->output_section = osxn;
 	isxn->output_offset = 0;
 	if (!bfd_copy_private_section_data(ibfd, isxn, obfd, osxn))
-		much($"bfd_copy_private_section_data");
+		much("bfd_copy_private_section_data");
 }
 
 /* per phrack.org/issues/56/9.html */
@@ -76,14 +76,14 @@ static void do_frob_1(bfd *ibfd, bfd *obfd)
 {
 	wow($"copying basic object attributes");
 	if (!bfd_set_format(obfd, bfd_get_format(ibfd)))
-		much($"bfd_set_format");
+		much("bfd_set_format");
 	flagword fl = bfd_get_file_flags(ibfd);
 	if (!bfd_set_file_flags(obfd, fl & bfd_applicable_file_flags(obfd)))
-		much($"bfd_set_file_flags");
+		much("bfd_set_file_flags");
 	if (!bfd_set_start_address(obfd, bfd_get_start_address(ibfd)))
-		much($"bfd_set_start_address");
+		much("bfd_set_start_address");
 	if (!bfd_set_arch_mach(obfd, bfd_get_arch(ibfd), bfd_get_mach(ibfd)))
-		much($"bfd_set_arch_mach");
+		much("bfd_set_arch_mach");
 }
 
 static void do_frob_2(bfd *ibfd, bfd *obfd)
@@ -122,14 +122,14 @@ static void do_frob_3(bfd *ibfd, bfd *obfd, const char *bnm, const char *enm,
 	wow($"copying and scanning symbol table");
 	long symtab_sz = bfd_get_symtab_upper_bound(ibfd), n_syms, i;
 	if (symtab_sz < 0 || symtab_sz > SSIZE_MAX)
-		much($"bfd_get_symtab_upper_bound");
+		much("bfd_get_symtab_upper_bound");
 	asymbol **syms = new asymbol *[(symtab_sz + sizeof(asymbol *) - 1)
 	    / sizeof(asymbol *)];
 	n_syms = bfd_canonicalize_symtab(ibfd, syms);
 	if (n_syms < 0)
-		much($"bfd_canonicalize_symtab");
+		much("bfd_canonicalize_symtab");
 	if (!bfd_set_symtab(obfd, syms, n_syms))
-		much($"bfd_set_symtab");
+		much("bfd_set_symtab");
 	for (i = 0; i < n_syms; ++i) {
 		asymbol *sym = syms[i];
 		if (bfd_is_local_label(ibfd, sym) ||
@@ -164,20 +164,20 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 	if (sz) {
 		unsigned char stuff[sz];
 		if (!bfd_get_section_contents(ibfd, isxn, stuff, 0, sz))
-			much($"bfd_get_section_contents");
+			much("bfd_get_section_contents");
 		if (!bfd_set_section_contents(obfd, osxn, stuff, 0, sz))
-			much($"bfd_set_section_contents");
+			much("bfd_set_section_contents");
 	}
 	if ((fl & SEC_RELOC) == 0)
 		return;
 	long rels_sz = bfd_get_reloc_upper_bound(ibfd, isxn);
 	if (rels_sz < 0 || rels_sz > SSIZE_MAX)
-		much($"bfd_get_reloc_upper_bound");
+		much("bfd_get_reloc_upper_bound");
 	arelent **rels = new arelent *[(rels_sz + sizeof(arelent *) - 1)
 	    / sizeof(arelent *)];
 	long nrels = bfd_canonicalize_reloc(ibfd, isxn, rels, syms);
 	if (nrels < 0 || nrels != (unsigned)nrels)
-		much($"bfd_canonicalize_reloc");
+		much("bfd_canonicalize_reloc");
 	bfd_set_reloc(obfd, osxn, rels, (unsigned)nrels);
 }
 
@@ -194,10 +194,10 @@ static void do_frob_4(bfd *ibfd, bfd *obfd, asymbol *bsym, asymbol *esym,
 	bfd_size_type sz = esym->value - bsym->value;
 	unsigned char stuff[sz];
 	if (!bfd_get_section_contents(obfd, osxn, stuff, off, sz))
-		much($"bfd_get_section_contents");
+		much("bfd_get_section_contents");
 	biting_pear::srsly<unsigned char>(seed).wut(stuff, stuff + sz);
 	if (!bfd_set_section_contents(obfd, osxn, stuff, off, sz))
-		much($"bfd_set_section_contents");
+		much("bfd_set_section_contents");
 }
 
 /* per phrack.org/issues/56/9.html */
@@ -205,7 +205,7 @@ static void do_frob_5(bfd *ibfd, bfd *obfd)
 {
 	wow($"copying BFD back-end data");
 	if (!bfd_copy_private_bfd_data(ibfd, obfd))
-		much($"bfd_copy_private_bfd_data");
+		much("bfd_copy_private_bfd_data");
 }
 
 static void copy_and_frob_object(bfd *ibfd, bfd *obfd, const char *bnm,
@@ -239,7 +239,7 @@ int main(int argc, char **argv)
 			many($"invalid arguments");
 		ibfd = bfd_openr(ifn, 0);
 		if (!ibfd)
-			much($"bfd_openr");
+			much("bfd_openr");
 		check_object(ibfd);
 		size_t tfnl = strlen(ofn) + 8;
 		tfn = new char[tfnl];
@@ -251,12 +251,12 @@ int main(int argc, char **argv)
 		close(fd);
 		obfd = bfd_openw(tfn, bfd_get_target(ibfd));
 		if (!obfd)
-			much($"bfd_openw");
+			much("bfd_openw");
 		copy_and_frob_object(ibfd, obfd, bnm, enm, seed);
 		bfd_boolean closed = bfd_close(obfd);
 		obfd = 0;
 		if (!closed)
-			much($"bfd_close");
+			much("bfd_close");
 		if (std::rename(tfn, ofn) != 0)
 			many($"rename( ) failed: ", strerror(errno));
 		tfn = 0;

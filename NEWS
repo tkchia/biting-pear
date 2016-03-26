@@ -2,6 +2,14 @@
 
 		.travis.yml ,
 		test/travis-install-deps.sh :
+		- initial version
+
+		bin/biting-pear-doge.ccc :
+		- removed (not-very-useful) scrambling of BFD function names
+		  in error messages
+
+		include/biting-pear/kthxbai.h :
+		- fixed use of arplw instruction for x86-32
 
 2016-03-21	Tweaks.
 

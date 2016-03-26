@@ -189,10 +189,10 @@ struct kthxbai_impl
 				unsigned v1 = (v & ~3u) |
 				    (t & ~(unsigned)(T)~(T)0u) |
 				    (t % ((v & 3u) + 1u));
-				kthxbai_impl<State3, T, Flags, Levels - 1>
-				    (x1, v1);
-				kthxbai_impl<NewState, T, Flags, Levels - 1>
-				    (x2, v2);
+				kthxbai_impl<State3, unsigned, Flags,
+				    Levels - 1>(x1, v1);
+				kthxbai_impl<NewState, unsigned, Flags,
+				    Levels - 1>(x2, v2);
 				__asm("arplw %w2, %w0" : "=r,m" (x1)
 				    : "0,0" (x1), "r,r" (x2));
 				x = (T)x1;
