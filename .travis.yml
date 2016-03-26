@@ -5,8 +5,9 @@ compiler: gcc
 sudo: required
 install: sudo apt-get install -y libboost-dev
 env:
-#  - TARGET=
+  - TARGET=
   - TARGET=i386-linux-gnu
-#  - TARGET=armv7-a-linux-gnueabi
+  - TARGET=armv6-linux-gnueabi
+  - TARGET=armv7-a-linux-gnueabi
 install: ./test/travis-install-deps.sh
-script: sh -x ./configure ${TARGET:+"--target=$TARGET"} && make && make check
+script: ./configure ${TARGET:+"--target=$TARGET"} && make && make check
