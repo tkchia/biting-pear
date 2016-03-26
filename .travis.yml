@@ -5,9 +5,9 @@ compiler: gcc
 sudo: required
 matrix:
   include:
-    - env: TARGET=
+    - before_install: sudo apt-get install -y libboost-dev
     - env: TARGET=i386-linux-gnu
-      before_install: sudo apt-get install binutils-multiarch-dev
+      before_install: sudo apt-get install -y libboost-dev binutils-multiarch-dev
     - env: TARGET=armv7-a-linux-gnueabi
-      before_install: sudo apt-get install g++-arm-linux-gnueabi binutils-multiarch-dev
+      before_install: sudo apt-get install -y libboost-dev g++-arm-linux-gnueabi binutils-multiarch-dev
 script: ./configure ${TARGET+"--target=$TARGET"} && make && make check
