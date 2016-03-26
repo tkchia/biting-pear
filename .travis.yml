@@ -1,0 +1,13 @@
+os: linux
+dist: trusty
+language: cpp
+compiler: gcc
+sudo: required
+matrix:
+  include:
+    - env: TARGET=
+    - env: TARGET=i386-linux-gnu
+      before_install: sudo apt-get install binutils-multiarch-dev
+    - env: TARGET=armv7-a-linux-gnueabi
+      before_install: sudo apt-get install g++-arm-linux-gnueabi binutils-multiarch-dev
+script: ./configure ${TARGET+"--target=$TARGET"} && make && make check

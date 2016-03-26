@@ -1,3 +1,8 @@
+2016-03-26	Trying out Travis CI.
+
+		.travis.yml:
+		- initial version
+
 2016-03-21	Tweaks.
 
 		bin/biting-pear-c++.ccc :
