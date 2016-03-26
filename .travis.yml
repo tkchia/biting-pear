@@ -3,11 +3,10 @@ dist: trusty
 language: cpp
 compiler: gcc
 sudo: required
-matrix:
-  include:
-    - before_install: sudo apt-get install -y libboost-dev
-    - env: TARGET=i386-linux-gnu
-      before_install: sudo apt-get install -y libboost-dev binutils-multiarch-dev
-    - env: TARGET=armv7-a-linux-gnueabi
-      before_install: sudo apt-get install -y libboost-dev g++-arm-linux-gnueabi binutils-multiarch-dev
+install: sudo apt-get install -y libboost-dev
+env:
+  - TARGET=
+  - TARGET=i386-linux-gnu
+  - TARGET=armv7-a-linux-gnueabi
+install: ./test/travis-install-deps.sh
 script: ./configure ${TARGET+"--target=$TARGET"} && make && make check

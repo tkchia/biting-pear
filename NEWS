@@ -1,7 +1,7 @@
 2016-03-26	Trying out Travis CI.
 
-		.travis.yml:
-		- initial version
+		.travis.yml ,
+		test/travis-install-deps.sh :
 
 2016-03-21	Tweaks.
 
