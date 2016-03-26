@@ -1,5 +1,7 @@
 > "*A popular tourist attraction of the region, the biting pear lives off low-flying birds, hand-outs, and the occasional unwary sightseer.*" --&nbsp;[ursulav](http://ursulav.deviantart.com/art/The-Biting-Pear-of-Salamanca-29677500)
 
+[![(build status)](https://travis-ci.org/tkchia/biting-pear.svg?branch=master)](https://travis-ci.org/tkchia/biting-pear)
+
 ## Synopsis
 
 #### Shell side

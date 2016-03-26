@@ -11,6 +11,9 @@
 		include/biting-pear/kthxbai.h :
 		- fixed use of arplw instruction for x86-32
 
+		README.md :
+		- added link to Travis build status
+
 2016-03-21	Tweaks.
 
 		bin/biting-pear-c++.ccc :
