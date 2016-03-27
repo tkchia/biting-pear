@@ -7,6 +7,9 @@
 		.gitmodules :
 		- initial version
 
+		.travis.yml :
+		- added aarch64-linux-gnu target platform
+
 2016-03-26	Trying out Travis CI.
 
 		.travis.yml ,

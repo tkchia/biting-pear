@@ -9,5 +9,6 @@ env:
   - TARGET=i386-linux-gnu
   - TARGET=armv6-linux-gnueabi
   - TARGET=armv7-a-linux-gnueabi
+  - TARGET=aarch64-linux-gnu
 install: ./test/travis-install-deps.sh
 script: ./configure ${TARGET:+"--target=$TARGET"} && make && make check
