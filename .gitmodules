@@ -1,0 +1,3 @@
+[submodule "lolwutconf"]
+	path = lolwutconf
+	url = https://github.com/tkchia/lolwutconf.git
