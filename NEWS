@@ -7,9 +7,13 @@
 		.gitmodules :
 		- initial version
 
-		.travis.yml ,
+		.travis.yml :
+		- added aarch64-linux-gnu target platform
+
 		test/travis-install-deps.sh :
 		- added aarch64-linux-gnu target platform
+		- now also runs `sudo apt-get update -y' before installing
+		  extra packages
 
 2016-03-26	Trying out Travis CI.
 
