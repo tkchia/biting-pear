@@ -27,6 +27,7 @@ headers.target = \
     include/biting-pear/nowai.h \
     include/biting-pear/omg.h \
     include/biting-pear/orly.h \
+    include/biting-pear/rofl.h \
     include/biting-pear/yarly.h \
     include/biting-pear/yodawg.h \
     $(config.h.target)
@@ -69,7 +70,7 @@ installables.host = \
     share/biting-pear/calm.spec \
     share/biting-pear/doge-1.ccc \
     share/biting-pear/doge-2.cc \
-    share/biting-pear/doge-8.cc \
+    share/biting-pear/doge-8.ccc \
     share/biting-pear/doge-9.cc
 
 default all: check

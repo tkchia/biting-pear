@@ -8,6 +8,7 @@ env:
   - TARGET=
   - TARGET=i386-linux-gnu
   - TARGET=i686-linux-gnu
+  - TARGET=armv4-linux-gnueabi
   - TARGET=armv6-linux-gnueabi
   - TARGET=armv7-a-linux-gnueabi
 install: ./test/travis-install-deps.sh

@@ -1,3 +1,22 @@
+2016-04-11	Improved memory wiping on x86-32 and x86-64.
+
+		include/biting-pear/rofl.h :
+		- initial version
+
+		share/biting-pear/doge-8.ccc :
+		- renamed from doge-8.cc
+		- now uses biting_pear::rofl<...>
+
+		bin/biting-pear-c++.ccc :
+		- share/biting-pear/doge-8.cc -> share/biting-pear/doge-8.ccc
+
+		GNUmakefile :
+		- added include/biting-pear/rofl.h as a dependency
+		- share/biting-pear/doge-8.cc -> share/biting-pear/doge-8.ccc
+
+		.travis.yml :
+		- added armv4-linux-gnueabi target platform
+
 2016-03-27	Split lolwutconf into its own project.
 
 		lolwutconf/* :

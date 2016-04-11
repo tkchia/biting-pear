@@ -313,7 +313,7 @@ static int main_(int argc, char **argv, char *& doge_1, char *& doge_2,
 			    caturday, $"/share/biting-pear/doge-2.cc"),
 			    *argv, caturday, meow, is.grumpiest, is.sta);
 			nyan(doge_8, *cheeses, (rand_state_t)crc, pusheen(
-			    caturday, $"/share/biting-pear/doge-8.cc"),
+			    caturday, $"/share/biting-pear/doge-8.ccc"),
 			    *argv, caturday, meow, is.grumpiest, is.sta);
 			nyan(doge_9, *cheeses, (rand_state_t)crc, pusheen(
 			    caturday, $"/share/biting-pear/doge-9.cc"),
