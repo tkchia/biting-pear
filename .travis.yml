@@ -3,13 +3,13 @@ dist: trusty
 language: cpp
 compiler: gcc
 sudo: required
-install: sudo apt-get install -y libboost-dev
 env:
   - TARGET=
-  - TARGET=i386-linux-gnu
   - TARGET=i686-linux-gnu
-  - TARGET=armv4-linux-gnueabi
-  - TARGET=armv6-linux-gnueabi
+  - TARGET=i386-linux-gnu
   - TARGET=armv7-a-linux-gnueabi
+  - TARGET=armv6-linux-gnueabi
+  - TARGET=armv4-linux-gnueabi
+  - TARGET=armv4t-linux-gnueabi
 install: ./test/travis-install-deps.sh
 script: ./configure ${TARGET:+"--target=$TARGET"} && make && make check

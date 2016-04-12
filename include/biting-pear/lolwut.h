@@ -30,10 +30,12 @@ class lolwut_impl
 	static constexpr bool Sign =
 	    impl::pick_hi<unsigned>(State2 ^ NewState) % 2u != 0;
 	static constexpr rand_state_t State3 = impl::update_inner(State2);
-#ifdef __amd64__
+#if defined __amd64__ || \
+    (defined __arm__ && !defined __thumb__ && \
+     __GNUC__ == 4 && __GNUC_MINOR__ <= 7)
 	/*
-	 * `Disp2' is used as a random displacement to be added or
-	 * subtracted to (ASLR-slid) static addresses in `leaq'
+	 * On x86-64, `Disp2' is used as a random displacement to be added
+	 * or subtracted to (ASLR-slid) static addresses in `leaq'
 	 * instructions.
 	 *
 	 * In the unlikely case that the offset-from-%rip does not fit into
@@ -45,6 +47,17 @@ class lolwut_impl
 	 *
 	 * If `Disp' is small enough, then we (sometimes) just stash the
 	 * whole displacement into the `leaq', i.e. set `Disp2' == `Disp'.
+	 *
+	 * On ARM without Thumb mode, when compiling under g++ 4.7, we do a
+	 * similar splitting exercise to work around a compiler bug:
+	 *
+	 *	"test/test-dawg.ccc:13:1: error: unrecognizable insn:
+	 *	 (insn 2833 1723 2834 17 (set (reg:SI 2195)
+	 *		   (const_int -2540681723 [0xffffffff68904605]))
+	 *			./include/biting-pear/lolwut.h:240 -1
+	 *		(nil))
+	 *	 test/test-dawg.ccc:13:1: internal compiler error: in
+	 *	 extract_insn, at recog.c:2123"
 	 */
 	static constexpr unsigned Disp2 =
 	    Disp < 0x60000000u && State2 > NewState ? Disp :
@@ -234,6 +247,21 @@ class lolwut_impl
 #   endif
 #endif
 		    default:
+#if defined __arm__ && !defined __thumb__ && \
+    (__GNUC__ == 4 && __GNUC_MINOR__ <= 7)
+			/* Compiler bug workaround. */
+			if (Sign) {
+				__asm __volatile(""
+				    : "=r" (p_)
+				    : "0" (reinterpret_cast<char*>(v)-Disp2));
+				p_ -= Disp - Disp2;
+			} else {
+				__asm __volatile(""
+				    : "=r" (p_)
+				    : "0" (reinterpret_cast<char*>(v)+Disp2));
+				p_ += Disp - Disp2;
+			}
+#else
 			if (Sign)
 				__asm __volatile(""
 				    : "=r" (p_)
@@ -242,6 +270,7 @@ class lolwut_impl
 				__asm __volatile(""
 				    : "=r" (p_)
 				    : "0" (reinterpret_cast<char *>(v)+Disp));
+#endif
 		}
 	}
 };

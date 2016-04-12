@@ -1,3 +1,13 @@
+2016-04-12	ARMv4 workaround; added ARMv4t target.
+
+		include/biting-pear/lolwut.h :
+		- added workaround for g++ 4.7 bug triggered when compiling
+		  for ARMv4 sans Thumb
+
+		.travis.yml :
+		- added armv4t-linux-gnueabi target platform
+		- reordered target platforms
+
 2016-04-11	Improved memory wiping on x86-32 and x86-64.
 
 		include/biting-pear/rofl.h :
