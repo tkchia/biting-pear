@@ -30,9 +30,6 @@ class lolwut_impl
 	static constexpr bool Sign =
 	    impl::pick_hi<unsigned>(State2 ^ NewState) % 2u != 0;
 	static constexpr rand_state_t State3 = impl::update_inner(State2);
-#if defined __amd64__ || \
-    (defined __arm__ && !defined __thumb__ && \
-     __GNUC__ == 4 && __GNUC_MINOR__ <= 7)
 	/*
 	 * On x86-64, `Disp2' is used as a random displacement to be added
 	 * or subtracted to (ASLR-slid) static addresses in `leaq'
@@ -59,10 +56,15 @@ class lolwut_impl
 	 *	 test/test-dawg.ccc:13:1: internal compiler error: in
 	 *	 extract_insn, at recog.c:2123"
 	 */
+#if defined __amd64__
 	static constexpr unsigned Disp2 =
 	    Disp < 0x60000000u && State2 > NewState ? Disp :
 		(Disp > 2 ?
 		 impl::pick_hi<unsigned>(State2 ^ State3) % (Disp / 2) : 0);
+#elif defined __arm__ && !defined __thumb__ && \
+      __GNUC__ == 4 && __GNUC_MINOR__ <= 7
+	static constexpr unsigned Disp2 = Disp > 2 ?
+	    impl::pick_hi<unsigned>(State2 ^ State3) % (Disp / 2) : 0;
 #endif
 	static constexpr rand_state_t State4 = impl::update_inner(State3);
 #if defined __arm__ && defined __thumb2__
