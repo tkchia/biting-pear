@@ -1,3 +1,10 @@
+2016-04-14	Memory wiping on ARM.
+
+		include/biting-pear/rofl.h :
+		- specific implementations of biting_pear::rofl<...> for ARM
+		- slight tweak of biting_pear::rofl<...> for x86-32 and
+		  x86-64
+
 2016-04-12	ARMv4 workaround; added ARMv4t target.
 
 		include/biting-pear/lolwut.h :
