@@ -1,3 +1,10 @@
+2016-04-17	"And he was clad in cote and hood of grene."
+
+		share/biting-pear/doge-8.ccc :
+		- munged call to mprotect(...)
+		- added optimize("no-reorder-blocks") attribute for the
+		  wiping routine
+
 2016-04-14	Memory wiping on ARM.
 
 		include/biting-pear/rofl.h :
