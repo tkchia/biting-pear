@@ -1,3 +1,24 @@
+2016-04-19	"And he was clad in cote and hood of grene."  (2)
+
+		include/biting-pear/lolwut.h :
+		- position-independent munging of function pointers now
+		  works properly on x86-32
+
+		include/biting-pear/omg.h :
+		- fixed operator precedence bug
+		- minor fix:  added proper "cc" clobbers for x86-32, x86-64,
+		  and ARM
+
+		include/biting-pear/kthxbai.h :
+		- minor fix:  added proper "cc" clobber for x86-32 `arplw'
+
+		include/biting-pear/host/rly.h :
+		- fixed default parameter values in rly<T, Levels>::
+		  operator()(...)
+
+		include/biting-pear/yarly.h :
+		- removed redundant condition check
+
 2016-04-17	"And he was clad in cote and hood of grene."
 
 		share/biting-pear/doge-8.ccc :

@@ -74,8 +74,7 @@ class yarly<State, T, BigBad, Flags, 0u> :
 		    default:	if (BigBad) {
 					T y;
 					kthxbai_impl<super::State12, T,
-					    Flags, BigBad ? 3u : 0u>
-					    (y, super::DefRetVal);
+					    Flags, 3u>(y, super::DefRetVal);
 					return y;
 				} else
 					return super::DefRetVal;

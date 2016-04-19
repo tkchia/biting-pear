@@ -194,7 +194,7 @@ struct kthxbai_impl
 				kthxbai_impl<NewState, unsigned, Flags,
 				    Levels - 1>(x2, v2);
 				__asm("arplw %w2, %w0" : "=r,m" (x1)
-				    : "0,0" (x1), "r,r" (x2));
+				    : "0,0" (x1), "r,r" (x2) : "cc");
 				x = (T)x1;
 				break;
 			}

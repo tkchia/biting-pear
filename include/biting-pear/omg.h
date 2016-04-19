@@ -42,12 +42,13 @@ struct omg_impl_0<State, 0u>
 		switch ((State2 >> 32) % 4) {
 		    case 0:
 #if defined __amd64__
-			__asm __volatile("syscall" : : : "rax", "memory");
+			__asm __volatile("syscall" : : : "rax", "cc",
+			    "memory");
 #elif defined __i386__
 			__asm __volatile("call *%%gs:0x10" : : : "eax",
-			    "memory");
+			    "cc", "memory");
 #elif defined __arm__
-			__asm __volatile("svc #0" : : : "r0", "memory");
+			__asm __volatile("svc #0" : : : "r0", "cc", "memory");
 #endif
 			break;
 #ifdef __OPTIMIZE__
@@ -84,7 +85,7 @@ struct omg_impl_0
 		constexpr rand_state_t State2 = update_inner(State);
 		constexpr rand_state_t State3 = update_inner(State2);
 		constexpr rand_state_t NewState = update_outer(State);
-		switch (State2 >> 32 % 3) {
+		switch ((State2 >> 32) % 3) {
 		    case 0:
 			{
 				omg<State3, unsigned,

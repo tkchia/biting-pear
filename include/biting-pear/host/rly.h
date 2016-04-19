@@ -90,11 +90,11 @@ class rly : public rly_impl<T>
     public:
 	rly(rand_state_t st) : super(st)
 		{ }
-	T operator()(T x1 = super::xd1, T x2 = super::xd2,
-		     T x3 = super::xd3, T x4 = super::xd4,
-		     T x5 = super::xd5, T x6 = super::xd6,
-		     T x7 = super::xd7, T x8 = super::xd8,
-		     T x9 = super::xd9)
+	T operator()(T x1 = super::xd1_, T x2 = super::xd2_,
+		     T x3 = super::xd3_, T x4 = super::xd4_,
+		     T x5 = super::xd5_, T x6 = super::xd6_,
+		     T x7 = super::xd7_, T x8 = super::xd8_,
+		     T x9 = super::xd9_)
 	{
 		T y1 = rly<T, Levels - 1>(super::st12_)
 		    (x1, x2, x3, x4, x5, x6, x7, x8, x9);

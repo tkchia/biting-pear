@@ -186,20 +186,26 @@ class lolwut_impl
 			    : "cc");
 		    qux:
 			break;
+#   ifdef __ELF__
 		    case 2:
-			__asm("" : "=r" (p_) : "0" (&&quux));
-			__asm(	".ifc \"$%p2\", \"\%2\"; "
-					"addl %3+%p2-%p4, %0; "
-				".else; "
-					"addl %2, %0; "
-					"subl $%p4-%a3, %0; "
-				".endif"
-			    : "=&r" (p_)
-			    : "0" (p_), "X" (v), "n" (Sign ? -Disp : Disp),
-			      "X" (&&quux)
-			    : "cc");
+			{
+				void *q;
+				__asm("" : "=r" (p_) : "0" (&&quux));
+				__asm(".ifc \"$%P4\", \"%4@PLT\"; "
+					".reloc .+1, R_386_PLT32, %p4; "
+					"movl %5+(.+1)-%p3, %1; "
+					"addl %1, %0; "
+				      ".else; "
+					"movl %4, %0; "
+					"addl %5, %0; "
+				      ".endif"
+				    : "=r" (p_), "=r" (q)
+				    : "0" (p_), "X" (&&quux), "X" (v),
+				      "n" (Sign ? -Disp : Disp));
+			}
 		    quux:
 			break;
+#   endif
 #elif defined __arm__ && defined __thumb2__ && defined __OPTIMIZE__
 		    case 1:
 			{
