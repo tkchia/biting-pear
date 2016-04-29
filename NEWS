@@ -7,7 +7,8 @@
 		  g++ for ARM
 
 		include/biting-pear/rofl.h :
-		- can now scramble syscalls on x86-32
+		- can now scramble syscalls on x86-32, and partially scramble
+		  syscalls on other platforms
 		- added rofl<...>::mprotect(...)
 
 		share/biting-pear/doge-1.ccc ,

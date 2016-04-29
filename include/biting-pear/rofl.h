@@ -275,8 +275,10 @@ class rofl_impl_mprotect :
 	static typename super::syscall_ret
 	mprotect(void *addr, std::size_t len, int prot)
 	{
-#ifdef __linux__
+#if defined __linux__ && (defined __i386__ || defined __arm__)
 		return super::syscall(125, addr, len, prot);
+#elif defined __linux__ && defined __amd64__
+		return super::syscall(10, addr, len, prot);
 #else
 		int rv = (kthxbai<NewState2, biting_pear_decltype(&mprotect),
 		    Flags, Levels>(mprotect))(addr, len, prot);
