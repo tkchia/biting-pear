@@ -13,8 +13,8 @@ case "$TARGET" in
 		# When Travis gets an Ubuntu Xenial VM, this can probably
 		# go, but until then...
 		#
-		sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-		sudo apt-get update
+		sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+		sudo apt-get update -y
 		set -- ${1+"$@"} g++-5-multilib
 	else
 		set -- ${1+"$@"} g++-multilib
