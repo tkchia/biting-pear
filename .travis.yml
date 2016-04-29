@@ -5,7 +5,10 @@ compiler: gcc
 sudo: required
 env:
   - TARGET=
-  - TARGET=i686-linux-gnu
+  - CXX_FOR_TARGET=g++-5
+    TARGET=i686-linux-gnu
+  - CXX_FOR_TARGET=g++-5
+    TARGET=i386-linux-gnu
   - TARGET=i386-linux-gnu
   - TARGET=armv7-a-linux-gnueabi
   - TARGET=armv6-linux-gnueabi

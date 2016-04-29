@@ -1,3 +1,31 @@
+2016-04-30	g++ 5 compatibility.
+
+		include/biting-pear/lolwut.h :
+		- fixed scrambling of library function addresses under g++ 5
+		  for x86-32
+		- now does a `#pragma message' when compiling under buggy
+		  g++ for ARM
+
+		include/biting-pear/rofl.h :
+		- can now scramble syscalls on x86-32
+		- added rofl<...>::mprotect(...)
+
+		share/biting-pear/doge-1.ccc ,
+		share/biting-pear/doge-8.ccc :
+		- now uses rofl<...>::mprotect(...)
+
+		share/biting-pear/omnomnom.lxx :
+		- fixed handling of ?<...> to prevent generated numbers from
+		  being output before a preprocessor directive on the same
+		  line
+
+		.travis.yml :
+		- added environment settings for using g++ 5
+
+		test/travis-install-deps.sh :
+		- now tries to install g++ 5 if .travis.yml says to
+		- added `flex' as a prerequisite package
+
 2016-04-19	"And he was clad in cote and hood of grene."  (2)
 
 		include/biting-pear/lolwut.h :

@@ -31,22 +31,24 @@ class lolwut_impl
 	    impl::pick_hi<unsigned>(State2 ^ NewState) % 2u != 0;
 	static constexpr rand_state_t State3 = impl::update_inner(State2);
 	/*
-	 * On x86-64, `Disp2' is used as a random displacement to be added
-	 * or subtracted to (ASLR-slid) static addresses in `leaq'
-	 * instructions.
+	 * (1) On x86-64, `Disp2' is used as a random displacement to be
+	 *     added or subtracted to (ASLR-slid) static addresses in `leaq'
+	 *     instructions.
 	 *
-	 * In the unlikely case that the offset-from-%rip does not fit into
-	 * a signed 32-bit operand, we still need to output valid machine
-	 * instructions.  We thus split the +/- displacement `Disp' into two
-	 * parts, `Disp2' which can be stashed along with the static address
-	 * into the `leaq', and `Disp' - `Disp2' which is applied in a
-	 * separate instruction.
+	 *     In the unlikely case that the offset-from-%rip does not fit
+	 *     into a signed 32-bit operand, we still need to output valid
+	 *     machine instructions.  We thus split the +/- displacement
+	 *     `Disp' into two parts, `Disp2' which can be stashed along
+	 *     with the static address into the `leaq', and `Disp' - `Disp2'
+	 *     which is applied in a separate instruction.
 	 *
-	 * If `Disp' is small enough, then we (sometimes) just stash the
-	 * whole displacement into the `leaq', i.e. set `Disp2' == `Disp'.
+	 *     If `Disp' is small enough, then we (sometimes) just stash the
+	 *     whole displacement into the `leaq', i.e.  set `Disp2' ==
+	 *     `Disp'.
 	 *
-	 * On ARM without Thumb mode, when compiling under g++ 4.7, we do a
-	 * similar splitting exercise to work around a compiler bug:
+	 * (2) On ARM without Thumb mode, when compiling under g++ 4.7, we
+	 *     do a similar splitting exercise to work around a compiler
+	 *     bug:
 	 *
 	 *	"test/test-dawg.ccc:13:1: error: unrecognizable insn:
 	 *	 (insn 2833 1723 2834 17 (set (reg:SI 2195)
@@ -55,12 +57,20 @@ class lolwut_impl
 	 *		(nil))
 	 *	 test/test-dawg.ccc:13:1: internal compiler error: in
 	 *	 extract_insn, at recog.c:2123"
+	 *
+	 * (3) On x86-32, `Disp2' is a displacement for the global offset
+	 *     table (GOT) entry of the target item.  We make sure that
+	 *     `Disp2' can _not_ be expressed as an 8-bit sign-extended
+	 *     offset.
 	 */
 #if defined __amd64__
 	static constexpr unsigned Disp2 =
 	    Disp < 0x60000000u && State2 > NewState ? Disp :
 		(Disp > 2 ?
 		 impl::pick_hi<unsigned>(State2 ^ State3) % (Disp / 2) : 0);
+#elif defined __i386__
+	static constexpr unsigned Disp2 =
+	    ((State2 ^ State3) >> 20) % 0xffffff00u + 0x80u;
 #elif defined __arm__ && !defined __thumb__ && \
       __GNUC__ == 4 && __GNUC_MINOR__ <= 7
 	static constexpr unsigned Disp2 = Disp > 2 ?
@@ -188,20 +198,38 @@ class lolwut_impl
 			break;
 #   ifdef __ELF__
 		    case 2:
+			/*
+			 * On gcc 5.3.1:
+			 *
+			 * (1) The `[...]' grouping must be there.  Without
+			 *     it, GNU as computes the wrong offset.
+			 *
+			 * (2) It might seem easier to get the PLT stub's
+			 *     address via %eip-relative computations. 
+			 *     Alas, the PLT stubs assume that %ebx points
+			 *     to the GOT, and gcc 5+ outputs code that
+			 *     breaks this assumption.
+			 */
 			{
-				void *q;
+				unsigned disp;
+				impl::kthxbai_impl<State4, unsigned, Flags,
+				    Levels2>(disp, Disp);
 				__asm("" : "=r" (p_) : "0" (&&quux));
-				__asm(".ifc \"$%P4\", \"%4@PLT\"; "
-					".reloc .+1, R_386_PLT32, %p4; "
-					"movl %5+(.+1)-%p3, %1; "
-					"addl %1, %0; "
+				__asm(".ifc \"$%P3\", \"%3@PLT\"; "
+					"addl $_GLOBAL_OFFSET_TABLE_" \
+					    "+[%p4+(.-%p2)], %0; "
+					".reloc 1f-4, R_386_GOT32, %p3; "
+					"movl %p5(%0), %0; "
+					"1:\n"
 				      ".else; "
-					"movl %4, %0; "
-					"addl %5, %0; "
+					"movl %3, %0; "
 				      ".endif"
-				    : "=r" (p_), "=r" (q)
+				    : "=&r" (p_)
 				    : "0" (p_), "X" (&&quux), "X" (v),
-				      "n" (Sign ? -Disp : Disp));
+				      "n" (Disp2), "n" (-Disp2));
+				if (Sign)
+					p_ -= disp;
+				else	p_ += disp;
 			}
 		    quux:
 			break;
@@ -257,7 +285,8 @@ class lolwut_impl
 		    default:
 #if defined __arm__ && !defined __thumb__ && \
     (__GNUC__ == 4 && __GNUC_MINOR__ <= 7)
-			/* Compiler bug workaround. */
+#   pragma message \
+	"may emit inferior code to avoid g++ < 4.8 bug"
 			if (Sign) {
 				__asm __volatile(""
 				    : "=r" (p_)

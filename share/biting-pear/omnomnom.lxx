@@ -178,8 +178,11 @@ static void flush_str()
 				blurfl("0x%" PRIx64 ">", generator());
 			}
 "?"{ws}"<"{ws}		{
-				blurt(yytext + 1, yyleng - 1);
+				char *p = strchr(yytext + 1, '<'),
+				     *q = yytext + yyleng;
+				blurt(yytext + 1, p - yytext);
 				blurfl("0x%" PRIx64 ",", generator());
+				blurt(p + 1, q - p - 1);
 			}
 "["{ws}"]"{ws}\"	{
 				char *p = strchr(yytext + 1, ']'),
@@ -220,7 +223,7 @@ static void flush_str()
 				die("[]u\"\", []u8\"\", []U\"\", and "
 				    "[]R\"\" not supported");
 			}
-^{lws}"#"{ws}		{
+^{lws}"#"{lws}		{
 				blurt(yytext, yyleng);
 				BEGIN(Wow);
 			}

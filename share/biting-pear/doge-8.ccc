@@ -28,11 +28,11 @@ static void scramble()
 	uintptr_t prot_start = (uintptr_t)startup_text_start & -pg_sz;
 	uintptr_t prot_end = ((uintptr_t)startup_text_end + pg_sz - 1)
 	    & -pg_sz;
-	biting_pear::kthxbai?<biting_pear_decltype(&mprotect),
-	    allow_debugger_unsafes> mp(mprotect);
 	biting_pear::kthxbai?<unsigned, allow_debugger_unsafes>
 	    prot(PROT_READ | PROT_EXEC);
-	biting_pear::rofl?<>::memset(startup_text_start);
-	mp((void *)prot_start, (std::size_t)(prot_end - prot_start),
+	biting_pear::rofl?<allow_debugger_unsafes>::memset
+	    (startup_text_start);
+	biting_pear::rofl?<allow_debugger_unsafes>::mprotect
+	    ((void *)prot_start, (std::size_t)(prot_end - prot_start),
 	    (int)(unsigned)prot);
 }
