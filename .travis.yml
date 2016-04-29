@@ -6,8 +6,10 @@ sudo: required
 env:
   - TARGET=
   - CXX_FOR_TARGET=g++-5
+    CXXFLAGS_FOR_TARGET="-m32 -O3 -fPIC -pie -Wall"
     TARGET=i686-linux-gnu
   - CXX_FOR_TARGET=g++-5
+    CXXFLAGS_FOR_TARGET="-m32 -O3 -fPIC -pie -Wall"
     TARGET=i386-linux-gnu
   - TARGET=i386-linux-gnu
   - TARGET=armv7-a-linux-gnueabi
