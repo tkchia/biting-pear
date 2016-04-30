@@ -4,6 +4,7 @@
 #include <cerrno>
 #include <cstdlib>
 #include <cstring>
+#include <type_traits>
 #include <sys/mman.h>
 #include <biting-pear/bbq.h>
 #include <biting-pear/kthxbai.h>
@@ -172,7 +173,20 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State>
 	template<class T, class... Ts>
 	__attribute__((always_inline))
 	static bool wutwut(T x, Ts... xs)
-		{ return sizeof(x) > sizeof(long) || wutwut(xs...); }
+		{ return sizeof(x) > sizeof(uintptr_t) || wutwut(xs...); }
+	template<class T>
+	__attribute__((always_inline))
+	static uintptr_t re_arg(T x)
+	{
+		if (std::is_integral<T>::value)
+			return (uintptr_t)x;
+		union {
+			uintptr_t up;
+			T x;
+		} u = { 0, };
+		u.x = x;
+		return u.up;
+	}
 #   if defined __i386__ && __GNUC__ < 5
 #	pragma message \
 	    "may emit inferior code, as g++ < 5 cannot spill %ebx"
@@ -195,10 +209,9 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State>
 		if (wutwut(x1))
 			return use_libc_syscall(scno, x1);
 		long rv;
-		__asm __volatile(
-		    "int $0x80"
+		__asm __volatile("int $0x80"
 		    : "=a" (rv)
-		    : "0" (re_scno(scno)), "b" (x1)
+		    : "0" (re_scno(scno)), "b" (re_arg(x1))
 		    : "memory", "cc");
 		return re_rv(rv);
 	}
@@ -211,7 +224,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State>
 		long rv;
 		__asm __volatile("int $0x80"
 		    : "=a" (rv)
-		    : "0" (re_scno(scno)), "b" (x1), "c" (x2)
+		    : "0" (re_scno(scno)), "b" (re_arg(x1)), "c" (re_arg(x2))
 		    : "memory", "cc");
 		return re_rv(rv);
 	}
@@ -224,7 +237,8 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State>
 		long rv;
 		__asm __volatile("int $0x80"
 		    : "=a" (rv)
-		    : "0" (re_scno(scno)), "b" (x1), "c" (x2), "d" (x3)
+		    : "0" (re_scno(scno)), "b" (re_arg(x1)), "c" (re_arg(x2)),
+		      "d" (re_arg(x3))
 		    : "memory", "cc");
 		return re_rv(rv);
 	}
@@ -237,8 +251,8 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State>
 		long rv;
 		__asm __volatile("int $0x80"
 		    : "=a" (rv)
-		    : "0" (re_scno(scno)), "b" (x1), "c" (x2), "d" (x3),
-		      "S" (x4)
+		    : "0" (re_scno(scno)), "b" (re_arg(x1)), "c" (re_arg(x2)),
+		      "d" (re_arg(x3)), "S" (re_arg(x4))
 		    : "memory", "cc");
 		return re_rv(rv);
 	}
@@ -250,9 +264,112 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State>
 		if (wutwut(x1, x2, x3, x4, x5))
 			return use_libc_syscall(scno, x1, x2, x3, x4, x5);
 		long rv;
-		__asm __volatile("int $0x80" : "=a" (rv)
-		    : "0" (re_scno(scno)), "b" (x1), "c" (x2), "d" (x3),
-		      "S" (x4), "D" (x5)
+		__asm __volatile("int $0x80"
+		    : "=a" (rv)
+		    : "0" (re_scno(scno)), "b" (re_arg(x1)), "c" (re_arg(x2)),
+		      "d" (re_arg(x3)), "S" (re_arg(x4)), "D" (re_arg(x5))
+		    : "memory", "cc");
+		return re_rv(rv);
+	}
+#   elif defined __amd64__
+    public:
+	__attribute__((always_inline))
+	static syscall_ret syscall(long scno)
+	{
+		long rv;
+		__asm __volatile("syscall"
+		    : "=a" (rv)
+		    : "0" (re_scno(scno))
+		    : "memory", "cc");
+		return re_rv(rv);
+	}
+	template<class T1>
+	__attribute__((always_inline))
+	static syscall_ret syscall(long scno, T1 x1)
+	{
+		if (wutwut(x1))
+			return use_libc_syscall(scno, x1);
+		long rv;
+		__asm __volatile("syscall"
+		    : "=a" (rv)
+		    : "0" (re_scno(scno)), "D" (re_arg(x1))
+		    : "memory", "cc");
+		return re_rv(rv);
+	}
+	template<class T1, class T2>
+	__attribute__((always_inline))
+	static syscall_ret syscall(long scno, T1 x1, T2 x2)
+	{
+		if (wutwut(x1, x2))
+			return use_libc_syscall(scno, x1, x2);
+		long rv;
+		__asm __volatile("syscall"
+		    : "=a" (rv)
+		    : "0" (re_scno(scno)), "D" (re_arg(x1)), "S" (re_arg(x2))
+		    : "memory", "cc");
+		return re_rv(rv);
+	}
+	template<class T1, class T2, class T3>
+	__attribute__((always_inline))
+	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3)
+	{
+		if (wutwut(x1, x2, x3))
+			return use_libc_syscall(scno, x1, x2, x3);
+		long rv;
+		__asm __volatile("syscall"
+		    : "=a" (rv)
+		    : "0" (re_scno(scno)), "D" (re_arg(x1)), "S" (re_arg(x2)),
+		      "d" (re_arg(x3))
+		    : "memory", "cc");
+		return re_rv(rv);
+	}
+	template<class T1, class T2, class T3, class T4>
+	__attribute__((always_inline))
+	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3, T4 x4)
+	{
+		if (wutwut(x1, x2, x3, x4))
+			return use_libc_syscall(scno, x1, x2, x3, x4);
+		long rv;
+		register uintptr_t a4 __asm("%r10") = re_arg(x4);
+		__asm __volatile("syscall"
+		    : "=a" (rv)
+		    : "0" (re_scno(scno)), "D" (re_arg(x1)), "S" (re_arg(x2)),
+		      "d" (re_arg(x3)), "r" (a4)
+		    : "memory", "cc");
+		return re_rv(rv);
+	}
+	template<class T1, class T2, class T3, class T4, class T5>
+	__attribute__((always_inline))
+	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3, T4 x4,
+	T5 x5)
+	{
+		if (wutwut(x1, x2, x3, x4, x5))
+			return use_libc_syscall(scno, x1, x2, x3, x4, x5);
+		long rv;
+		register uintptr_t a4 __asm("%r10") = re_arg(x4);
+		register uintptr_t a5 __asm("%r8") = re_arg(x5);
+		__asm __volatile("syscall"
+		    : "=a" (rv)
+		    : "0" (re_scno(scno)), "b" (re_arg(x1)), "c" (re_arg(x2)),
+		      "d" (re_arg(x3)), "r" (a4), "r" (a5)
+		    : "memory", "cc");
+		return re_rv(rv);
+	}
+	template<class T1, class T2, class T3, class T4, class T5, class T6>
+	__attribute__((always_inline))
+	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3, T4 x4,
+	T5 x5, T6 x6)
+	{
+		if (wutwut(x1, x2, x3, x4, x5, x6))
+			return use_libc_syscall(scno, x1, x2, x3, x4, x5, x6);
+		long rv;
+		register uintptr_t a4 __asm("%r10") = re_arg(x4);
+		register uintptr_t a5 __asm("%r8") = re_arg(x5);
+		register uintptr_t a6 __asm("%r9") = re_arg(x6);
+		__asm __volatile("syscall"
+		    : "=a" (rv)
+		    : "0" (re_scno(scno)), "b" (re_arg(x1)), "c" (re_arg(x2)),
+		      "d" (re_arg(x3)), "r" (a4), "r" (a5), "r" (a6)
 		    : "memory", "cc");
 		return re_rv(rv);
 	}

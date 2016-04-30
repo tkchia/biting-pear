@@ -7,8 +7,8 @@
 		  g++ for ARM
 
 		include/biting-pear/rofl.h :
-		- can now scramble syscalls on x86-32, and partially scramble
-		  syscalls on other platforms
+		- can now scramble syscalls on x86-32 and x86-64, and
+		  partially scramble syscalls on other platforms
 		- added rofl<...>::mprotect(...)
 
 		share/biting-pear/doge-1.ccc ,
@@ -19,6 +19,15 @@
 		- fixed handling of ?<...> to prevent generated numbers from
 		  being output before a preprocessor directive on the same
 		  line
+
+		GNUmakefile :
+		- rule for include/biting-pear/derp.h (and .../host/derp.h)
+		  now pulls ::uintptr_t or std::uintptr_t into biting_pear::
+		  impl namespace
+
+		configure :
+		- added probe of ::uintptr_t and std::uintptr_t for target
+		- removed host endianness check
 
 		.travis.yml :
 		- added environment settings for using g++ 5

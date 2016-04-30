@@ -220,13 +220,14 @@ class lolwut_impl
 					    "+[%p4+(.-%p2)], %0; "
 					".reloc 1f-4, R_386_GOT32, %p3; "
 					"movl %p5(%0), %0; "
-					"1:\n"
+					"1: ; "
 				      ".else; "
 					"movl %3, %0; "
 				      ".endif"
 				    : "=&r" (p_)
 				    : "0" (p_), "X" (&&quux), "X" (v),
-				      "n" (Disp2), "n" (-Disp2));
+				      "n" (Disp2), "n" (-Disp2)
+				    : "cc");
 				if (Sign)
 					p_ -= disp;
 				else	p_ += disp;

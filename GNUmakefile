@@ -132,7 +132,13 @@ $(config.h.host) $(config.h.target): config.cache
 	elif test '$(conf_Have_cxxt_typ_std__uint_least64_t),$@' = \
 	    'yes,$(config.h.target)'; then \
 		echo '#include <cinttypes>' >>$@.tmp; \
-	else \
+	elif test '$(config.h.target)' = '$@'; then \
+		echo '#include <inttypes.h>' >>$@.tmp; \
+	fi
+	if test '$(conf_Have_cxxt_typ_std__uintptr_t),$@' = \
+	    'yes,$(config.h.target)'; then \
+		echo '#include <cinttypes>' >>$@.tmp; \
+	elif test '$(config.h.target)' = '$@'; then \
 		echo '#include <inttypes.h>' >>$@.tmp; \
 	fi
 	if test \( \
@@ -156,6 +162,12 @@ $(config.h.host) $(config.h.target): config.cache
 		echo 'using std::uint_least64_t;' >>$@.tmp; \
 	else \
 		echo 'using ::uint_least64_t;' >>$@.tmp; \
+	fi
+	if test '$(conf_Have_cxxt_typ_std__uintptr_t),$@' = \
+	    'yes,$(config.h.target)'; then \
+		echo 'using std::uintptr_t;' >>$@.tmp; \
+	elif test '$(config.h.target)' = '$@'; then \
+		echo 'using ::uintptr_t;' >>$@.tmp; \
 	fi
 	if test 'yes,$(config.h.host)' = \
 	    '$(conf_Have_cxx_func_std__mbrtoc16),$@'; then \
