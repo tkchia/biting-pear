@@ -1,3 +1,20 @@
+2016-05-01	"... the impacts of this option are callees may waste some
+		stack space, misbehave or jump to a random location."
+
+		include/biting-pear/lolwut.h :
+		- tweaked impl::lolwut_impl<...>::set(, 2) to split the two
+		  instructions for reading the GOT into two __asm commands
+
+		include/biting-pear/rofl.h :
+		- rofl_impl_syscall<...>::re_arg(.) now also casts `enum'
+		  arguments appropriately
+
+		lolwutconf/ :
+		- bumped from commit 69104ce926 to 9272622875
+
+		test/travis-install-deps.sh :
+		- now recognizes a few more specific CPU types for x86-32
+
 2016-04-30	g++ 5 compatibility.
 
 		include/biting-pear/lolwut.h :

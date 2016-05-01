@@ -2,7 +2,8 @@
 
 set -e -v -- flex libboost-dev binutils-multiarch-dev
 case "$TARGET" in
-    i[3456]86-*)
+    i[3456]86-* | pentium[^4]* | k6-* | athlon-[^f]* | winchip* | \
+    c3-* | geode-*)
 	if test g++-5 = "$CXX_FOR_TARGET" && ! g++-5 --version; then
 		#
 		# This is a hack to get some testing done with g++ 5 under

@@ -178,7 +178,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State>
 	__attribute__((always_inline))
 	static uintptr_t re_arg(T x)
 	{
-		if (std::is_integral<T>::value)
+		if (std::is_integral<T>::value || std::is_enum<T>::value)
 			return (uintptr_t)x;
 		union {
 			uintptr_t up;

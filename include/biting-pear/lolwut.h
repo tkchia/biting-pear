@@ -202,7 +202,7 @@ class lolwut_impl
 			 * On gcc 5.3.1:
 			 *
 			 * (1) The `[...]' grouping must be there.  Without
-			 *     it, GNU as computes the wrong offset.
+			 *     it, GNU `as' computes the wrong offset.
 			 *
 			 * (2) It might seem easier to get the PLT stub's
 			 *     address via %eip-relative computations. 
@@ -218,16 +218,20 @@ class lolwut_impl
 				__asm(".ifc \"$%P3\", \"%3@PLT\"; "
 					"addl $_GLOBAL_OFFSET_TABLE_" \
 					    "+[%p4+(.-%p2)], %0; "
-					".reloc 1f-4, R_386_GOT32, %p3; "
-					"movl %p5(%0), %0; "
+				      ".endif"
+				    : "=r" (p_)
+				    : "0" (p_), "X" (&&quux), "X" (v),
+				      "n" (Disp2)
+				    : "cc");
+				__asm(".ifc \"$%P2\", \"%2@PLT\"; "
+					".reloc 1f-4, R_386_GOT32, %p2; "
+					"movl %p3(%1), %0; "
 					"1: ; "
 				      ".else; "
-					"movl %3, %0; "
+					"movl %2, %0; "
 				      ".endif"
-				    : "=&r" (p_)
-				    : "0" (p_), "X" (&&quux), "X" (v),
-				      "n" (Disp2), "n" (-Disp2)
-				    : "cc");
+				    : "=r" (p_)
+				    : "r" (p_), "X" (v), "n" (-Disp2));
 				if (Sign)
 					p_ -= disp;
 				else	p_ += disp;
