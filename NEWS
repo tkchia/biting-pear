@@ -1,7 +1,7 @@
 2016-05-08	"Business will be either better or worse."
 
 		include/biting-pear/rofl.h :
-		- can now scramble syscalls of <= 3 arguments on 32-bit ARM
+		- can now scramble syscalls of <= 3 arguments on ARM Thumb
 		- removed special casing of x86-64 syscall scrambling for
 		  4, 5, and 6 arguments --- these need further testing
 		- added rofl<...>::clear_cache(...); rofl<...>::memset(.) now
