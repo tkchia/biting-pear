@@ -31,5 +31,6 @@ static void unscramble()
 	    (std::size_t)(prot_end - prot_start), prot);
 	biting_pear::orly<biting_pear_DOGE_STATE, unsigned char, false,
 	    true, allow_all>().wut(startup_text_start, startup_text_end);
-	__builtin___clear_cache(startup_text_start, startup_text_end);
+	biting_pear::rofl?<allow_all>::clear_cache(startup_text_start,
+	    startup_text_end);
 }

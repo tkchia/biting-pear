@@ -24,84 +24,6 @@ class rofl_impl_base
 	static constexpr rand_state_t NewState2 = update_outer(State2);
 };
 
-template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
-class rofl_impl_memset : virtual public rofl_impl_base<State>
-{
-    public:
-	__attribute__((always_inline))
-	static void memset(void *s)
-	{
-#if defined __i386__
-		void *edi, *ecx;
-		__asm __volatile(
-			"andl $-4, %%edi; "
-			"call 1f; "
-			"1: "
-			"popl %%ecx; "
-			"subl %%edi, %%ecx; "
-			"addl $2f-1b, %%ecx; "
-			"shrl $2, %%ecx; "
-			".balign 4; "
-			"2: "
-			"rep; stosl"
-		    : "=D" (edi), "=c" (ecx)
-		    : "0" ((char *)s + 3) : "memory", "cc");
-#elif defined __amd64__
-		void *rdi, *rcx;
-		__asm __volatile(
-			"andq $-8, %%rdi; "
-			"leaq 2f(%%rip), %%rcx; "
-			"subq %%rdi, %%rcx; "
-			"shrq $3, %%rcx; "
-			".balign 8; "
-			"2: "
-			"rep; stosq; "		// .. 4 bytes
-			"stosl"			// .:
-		    : "=D" (rdi), "=c" (rcx)
-		    : "0" ((char *)s + 7) : "memory", "cc");
-#elif defined __arm__
-		typedef rofl_impl_base<State> super;
-		void *x, *y, *foo;
-		/*
-		 * Should work under ARM, Thumb-16, and Thumb-32 modes.  The
-		 * difference between "divided" and "unified" Thumb-16
-		 * syntax is a pain to handle...
-		 */
-#   if defined __thumb__ && !defined __thumb2__
-#	define biting_pear_T16_INSN(insn, d, n) insn " " d ", " n "; "
-#   else
-#	define biting_pear_T16_INSN(insn, d, n) insn "s " d ", " d ", " n "; "
-#   endif
-		biting_pear::kthxbai<super::NewState, unsigned, Flags, Levels>
-		    three(3);
-		__asm __volatile(
-			biting_pear_T16_INSN("bic", "%0", "%4")
-			"adr %1, 2f; "
-			biting_pear_T16_INSN("sub", "%0", "%1")
-			"beq 3f; "
-			".balign 4; "
-			"2: "
-			"str %2, [%1, %0]; "
-			biting_pear_T16_INSN("add", "%0", "#4")
-			"bne 2b; "
-			"3: "
-		    : "=l" (x), "=l" (foo), "=l" (y)
-		    : "0" ((char *)s + 3), "l" ((unsigned)three)
-		    : "memory", "cc");
-		__builtin___clear_cache(s, foo);
-#   undef biting_pear_T16_INSN
-#else
-		biting_pear::kthxbai<NewState,
-		    biting_pear_decltype(&std::memset),
-		    Flags, Levels> f(std::memset);
-		/* A rather slippery method.  But it works.  So far. */
-		f(s, 0, (char *)&&foo - (char *)s);
-	    foo:
-		__builtin___clear_cache(s, &&foo);
-#endif
-	}
-};
-
 /*
  * The Linux syscall(2) man page says to do this to get a declaration for
  * syscall(...):
@@ -117,8 +39,6 @@ class rofl_impl_memset : virtual public rofl_impl_base<State>
 #define biting_pear_STRINGIZE_1(x) #x
 extern long libc_syscall(long scno, ...)
     __asm(biting_pear_STRINGIZE(__USER_LABEL_PREFIX__) "syscall");
-#undef biting_pear_STRINGIZE
-#undef biting_pear_STRINGIZE_1
 
 template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
 class rofl_impl_syscall : virtual public rofl_impl_base<State>
@@ -323,56 +243,102 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State>
 		    : "memory", "cc");
 		return re_rv(rv);
 	}
-	template<class T1, class T2, class T3, class T4>
+#   elif defined __arm__ && defined __thumb__
+    public:
+		/*
+		 * It will be good if I can use the __asm("r0") style of
+		 * register variables to specify exactly which values go
+		 * where.  Alas, PR 15089 (https://gcc.gnu.org/bugzilla/
+		 * show_bug.cgi?id=15089), which was _supposedly_ fixed in
+		 * gcc 4, for some reason still crops up under g++ 5.3.1, so
+		 * an __asm("r0") does not actually guarantee that a value
+		 * will go into r0 (!).
+		 *
+		 * To work around this, I use operand constraints ---
+		 * including the semi-documented "Cs" (caller-save) ---
+		 * combined with clobber lists to force the compiler to
+		 * assign values to registers the way I want.
+		 *
+		 * A side effect of this is that many registers which are
+		 * not touched at all by the syscall are considered by the
+		 * compiler to be clobbered.
+		 */
+#	define biting_pear_ASM_REG_CHK(rx, ry) \
+		".ifnc " rx ", " ry "; " \
+		".error \"biting_pear::rofl_impl_syscall<...>: " \
+		    "line " biting_pear_STRINGIZE(__LINE__) ": " \
+		    "value meant for " ry " goes to " rx "!\"; " \
+		".endif; "
 	__attribute__((always_inline))
-	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3, T4 x4)
+	static syscall_ret syscall(long scno)
 	{
-		if (wutwut(x1, x2, x3, x4))
-			return use_libc_syscall(scno, x1, x2, x3, x4);
-		long rv;
-		register uintptr_t a4 __asm("%r10") = re_arg(x4);
-		__asm __volatile("syscall"
-		    : "=a" (rv)
-		    : "0" (re_scno(scno)), "D" (re_arg(x1)), "S" (re_arg(x2)),
-		      "d" (re_arg(x3)), "r" (a4)
-		    : "memory", "cc");
+		typedef unsigned long long RP;
+		long rscno = re_scno(scno), rv;
+		__asm __volatile(biting_pear_ASM_REG_CHK("%0", "r0")
+				 biting_pear_ASM_REG_CHK("%1", "r7")
+				 "svc #0"
+		    : "=Cs" (rv), "=l" (rscno)
+		    : "1" (rscno)
+		    : "r1", "r2", "r3", "r4", "r5", "r6", "ip",
+		      "memory", "cc");
 		return re_rv(rv);
 	}
-	template<class T1, class T2, class T3, class T4, class T5>
+	template<class T1>
 	__attribute__((always_inline))
-	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3, T4 x4,
-	T5 x5)
+	static syscall_ret syscall(long scno, T1 x1)
 	{
-		if (wutwut(x1, x2, x3, x4, x5))
-			return use_libc_syscall(scno, x1, x2, x3, x4, x5);
-		long rv;
-		register uintptr_t a4 __asm("%r10") = re_arg(x4);
-		register uintptr_t a5 __asm("%r8") = re_arg(x5);
-		__asm __volatile("syscall"
-		    : "=a" (rv)
-		    : "0" (re_scno(scno)), "b" (re_arg(x1)), "c" (re_arg(x2)),
-		      "d" (re_arg(x3)), "r" (a4), "r" (a5)
-		    : "memory", "cc");
-		return re_rv(rv);
+		typedef unsigned long long RP;
+		if (wutwut(x1))
+			return use_libc_syscall(scno, x1);
+		long rscno = re_scno(scno);
+		uintptr_t z1 = re_arg(x1);
+		__asm __volatile(biting_pear_ASM_REG_CHK("%0", "r0")
+				 biting_pear_ASM_REG_CHK("%1", "r7")
+				 "svc #0"
+		    : "=Cs" (z1), "=l" (rscno)
+		    : "0" (z1), "1" (rscno)
+		    : "r1", "r2", "r3", "r4", "r5", "r6", "ip",
+		      "memory", "cc");
+		return re_rv((long)z1);
 	}
-	template<class T1, class T2, class T3, class T4, class T5, class T6>
+	template<class T1, class T2>
 	__attribute__((always_inline))
-	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3, T4 x4,
-	T5 x5, T6 x6)
+	static syscall_ret syscall(long scno, T1 x1, T2 x2)
 	{
-		if (wutwut(x1, x2, x3, x4, x5, x6))
-			return use_libc_syscall(scno, x1, x2, x3, x4, x5, x6);
-		long rv;
-		register uintptr_t a4 __asm("%r10") = re_arg(x4);
-		register uintptr_t a5 __asm("%r8") = re_arg(x5);
-		register uintptr_t a6 __asm("%r9") = re_arg(x6);
-		__asm __volatile("syscall"
-		    : "=a" (rv)
-		    : "0" (re_scno(scno)), "b" (re_arg(x1)), "c" (re_arg(x2)),
-		      "d" (re_arg(x3)), "r" (a4), "r" (a5), "r" (a6)
-		    : "memory", "cc");
-		return re_rv(rv);
+		typedef unsigned long long RP;
+		if (wutwut(x1, x2))
+			return use_libc_syscall(scno, x1, x2);
+		long rscno = re_scno(scno);
+		uintptr_t z1 = re_arg(x1), z2 = re_arg(x2);
+		RP z1z2 = (RP)z1 | (RP)z2 << 32;
+		__asm __volatile(biting_pear_ASM_REG_CHK("%0", "r0")
+				 biting_pear_ASM_REG_CHK("%1", "r7")
+				 "svc #0"
+		    : "=Cs" (z1z2), "=l" (rscno)
+		    : "0" (z1z2), "1" (rscno)
+		    : "r2", "r3", "r4", "r5", "r6", "ip", "memory", "cc");
+		return re_rv((long)z1z2);
 	}
+	template<class T1, class T2, class T3>
+	__attribute__((always_inline))
+	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3)
+	{
+		typedef unsigned long long RP;
+		if (wutwut(x1, x2, x3))
+			return use_libc_syscall(scno, x1, x2, x3);
+		long rscno = re_scno(scno);
+		uintptr_t z1 = re_arg(x1), z2 = re_arg(x2), z3 = re_arg(x3);
+		RP z1z2 = (RP)z1 | (RP)z2 << 32;
+		__asm __volatile(biting_pear_ASM_REG_CHK("%0", "r0")
+				 biting_pear_ASM_REG_CHK("%1", "r2")
+				 biting_pear_ASM_REG_CHK("%2", "r7")
+				 "svc #0"
+		    : "=Cs" (z1z2), "=Cs" (z3), "=l" (rscno)
+		    : "0" (z1z2), "1" (z3), "2" (rscno)
+		    : "r3", "r4", "r5", "r6", "ip", "memory", "cc");
+		return re_rv((long)z1z2);
+	}
+#	undef biting_pear_ASM_REG_CHK
 #   endif
 #endif
     public:
@@ -404,10 +370,116 @@ class rofl_impl_mprotect :
 	}
 };
 
+template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
+class rofl_impl_clear_cache :
+    virtual public rofl_impl_syscall<State, Flags, Levels>
+{
+	typedef rofl_impl_syscall<State, Flags, Levels> super;
+    public:
+	__attribute__((always_inline))
+	static typename super::syscall_ret
+	clear_cache(void *start, void *end)
+	{
+#if defined __linux__ && defined __arm__
+		biting_pear::kthxbai<super::NewState, unsigned, Flags, Levels>
+		    zero(0);
+		return super::syscall(0xf0002, start, end, (unsigned)zero);
+#else
+		__builtin___clear_cache(start, end);
+		return typename super::syscall_ret(0, 0);
+#endif
+	}
+};
+
+template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
+class rofl_impl_memset :
+    virtual public rofl_impl_base<State>,
+    virtual public rofl_impl_clear_cache<State, Flags, Levels>
+{
+    public:
+	__attribute__((always_inline))
+	static void memset(void *s)
+	{
+#if defined __i386__
+		void *edi, *ecx;
+		__asm __volatile(
+			"andl $-4, %%edi; "
+			"call 1f; "
+			"1: "
+			"popl %%ecx; "
+			"subl %%edi, %%ecx; "
+			"addl $2f-1b, %%ecx; "
+			"shrl $2, %%ecx; "
+			".balign 4; "
+			"2: "
+			"rep; stosl"
+		    : "=D" (edi), "=c" (ecx)
+		    : "0" ((char *)s + 3) : "memory", "cc");
+#elif defined __amd64__
+		void *rdi, *rcx;
+		__asm __volatile(
+			"andq $-8, %%rdi; "
+			"leaq 2f(%%rip), %%rcx; "
+			"subq %%rdi, %%rcx; "
+			"shrq $3, %%rcx; "
+			".balign 8; "
+			"2: "
+			"rep; stosq; "		// .. 4 bytes
+			"stosl"			// .:
+		    : "=D" (rdi), "=c" (rcx)
+		    : "0" ((char *)s + 7) : "memory", "cc");
+#elif defined __arm__
+		typedef rofl_impl_base<State> super1;
+		typedef rofl_impl_clear_cache<State, Flags, Levels> super2;
+		void *x, *y, *foo;
+		/*
+		 * Should work under ARM, Thumb-16, and Thumb-32 modes.  The
+		 * difference between "divided" and "unified" Thumb-16
+		 * syntax is a pain to handle...
+		 */
+#   if defined __thumb__ && !defined __thumb2__
+#	define biting_pear_T16_INSN(insn, d, n) insn " " d ", " n "; "
+#   else
+#	define biting_pear_T16_INSN(insn, d, n) insn "s " d ", " d ", " n "; "
+#   endif
+		biting_pear::kthxbai<super1::NewState, unsigned, Flags, Levels>
+		    three(3);
+		__asm __volatile(
+			biting_pear_T16_INSN("bic", "%0", "%4")
+			"adr %1, 2f; "
+			biting_pear_T16_INSN("sub", "%0", "%1")
+			"beq 3f; "
+			".balign 4; "
+			"2: "
+			"str %2, [%1, %0]; "
+			biting_pear_T16_INSN("add", "%0", "#4")
+			"bne 2b; "
+			"3: "
+		    : "=l" (x), "=l" (foo), "=l" (y)
+		    : "0" ((char *)s + 3), "l" ((unsigned)three)
+		    : "memory", "cc");
+		super2::clear_cache(s, foo);
+#   undef biting_pear_T16_INSN
+#else
+		biting_pear::kthxbai<NewState,
+		    biting_pear_decltype(&std::memset),
+		    Flags, Levels> f(std::memset);
+		/* A rather slippery method.  But it works.  So far. */
+		f(s, 0, (char *)&&foo - (char *)s);
+	    foo:
+		super2::clear_cache(s, &&foo);
+#endif
+	}
+};
+
 template<rand_state_t State, ops_flags_t Flags = 0, unsigned Levels = 2u>
-class rofl : public rofl_impl_memset<State, Flags, Levels>,
-	     public rofl_impl_mprotect<State, Flags, Levels>
+class rofl : virtual public rofl_impl_memset<State, Flags, Levels>,
+	     virtual public rofl_impl_mprotect<State, Flags, Levels>,
+	     virtual public rofl_impl_clear_cache<State, Flags, Levels>
 	{ };
+
+#undef biting_pear_STRINGIZE
+#undef biting_pear_STRINGIZE_1
 
 } // biting_pear::impl
 
