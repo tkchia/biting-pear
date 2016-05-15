@@ -16,5 +16,5 @@ env:
   - TARGET=armv6-linux-gnueabi
   - TARGET=armv4-linux-gnueabi
   - TARGET=armv4t-linux-gnueabi
-install: ./test/travis-install-deps.sh
+install: ./test/infra/travis-install-deps.sh
 script: ./configure ${TARGET:+"--target=$TARGET"} && make && make check

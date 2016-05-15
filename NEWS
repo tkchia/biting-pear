@@ -1,3 +1,11 @@
+2016-05-15	Very slight tweak in the directory structure.
+
+		test/infra/travis-install-deps.sh :
+		- moved from test/
+
+		.travis.yml :
+		- updated path to travis-install-deps.sh
+
 2016-05-08	"Business will be either better or worse."
 
 		include/biting-pear/rofl.h :
