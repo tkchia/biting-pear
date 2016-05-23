@@ -218,11 +218,31 @@ endif
 	if test '$(conf_Have_cxx_decltype),$@' = 'yes,$(config.h.host)'; then\
 		echo '#define biting_pear_decltype decltype' >>$@.tmp; \
 	elif test '$(conf_Have_cxxt_decltype),$@' = \
-	    'yes,$(config.h.target)'; then\
+	    'yes,$(config.h.target)'; then \
 		echo '#define biting_pear_decltype decltype' >>$@.tmp; \
 	else \
 		echo '#define biting_pear_decltype __typeof' >>$@.tmp; \
 	fi
+	set -e; \
+	if test '$(config.h.target)' = '$@'; then \
+		if test '$(conf_Have_cxxt_func___ptrace)' = yes; then \
+			echo '#define biting_pear_HAVE_FUNC_PTRACE 1'; \
+		else \
+			echo '#undef biting_pear_HAVE_FUNC_PTRACE'; \
+		fi; \
+		if test '$(conf_Have_cxxt_impld_func___ptrace)' = yes; then \
+			echo '#define biting_pear_HAVE_IMPLD_FUNC_PTRACE 1'; \
+		else \
+			echo '#undef biting_pear_HAVE_IMPLD_FUNC_PTRACE'; \
+		fi; \
+		$(foreach const,PT_TRACE_ME PT_GETREGS PT_SETREGS, \
+			if test '$(conf_Have_cxxt_const_$(const))' = yes; \
+			then	echo \
+				 '#define biting_pear_HAVE_CONST_$(const) 1';\
+			else	echo \
+				 '#undef biting_pear_HAVE_CONST_$(const)'; \
+			fi; ) \
+	fi >>$@.tmp
 	set -e; \
 	if test '$(config.h.host)' = '$@'; then \
 		echo "#define biting_pear_CXXFLAGS_FOR_TARGET \\" >>$@.tmp; \

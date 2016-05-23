@@ -1,3 +1,26 @@
+2016-05-23	ptrace(...) support, mainly for some Linux/* platforms.
+
+		configure :
+		- now tries to detect whether ptrace(...) is defined and
+		  implemented, and whether PT_TRACE_ME, PT_GETREGS,
+		  PT_SETREGS, PT_READ_{I, D, U} are defined
+
+		GNUmakefile :
+		- now writes ptrace(...) detection macro definitions in
+		  $(config.h.target)
+
+		include/biting-pear/rofl.h :
+		- now defines biting_pear::rofl::ptrace(...)
+		- fixed compilation problem with biting_pear::impl::
+		  rofl_impl_mprotect<...>
+
+		share/biting-pear/doge-1.ccc :
+		- now tries to mix results of ptrace(PT_TRACE_ME,,,) into
+		  computation
+
+		lolwutconf/
+		- bumped from commit 9272622875 to eeb2d750ff
+
 2016-05-15	Very slight tweak in the directory structure.
 
 		test/infra/travis-install-deps.sh :

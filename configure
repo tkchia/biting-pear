@@ -29,4 +29,19 @@ conf_cxx_probe_lib bfd 'bfd-multiarch bfd' \
     '#include <bfd.h>' 'void foo() { bfd_openr("/dev/null", "binary"); }'
 conf_cxxt_probe_dyn_ld
 conf_cxxt_probe_ctor_priority
+#
+# The Linux ptrace(2) man page calls this PTRACE_TRACEME, but Linux
+# <sys/ptrace.h> also defines PT_TRACE_ME to the same value.  BSD uses the
+# name PT_TRACE_ME.
+#
+# Ditto for PT_GETREGS vs. PTRACE_GETREGS, etc.
+#
+conf_cxxt_probe_const PT_TRACE_ME '#include <sys/ptrace.h>'
+conf_cxxt_probe_impld_func ::ptrace 4 'PT_TRACE_ME, 0, 0, 0' '-1' \
+    '#include <sys/ptrace.h>'
+conf_cxxt_probe_const PT_GETREGS '#include <sys/ptrace.h>'
+conf_cxxt_probe_const PT_SETREGS '#include <sys/ptrace.h>'
+conf_cxxt_probe_const PT_READ_I '#include <sys/ptrace.h>'
+conf_cxxt_probe_const PT_READ_D '#include <sys/ptrace.h>'
+conf_cxxt_probe_const PT_READ_U '#include <sys/ptrace.h>'
 conf_end

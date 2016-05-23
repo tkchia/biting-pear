@@ -8,6 +8,10 @@
 #include <sys/mman.h>
 #include <biting-pear/bbq.h>
 #include <biting-pear/kthxbai.h>
+#ifdef biting_pear_HAVE_FUNC_PTRACE
+#   include <unistd.h>
+#   include <sys/ptrace.h>
+#endif
 
 namespace biting_pear
 {
@@ -437,7 +441,8 @@ class rofl_impl_mprotect :
 #elif defined __linux__ && defined __amd64__
 		return super::syscall(10, addr, len, prot);
 #else
-		int rv = (kthxbai<NewState2, biting_pear_decltype(&mprotect),
+		int rv = (kthxbai<super::NewState2,
+		    biting_pear_decltype(&mprotect),
 		    Flags, Levels>(mprotect))(addr, len, prot);
 		return typename super::syscall_ret(rv, errno);
 #endif
@@ -546,10 +551,81 @@ class rofl_impl_memset :
 	}
 };
 
+template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
+class rofl_impl_ptrace :
+    virtual public rofl_impl_syscall<State, Flags, Levels>
+{
+	typedef rofl_impl_syscall<State, Flags, Levels> super;
+#ifdef biting_pear_HAVE_FUNC_PTRACE
+	template<class... Ts>
+	__attribute__((always_inline))
+	static typename super::syscall_ret
+	ptrace_lib(Ts... xs)
+	{
+		long rv = (kthxbai<super::NewState2,
+		    biting_pear_decltype(&ptrace), Flags, Levels>
+		    (ptrace))(xs...);
+		return typename super::syscall_ret(rv, errno);
+	}
+    public:
+#   ifdef __linux__
+	template<class... Ts>
+	__attribute__((always_inline))
+	static typename super::syscall_ret
+	ptrace_raw(Ts... xs)
+	{
+#	if defined __amd64__
+		return super::syscall(101, xs...);
+#	else
+		return super::syscall(26, xs...);
+#	endif
+	}
+#   endif
+#endif
+	__attribute__((always_inline))
+	static typename super::syscall_ret
+	ptrace(
+#ifdef biting_pear_HAVE_CONST_PT_TRACE_ME
+	    biting_pear_decltype(PT_TRACE_ME)
+#else
+	    int
+#endif
+	    req, pid_t pid, void *addr, void *data)
+	{
+#if defined __linux__ && \
+    (defined __amd64__ || defined __i386__ || defined _arm__)
+		if (
+#   if defined biting_pear_HAVE_CONST_PT_READ_D
+		    req == PT_READ_D ||
+#   endif
+#   if defined biting_pear_HAVE_CONST_PT_READ_I
+		    req == PT_READ_I ||
+#   endif
+#   if defined biting_pear_HAVE_CONST_PT_READ_U
+		    req == PT_READ_U ||
+#   endif
+		    false) {
+			long val;
+			typename super::syscall_ret rv =
+			    ptrace_raw(req, pid, addr, &val);
+			if (rv == 0)
+				return typename super::syscall_ret(val, 0);
+			return rv;
+		} else
+			return ptrace_raw(req, pid, addr, data);
+#elif defined biting_pear_HAVE_FUNC_PTRACE
+		return ptrace_lib(req, pid, addr, data);
+#else
+		return typename super::syscall_ret(-1, ENOSYS);
+#endif
+	}
+};
+
 template<rand_state_t State, ops_flags_t Flags = 0, unsigned Levels = 2u>
-class rofl : virtual public rofl_impl_memset<State, Flags, Levels>,
-	     virtual public rofl_impl_mprotect<State, Flags, Levels>,
-	     virtual public rofl_impl_clear_cache<State, Flags, Levels>
+class rofl : virtual public rofl_impl_mprotect<State, Flags, Levels>,
+	     virtual public rofl_impl_clear_cache<State, Flags, Levels>,
+	     virtual public rofl_impl_memset<State, Flags, Levels>,
+	     virtual public rofl_impl_ptrace<State, Flags, Levels>
 	{ };
 
 #undef biting_pear_STRINGIZE
