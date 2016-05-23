@@ -18,7 +18,7 @@
 		- now tries to mix results of ptrace(PT_TRACE_ME,,,) into
 		  computation
 
-		lolwutconf/
+		lolwutconf/ :
 		- bumped from commit 9272622875 to eeb2d750ff
 
 2016-05-15	Very slight tweak in the directory structure.
