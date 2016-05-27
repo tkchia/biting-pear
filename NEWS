@@ -23,6 +23,12 @@
 		- renamed from bin/biting-pear-doge.ccc
 		- biting pear -> innocent pear
 
+		include/innocent-pear/omg.h :
+		- moved from include/biting-pear/ to include/innocent-pear/
+		- on x86-32, now emits `int $0x80' as junk instruction
+		  instead of `call *%gs:0x10'
+		- biting pear -> innocent pear
+
 		include/innocent-pear/bbq.h ,
 		include/innocent-pear/dawg.h ,
 		include/innocent-pear/doge.h ,
@@ -32,7 +38,6 @@
 		include/innocent-pear/kthxbai.h ,
 		include/innocent-pear/lolwut.h ,
 		include/innocent-pear/nowai.h ,
-		include/innocent-pear/omg.h ,
 		include/innocent-pear/orly.h ,
 		include/innocent-pear/rofl.h ,
 		include/innocent-pear/yarly.h ,
