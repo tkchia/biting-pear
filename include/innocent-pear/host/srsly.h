@@ -1,15 +1,15 @@
-#ifndef biting_pear_H_SRSLY
-#define biting_pear_H_SRSLY
+#ifndef innocent_pear_H_SRSLY
+#define innocent_pear_H_SRSLY
 
 /* This _must_ match up with orly.h. */
 
 #include <cstdio>
 #include <cstdlib>
-#include <biting-pear/bbq.h>
-#include <biting-pear/nowai.h>
-#include <biting-pear/host/rly.h>
+#include <innocent-pear/bbq.h>
+#include <innocent-pear/nowai.h>
+#include <innocent-pear/host/rly.h>
 
-namespace biting_pear
+namespace innocent_pear
 {
 
 namespace impl
@@ -220,10 +220,10 @@ class srsly : public srsly_impl<T, Boreal>
 	}
 };
 
-} // biting_pear::impl
+} // innocent_pear::impl
 
 using impl::srsly;
 
-} // biting_pear
+} // innocent_pear
 
 #endif

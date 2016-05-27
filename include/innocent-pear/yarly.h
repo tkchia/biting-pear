@@ -1,12 +1,12 @@
-#ifndef biting_pear_H_YARLY
-#define biting_pear_H_YARLY
+#ifndef innocent_pear_H_YARLY
+#define innocent_pear_H_YARLY
 
 #include <climits>
-#include <biting-pear/bbq.h>
-#include <biting-pear/kthxbai.h>
-#include <biting-pear/nowai.h>
+#include <innocent-pear/bbq.h>
+#include <innocent-pear/kthxbai.h>
+#include <innocent-pear/nowai.h>
 
-namespace biting_pear
+namespace innocent_pear
 {
 
 namespace impl
@@ -112,10 +112,10 @@ class yarly : public yarly_impl<State, T, BigBad, Flags, Levels>
 	}
 };
 
-} // biting_pear::impl
+} // innocent_pear::impl
 
 using impl::yarly;
 
-} // biting_pear
+} // innocent_pear
 
 #endif

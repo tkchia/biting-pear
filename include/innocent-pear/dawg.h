@@ -1,17 +1,17 @@
-#ifndef biting_pear_H_DAWG
-#define biting_pear_H_DAWG
+#ifndef innocent_pear_H_DAWG
+#define innocent_pear_H_DAWG
 
 #include <climits>
 #include <cstdlib>
 #include <ostream>
-#include <biting-pear/bbq.h>
-#include <biting-pear/kthxbai.h>
+#include <innocent-pear/bbq.h>
+#include <innocent-pear/kthxbai.h>
 
-#ifndef biting_pear_HAVE_CXX_VAR_TPLS
+#ifndef innocent_pear_HAVE_CXX_VAR_TPLS
 #   error "this header needs support for C++11 variadic templates"
 #endif
 
-namespace biting_pear
+namespace innocent_pear
 {
 
 namespace impl
@@ -44,7 +44,7 @@ class dawg_impl<State, CT, Flags>
 template<rand_state_t State, class CT, ops_flags_t Flags, CT Ch, CT... Chs>
 class dawg_impl<State, CT, Flags, Ch, Chs...>
 {
-	typedef biting_pear_decltype(1u | (CT)1 << 0u) PCT; // N3797 5.8.2
+	typedef innocent_pear_decltype(1u | (CT)1 << 0u) PCT; // N3797 5.8.2
 	static constexpr rand_state_t State2 = update_inner(State);
 	static constexpr rand_state_t State3 = update_inner(State2);
 	static constexpr rand_state_t State4 = update_inner(State3);
@@ -81,34 +81,34 @@ class dawg_impl<State, CT, Flags, Ch, Chs...>
 		{ return 1u + sizeof...(Chs); }
 };
 
-} // biting_pear::impl
+} // innocent_pear::impl
 
 template<impl::rand_state_t State, impl::ops_flags_t Flags, char... Chs>
     using dawg = impl::dawg_impl<State, char, Flags, Chs...>;
 
-} // biting_pear
+} // innocent_pear
 
-template<class CT, biting_pear::impl::rand_state_t State,
-    biting_pear::impl::ops_flags_t Flags>
+template<class CT, innocent_pear::impl::rand_state_t State,
+    innocent_pear::impl::ops_flags_t Flags>
 __attribute__((always_inline))
 inline std::basic_ostream<CT>& operator<<(std::basic_ostream<CT>& os,
-    const biting_pear::impl::dawg_impl<State, CT, Flags>& s)
+    const innocent_pear::impl::dawg_impl<State, CT, Flags>& s)
 {
 	return os;
 }
 
-template<class CT, biting_pear::impl::rand_state_t State,
-    biting_pear::impl::ops_flags_t Flags, CT Ch, CT... Chs>
+template<class CT, innocent_pear::impl::rand_state_t State,
+    innocent_pear::impl::ops_flags_t Flags, CT Ch, CT... Chs>
 __attribute__((always_inline))
 inline std::basic_ostream<CT>& operator<<(std::basic_ostream<CT>& os,
-    const biting_pear::impl::dawg_impl<State, CT, Flags, Ch, Chs...>& s)
+    const innocent_pear::impl::dawg_impl<State, CT, Flags, Ch, Chs...>& s)
 {
-	constexpr biting_pear::impl::rand_state_t
-	    State2 = biting_pear::impl::update_inner(State),
-	    State3 = biting_pear::impl::update_inner(State2),
-	    NewState2 = biting_pear::impl::update_outer(State3);
+	constexpr innocent_pear::impl::rand_state_t
+	    State2 = innocent_pear::impl::update_inner(State),
+	    State3 = innocent_pear::impl::update_inner(State2),
+	    NewState2 = innocent_pear::impl::update_outer(State3);
 	typedef std::basic_ostream<CT>& FT(std::basic_ostream<CT>&, CT);
-	biting_pear::impl::kthxbai<NewState2, FT *, Flags, 1u>
+	innocent_pear::impl::kthxbai<NewState2, FT *, Flags, 1u>
 	    f(static_cast<FT *>(&std::operator<<));
 	return f(os, s.front()) << s.rest();
 }

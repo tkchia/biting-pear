@@ -1,15 +1,15 @@
-#ifndef biting_pear_H_KTHXBAI
-#define biting_pear_H_KTHXBAI
+#ifndef innocent_pear_H_KTHXBAI
+#define innocent_pear_H_KTHXBAI
 
 #include <cinttypes>
 #include <climits>
 #include <cstdlib>
-#include <biting-pear/bbq.h>
-#include <biting-pear/lolwut.h>
-#include <biting-pear/nowai.h>
-#include <biting-pear/omg.h>
+#include <innocent-pear/bbq.h>
+#include <innocent-pear/lolwut.h>
+#include <innocent-pear/nowai.h>
+#include <innocent-pear/omg.h>
 
-namespace biting_pear
+namespace innocent_pear
 {
 
 namespace impl
@@ -233,7 +233,7 @@ class kthxbai<State, void *, Flags, Levels> :
 		{ }
 };
 
-#ifdef biting_pear_HAVE_CXX_VAR_TPLS
+#ifdef innocent_pear_HAVE_CXX_VAR_TPLS
 template<rand_state_t State, class RetT, ops_flags_t Flags, unsigned Levels,
     class... ArgT>
 class kthxbai<State, RetT (*)(ArgT...), Flags, Levels> :
@@ -330,10 +330,10 @@ class kthxbai
 		{ return do_inv_op<WhichOp>(x_, Disp); }
 };
 
-} // biting_pear::impl
+} // innocent_pear::impl
 
 using impl::kthxbai;
 
-} // biting_pear
+} // innocent_pear
 
 #endif

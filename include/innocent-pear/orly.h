@@ -1,11 +1,11 @@
-#ifndef biting_pear_H_ORLY
-#define biting_pear_H_ORLY
+#ifndef innocent_pear_H_ORLY
+#define innocent_pear_H_ORLY
 
-#include <biting-pear/bbq.h>
-#include <biting-pear/nowai.h>
-#include <biting-pear/yarly.h>
+#include <innocent-pear/bbq.h>
+#include <innocent-pear/nowai.h>
+#include <innocent-pear/yarly.h>
 
-namespace biting_pear
+namespace innocent_pear
 {
 
 namespace impl
@@ -152,10 +152,10 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 		{ wut(p, q, p); }
 };
 
-} // biting_pear::impl
+} // innocent_pear::impl
 
 using impl::orly;
 
-} // biting_pear
+} // innocent_pear
 
 #endif

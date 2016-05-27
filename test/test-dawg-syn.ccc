@@ -1,6 +1,6 @@
 #include <iostream>
 #include <locale>
-#include <biting-pear/dawg.h>
+#include <innocent-pear/dawg.h>
 
 #define BLARGH		std::cout << $"Hello, world!\n" \
 				  << $"Hello, world!\n" \

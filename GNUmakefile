@@ -7,29 +7,29 @@ bindir = $(conf_Prefix)/bin
 datarootdir = $(conf_Prefix)/share
 includedir.target = $(conf_Target_prefix)/include
 
-wrap_cxx = bin/biting-pear-c++
+wrap_cxx = bin/innocent-pear-c++
 wrap_cxx.staged = $(wrap_cxx) \
-    -Xbiting-pear -prefix=. -Xbiting-pear -target-prefix=.
-config.h.host = include/biting-pear/host/derp.h
+    -Xinnocent-pear -prefix=. -Xinnocent-pear -target-prefix=.
+config.h.host = include/innocent-pear/host/derp.h
 headers.host = \
-    include/biting-pear/bbq.h \
-    include/biting-pear/nowai.h \
-    include/biting-pear/host/lolcat.h \
-    include/biting-pear/host/rly.h \
-    include/biting-pear/host/srsly.h \
+    include/innocent-pear/bbq.h \
+    include/innocent-pear/nowai.h \
+    include/innocent-pear/host/lolcat.h \
+    include/innocent-pear/host/rly.h \
+    include/innocent-pear/host/srsly.h \
     $(config.h.host)
-config.h.target = include/biting-pear/derp.h
+config.h.target = include/innocent-pear/derp.h
 headers.target = \
-    include/biting-pear/bbq.h \
-    include/biting-pear/dawg.h \
-    include/biting-pear/kthxbai.h \
-    include/biting-pear/lolwut.h \
-    include/biting-pear/nowai.h \
-    include/biting-pear/omg.h \
-    include/biting-pear/orly.h \
-    include/biting-pear/rofl.h \
-    include/biting-pear/yarly.h \
-    include/biting-pear/yodawg.h \
+    include/innocent-pear/bbq.h \
+    include/innocent-pear/dawg.h \
+    include/innocent-pear/kthxbai.h \
+    include/innocent-pear/lolwut.h \
+    include/innocent-pear/nowai.h \
+    include/innocent-pear/omg.h \
+    include/innocent-pear/orly.h \
+    include/innocent-pear/rofl.h \
+    include/innocent-pear/yarly.h \
+    include/innocent-pear/yodawg.h \
     $(config.h.target)
 tests.target = \
     test/test-kthxbai \
@@ -43,22 +43,22 @@ tests.target += \
     test/test-yodawg-syn
 endif
 utils.host = \
-    bin/biting-pear-c++ \
-    share/biting-pear/calm \
-    share/biting-pear/omnomnom
+    bin/innocent-pear-c++ \
+    share/innocent-pear/calm \
+    share/innocent-pear/omnomnom
 modules.host = \
-    bin/biting-pear-c++.o \
-    bin/biting-pear-doge.o \
-    share/biting-pear/calm.o \
-    share/biting-pear/epic.o \
-    share/biting-pear/keyboard.o \
-    share/biting-pear/nomnom.o \
-    share/biting-pear/omnomnom.o
+    bin/innocent-pear-c++.o \
+    bin/innocent-pear-doge.o \
+    share/innocent-pear/calm.o \
+    share/innocent-pear/epic.o \
+    share/innocent-pear/keyboard.o \
+    share/innocent-pear/nomnom.o \
+    share/innocent-pear/omnomnom.o
 ifeq "$(conf_Have_cxx_typ_struct_bfd)" "yes"
 ifeq "$(conf_Have_cxx_lib_bfd)" "yes"
 ifeq "$(conf_Have_cxx_var_tpls)" "yes"
 utils.host += \
-    bin/biting-pear-doge
+    bin/innocent-pear-doge
 tests.target += \
     test/test-orly-wut \
     test/test-doge
@@ -67,11 +67,11 @@ endif
 endif
 installables.host = \
     $(utils.host) \
-    share/biting-pear/calm.spec \
-    share/biting-pear/doge-1.ccc \
-    share/biting-pear/doge-2.cc \
-    share/biting-pear/doge-8.ccc \
-    share/biting-pear/doge-9.cc
+    share/innocent-pear/calm.spec \
+    share/innocent-pear/doge-1.ccc \
+    share/innocent-pear/doge-2.cc \
+    share/innocent-pear/doge-8.ccc \
+    share/innocent-pear/doge-9.cc
 
 default all: check
 
@@ -80,7 +80,7 @@ check: $(tests.target:=.passed) $(installables.host)
 install: install-host-files install-target-files
 
 install-host-files: $(installables.host)
-	install -d $(bindir) $(datarootdir)/biting-pear
+	install -d $(bindir) $(datarootdir)/innocent-pear
 	for u in $^; do \
 		if test -x "$$u"; \
 		then	m=755; \
@@ -88,25 +88,25 @@ install-host-files: $(installables.host)
 		case "$$u" in \
 		    bin/*) \
 			install -m "$$m" "$$u" $(bindir);; \
-		    *)	install -m "$$m" "$$u" $(datarootdir)/biting-pear;; \
+		    *)	install -m "$$m" "$$u" $(datarootdir)/innocent-pear;; \
 		esac; \
 	done
 
 install-target-files: $(headers.target)
-	install -d $(includedir.target)/biting-pear
-	install -m 644 $^ $(includedir.target)/biting-pear
+	install -d $(includedir.target)/innocent-pear
+	install -m 644 $^ $(includedir.target)/innocent-pear
 
 uninstall:
 	$(foreach hdr,$(headers.target), \
-	    rm -f $(includedir.target)/biting-pear/$(notdir $(hdr)) &&) \
+	    rm -f $(includedir.target)/innocent-pear/$(notdir $(hdr)) &&) \
 	    true
-	-rmdir -p $(bindir) $(includedir.target)/biting-pear \
-	    $(datarootdir)/biting-pear
+	-rmdir -p $(bindir) $(includedir.target)/innocent-pear \
+	    $(datarootdir)/innocent-pear
 
 clean:
 	find . -name '*.[ios]' -o -name '*~' -o -name '*.ii' | \
 	    xargs rm -f $(config.h.host) $(config.h.target) \
-		lex.backup share/biting-pear/omnomnom.cc \
+		lex.backup share/innocent-pear/omnomnom.cc \
 		$(tests.target) $(utils.host) lolwutconf.*
 ifeq "$(conf_Separate_build_dir)" "yes"
 	-rmdir helper test util
@@ -153,7 +153,7 @@ $(config.h.host) $(config.h.target): config.cache
 	    '$(config.h.host)' = '$@'; then \
 		echo '#include <uchar.h>' >>$@.tmp; \
 	fi
-	echo 'namespace biting_pear { namespace impl {' >>$@.tmp
+	echo 'namespace innocent_pear { namespace impl {' >>$@.tmp
 	if test '$(conf_Have_cxx_typ_std__uint_least64_t),$@' = \
 	    'yes,$(config.h.host)'; then \
 		echo 'using std::uint_least64_t;' >>$@.tmp; \
@@ -193,59 +193,59 @@ $(config.h.host) $(config.h.target): config.cache
 	echo '} }' >>$@.tmp
 ifeq "char16_t" "$(conf_Typ_wchar_cxxt)"
 	if test x'$@' = x'$(config.h.host)'; then \
-		echo "#define biting_pear_TARGET_WCHAR_IS_CHAR16 1"; \
-		echo "#undef biting_pear_TARGET_WCHAR_IS_CHAR32"; \
+		echo "#define innocent_pear_TARGET_WCHAR_IS_CHAR16 1"; \
+		echo "#undef innocent_pear_TARGET_WCHAR_IS_CHAR32"; \
 	fi >>$@.tmp
 else ifeq "char32_t" "$(conf_Typ_wchar_cxxt)"
 	if test x'$@' = x'$(config.h.host)'; then \
-		echo "#undef biting_pear_TARGET_WCHAR_IS_CHAR16"; \
-		echo "#define biting_pear_TARGET_WCHAR_IS_CHAR32 1"; \
+		echo "#undef innocent_pear_TARGET_WCHAR_IS_CHAR16"; \
+		echo "#define innocent_pear_TARGET_WCHAR_IS_CHAR32 1"; \
 	fi >>$@.tmp
 else
 	if test x'$@' = x'$(config.h.host)'; then \
-		echo "#undef biting_pear_TARGET_WCHAR_IS_CHAR16"; \
-		echo "#undef biting_pear_TARGET_WCHAR_IS_CHAR32"; \
+		echo "#undef innocent_pear_TARGET_WCHAR_IS_CHAR16"; \
+		echo "#undef innocent_pear_TARGET_WCHAR_IS_CHAR32"; \
 	fi >>$@.tmp
 endif
 	if test '$(conf_Have_cxx_var_tpls),$@' = 'yes,$(config.h.host)'; then\
-		echo '#define biting_pear_HAVE_CXX_VAR_TPLS 1' >>$@.tmp; \
+		echo '#define innocent_pear_HAVE_CXX_VAR_TPLS 1' >>$@.tmp; \
 	elif test '$(conf_Have_cxxt_var_tpls),$@' = \
 	    'yes,$(config.h.target)'; then \
-		echo '#define biting_pear_HAVE_CXX_VAR_TPLS 1' >>$@.tmp; \
+		echo '#define innocent_pear_HAVE_CXX_VAR_TPLS 1' >>$@.tmp; \
 	else \
-		echo '#undef biting_pear_HAVE_CXX_VAR_TPLS' >>$@.tmp; \
+		echo '#undef innocent_pear_HAVE_CXX_VAR_TPLS' >>$@.tmp; \
 	fi
 	if test '$(conf_Have_cxx_decltype),$@' = 'yes,$(config.h.host)'; then\
-		echo '#define biting_pear_decltype decltype' >>$@.tmp; \
+		echo '#define innocent_pear_decltype decltype' >>$@.tmp; \
 	elif test '$(conf_Have_cxxt_decltype),$@' = \
 	    'yes,$(config.h.target)'; then \
-		echo '#define biting_pear_decltype decltype' >>$@.tmp; \
+		echo '#define innocent_pear_decltype decltype' >>$@.tmp; \
 	else \
-		echo '#define biting_pear_decltype __typeof' >>$@.tmp; \
+		echo '#define innocent_pear_decltype __typeof' >>$@.tmp; \
 	fi
 	set -e; \
 	if test '$(config.h.target)' = '$@'; then \
 		if test '$(conf_Have_cxxt_func___ptrace)' = yes; then \
-			echo '#define biting_pear_HAVE_FUNC_PTRACE 1'; \
+			echo '#define innocent_pear_HAVE_FUNC_PTRACE 1'; \
 		else \
-			echo '#undef biting_pear_HAVE_FUNC_PTRACE'; \
+			echo '#undef innocent_pear_HAVE_FUNC_PTRACE'; \
 		fi; \
 		if test '$(conf_Have_cxxt_impld_func___ptrace)' = yes; then \
-			echo '#define biting_pear_HAVE_IMPLD_FUNC_PTRACE 1'; \
+			echo '#define innocent_pear_HAVE_IMPLD_FUNC_PTRACE 1';\
 		else \
-			echo '#undef biting_pear_HAVE_IMPLD_FUNC_PTRACE'; \
+			echo '#undef innocent_pear_HAVE_IMPLD_FUNC_PTRACE'; \
 		fi; \
-		$(foreach const,PT_TRACE_ME PT_GETREGS PT_SETREGS, \
-			if test '$(conf_Have_cxxt_const_$(const))' = yes; \
+		$(foreach c,PT_TRACE_ME PT_GETREGS PT_SETREGS, \
+			if test '$(conf_Have_cxxt_const_$c)' = yes; \
 			then	echo \
-				 '#define biting_pear_HAVE_CONST_$(const) 1';\
+				 '#define innocent_pear_HAVE_CONST_$c 1';\
 			else	echo \
-				 '#undef biting_pear_HAVE_CONST_$(const)'; \
+				 '#undef innocent_pear_HAVE_CONST_$c'; \
 			fi; ) \
 	fi >>$@.tmp
 	set -e; \
 	if test '$(config.h.host)' = '$@'; then \
-		echo "#define biting_pear_CXXFLAGS_FOR_TARGET \\" >>$@.tmp; \
+		echo "#define innocent_pear_CXXFLAGS_FOR_TARGET \\" >>$@.tmp; \
 		set -- $(CXXFLAGS_FOR_TARGET); \
 		if test 0 != $$#; then \
 			echo "$$1" | \
@@ -292,43 +292,44 @@ test/test-orly-wut.o \
 test/test-orly-wut.s : CXXFLAGS_FOR_TARGET += -DSTATE=$(state)
 
 test/test-orly-wut: test/test-orly-wut.o test/test-orly-wut.ld \
-    bin/biting-pear-doge
+    bin/innocent-pear-doge
 	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
 	    $(LDFLAGS_FOR_TARGET) -o$@.tmp $(filter %.o %.ld,$^) \
 	    $(LDLIBS_FOR_TARGET)
-	bin/biting-pear-doge $@.tmp $@ __doge_start __doge_end $(state)
+	bin/innocent-pear-doge $@.tmp $@ __doge_start __doge_end $(state)
 	rm $@.tmp
 
 test/test-doge \
 test/test-doge.o \
-test/test-doge.s : CXXFLAGS_FOR_TARGET += -Xbiting-pear -doge -v
+test/test-doge.s : CXXFLAGS_FOR_TARGET += -Xinnocent-pear -doge -v
 
 define preproc_for_host
 	mkdir -p $(@D)
 	$(CXX) -E -x c++ $(CPPFLAGS) $(CXXFLAGS) -o$@.tmp $<
-	$(conf_Host_exec) share/biting-pear/omnomnom <$@.tmp >$@.2.tmp
+	$(conf_Host_exec) share/innocent-pear/omnomnom <$@.tmp >$@.2.tmp
 	mv $@.2.tmp $@
 	rm $@.tmp
 endef
 
-bin/biting-pear-c++: bin/biting-pear-c++.o share/biting-pear/epic.o \
-    share/biting-pear/nomnom.o share/biting-pear/keyboard.o
+bin/innocent-pear-c++: bin/innocent-pear-c++.o share/innocent-pear/epic.o \
+    share/innocent-pear/nomnom.o share/innocent-pear/keyboard.o
 
-bin/biting-pear-doge: bin/biting-pear-doge.o share/biting-pear/epic.o
+bin/innocent-pear-doge: bin/innocent-pear-doge.o share/innocent-pear/epic.o
 
-share/biting-pear/calm: share/biting-pear/calm.o share/biting-pear/epic.o \
-    share/biting-pear/nomnom.o share/biting-pear/keyboard.o
+share/innocent-pear/calm: share/innocent-pear/calm.o \
+    share/innocent-pear/epic.o share/innocent-pear/nomnom.o \
+    share/innocent-pear/keyboard.o
 
 $(foreach m,$(modules.host), \
     $(eval $m: $(m:.o=.ii)))
 
-bin/%.ii share/biting-pear/%.ii : \
-    CPPFLAGS += -Dbiting_pear_HOST_PREFIX=\"$(conf_Prefix)\" \
-		-Dbiting_pear_TARGET_PREFIX=\"$(conf_Target_prefix)\" \
-		-Dbiting_pear_CXX_FOR_TARGET=\"$(CXX_FOR_TARGET)\" \
+bin/%.ii share/innocent-pear/%.ii : \
+    CPPFLAGS += -Dinnocent_pear_HOST_PREFIX=\"$(conf_Prefix)\" \
+		-Dinnocent_pear_TARGET_PREFIX=\"$(conf_Target_prefix)\" \
+		-Dinnocent_pear_CXX_FOR_TARGET=\"$(CXX_FOR_TARGET)\" \
 		$(if $(filter yes,$(conf_Dyn_ld_cxxt)), \
-		    -Dbiting_pear_DYN_LD_CXX_TARGET, \
-		    -Ubiting_pear_DYN_LD_CXX_TARGET)
+		    -Dinnocent_pear_DYN_LD_CXX_TARGET, \
+		    -Uinnocent_pear_DYN_LD_CXX_TARGET)
 
 bin/%: bin/%.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)
@@ -337,29 +338,29 @@ bin/%.o: bin/%.ii
 	$(CXX) $(CXXFLAGS) -c -o$@ $<
 
 bin/%.ii: bin/%.ccc $(headers.host) $(headers.target) \
-    share/biting-pear/calm share/biting-pear/omnomnom
+    share/innocent-pear/calm share/innocent-pear/omnomnom
 	$(preproc_for_host)
 
-share/biting-pear/%: share/biting-pear/%.o
+share/innocent-pear/%: share/innocent-pear/%.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)
 
-share/biting-pear/%.o: share/biting-pear/%.ii
+share/innocent-pear/%.o: share/innocent-pear/%.ii
 	$(CXX) $(CXXFLAGS) -c -o$@ $<
 
 # for debugging
-share/biting-pear/%.s: share/biting-pear/%.ii
+share/innocent-pear/%.s: share/innocent-pear/%.ii
 	$(CXX) $(CXXFLAGS) -S -o$@ $<
 
-share/biting-pear/%.ii: share/biting-pear/%.ccc $(headers.host) \
-    $(headers.target) share/biting-pear/omnomnom
+share/innocent-pear/%.ii: share/innocent-pear/%.ccc $(headers.host) \
+    $(headers.target) share/innocent-pear/omnomnom
 	$(preproc_for_host)
 
-share/biting-pear/%.ii: share/biting-pear/%.cc $(headers.host) \
+share/innocent-pear/%.ii: share/innocent-pear/%.cc $(headers.host) \
     $(headers.target)
 	mkdir -p $(@D)
 	$(CXX) -E $(CPPFLAGS) $(CXXFLAGS) -o$@ $<
 
-share/biting-pear/omnomnom.o: share/biting-pear/omnomnom.cc \
+share/innocent-pear/omnomnom.o: share/innocent-pear/omnomnom.cc \
     $(config.h.host)
 
 %.o: %.ccc $(headers.target) $(installables.host)
@@ -373,16 +374,16 @@ share/biting-pear/omnomnom.o: share/biting-pear/omnomnom.cc \
 	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
 	    -S -o$@ $<
 
-share/biting-pear/%: share/biting-pear/%.cc
+share/innocent-pear/%: share/innocent-pear/%.cc
 	mkdir -p $(@D)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) -o$@ $< $(LDLIBS)
 
-share/biting-pear/omnomnom.cc: share/biting-pear/omnomnom.lxx
+share/innocent-pear/omnomnom.cc: share/innocent-pear/omnomnom.lxx
 	mkdir -p $(@D)
 	$(LEX) $(LFLAGS) -t -o$@ $< >$@.tmp
 	mv $@.tmp $@
 
 .PHONY: test/test-%.passed
 
-.PRECIOUS: config.cache %.ii %.cc %.s %.o bin/%.o share/biting-pear/%.o \
+.PRECIOUS: config.cache %.ii %.cc %.s %.o bin/%.o share/innocent-pear/%.o \
     helper/% $(tests.target) $(installables.host)

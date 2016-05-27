@@ -1,19 +1,19 @@
-#ifndef biting_pear_H_ROFL
-#define biting_pear_H_ROFL
+#ifndef innocent_pear_H_ROFL
+#define innocent_pear_H_ROFL
 
 #include <cerrno>
 #include <cstdlib>
 #include <cstring>
 #include <type_traits>
 #include <sys/mman.h>
-#include <biting-pear/bbq.h>
-#include <biting-pear/kthxbai.h>
-#ifdef biting_pear_HAVE_FUNC_PTRACE
+#include <innocent-pear/bbq.h>
+#include <innocent-pear/kthxbai.h>
+#ifdef innocent_pear_HAVE_FUNC_PTRACE
 #   include <unistd.h>
 #   include <sys/ptrace.h>
 #endif
 
-namespace biting_pear
+namespace innocent_pear
 {
 
 namespace impl
@@ -39,10 +39,10 @@ class rofl_impl_base
  * However, doing so will force the caller to slurp in a bunch of
  * declarations for GNU extensions, whether the caller wants them or not.
  */
-#define biting_pear_STRINGIZE(x) biting_pear_STRINGIZE_1(x)
-#define biting_pear_STRINGIZE_1(x) #x
+#define innocent_pear_STRINGIZE(x) innocent_pear_STRINGIZE_1(x)
+#define innocent_pear_STRINGIZE_1(x) #x
 extern long libc_syscall(long scno, ...)
-    __asm(biting_pear_STRINGIZE(__USER_LABEL_PREFIX__) "syscall");
+    __asm(innocent_pear_STRINGIZE(__USER_LABEL_PREFIX__) "syscall");
 
 template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
 class rofl_impl_syscall : virtual public rofl_impl_base<State>
@@ -77,7 +77,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State>
 	static syscall_ret use_libc_syscall(long scno, Ts... xs)
 	{
 		typedef rofl_impl_base<State> super;
-		biting_pear::kthxbai<super::NewState, long (*)(long, ...),
+		innocent_pear::kthxbai<super::NewState, long (*)(long, ...),
 		    Flags, Levels> scf(libc_syscall);
 		long rv = scf(re_scno(scno), xs...);
 		return syscall_ret(rv, errno);
@@ -273,10 +273,10 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State>
 		 * registers which are not touched at all by the syscall are
 		 * considered by the compiler to be clobbered.
 		 */
-#	define biting_pear_ASM_REG_CHK(rx, ry) \
+#	define innocent_pear_ASM_REG_CHK(rx, ry) \
 		".ifnc " rx ", " ry "; " \
-		".error \"biting_pear::rofl_impl_syscall<...>: " \
-		    "line " biting_pear_STRINGIZE(__LINE__) ": " \
+		".error \"innocent_pear::rofl_impl_syscall<...>: " \
+		    "line " innocent_pear_STRINGIZE(__LINE__) ": " \
 		    "value meant for " ry " goes to " rx "!\"; " \
 		".endif; "
 #	if __GNUC__ >= 5
@@ -285,8 +285,8 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State>
 	{
 		typedef unsigned long long RP;
 		long rscno = re_scno(scno), rv;
-		__asm __volatile(biting_pear_ASM_REG_CHK("%0", "r0")
-				 biting_pear_ASM_REG_CHK("%1", "r7")
+		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
+				 innocent_pear_ASM_REG_CHK("%1", "r7")
 				 "svc #0"
 		    : "=Cs" (rv), "=l" (rscno)
 		    : "1" (rscno)
@@ -303,8 +303,8 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State>
 			return use_libc_syscall(scno, x1);
 		long rscno = re_scno(scno);
 		uintptr_t z1 = re_arg(x1);
-		__asm __volatile(biting_pear_ASM_REG_CHK("%0", "r0")
-				 biting_pear_ASM_REG_CHK("%1", "r7")
+		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
+				 innocent_pear_ASM_REG_CHK("%1", "r7")
 				 "svc #0"
 		    : "=Cs" (z1), "=l" (rscno)
 		    : "0" (z1), "1" (rscno)
@@ -322,8 +322,8 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State>
 		long rscno = re_scno(scno);
 		uintptr_t z1 = re_arg(x1), z2 = re_arg(x2);
 		RP z1z2 = (RP)z1 | (RP)z2 << 32;
-		__asm __volatile(biting_pear_ASM_REG_CHK("%0", "r0")
-				 biting_pear_ASM_REG_CHK("%1", "r7")
+		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
+				 innocent_pear_ASM_REG_CHK("%1", "r7")
 				 "svc #0"
 		    : "=Cs" (z1z2), "=l" (rscno)
 		    : "0" (z1z2), "1" (rscno)
@@ -340,9 +340,9 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State>
 		long rscno = re_scno(scno);
 		uintptr_t z1 = re_arg(x1), z2 = re_arg(x2), z3 = re_arg(x3);
 		RP z1z2 = (RP)z1 | (RP)z2 << 32;
-		__asm __volatile(biting_pear_ASM_REG_CHK("%0", "r0")
-				 biting_pear_ASM_REG_CHK("%1", "r2")
-				 biting_pear_ASM_REG_CHK("%2", "r7")
+		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
+				 innocent_pear_ASM_REG_CHK("%1", "r2")
+				 innocent_pear_ASM_REG_CHK("%2", "r7")
 				 "svc #0"
 		    : "=Cs" (z1z2), "=Cs" (z3), "=l" (rscno)
 		    : "0" (z1z2), "1" (z3), "2" (rscno)
@@ -355,7 +355,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State>
 	{
 		typedef unsigned long long RP;
 		long rscno = re_scno(scno), rv;
-		__asm __volatile(biting_pear_ASM_REG_CHK("%0", "r0")
+		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
 				 "mov r7, %1; svc #0"
 		    : "=l" (rv), "=h" (rscno)
 		    : "1" (rscno)
@@ -372,7 +372,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State>
 			return use_libc_syscall(scno, x1);
 		long rscno = re_scno(scno);
 		uintptr_t z1 = re_arg(x1);
-		__asm __volatile(biting_pear_ASM_REG_CHK("%0", "r0")
+		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
 				 "mov r7, %1; svc #0"
 		    : "=l" (z1), "=h" (rscno)
 		    : "0" (z1), "1" (rscno)
@@ -390,7 +390,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State>
 		long rscno = re_scno(scno);
 		uintptr_t z1 = re_arg(x1), z2 = re_arg(x2);
 		RP z1z2 = (RP)z1 | (RP)z2 << 32;
-		__asm __volatile(biting_pear_ASM_REG_CHK("%0", "r0")
+		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
 				 "mov r7, %1; svc #0"
 		    : "=l" (z1z2), "=h" (rscno)
 		    : "0" (z1z2), "1" (rscno)
@@ -407,8 +407,8 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State>
 		long rscno = re_scno(scno);
 		uintptr_t z1 = re_arg(x1), z2 = re_arg(x2), z3 = re_arg(x3);
 		RP z1z2 = (RP)z1 | (RP)z2 << 32;
-		__asm __volatile(biting_pear_ASM_REG_CHK("%0", "r0")
-				 biting_pear_ASM_REG_CHK("%1", "r2")
+		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
+				 innocent_pear_ASM_REG_CHK("%1", "r2")
 				 "mov r7, %2; svc #0"
 		    : "=l" (z1z2), "=l" (z3), "=h" (rscno)
 		    : "0" (z1z2), "1" (z3), "2" (rscno)
@@ -416,7 +416,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State>
 		return re_rv((long)z1z2);
 	}
 #	endif
-#	undef biting_pear_ASM_REG_CHK
+#	undef innocent_pear_ASM_REG_CHK
 #   endif
 #endif
     public:
@@ -442,7 +442,7 @@ class rofl_impl_mprotect :
 		return super::syscall(10, addr, len, prot);
 #else
 		int rv = (kthxbai<super::NewState2,
-		    biting_pear_decltype(&mprotect),
+		    innocent_pear_decltype(&mprotect),
 		    Flags, Levels>(mprotect))(addr, len, prot);
 		return typename super::syscall_ret(rv, errno);
 #endif
@@ -460,8 +460,8 @@ class rofl_impl_clear_cache :
 	clear_cache(void *start, void *end)
 	{
 #if defined __linux__ && defined __arm__
-		biting_pear::kthxbai<super::NewState, unsigned, Flags, Levels>
-		    zero(0);
+		innocent_pear::kthxbai<super::NewState, unsigned, Flags,
+		    Levels> zero(0);
 		return super::syscall(0xf0002, start, end, (unsigned)zero);
 #else
 		__builtin___clear_cache(start, end);
@@ -517,31 +517,32 @@ class rofl_impl_memset :
 		 * syntax is a pain to handle...
 		 */
 #   if defined __thumb__ && !defined __thumb2__
-#	define biting_pear_T16_INSN(insn, d, n) insn " " d ", " n "; "
+#	define innocent_pear_T16_INSN(insn, d, n) insn " " d ", " n "; "
 #   else
-#	define biting_pear_T16_INSN(insn, d, n) insn "s " d ", " d ", " n "; "
+#	define innocent_pear_T16_INSN(insn, d, n) insn "s " \
+						  d ", " d ", " n "; "
 #   endif
-		biting_pear::kthxbai<super1::NewState, unsigned, Flags, Levels>
-		    three(3);
+		innocent_pear::kthxbai<super1::NewState, unsigned, Flags,
+		    Levels> three(3);
 		__asm __volatile(
-			biting_pear_T16_INSN("bic", "%0", "%4")
+			innocent_pear_T16_INSN("bic", "%0", "%4")
 			"adr %1, 2f; "
-			biting_pear_T16_INSN("sub", "%0", "%1")
+			innocent_pear_T16_INSN("sub", "%0", "%1")
 			"beq 3f; "
 			".balign 4; "
 			"2: "
 			"str %2, [%1, %0]; "
-			biting_pear_T16_INSN("add", "%0", "#4")
+			innocent_pear_T16_INSN("add", "%0", "#4")
 			"bne 2b; "
 			"3: "
 		    : "=l" (x), "=l" (foo), "=l" (y)
 		    : "0" ((char *)s + 3), "l" ((unsigned)three)
 		    : "memory", "cc");
 		super2::clear_cache(s, foo);
-#   undef biting_pear_T16_INSN
+#   undef innocent_pear_T16_INSN
 #else
-		biting_pear::kthxbai<NewState,
-		    biting_pear_decltype(&std::memset),
+		innocent_pear::kthxbai<NewState,
+		    innocent_pear_decltype(&std::memset),
 		    Flags, Levels> f(std::memset);
 		/* A rather slippery method.  But it works.  So far. */
 		f(s, 0, (char *)&&foo - (char *)s);
@@ -556,14 +557,14 @@ class rofl_impl_ptrace :
     virtual public rofl_impl_syscall<State, Flags, Levels>
 {
 	typedef rofl_impl_syscall<State, Flags, Levels> super;
-#ifdef biting_pear_HAVE_FUNC_PTRACE
+#ifdef innocent_pear_HAVE_FUNC_PTRACE
 	template<class... Ts>
 	__attribute__((always_inline))
 	static typename super::syscall_ret
 	ptrace_lib(Ts... xs)
 	{
 		long rv = (kthxbai<super::NewState2,
-		    biting_pear_decltype(&ptrace), Flags, Levels>
+		    innocent_pear_decltype(&ptrace), Flags, Levels>
 		    (ptrace))(xs...);
 		return typename super::syscall_ret(rv, errno);
 	}
@@ -585,8 +586,8 @@ class rofl_impl_ptrace :
 	__attribute__((always_inline))
 	static typename super::syscall_ret
 	ptrace(
-#ifdef biting_pear_HAVE_CONST_PT_TRACE_ME
-	    biting_pear_decltype(PT_TRACE_ME)
+#ifdef innocent_pear_HAVE_CONST_PT_TRACE_ME
+	    innocent_pear_decltype(PT_TRACE_ME)
 #else
 	    int
 #endif
@@ -595,13 +596,13 @@ class rofl_impl_ptrace :
 #if defined __linux__ && \
     (defined __amd64__ || defined __i386__ || defined _arm__)
 		if (
-#   if defined biting_pear_HAVE_CONST_PT_READ_D
+#   if defined innocent_pear_HAVE_CONST_PT_READ_D
 		    req == PT_READ_D ||
 #   endif
-#   if defined biting_pear_HAVE_CONST_PT_READ_I
+#   if defined innocent_pear_HAVE_CONST_PT_READ_I
 		    req == PT_READ_I ||
 #   endif
-#   if defined biting_pear_HAVE_CONST_PT_READ_U
+#   if defined innocent_pear_HAVE_CONST_PT_READ_U
 		    req == PT_READ_U ||
 #   endif
 		    false) {
@@ -613,7 +614,7 @@ class rofl_impl_ptrace :
 			return rv;
 		} else
 			return ptrace_raw(req, pid, addr, data);
-#elif defined biting_pear_HAVE_FUNC_PTRACE
+#elif defined innocent_pear_HAVE_FUNC_PTRACE
 		return ptrace_lib(req, pid, addr, data);
 #else
 		return typename super::syscall_ret(-1, ENOSYS);
@@ -628,13 +629,13 @@ class rofl : virtual public rofl_impl_mprotect<State, Flags, Levels>,
 	     virtual public rofl_impl_ptrace<State, Flags, Levels>
 	{ };
 
-#undef biting_pear_STRINGIZE
-#undef biting_pear_STRINGIZE_1
+#undef innocent_pear_STRINGIZE
+#undef innocent_pear_STRINGIZE_1
 
-} // biting_pear::impl
+} // innocent_pear::impl
 
 using impl::rofl;
 
-} // biting_pear
+} // innocent_pear
 
 #endif

@@ -6,10 +6,10 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
-#include <biting-pear/host/lolcat.h>
-#include <biting-pear/dawg.h>
+#include <innocent-pear/host/lolcat.h>
+#include <innocent-pear/dawg.h>
 
-using biting_pear::impl::uint_least64_t;
+using innocent_pear::impl::uint_least64_t;
 
 __attribute__((noreturn))
 void keyboard(char **argv, const char *in, const char *out, bool v)

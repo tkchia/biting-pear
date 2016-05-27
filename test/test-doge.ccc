@@ -1,6 +1,6 @@
 #include <iostream>
 #include <locale>
-#include <biting-pear/dawg.h>
+#include <innocent-pear/dawg.h>
 
 struct hello_t
 {

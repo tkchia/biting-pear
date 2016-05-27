@@ -3,12 +3,12 @@
 #include <cstring>
 #include <fcntl.h>
 #include <unistd.h>
-#include <biting-pear/host/derp.h>
+#include <innocent-pear/host/derp.h>
 
 #define DEFAULT_POLY	0x42f0e1eba9ea3693u
 
 using namespace std;
-using biting_pear::impl::uint_least64_t;
+using innocent_pear::impl::uint_least64_t;
 
 static void make_crc_table(uint_least64_t crc_table[256], uint_least64_t poly)
 {

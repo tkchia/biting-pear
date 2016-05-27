@@ -1,5 +1,5 @@
-#ifndef biting_pear_H_DOGE
-#define biting_pear_H_DOGE
+#ifndef innocent_pear_H_DOGE
+#define innocent_pear_H_DOGE
 
 /* There should be a better way... */
 #if defined __STDC__ || defined __cplusplus

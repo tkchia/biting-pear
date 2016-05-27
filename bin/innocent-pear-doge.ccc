@@ -7,9 +7,9 @@
 #include <utility>
 #include <unistd.h>
 #include <bfd.h>
-#include <biting-pear/dawg.h>
-#include <biting-pear/host/lolcat.h>
-#include <biting-pear/host/srsly.h>
+#include <innocent-pear/dawg.h>
+#include <innocent-pear/host/lolcat.h>
+#include <innocent-pear/host/srsly.h>
 
 struct afortune
 {
@@ -183,7 +183,7 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 
 /* per phrack.org/issues/56/9.html */
 static void do_frob_4(bfd *ibfd, bfd *obfd, asymbol *bsym, asymbol *esym,
-    asymbol **syms, biting_pear::impl::rand_state_t seed)
+    asymbol **syms, innocent_pear::impl::rand_state_t seed)
 {
 	afortune fortune = { obfd, syms };
 	wow($"copying sections");
@@ -195,7 +195,7 @@ static void do_frob_4(bfd *ibfd, bfd *obfd, asymbol *bsym, asymbol *esym,
 	unsigned char stuff[sz];
 	if (!bfd_get_section_contents(obfd, osxn, stuff, off, sz))
 		much("bfd_get_section_contents");
-	biting_pear::srsly<unsigned char>(seed).wut(stuff, stuff + sz);
+	innocent_pear::srsly<unsigned char>(seed).wut(stuff, stuff + sz);
 	if (!bfd_set_section_contents(obfd, osxn, stuff, off, sz))
 		much("bfd_set_section_contents");
 }
@@ -209,7 +209,7 @@ static void do_frob_5(bfd *ibfd, bfd *obfd)
 }
 
 static void copy_and_frob_object(bfd *ibfd, bfd *obfd, const char *bnm,
-    const char *enm, biting_pear::impl::rand_state_t seed)
+    const char *enm, innocent_pear::impl::rand_state_t seed)
 {
 	asymbol *bsym, *esym, **syms;
 	do_frob_1(ibfd, obfd);
@@ -222,7 +222,7 @@ static void copy_and_frob_object(bfd *ibfd, bfd *obfd, const char *bnm,
 int main(int argc, char **argv)
 {
 	bfd *ibfd = 0, *obfd = 0;
-	biting_pear::impl::rand_state_t seed = 0;
+	innocent_pear::impl::rand_state_t seed = 0;
 	char *tfn = 0;
 	curious(*argv);
 	bfd_init();
@@ -233,7 +233,7 @@ int main(int argc, char **argv)
 		    *bnm = argv[3], *enm = argv[4];
 		char *ep;
 		errno = 0;
-		seed = (biting_pear::impl::rand_state_t)strtoumax(argv[5],
+		seed = (innocent_pear::impl::rand_state_t)strtoumax(argv[5],
 		    &ep, 0);
 		if (*ep || errno != 0)
 			many($"invalid arguments");

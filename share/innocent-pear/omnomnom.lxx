@@ -30,15 +30,15 @@ u8tl		[\x80-\xbf]
 #include <vector>
 #include <unistd.h>
 #include <boost/random/mersenne_twister.hpp>
-#define biting_pear_HOST_SIDE
-#include <biting-pear/bbq.h>
+#define innocent_pear_HOST_SIDE
+#include <innocent-pear/bbq.h>
 
-#if defined biting_pear_TARGET_WCHAR_IS_CHAR16
+#if defined innocent_pear_TARGET_WCHAR_IS_CHAR16
 #   define target_wchar_t char16_t
-#   define target_mbrtowc ::biting_pear::impl::mbrtoc16
-#elif defined biting_pear_TARGET_WCHAR_IS_CHAR32
+#   define target_mbrtowc ::innocent_pear::impl::mbrtoc16
+#elif defined innocent_pear_TARGET_WCHAR_IS_CHAR32
 #   define target_wchar_t char32_t
-#   define target_mbrtowc ::biting_pear::impl::mbrtoc32
+#   define target_mbrtowc ::innocent_pear::impl::mbrtoc32
 #else
 #   undef target_wchar_t
 #   undef target_mbrtowc
@@ -194,7 +194,7 @@ static void flush_str()
 			}
 "$"{ws}\"		{
 				blurt(yytext + 1, yyleng - 2);
-				blurfl("::biting_pear::dawg<0x%" PRIx64
+				blurfl("::innocent_pear::dawg<0x%" PRIx64
 				    ",0,", generator());
 				curr_str_enc = "";
 				BEGIN(Such);
@@ -214,7 +214,7 @@ static void flush_str()
 				     *q = yytext + yyleng - 1;
 				blurt(yytext + 1, p - yytext - 1);
 				blurt(p + 1, q - p - 1);
-				blurfl("::biting_pear::yodawg<0x%" PRIx64
+				blurfl("::innocent_pear::yodawg<0x%" PRIx64
 				    ",0,", generator());
 				curr_str_enc = "L";
 				BEGIN(Such);

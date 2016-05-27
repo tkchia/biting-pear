@@ -1,3 +1,56 @@
+2016-05-27	Name change: Biting Pear is now Innocent Pear.
+
+		.gitignore ,
+		GNUmakefile ,
+		README.md ,
+		test/test-dawg-syn.ccc ,
+		test/test-dawg.ccc ,
+		test/test-doge.ccc ,
+		test/test-kthxbai-p.ccc ,
+		test/test-kthxbai.ccc ,
+		test/test-orly-wut.ccc ,
+		test/test-orly-wut.ld ,
+		test/test-orly.ccc ,
+		test/test-yodawg-syn.ccc ,
+		test/test-yodawg.ccc :
+		- biting pear -> innocent pear
+
+		bin/innocent-pear-c++.ccc :
+		- renamed from bin/biting-pear-c++.ccc
+		- biting pear -> innocent pear
+
+		bin/innocent-pear-doge.ccc :
+		- renamed from bin/biting-pear-doge.ccc
+		- biting pear -> innocent pear
+
+		include/innocent-pear/bbq.h ,
+		include/innocent-pear/dawg.h ,
+		include/innocent-pear/doge.h ,
+		include/innocent-pear/host/lolcat.h ,
+		include/innocent-pear/host/rly.h ,
+		include/innocent-pear/host/srsly.h ,
+		include/innocent-pear/kthxbai.h ,
+		include/innocent-pear/lolwut.h ,
+		include/innocent-pear/nowai.h ,
+		include/innocent-pear/omg.h ,
+		include/innocent-pear/orly.h ,
+		include/innocent-pear/rofl.h ,
+		include/innocent-pear/yarly.h ,
+		include/innocent-pear/yodawg.h :
+		- moved from include/biting-pear/ to include/innocent-pear/
+		- biting pear -> innocent pear
+
+		share/innocent-pear/calm.ccc ,
+		share/innocent-pear/doge-1.ccc ,
+		share/innocent-pear/doge-2.cc ,
+		share/innocent-pear/doge-8.ccc ,
+		share/innocent-pear/doge-9.cc ,
+		share/innocent-pear/keyboard.ccc ,
+		share/innocent-pear/nomnom.cc ,
+		share/innocent-pear/omnomnom.lxx :
+		- moved from share/biting-pear/ to share/innocent-pear/
+		- biting pear -> innocent pear
+
 2016-05-23	ptrace(...) support, mainly for some Linux/* platforms.
 
 		configure :

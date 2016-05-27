@@ -6,14 +6,14 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
-#include <biting-pear/host/lolcat.h>
-#include <biting-pear/dawg.h>
+#include <innocent-pear/host/lolcat.h>
+#include <innocent-pear/dawg.h>
 
-using biting_pear::impl::uint_least64_t;
+using innocent_pear::impl::uint_least64_t;
 
 static int main_(int argc, char **argv, char *& grumpy, char *& grumpier)
 {
-	const char *lulz = biting_pear::impl::getenv("BITING_PEAR_PREFIX");
+	const char *lulz = innocent_pear::impl::getenv("INNOCENT_PEAR_PREFIX");
 	enum { UNKNOWN, AS, CC1, CC1PLUS, LD } wut = UNKNOWN;
 	struct {
 		unsigned pass : 1, e : 1, v : 1;
@@ -108,7 +108,7 @@ static int main_(int argc, char **argv, char *& grumpy, char *& grumpier)
 			keyboardest(calm, 0, 0, is.v);
 			if (calmest)
 				grumpier = sleepier(lulz);
-			lolz += "/share/biting-pear/omnomnom";
+			lolz += "/share/innocent-pear/omnomnom";
 			calm[0] = (char *)lolz.c_str();
 			calm[1] = new char[19];
 			snprintf(calm[1], 19, "%#16" PRIxLEAST64,

@@ -1,15 +1,15 @@
-#ifndef biting_pear_H_BBQ
-#define biting_pear_H_BBQ
+#ifndef innocent_pear_H_BBQ
+#define innocent_pear_H_BBQ
 
 #include <cinttypes>
 #include <climits>
-#ifdef biting_pear_HOST_SIDE
-#   include <biting-pear/host/derp.h>
+#ifdef innocent_pear_HOST_SIDE
+#   include <innocent-pear/host/derp.h>
 #else
-#   include <biting-pear/derp.h>
+#   include <innocent-pear/derp.h>
 #endif
 
-namespace biting_pear
+namespace innocent_pear
 {
 
 namespace impl
@@ -80,11 +80,11 @@ inline constexpr T pow(T x)
 			 pow<T, P / 2>(x * x) * x;
 }
 
-} // biting_pear::impl
+} // innocent_pear::impl
 
 namespace ops {
 
-static const biting_pear::impl::ops_flags_t
+static const innocent_pear::impl::ops_flags_t
     allow_signal_safes		= 0x00000001u,
     allow_signal_unsafes	= 0x00000002u,
     allow_debugger_unsafes	= 0x00000004u,
@@ -92,8 +92,8 @@ static const biting_pear::impl::ops_flags_t
     allow_resource_unsafes	= 0x00000010u,
     allow_all			= 0xffffffffu;
 
-} // biting_pear::ops
+} // innocent_pear::ops
 
-} // biting_pear
+} // innocent_pear
 
 #endif

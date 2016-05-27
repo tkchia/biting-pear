@@ -1,6 +1,6 @@
 #include <iostream>
 #include <locale>
-#include <biting-pear/yodawg.h>
+#include <innocent-pear/yodawg.h>
 
 int main()
 {

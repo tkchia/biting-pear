@@ -1,14 +1,14 @@
-#ifndef biting_pear_H_OMG
-#define biting_pear_H_OMG
+#ifndef innocent_pear_H_OMG
+#define innocent_pear_H_OMG
 
 #include <cinttypes>
 #include <csignal>
 #include <unistd.h>
-#include <biting-pear/bbq.h>
-#include <biting-pear/kthxbai.h>
-#include <biting-pear/nowai.h>
+#include <innocent-pear/bbq.h>
+#include <innocent-pear/kthxbai.h>
+#include <innocent-pear/nowai.h>
 
-namespace biting_pear
+namespace innocent_pear
 {
 
 namespace impl
@@ -89,7 +89,7 @@ struct omg_impl_0
 		    case 0:
 			{
 				omg<State3, unsigned,
-				    biting_pear::ops::allow_all, Levels-1>();
+				    innocent_pear::ops::allow_all, Levels-1>();
 			}
 			break;
 		    case 1:
@@ -184,7 +184,7 @@ class omg
 	__attribute__((always_inline))
 	bool unsafe()
 	{
-		using namespace biting_pear::ops;
+		using namespace innocent_pear::ops;
 		constexpr unsigned Which2 = (State2 >> 56) % 4;
 		switch (Which2) {
 		    case 0:
@@ -192,7 +192,7 @@ class omg
 				return false;
 			else {
 				kthxbai<State3,
-				    biting_pear_decltype(&std::raise),
+				    innocent_pear_decltype(&std::raise),
 				    Flags, Levels - 1> f(std::raise);
 				kthxbai<NewState, unsigned, Flags, Levels - 1>
 				    z(0);
@@ -239,23 +239,24 @@ class omg
 			break;
 #if defined __amd64__ || defined __i386__
 #   ifdef __OPTIMIZE__
-#	define biting_pear_RET_PREFIX(o) ".if 0 == %c" #o "; " \
+#	define innocent_pear_RET_PREFIX(o) \
+					".if 0 == %c" #o "; " \
 						".byte 0x26; "	/* %es: */ \
-					 ".elseif 1 == %c" #o "; " \
+					".elseif 1 == %c" #o "; " \
 						".byte 0x2e; "	/* %cs: */ \
-					 ".elseif 2 == %c" #o "; " \
+					".elseif 2 == %c" #o "; " \
 						".byte 0x3e; "	/* %ds: */ \
-					 ".elseif 3 == %c" #o "; " \
+					".elseif 3 == %c" #o "; " \
 						".byte 0x64; "	/* %fs: */ \
-					 ".elseif 4 == %c" #o "; " \
+					".elseif 4 == %c" #o "; " \
 						".byte 0x65; "	/* %gs: */ \
-					 ".elseif 5 == %c" #o "; " \
+					".elseif 5 == %c" #o "; " \
 						"repz; " \
-					 ".elseif 6 == %c" #o "; " \
+					".elseif 6 == %c" #o "; " \
 						"repnz; " \
-					 ".endif; "
+					".endif; "
 #   else
-#	define biting_pear_RET_PREFIX(o) ""
+#	define innocent_pear_RET_PREFIX(o) ""
 #   endif
 		    case 2:
 		    case 3:
@@ -283,7 +284,7 @@ class omg
 					    : foo);  break;
 				    case 1:
 					__asm goto("push%z0 %0; "
-						   biting_pear_RET_PREFIX(1)
+						   innocent_pear_RET_PREFIX(1)
 						   "ret%z0"
 					    : /* no outputs */
 					    : "r" (q), "n" (Which3)
@@ -292,7 +293,7 @@ class omg
 				    case 2:
 					__asm goto("push%z0 %1; "
 						   "push%z0 %0; "
-						   biting_pear_RET_PREFIX(2)
+						   innocent_pear_RET_PREFIX(2)
 						   "lret%z0"
 					    : /* no outputs */
 					    : "r" (q), "r" (r), "n" (Which3)
@@ -303,7 +304,7 @@ class omg
 					__asm goto(
 					    "pushq %1; "
 					    "movq %0, (%%rsp); "
-					    biting_pear_RET_PREFIX(2)
+					    innocent_pear_RET_PREFIX(2)
 					    "retq"
 					    : /* no outputs */
 					    : "r" (q), "g" ((uint64_t)x),
@@ -315,7 +316,7 @@ class omg
 					    "pushq %1; "
 					    "pushq %2; "
 					    "movq %0, (%%rsp); "
-					    biting_pear_RET_PREFIX(3)
+					    innocent_pear_RET_PREFIX(3)
 					    "lretq"
 					    : /* no outputs */
 					    : "r" (q), "r" (r),
@@ -327,7 +328,7 @@ class omg
 					__asm goto(
 					    "pushl %1; "
 					    "movl %0, (%%esp); "
-					    biting_pear_RET_PREFIX(2)
+					    innocent_pear_RET_PREFIX(2)
 					    "retl"
 					    : /* no outputs */
 					    : "r" (q), "g" ((uint32_t)x),
@@ -339,7 +340,7 @@ class omg
 					    "pushl %1; "
 					    "pushl %2; "
 					    "movl %0, (%%esp); "
-					    biting_pear_RET_PREFIX(3)
+					    innocent_pear_RET_PREFIX(3)
 					    "lretl"
 					    : /* no outputs */
 					    : "r" (q), "r" (r),
@@ -347,7 +348,7 @@ class omg
 					    : /* no clobbers */
 					    : foo);  break;
 #   endif
-#   undef biting_pear_RET_PREFIX
+#   undef innocent_pear_RET_PREFIX
 				}
 			    bar:
 				{
@@ -443,10 +444,10 @@ class omg
 	}
 };
 
-} // biting_pear::impl
+} // innocent_pear::impl
 
 using impl::omg;
 
-} // biting_pear
+} // innocent_pear
 
 #endif

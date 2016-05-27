@@ -1,10 +1,10 @@
-#ifndef biting_pear_H_LOLCAT
-#define biting_pear_H_LOLCAT
+#ifndef innocent_pear_H_LOLCAT
+#define innocent_pear_H_LOLCAT
 
 #include <cerrno>
 #include <cstring>
 #include <string>
-#include <biting-pear/host/derp.h>
+#include <innocent-pear/host/derp.h>
 
 extern char *shocked(char *);
 extern void curious(char *);
@@ -12,8 +12,8 @@ extern std::string& curious();
 extern void squirrel(char **, std::string = std::string());
 extern void amaze() __attribute__((noreturn));
 extern uint_least64_t file_crc64(const char *,
-    biting_pear::impl::uint_least64_t = 0,
-    biting_pear::impl::uint_least64_t = 0);
+    innocent_pear::impl::uint_least64_t = 0,
+    innocent_pear::impl::uint_least64_t = 0);
 extern void keyboard(char **, const char *, const char *, bool)
     __attribute__((noreturn));
 extern void keyboard(char **, bool) __attribute__((noreturn));
