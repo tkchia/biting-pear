@@ -3,6 +3,7 @@
 #include <cstring>
 #include <iomanip>
 #include <iostream>
+#include <set>
 #include <sstream>
 #include <utility>
 #include <unistd.h>
@@ -16,6 +17,8 @@ struct afortune
 	bfd *obfd;
 	asymbol **syms;
 };
+
+typedef std::set<bfd_size_type> adreld;
 
 __attribute__((noinline))
 static void such()
@@ -51,13 +54,14 @@ static void prep_sxn(bfd *ibfd, asection *isxn, void *cookie)
 	flagword flags = bfd_get_section_flags(ibfd, isxn);
 	bfd_vma vma = bfd_section_vma(ibfd, isxn),
 		lma = bfd_section_lma(ibfd, isxn);
+	bfd_size_type size = bfd_section_size(ibfd, isxn);
 	std::ostringstream oss;
 	wow($"\t", name, $": vma 0x", std::hex, vma,
-	    $", lma 0x", lma);
+	    $", lma 0x", lma, $", size 0x", size);
 	asection *osxn = bfd_make_section_anyway_with_flags(obfd,name,flags);
 	if (!osxn)
 		much("bfd_make_section_anyway_with_flags");
-	if (!bfd_set_section_size(obfd, osxn, bfd_section_size(ibfd, isxn)))
+	if (!bfd_set_section_size(obfd, osxn, size))
 		much("bfd_set_section_size");
 	if (!bfd_set_section_vma(obfd, osxn, vma))
 		much("bfd_set_section_vma");
@@ -105,7 +109,7 @@ static void check_symbol(bfd *ibfd, asymbol *sym, const char *nm)
 		many($"symbol ", nm, $" is in non-content (possibly BSS) "
 		      "section ", name);
 	if ((fl & SEC_RELOC) != 0)
-		many($"symbol ", nm, $" is in a section that has "
+		many($"symbol ", nm, $" is in a section that has static "
 		      "relocations");
 	symvalue val = sym->value;
 	wow($"symbol ", nm, $" = ", name, ' ', val < 0 ? '-' : '+',
@@ -115,12 +119,10 @@ static void check_symbol(bfd *ibfd, asymbol *sym, const char *nm)
 }
 
 /* per phrack.org/issues/56/9.html */
-static void do_frob_3(bfd *ibfd, bfd *obfd, const char *bnm, const char *enm,
-    asymbol **p_bsym, asymbol **p_esym, asymbol ***p_syms)
+static void do_frob_3(bfd *ibfd, bfd *obfd, long *p_n_syms, asymbol ***p_syms)
 {
-	*p_bsym = *p_esym = 0;
-	wow($"copying and scanning symbol table");
-	long symtab_sz = bfd_get_symtab_upper_bound(ibfd), n_syms, i;
+	wow($"reading and copying symbol table");
+	long symtab_sz = bfd_get_symtab_upper_bound(ibfd), n_syms;
 	if (symtab_sz < 0 || symtab_sz > SSIZE_MAX)
 		much("bfd_get_symtab_upper_bound");
 	asymbol **syms = new asymbol *[(symtab_sz + sizeof(asymbol *) - 1)
@@ -130,7 +132,46 @@ static void do_frob_3(bfd *ibfd, bfd *obfd, const char *bnm, const char *enm,
 		much("bfd_canonicalize_symtab");
 	if (!bfd_set_symtab(obfd, syms, n_syms))
 		much("bfd_set_symtab");
-	for (i = 0; i < n_syms; ++i) {
+	*p_n_syms = n_syms;
+	*p_syms = syms;
+}
+
+static void do_frob_4(bfd *ibfd, adreld *dreld)
+{
+	wow($"reading and scanning dynamic relocation tables");
+	long dssz = bfd_get_dynamic_symtab_upper_bound(ibfd);
+	if (dssz < 0 || dssz > SSIZE_MAX)
+		much("bfd_get_dynamic_symtab_upper_bound");
+	asymbol **dyn_syms = new asymbol *[(dssz + sizeof(asymbol *) - 1)
+	    / sizeof(asymbol *)];
+	if (bfd_canonicalize_dynamic_symtab(ibfd, dyn_syms) < 0)
+		much("bfd_canonicalize_dynamic_symtab");
+	long drsz = bfd_get_dynamic_reloc_upper_bound(ibfd);
+	if (drsz < 0 || drsz > SSIZE_MAX)
+		much("bfd_get_dynamic_reloc_upper_bound");
+	arelent **dyn_rels = new arelent *[(drsz + sizeof(arelent *) - 1)
+	    / sizeof(arelent *)];
+	long n_dyn_rels = bfd_canonicalize_dynamic_reloc(ibfd, dyn_rels,
+	    dyn_syms);
+	if (n_dyn_rels < 0)
+		much("bfd_canonicalize_dynamic_reloc");
+	for (long i = 0; i < n_dyn_rels; ++i) {
+		arelent *rel = dyn_rels[i];
+		bfd_size_type rel_off = rel->address;
+		bfd_size_type rel_sz = bfd_get_reloc_size(rel->howto);
+		while (rel_sz--)
+			dreld->insert(rel_off++);
+	}
+}
+
+/* per phrack.org/issues/56/9.html */
+static void do_frob_5(bfd *ibfd, bfd *obfd, const char *bnm, const char *enm,
+    long n_syms, asymbol **syms, adreld *dreld, asymbol **p_bsym,
+    asymbol **p_esym)
+{
+	*p_bsym = *p_esym = 0;
+	wow($"scanning symbol table");
+	for (long i = 0; i < n_syms; ++i) {
 		asymbol *sym = syms[i];
 		if (bfd_is_local_label(ibfd, sym) ||
 		    bfd_is_target_special_symbol(ibfd, sym))
@@ -142,12 +183,18 @@ static void do_frob_3(bfd *ibfd, bfd *obfd, const char *bnm, const char *enm,
 	}
 	check_symbol(ibfd, *p_bsym, bnm);
 	check_symbol(ibfd, *p_esym, enm);
-	if ((*p_bsym)->section != (*p_esym)->section)
+	asection *sxn = (*p_bsym)->section;
+	if (sxn != (*p_esym)->section)
 		many($"symbols ", bnm, $" and ", enm,
 		     $"are in different sections");
 	if ((*p_bsym)->value > (*p_esym)->value)
 		many($"symbol ", enm, $" is before ", bnm);
-	*p_syms = syms;
+	bfd_size_type
+	    bsym_off = (*p_bsym)->value + bfd_section_lma(ibfd, sxn),
+	    esym_off = (*p_esym)->value + bfd_section_lma(ibfd, sxn);
+	adreld::const_iterator it = dreld->lower_bound(bsym_off);
+	if (it != dreld->end() && *it < esym_off)
+		many('[', bnm, $" ... ", enm, $"] has dynamic relocations");
 }
 
 static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
@@ -182,7 +229,7 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 }
 
 /* per phrack.org/issues/56/9.html */
-static void do_frob_4(bfd *ibfd, bfd *obfd, asymbol *bsym, asymbol *esym,
+static void do_frob_6(bfd *ibfd, bfd *obfd, asymbol *bsym, asymbol *esym,
     asymbol **syms, innocent_pear::impl::rand_state_t seed)
 {
 	afortune fortune = { obfd, syms };
@@ -201,7 +248,7 @@ static void do_frob_4(bfd *ibfd, bfd *obfd, asymbol *bsym, asymbol *esym,
 }
 
 /* per phrack.org/issues/56/9.html */
-static void do_frob_5(bfd *ibfd, bfd *obfd)
+static void do_frob_7(bfd *ibfd, bfd *obfd)
 {
 	wow($"copying BFD back-end data");
 	if (!bfd_copy_private_bfd_data(ibfd, obfd))
@@ -212,11 +259,15 @@ static void copy_and_frob_object(bfd *ibfd, bfd *obfd, const char *bnm,
     const char *enm, innocent_pear::impl::rand_state_t seed)
 {
 	asymbol *bsym, *esym, **syms;
+	long n_syms;
+	adreld dreld;
 	do_frob_1(ibfd, obfd);
 	do_frob_2(ibfd, obfd);
-	do_frob_3(ibfd, obfd, bnm, enm, &bsym, &esym, &syms);
-	do_frob_4(ibfd, obfd, bsym, esym, syms, seed);
-	do_frob_5(ibfd, obfd);
+	do_frob_3(ibfd, obfd, &n_syms, &syms);
+	do_frob_4(ibfd, &dreld);
+	do_frob_5(ibfd, obfd, bnm, enm, n_syms, syms, &dreld, &bsym, &esym);
+	do_frob_6(ibfd, obfd, bsym, esym, syms, seed);
+	do_frob_7(ibfd, obfd);
 }
 
 int main(int argc, char **argv)

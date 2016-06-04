@@ -1,3 +1,21 @@
+2016-06-04	"Anybody can win, unless there happens to be a second entry."
+
+		bin/innocent-pear-c++.ccc :
+		- now uses _.innocent_pear.text.unlikely.start rather than
+		  _.innocent_pear.text.startup.start
+
+		bin/innocent-pear-doge.ccc :
+		- now checks for _dynamic_ relocations within the area to frob
+
+		share/innocent-pear/doge-1.ccc :
+		- moved unscrambling routine from .text.startup into
+		  .text.unlikely, which occurs first per the default ld script
+		- now uses _.innocent_pear.text.unlikely.start rather than
+		  _.innocent_pear.text.startup.start
+
+		share/innocent-pear/doge-2.cc :
+		- now also defines _.innocent_pear.text.unlikely.start
+
 2016-05-27	Name change: Biting Pear is now Innocent Pear.
 
 		.gitignore ,

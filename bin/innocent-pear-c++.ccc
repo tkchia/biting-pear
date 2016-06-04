@@ -126,7 +126,7 @@ static void nyanyan(const std::string& caturday, char *in, char *out,
 {
 	char *cheesiest[] = {
 		pusheen(caturday, $"/bin/innocent-pear-doge"), in, out,
-		(char *)"_.innocent_pear.text.startup.start",
+		(char *)"_.innocent_pear.text.unlikely.start",
 		(char *)"_.innocent_pear.text.startup.end",
 		pusheen($"0x", std::hex, state), 0
 	    };
