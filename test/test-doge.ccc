@@ -15,5 +15,6 @@ hello_t hello;
 
 int main()
 {
+	std::cout << "And hello world again!\n";
 	return 0;
 }

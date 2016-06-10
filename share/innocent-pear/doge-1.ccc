@@ -10,14 +10,13 @@
 
 extern unsigned char unlikely_text_start[]
     __asm("_.innocent_pear.text.unlikely.start");
-extern unsigned char startup_text_start[]
-    __asm("_.innocent_pear.text.startup.start");
-extern unsigned char startup_text_end[]
-    __asm("_.innocent_pear.text.startup.end");
+extern unsigned char hot_text_end[]
+    __asm("_.innocent_pear.text.hot.end");
+extern unsigned char our_text_end[] __asm("_.innocent_pear.text.end");
 
 __attribute__((
 #ifdef innocent_pear_HAVE_CTOR_PRIORITY
-    constructor(101)))
+    constructor(101),
 #else
     constructor,
 #endif
@@ -25,14 +24,15 @@ __attribute__((
 static void unscramble()
 {
 	using innocent_pear::ops::allow_all;
-	unsigned char *ts = unlikely_text_start, *te = startup_text_end;
+	unsigned char *uts = unlikely_text_start, *hte = hot_text_end,
+	    *te = our_text_end;
 #if defined innocent_pear_HAVE_IMPLD_FUNC_PTRACE && \
     defined innocent_pear_HAVE_CONST_PT_TRACE_ME
-	ts += innocent_pear::rofl?<allow_all>::ptrace(PT_TRACE_ME, 0, 0, 0);
+	uts += innocent_pear::rofl?<allow_all>::ptrace(PT_TRACE_ME, 0, 0, 0);
 #endif
 	uintptr_t pg_sz = (uintptr_t)(innocent_pear::kthxbai?<
 	    innocent_pear_decltype(&getpagesize), allow_all>(getpagesize))();
-	uintptr_t prot_start = (uintptr_t)ts & -pg_sz;
+	uintptr_t prot_start = (uintptr_t)uts & -pg_sz;
 	uintptr_t prot_end = ((uintptr_t)te + pg_sz - 1)
 	    & -pg_sz;
 	innocent_pear::kthxbai?<unsigned, allow_all> prot(PROT_READ |
@@ -40,6 +40,6 @@ static void unscramble()
 	innocent_pear::rofl?<allow_all>::mprotect((void *)prot_start,
 	    (std::size_t)(prot_end - prot_start), prot);
 	innocent_pear::orly<innocent_pear_DOGE_STATE, unsigned char, false,
-	    true, allow_all>().wut(ts, te);
-	innocent_pear::rofl?<allow_all>::clear_cache(ts, te);
+	    true, allow_all>().wut(uts, hte);
+	innocent_pear::rofl?<allow_all>::clear_cache(uts, hte);
 }

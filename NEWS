@@ -1,3 +1,40 @@
+2016-06-10	Now scrambles almost the whole text section (on Linux).
+
+		GNUmakefile :
+		- added share/innocent-pear/doge-3.ccc and share/innocent/
+		  doge-4.cc to host-side installables
+
+		bin/innocent-pear-c++.ccc :
+		- now compiles and passes doge-3.o and doge-4.o to the g++
+		  front-end
+		- now scrambles output executable's text section in two passes
+
+		share/innocent-pear/doge-1.ccc :
+		- unscramble() is now in .text.unlikely, not .text.startup
+		- now unscrambles from .text.unlikely (after itself) to
+		  .text.hot
+		- now unprotects memory from .text.unlikely to .text.end
+
+		share/innocent-pear/doge-2.cc :
+		- tweaked formatting
+
+		share/innocent-pear/doge-3.ccc ,
+		share/innocent-pear/doge-4.cc :
+		- initial version
+
+		share/innocent-pear/doge-8.ccc :
+		- now reprotects memory from .text.unlikely to .text.end
+
+		share/innocent-pear/doge-9.cc :
+		- now marks ends of .text.hot and .gnu.linkonce.t.*
+
+		test/test-doge.ccc ,
+		test/test-doge.good :
+		- added some action into main()
+
+		include/innocent-pear/omg.h :
+		- fixed `mov's from %cs into memory for x86-64
+
 2016-06-04	"Anybody can win, unless there happens to be a second entry."
 
 		bin/innocent-pear-c++.ccc :

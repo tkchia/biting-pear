@@ -70,6 +70,8 @@ installables.host = \
     share/innocent-pear/calm.spec \
     share/innocent-pear/doge-1.ccc \
     share/innocent-pear/doge-2.cc \
+    share/innocent-pear/doge-3.ccc \
+    share/innocent-pear/doge-4.cc \
     share/innocent-pear/doge-8.ccc \
     share/innocent-pear/doge-9.cc
 
