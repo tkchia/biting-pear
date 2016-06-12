@@ -4,6 +4,7 @@
 #include <cinttypes>
 #include <climits>
 #include <cstdlib>
+#include <type_traits>
 #include <innocent-pear/bbq.h>
 #include <innocent-pear/lolwut.h>
 #include <innocent-pear/nowai.h>
@@ -301,6 +302,13 @@ class kthxbai<State, S *, Flags, Levels> :
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
 class kthxbai
 {
+	static_assert(std::is_integral<T>::value,
+	    "T in innocent_pear::kthxbai<, T, ...> is not an integral type");
+	static_assert(std::is_unsigned<T>::value,
+	    "T in innocent_pear::kthxbai<, T, ...> is not an unsigned type");
+	static_assert(sizeof(T) <= sizeof(rand_state_t),
+	    "T in innocent_pear::kthxbai<, T, ...> is larger than "
+	    "innocent_pear::impl::rand_state_t");
 	static constexpr rand_state_t State2 = update_inner(State);
 	static constexpr rand_state_t State3 = update_inner(State2);
 	static constexpr rand_state_t State4 = update_inner(State3);

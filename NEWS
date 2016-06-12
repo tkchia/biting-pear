@@ -1,3 +1,8 @@
+2016-06-12	Some template parameter checking.
+
+		include/innocent-pear/kthxbai.h :
+		- now checks that type T in kthxbai<, T, ...> is legitimate
+
 2016-06-10	Now scrambles almost the whole text section (on Linux).
 
 		GNUmakefile :
