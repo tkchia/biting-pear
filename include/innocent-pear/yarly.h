@@ -20,6 +20,13 @@ template<rand_state_t State, class T, bool BigBad, ops_flags_t Flags,
     unsigned Levels>
 class yarly_impl
 {
+	static_assert(std::is_integral<T>::value,
+	    "T in innocent_pear::yarly<, T, ...> is not an integral type");
+	static_assert(std::is_unsigned<T>::value,
+	    "T in innocent_pear::yarly<, T, ...> is not an unsigned type");
+	static_assert(sizeof(T) <= sizeof(rand_state_t),
+	    "T in innocent_pear::yarly<, T, ...> is larger than "
+	    "innocent_pear::impl::rand_state_t");
     protected:
 	static constexpr rand_state_t
 	    State2  = update_inner(State),  State3  = update_inner(State2),
