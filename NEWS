@@ -1,3 +1,12 @@
+2016-07-01	"An apple a day makes 365 apples a year."
+
+		GNUmakefile :
+		- updated to use unambiguous C++ name escaping scheme in
+		  lolwutconf/
+
+		lolwutconf/ :
+		- bumped from commit eeb2d750ff to 3473dd81a3
+
 2016-06-17	A bit more template parameter checking.
 
 		include/innocent-pear/yarly.h :

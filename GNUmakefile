@@ -128,65 +128,65 @@ $(config.h.host) $(config.h.target): config.cache
 	echo "/****** AUTOMATICALLY GENERATED `date` ******/" >$@.tmp
 	if test '$(config.h.host)' = '$@'; \
 		then echo '#include <cstdlib>' >>$@.tmp; fi
-	if test '$(conf_Have_cxx_typ_std__uint_least64_t),$@' = \
+	if test '$(conf_Have_cxx_typ_std_0uint_1least64_1t),$@' = \
 	    'yes,$(config.h.host)'; then \
 		echo '#include <cinttypes>' >>$@.tmp; \
-	elif test '$(conf_Have_cxxt_typ_std__uint_least64_t),$@' = \
+	elif test '$(conf_Have_cxxt_typ_std_0uint_1least64_1t),$@' = \
 	    'yes,$(config.h.target)'; then \
 		echo '#include <cinttypes>' >>$@.tmp; \
 	elif test '$(config.h.target)' = '$@'; then \
 		echo '#include <inttypes.h>' >>$@.tmp; \
 	fi
-	if test '$(conf_Have_cxxt_typ_std__uintptr_t),$@' = \
+	if test '$(conf_Have_cxxt_typ_std_0uintptr_1t),$@' = \
 	    'yes,$(config.h.target)'; then \
 		echo '#include <cinttypes>' >>$@.tmp; \
 	elif test '$(config.h.target)' = '$@'; then \
 		echo '#include <inttypes.h>' >>$@.tmp; \
 	fi
 	if test \( \
-	    yes = '$(conf_Have_cxx_func_std__mbrtoc16)' -o \
-	    yes = '$(conf_Have_cxx_func_std__mbrtoc32)' \) -a \
+	    yes = '$(conf_Have_cxx_func_std_0mbrtoc16)' -o \
+	    yes = '$(conf_Have_cxx_func_std_0mbrtoc32)' \) -a \
 	    '$(config.h.host)' = '$@'; then \
 		echo '#include <cuchar>' >>$@.tmp; \
 	fi
 	if test \( \
-	    yes = '$(conf_Have_cxx_func___mbrtoc16)' -o \
-	    yes = '$(conf_Have_cxx_func___mbrtoc32)' \) -a \
+	    yes = '$(conf_Have_cxx_func__0mbrtoc16)' -o \
+	    yes = '$(conf_Have_cxx_func__0mbrtoc32)' \) -a \
 	    '$(config.h.host)' = '$@'; then \
 		echo '#include <uchar.h>' >>$@.tmp; \
 	fi
 	echo 'namespace innocent_pear { namespace impl {' >>$@.tmp
-	if test '$(conf_Have_cxx_typ_std__uint_least64_t),$@' = \
+	if test '$(conf_Have_cxx_typ_std_0uint_1least64_1t),$@' = \
 	    'yes,$(config.h.host)'; then \
 		echo 'using std::uint_least64_t;' >>$@.tmp; \
-	elif test '$(conf_Have_cxxt_typ_std__uint_least64_t),$@' = \
+	elif test '$(conf_Have_cxxt_typ_std_0uint_1least64_1t),$@' = \
 	    'yes,$(config.h.target)'; then \
 		echo 'using std::uint_least64_t;' >>$@.tmp; \
 	else \
 		echo 'using ::uint_least64_t;' >>$@.tmp; \
 	fi
-	if test '$(conf_Have_cxxt_typ_std__uintptr_t),$@' = \
+	if test '$(conf_Have_cxxt_typ_std_0uintptr_1t),$@' = \
 	    'yes,$(config.h.target)'; then \
 		echo 'using std::uintptr_t;' >>$@.tmp; \
 	elif test '$(config.h.target)' = '$@'; then \
 		echo 'using ::uintptr_t;' >>$@.tmp; \
 	fi
 	if test 'yes,$(config.h.host)' = \
-	    '$(conf_Have_cxx_func_std__mbrtoc16),$@'; then \
+	    '$(conf_Have_cxx_func_std_0mbrtoc16),$@'; then \
 		echo 'using std::mbrtoc16;' >>$@.tmp; \
 	elif test 'yes,$(config.h.host)' = \
-	    '$(conf_Have_cxx_func___mbrtoc16),$@'; then \
+	    '$(conf_Have_cxx_func__0mbrtoc16),$@'; then \
 		echo 'using ::mbrtoc16;' >>$@.tmp; \
 	fi
 	if test 'yes,$(config.h.host)' = \
-	    '$(conf_Have_cxx_func_std__mbrtoc32),$@'; then \
+	    '$(conf_Have_cxx_func_std_0mbrtoc32),$@'; then \
 		echo 'using std::mbrtoc32;' >>$@.tmp; \
 	elif test 'yes,$(config.h.host)' = \
-	    '$(conf_Have_cxx_func___mbrtoc32),$@'; then \
+	    '$(conf_Have_cxx_func__0mbrtoc32),$@'; then \
 		echo 'using ::mbrtoc32;' >>$@.tmp; \
 	fi
 	if test 'yes,$(config.h.host)' = \
-	    '$(conf_Have_cxx_func___secure_getenv),$@'; then \
+	    '$(conf_Have_cxx_func__0secure_1getenv),$@'; then \
 		echo 'inline char *getenv(const char *name)' >>$@.tmp; \
 		echo '{ return ::secure_getenv(name); }' >>$@.tmp; \
 	elif test '$(config.h.host)' = '$@'; then \
@@ -227,19 +227,20 @@ endif
 	fi
 	set -e; \
 	if test '$(config.h.target)' = '$@'; then \
-		if test '$(conf_Have_cxxt_func___ptrace)' = yes; then \
+		if test '$(conf_Have_cxxt_func__0ptrace)' = yes; then \
 			echo '#define innocent_pear_HAVE_FUNC_PTRACE 1'; \
 		else \
 			echo '#undef innocent_pear_HAVE_FUNC_PTRACE'; \
 		fi; \
-		if test '$(conf_Have_cxxt_impld_func___ptrace)' = yes; then \
+		if test '$(conf_Have_cxxt_impld_func__0ptrace)' = yes; then \
 			echo '#define innocent_pear_HAVE_IMPLD_FUNC_PTRACE 1';\
 		else \
 			echo '#undef innocent_pear_HAVE_IMPLD_FUNC_PTRACE'; \
 		fi; \
 		$(foreach c,PT_TRACE_ME PT_GETREGS PT_SETREGS, \
-			if test '$(conf_Have_cxxt_const_$c)' = yes; \
-			then	echo \
+			if test '$(conf_Have_cxxt_const_$(subst _,_1,$c))' = \
+			    yes; then \
+				echo \
 				 '#define innocent_pear_HAVE_CONST_$c 1';\
 			else	echo \
 				 '#undef innocent_pear_HAVE_CONST_$c'; \
