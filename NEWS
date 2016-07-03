@@ -1,3 +1,8 @@
+2016-07-03	Minor cleanup.
+
+		include/innocent-pear/yarly.h :
+		- removed unneeded yarly_impl<...>::NewNewState definition
+
 2016-07-01	"An apple a day makes 365 apples a year."
 
 		GNUmakefile :

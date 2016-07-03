@@ -35,8 +35,7 @@ class yarly_impl
 	    State8  = update_inner(State7), State9  = update_inner(State8),
 	    State10 = update_inner(State9), State11 = update_inner(State10),
 	    State12 = update_inner(State11),
-	    NewState = update_outer(State12),
-	    NewNewState = update_outer(NewState);
+	    NewState = update_outer(State12);
 	static constexpr T DefX1 = pick_hi<T>(State2  ^ State3),
 			   DefX2 = pick_hi<T>(State3  ^ State4),
 			   DefX3 = pick_hi<T>(State4  ^ State5),
