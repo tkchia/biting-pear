@@ -54,7 +54,7 @@ modules.host = \
     share/innocent-pear/keyboard.o \
     share/innocent-pear/nomnom.o \
     share/innocent-pear/omnomnom.o
-ifeq "$(conf_Have_cxx_typ_struct_bfd)" "yes"
+ifeq "$(conf_Have_cxx_typ_struct_x20_bfd)" "yes"
 ifeq "$(conf_Have_cxx_lib_bfd)" "yes"
 ifeq "$(conf_Have_cxx_var_tpls)" "yes"
 utils.host += \

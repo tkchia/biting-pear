@@ -1,11 +1,15 @@
-2016-07-06	Much saner pseudorandomness...
+2016-07-06	Much saner pseudorandomness, and more for ptrace(...).
 
 		include/innocent-pear/bbq.h :
 		- now uses uint64_t instead of uint_least64_t
 		- innocent_pear::impl::update_outer(...) now needs one more
 		  parameter to select the pseudorandom generator
 
-		GNUmakefile ,
+		GNUmakefile :
+		- now uses uint64_t instead of uint_least64_t
+		- $(conf_Have_cxx_typ_struct_bfd) ->
+		  $(conf_Have_cxx_typ_struct_x20_bfd)
+
 		bin/innocent-pear-c++.ccc ,
 		include/innocent-pear/host/lolcat.h ,
 		share/innocent-pear/calm.ccc ,
@@ -27,6 +31,9 @@
 		include/innocent-pear/yarly.h :
 		- updated update_outer(...) calls, and internal templates, to
 		  select the pseudorandom generator per the number of levels
+
+		share/innocent-pear/doge-1.ccc :
+		- upped the number of recursion layers for ptrace(...) call
 
 2016-07-03	Minor cleanup.
 
