@@ -84,7 +84,7 @@ struct omg_impl_0
 	{
 		constexpr rand_state_t State2 = update_inner(State);
 		constexpr rand_state_t State3 = update_inner(State2);
-		constexpr rand_state_t NewState = update_outer(State);
+		constexpr rand_state_t NewState = update_outer(State, Levels);
 		switch ((State2 >> 32) % 3) {
 		    case 0:
 			{
@@ -180,7 +180,7 @@ class omg
 {
 	static constexpr rand_state_t State2 = update_inner(State);
 	static constexpr rand_state_t State3 = update_inner(State2);
-	static constexpr rand_state_t NewState = update_outer(State);
+	static constexpr rand_state_t NewState = update_outer(State, Levels);
 	__attribute__((always_inline))
 	bool unsafe()
 	{

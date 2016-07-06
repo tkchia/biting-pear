@@ -1,3 +1,33 @@
+2016-07-06	Much saner pseudorandomness...
+
+		include/innocent-pear/bbq.h :
+		- now uses uint64_t instead of uint_least64_t
+		- innocent_pear::impl::update_outer(...) now needs one more
+		  parameter to select the pseudorandom generator
+
+		GNUmakefile ,
+		bin/innocent-pear-c++.ccc ,
+		include/innocent-pear/host/lolcat.h ,
+		share/innocent-pear/calm.ccc ,
+		share/innocent-pear/keyboard.ccc ,
+		share/innocent-pear/nomnom.cc :
+		- now uses uint64_t instead of uint_least64_t
+
+		configure :
+		- now looks for uint64_t instead of uint_least64_t
+
+		include/innocent-pear/dawg.h ,
+		include/innocent-pear/host/rly.h ,
+		include/innocent-pear/host/srsly.h ,
+		include/innocent-pear/kthxbai.h ,
+		include/innocent-pear/lolwut.h ,
+		include/innocent-pear/omg.h ,
+		include/innocent-pear/orly.h ,
+		include/innocent-pear/rofl.h ,
+		include/innocent-pear/yarly.h :
+		- updated update_outer(...) calls, and internal templates, to
+		  select the pseudorandom generator per the number of levels
+
 2016-07-03	Minor cleanup.
 
 		include/innocent-pear/yarly.h :

@@ -48,7 +48,7 @@ class dawg_impl<State, CT, Flags, Ch, Chs...>
 	static constexpr rand_state_t State2 = update_inner(State);
 	static constexpr rand_state_t State3 = update_inner(State2);
 	static constexpr rand_state_t State4 = update_inner(State3);
-	static constexpr rand_state_t NewState = update_outer(State2);
+	static constexpr rand_state_t NewState = update_outer(State2, 3u);
 	typedef dawg_impl<State4, CT, Flags, Chs...> rest_type;
     public:
 	__attribute__((always_inline))
@@ -106,7 +106,7 @@ inline std::basic_ostream<CT>& operator<<(std::basic_ostream<CT>& os,
 	constexpr innocent_pear::impl::rand_state_t
 	    State2 = innocent_pear::impl::update_inner(State),
 	    State3 = innocent_pear::impl::update_inner(State2),
-	    NewState2 = innocent_pear::impl::update_outer(State3);
+	    NewState2 = innocent_pear::impl::update_outer(State3, 3u);
 	typedef std::basic_ostream<CT>& FT(std::basic_ostream<CT>&, CT);
 	innocent_pear::impl::kthxbai<NewState2, FT *, Flags, 1u>
 	    f(static_cast<FT *>(&std::operator<<));

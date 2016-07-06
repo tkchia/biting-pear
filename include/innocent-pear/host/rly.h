@@ -16,7 +16,7 @@ namespace impl
 template<class T = unsigned, unsigned Levels = 2u>
 class rly;  // forward
 
-template<class T>
+template<class T, unsigned Levels>
 class rly_impl
 {
     protected:
@@ -36,7 +36,7 @@ class rly_impl
 		rand_state_t st10 = update_inner(st9);
 		rand_state_t st11 = update_inner(st10);
 		st12_ = update_inner(st11);
-		new_st_ = update_outer(st12_);
+		new_st_ = update_outer(st12_, Levels);
 		xd1_ = pick_hi<T>(st2_ ^ st3);
 		xd2_ = pick_hi<T>(st3 ^ st4);
 		xd3_ = pick_hi<T>(st4 ^ st5);
@@ -56,9 +56,9 @@ class rly<T, ~0u> : public nowai
 
 template<class T>
 class rly<T, 0u> :
-    public rly_impl<T>
+    public rly_impl<T, 0u>
 {
-	typedef rly_impl<T> super;
+	typedef rly_impl<T, 0u> super;
     public:
 	rly(rand_state_t st) : super(st)
 		{ }
@@ -84,9 +84,9 @@ class rly<T, 0u> :
 };
 
 template<class T, unsigned Levels>
-class rly : public rly_impl<T>
+class rly : public rly_impl<T, Levels>
 {
-	typedef rly_impl<T> super;
+	typedef rly_impl<T, Levels> super;
     public:
 	rly(rand_state_t st) : super(st)
 		{ }

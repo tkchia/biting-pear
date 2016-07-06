@@ -22,9 +22,10 @@ class lolwut_impl
 {
     protected:
 	static constexpr rand_state_t State2 = impl::update_inner(State);
-	static constexpr rand_state_t NewState = impl::update_outer(State);
+	static constexpr rand_state_t NewState =
+	    impl::update_outer(State, Levels);
 	static constexpr rand_state_t NewNewState =
-	    impl::update_outer(NewState);
+	    impl::update_outer(NewState, Levels);
 	static constexpr unsigned Disp =
 	    impl::pick_hi<unsigned>(State2 ^ NewState) / 2u;
 	static constexpr bool Sign =

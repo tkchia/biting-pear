@@ -18,7 +18,7 @@ namespace impl
 template<class T = unsigned, bool Boreal = true, unsigned Levels = 2u>
 class srsly;  // forward
 
-template<class T, bool Boreal>
+template<class T, bool Boreal, unsigned Levels>
 class srsly_impl
 {
     protected:
@@ -61,7 +61,7 @@ class srsly_impl
 		rand_state_t st10 = update_inner(st9);
 		rand_state_t st11 = update_inner(st10);
 		st12_ = update_inner(st11);
-		new_st_ = update_outer(st12_);
+		new_st_ = update_outer(st12_, Levels);
 		which_op_ = pick_hi<unsigned>(st ^ st2);
 		xd0_ = pick_hi<T>(st2 ^ st3);
 		xd1_ = pick_hi<T>(st3 ^ st4);
@@ -82,9 +82,9 @@ class srsly<T, Boreal, ~0u> : public nowai
 
 template<class T, bool Boreal>
 class srsly<T, Boreal, 0u> :
-    public srsly_impl<T, Boreal>
+    public srsly_impl<T, Boreal, 0u>
 {
-	typedef srsly_impl<T, Boreal> super;
+	typedef srsly_impl<T, Boreal, 0u> super;
     public:
 	srsly(rand_state_t st) : super(st)
 		{ }
@@ -125,9 +125,9 @@ class srsly<T, Boreal, 0u> :
 };
 
 template<class T, bool Boreal, unsigned Levels>
-class srsly : public srsly_impl<T, Boreal>
+class srsly : public srsly_impl<T, Boreal, Levels>
 {
-	typedef srsly_impl<T, Boreal> super;
+	typedef srsly_impl<T, Boreal, Levels> super;
 	typedef srsly<T, false, Levels> austral;
     public:
 	srsly(rand_state_t st) : super(st)

@@ -9,7 +9,7 @@
 #include <innocent-pear/host/lolcat.h>
 #include <innocent-pear/dawg.h>
 
-using innocent_pear::impl::uint_least64_t;
+using innocent_pear::impl::uint64_t;
 
 static int main_(int argc, char **argv, char *& grumpy, char *& grumpier)
 {
@@ -111,7 +111,7 @@ static int main_(int argc, char **argv, char *& grumpy, char *& grumpier)
 			lolz += "/share/innocent-pear/omnomnom";
 			calm[0] = (char *)lolz.c_str();
 			calm[1] = new char[19];
-			snprintf(calm[1], 19, "%#16" PRIxLEAST64,
+			snprintf(calm[1], 19, "%#16" PRIx64,
 			    file_crc64(grumpy));
 			calm[2] = 0;
 			keyboardest(calm, grumpy, grumpier, is.v);

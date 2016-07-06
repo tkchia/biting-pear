@@ -19,13 +19,13 @@ namespace innocent_pear
 namespace impl
 {
 
-template<rand_state_t State>
+template<rand_state_t State, unsigned Levels>
 class rofl_impl_base
 {
     protected:
-	static constexpr rand_state_t NewState = update_outer(State);
+	static constexpr rand_state_t NewState = update_outer(State, Levels);
 	static constexpr rand_state_t State2 = update_inner(State);
-	static constexpr rand_state_t NewState2 = update_outer(State2);
+	static constexpr rand_state_t NewState2 = update_outer(State2, Levels);
 };
 
 /*
@@ -45,7 +45,7 @@ extern long libc_syscall(long scno, ...)
     __asm(innocent_pear_STRINGIZE(__USER_LABEL_PREFIX__) "syscall");
 
 template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
-class rofl_impl_syscall : virtual public rofl_impl_base<State>
+class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 {
     public:
 	class syscall_ret
@@ -67,7 +67,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State>
 	__attribute__((always_inline))
 	static long re_scno(long scno)
 	{
-		typedef rofl_impl_base<State> super;
+		typedef rofl_impl_base<State, Levels> super;
 		kthxbai<super::NewState, unsigned long, Flags, Levels>
 		    no(scno);
 		return (long)(unsigned long)no;
@@ -76,7 +76,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State>
 	__attribute__((always_inline))
 	static syscall_ret use_libc_syscall(long scno, Ts... xs)
 	{
-		typedef rofl_impl_base<State> super;
+		typedef rofl_impl_base<State, Levels> super;
 		innocent_pear::kthxbai<super::NewState, long (*)(long, ...),
 		    Flags, Levels> scf(libc_syscall);
 		long rv = scf(re_scno(scno), xs...);
@@ -472,7 +472,7 @@ class rofl_impl_clear_cache :
 
 template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
 class rofl_impl_memset :
-    virtual public rofl_impl_base<State>,
+    virtual public rofl_impl_base<State, Levels>,
     virtual public rofl_impl_clear_cache<State, Flags, Levels>
 {
     public:
@@ -508,7 +508,7 @@ class rofl_impl_memset :
 		    : "=D" (rdi), "=c" (rcx)
 		    : "0" ((char *)s + 7) : "memory", "cc");
 #elif defined __arm__
-		typedef rofl_impl_base<State> super1;
+		typedef rofl_impl_base<State, Levels> super1;
 		typedef rofl_impl_clear_cache<State, Flags, Levels> super2;
 		void *x, *y, *foo;
 		/*

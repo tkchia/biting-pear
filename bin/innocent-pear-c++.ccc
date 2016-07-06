@@ -151,7 +151,7 @@ static int main_(int argc, char **argv, char *& doge_1, char *& doge_2,
     char *& doge_3, char *& doge_4, char *& doge_8, char *& doge_9,
     char *& doge_a, char *& doge_b)
 {
-	using innocent_pear::impl::uint_least64_t;
+	using innocent_pear::impl::uint64_t;
 	using innocent_pear::impl::rand_state_t;
 	struct {
 		unsigned moar : 1, pass : 1, caturday : 1, eleventy : 1,
@@ -295,7 +295,7 @@ static int main_(int argc, char **argv, char *& doge_1, char *& doge_2,
 	if (setenv("INNOCENT_PEAR_DRIVER_CXX", *argv, 1) != 0)
 		concern($"cannot set INNOCENT_PEAR_DRIVER_CXX for "
 		    innocent_pear_CXX_FOR_TARGET " process");
-	uint_least64_t crc = 0, crc2 = 0;
+	uint64_t crc = 0, crc2 = 0;
 	rand_state_t st = 0, st2 = 0;
 	if (doge) {
 		while (cheesy != burgery) {

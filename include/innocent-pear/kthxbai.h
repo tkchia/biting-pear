@@ -55,7 +55,7 @@ struct kthxbai_impl
 	{
 		constexpr rand_state_t State2 = update_inner(State);
 		constexpr rand_state_t State3 = update_inner(State2);
-		constexpr rand_state_t NewState = update_outer(State);
+		constexpr rand_state_t NewState = update_outer(State, Levels);
 		switch ((State2 >> 32) % 16) {
 		    case 0:
 			{
@@ -205,7 +205,7 @@ struct kthxbai_impl
 			{
 				T x1;
 				lolwut<State3, T, Flags, Levels - 1> p1 = &x1;
-				lolwut<update_outer(State3), T, Flags,
+				lolwut<update_outer(State3, Levels), T, Flags,
 				    Levels - 1> p2 = &x1;
 				kthxbai_impl<NewState, T, Flags, Levels - 1>
 				    (*p1, v);

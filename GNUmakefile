@@ -128,10 +128,10 @@ $(config.h.host) $(config.h.target): config.cache
 	echo "/****** AUTOMATICALLY GENERATED `date` ******/" >$@.tmp
 	if test '$(config.h.host)' = '$@'; \
 		then echo '#include <cstdlib>' >>$@.tmp; fi
-	if test '$(conf_Have_cxx_typ_std_0uint_1least64_1t),$@' = \
+	if test '$(conf_Have_cxx_typ_std_0uint64_1t),$@' = \
 	    'yes,$(config.h.host)'; then \
 		echo '#include <cinttypes>' >>$@.tmp; \
-	elif test '$(conf_Have_cxxt_typ_std_0uint_1least64_1t),$@' = \
+	elif test '$(conf_Have_cxxt_typ_std_0uint64_1t),$@' = \
 	    'yes,$(config.h.target)'; then \
 		echo '#include <cinttypes>' >>$@.tmp; \
 	elif test '$(config.h.target)' = '$@'; then \
@@ -156,14 +156,14 @@ $(config.h.host) $(config.h.target): config.cache
 		echo '#include <uchar.h>' >>$@.tmp; \
 	fi
 	echo 'namespace innocent_pear { namespace impl {' >>$@.tmp
-	if test '$(conf_Have_cxx_typ_std_0uint_1least64_1t),$@' = \
+	if test '$(conf_Have_cxx_typ_std_0uint64_1t),$@' = \
 	    'yes,$(config.h.host)'; then \
-		echo 'using std::uint_least64_t;' >>$@.tmp; \
-	elif test '$(conf_Have_cxxt_typ_std_0uint_1least64_1t),$@' = \
+		echo 'using std::uint64_t;' >>$@.tmp; \
+	elif test '$(conf_Have_cxxt_typ_std_0uint64_1t),$@' = \
 	    'yes,$(config.h.target)'; then \
-		echo 'using std::uint_least64_t;' >>$@.tmp; \
+		echo 'using std::uint64_t;' >>$@.tmp; \
 	else \
-		echo 'using ::uint_least64_t;' >>$@.tmp; \
+		echo 'using ::uint64_t;' >>$@.tmp; \
 	fi
 	if test '$(conf_Have_cxxt_typ_std_0uintptr_1t),$@' = \
 	    'yes,$(config.h.target)'; then \

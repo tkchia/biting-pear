@@ -26,7 +26,8 @@ class orly_impl
 	    State6  = update_inner(State5), State7  = update_inner(State6),
 	    State8  = update_inner(State7), State9  = update_inner(State8),
 	    State10 = update_inner(State9), State11 = update_inner(State10),
-	    State12 = update_inner(State11), NewState = update_outer(State12);
+	    State12 = update_inner(State11),
+	    NewState = update_outer(State12, Levels);
 	static constexpr unsigned WhichOp = pick_hi<unsigned>(State ^ State2);
 	static constexpr T DefX0 = pick_hi<T>(State2  ^ State3),
 			   DefX1 = pick_hi<T>(State3  ^ State4),
