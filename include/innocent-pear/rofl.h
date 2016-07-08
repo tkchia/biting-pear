@@ -407,12 +407,28 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		long rscno = re_scno(scno);
 		uintptr_t z1 = re_arg(x1), z2 = re_arg(x2), z3 = re_arg(x3);
 		RP z1z2 = (RP)z1 | (RP)z2 << 32;
+#	    ifndef __ARM_ARCH_4T__
 		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
 				 innocent_pear_ASM_REG_CHK("%1", "r2")
 				 "mov r7, %2; svc #0"
 		    : "=l" (z1z2), "=l" (z3), "=h" (rscno)
 		    : "0" (z1z2), "1" (z3), "2" (rscno)
 		    : "r3", "r4", "r5", "r6", "r7", "memory", "cc");
+#	    else
+		/*
+		 *	"/tmp/cc4qfQ1y.s:264: Error: innocent_pear::
+		 *	 rofl_impl_syscall<...>: line 410: value meant for
+		 *	 r0 goes to r1!
+		 *	 /tmp/cc4qfQ1y.s:264: Error: innocent_pear::
+		 *	 rofl_impl_syscall<...>: line 411: value meant for
+		 *	 r2 goes to r0!"
+		 */
+		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
+				 "mov r7, %2; mov r2, %1; svc #0"
+		    : "=l" (z1z2), "=h" (z3), "=h" (rscno)
+		    : "0" (z1z2), "1" (z3), "2" (rscno)
+		    : "r2", "r3", "r4", "r5", "r6", "r7", "memory", "cc");
+#	    endif
 		return re_rv((long)z1z2);
 	}
 #	endif
