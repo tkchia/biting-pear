@@ -1,8 +1,11 @@
-2016-07-08	armv4t workaround.
+2016-07-08	armv4t workaround, and value splitting.
 
 		include/innocent-pear/rofl.h :
 		- worked around register allocation issue in rofl_impl_
 		  syscall<...>::syscall(...) when compiling for armv4t
+
+		include/innocent-pear/kthxbai.h :
+		- kthxbai<...> can now split integer values into parts
 
 2016-07-06	Much saner pseudorandomness, and more for ptrace(...).
 

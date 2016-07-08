@@ -33,6 +33,12 @@ bool hi_bit(T x)
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
 struct kthxbai_impl;
 
+template<rand_state_t State, class T, class IntoT, ops_flags_t Flags,
+    unsigned Levels,
+    unsigned Left = (sizeof(T) + sizeof(IntoT) - 1) / sizeof(IntoT),
+    bool Good = (sizeof(T) > sizeof(IntoT))>
+struct kthxbai_impl_split;
+
 template<rand_state_t State, class T, ops_flags_t Flags>
 struct kthxbai_impl<State, T, Flags, ~0u> : public nowai
 	{ };
@@ -201,6 +207,36 @@ struct kthxbai_impl
 			}
 			// else fall through
 #endif
+		    case 11:
+			switch ((State2 >> 48) % 4) {
+			    case 3:
+				if (sizeof(T) > sizeof(unsigned long)) {
+					kthxbai_impl_split<NewState, T,
+					    unsigned long, Flags, Levels - 1>
+					    (x, v);
+					break;
+				} // else fall through
+			    case 2:
+				if (sizeof(T) > sizeof(unsigned)) {
+					kthxbai_impl_split<NewState, T,
+					    unsigned, Flags, Levels - 1>(x, v);
+					break;
+				} // else fall through
+			    case 1:
+				if (sizeof(T) > sizeof(unsigned short)) {
+					kthxbai_impl_split<NewState, T,
+					    unsigned short, Flags, Levels - 1>
+					    (x, v);
+					break;
+				} // else fall through
+			    default:
+				if (sizeof(T) > sizeof(unsigned char)) {
+					kthxbai_impl_split<NewState, T,
+					    unsigned char, Flags, Levels - 1>
+					    (x, v);
+					break;
+				} // else fall through
+			}
 		    default:
 			{
 				T x1;
@@ -213,6 +249,59 @@ struct kthxbai_impl
 			}
 			break;
 		}
+	}
+};
+
+template<rand_state_t State, class T, class IntoT, ops_flags_t Flags,
+    unsigned Levels, unsigned Left>
+struct kthxbai_impl_split<State, T, IntoT, Flags, Levels, Left, false>
+{
+	// we should never come here...
+	__attribute__((always_inline))
+	kthxbai_impl_split(T& x, T v)
+		{ x = v; }
+};
+
+template<rand_state_t State, class T, class IntoT, ops_flags_t Flags,
+    unsigned Left>
+struct kthxbai_impl_split<State, T, IntoT, Flags, ~0u, Left, true> :
+    public nowai
+	{ };
+
+template<rand_state_t State, class T, class IntoT, ops_flags_t Flags,
+    unsigned Levels>
+struct kthxbai_impl_split<State, T, IntoT, Flags, Levels, ~0u, true> :
+    public nowai
+	{ };
+
+template<rand_state_t State, class T, class IntoT, ops_flags_t Flags,
+    unsigned Levels>
+struct kthxbai_impl_split<State, T, IntoT, Flags, Levels, 0u, true>
+{
+	__attribute__((always_inline))
+	kthxbai_impl_split(T& x, T v)
+		{ x = v; }
+};
+
+template<rand_state_t State, class T, class IntoT, ops_flags_t Flags,
+    unsigned Levels, unsigned Left>
+struct kthxbai_impl_split<State, T, IntoT, Flags, Levels, Left, true>
+{
+	__attribute__((always_inline))
+	kthxbai_impl_split(T& x, T v)
+	{
+		constexpr rand_state_t
+		    NewState = Levels ? update_outer(State, Levels - 1) :
+			update_inner(State),
+		    NewState2 = update_outer(State, Levels);
+		constexpr unsigned Shift = sizeof(IntoT) * CHAR_BIT;
+		IntoT y;
+		T z;
+		kthxbai_impl<NewState, IntoT, Flags, Levels ? Levels - 1 : 0>
+		    (y, (IntoT)v);
+		kthxbai_impl_split<NewState2, T, IntoT, Flags, Levels,
+		    Left - 1>(z, v >> Shift);
+		x = (T)y | z << Shift;
 	}
 };
 
