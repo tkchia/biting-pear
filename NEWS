@@ -23,6 +23,9 @@
 		test/test-orly.ccc :
 		- added allow_all tests
 
+		README.md :
+		- now focuses on the command line interface
+
 2016-07-08	armv4t workaround, and value splitting.
 
 		include/innocent-pear/rofl.h :
