@@ -479,8 +479,7 @@ class rofl_impl_clear_cache :
 	clear_cache(void *start, void *end)
 	{
 #if defined __linux__ && defined __arm__
-		innocent_pear::kthxbai<super::NewState, unsigned, Flags,
-		    Levels> zero(0);
+		kthxbai<super::NewState, unsigned, Flags, Levels> zero(0);
 		return super::syscall(0xf0002, start, end, (unsigned)zero);
 #else
 		__builtin___clear_cache(start, end);
@@ -541,8 +540,7 @@ class rofl_impl_memset :
 #	define innocent_pear_T16_INSN(insn, d, n) insn "s " \
 						  d ", " d ", " n "; "
 #   endif
-		innocent_pear::kthxbai<super1::NewState, unsigned, Flags,
-		    Levels> three(3);
+		kthxbai<super1::NewState, unsigned, Flags, Levels> three(3);
 		__asm __volatile(
 			innocent_pear_T16_INSN("bic", "%0", "%4")
 			"adr %1, 2f; "

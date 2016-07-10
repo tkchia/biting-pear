@@ -14,6 +14,7 @@
 		  as clobbering %rcx and %r11
 		- added getpid(), getppid(), kill(...), and ioctl(...) to
 		  rofl<...>
+		- now properly forward-references kthxbai<...>
 
 		test/test-dawg-syn.ccc ,
 		test/test-dawg-syn.good :
