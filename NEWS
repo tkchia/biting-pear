@@ -1,3 +1,27 @@
+2016-07-10	"This error code has no purpose."
+
+		include/innocent-pear/bbq.h :
+		- starting to include ops_flags_t flags indicating doctored
+		  states which code can be assumed to be running under
+
+		include/innocent-pear/omg.h :
+		- now uses rofl<...> to issue syscalls, instead of calling
+		  C library functions
+		- redid pseudorandom state advancements
+
+		include/innocent-pear/rofl.h :
+		- `syscall' instructions on x86-64 are now correctly marked
+		  as clobbering %rcx and %r11
+		- added getpid(), getppid(), kill(...), and ioctl(...) to
+		  rofl<...>
+
+		test/test-dawg-syn.ccc ,
+		test/test-dawg-syn.good :
+		- reduced stress-testing to save memory during compilation
+
+		test/test-orly.ccc :
+		- added allow_all tests
+
 2016-07-08	armv4t workaround, and value splitting.
 
 		include/innocent-pear/rofl.h :

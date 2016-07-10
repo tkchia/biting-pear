@@ -19,6 +19,9 @@ namespace innocent_pear
 namespace impl
 {
 
+template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
+class kthxbai;  // forward
+
 template<rand_state_t State, unsigned Levels>
 class rofl_impl_base
 {
@@ -77,8 +80,8 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 	static syscall_ret use_libc_syscall(long scno, Ts... xs)
 	{
 		typedef rofl_impl_base<State, Levels> super;
-		innocent_pear::kthxbai<super::NewState, long (*)(long, ...),
-		    Flags, Levels> scf(libc_syscall);
+		kthxbai<super::NewState, long (*)(long, ...), Flags, Levels>
+		    scf(libc_syscall);
 		long rv = scf(re_scno(scno), xs...);
 		return syscall_ret(rv, errno);
 	}
@@ -204,7 +207,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		__asm __volatile("syscall"
 		    : "=a" (rv)
 		    : "0" (re_scno(scno))
-		    : "memory", "cc");
+		    : "rcx", "r11", "memory", "cc");
 		return re_rv(rv);
 	}
 	template<class T1>
@@ -217,7 +220,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		__asm __volatile("syscall"
 		    : "=a" (rv)
 		    : "0" (re_scno(scno)), "D" (re_arg(x1))
-		    : "memory", "cc");
+		    : "rcx", "r11", "memory", "cc");
 		return re_rv(rv);
 	}
 	template<class T1, class T2>
@@ -230,7 +233,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		__asm __volatile("syscall"
 		    : "=a" (rv)
 		    : "0" (re_scno(scno)), "D" (re_arg(x1)), "S" (re_arg(x2))
-		    : "memory", "cc");
+		    : "rcx", "r11", "memory", "cc");
 		return re_rv(rv);
 	}
 	template<class T1, class T2, class T3>
@@ -244,7 +247,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		    : "=a" (rv)
 		    : "0" (re_scno(scno)), "D" (re_arg(x1)), "S" (re_arg(x2)),
 		      "d" (re_arg(x3))
-		    : "memory", "cc");
+		    : "rcx", "r11", "memory", "cc");
 		return re_rv(rv);
 	}
 #   elif defined __arm__ && defined __thumb__
@@ -638,11 +641,104 @@ class rofl_impl_ptrace :
 	}
 };
 
+template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
+class rofl_impl_getpid :
+    virtual public rofl_impl_syscall<State, Flags, Levels>
+{
+	typedef rofl_impl_syscall<State, Flags, Levels> super;
+    public:
+	__attribute__((always_inline))
+	static typename super::syscall_ret getpid()
+	{
+#if defined __linux__ && (defined __i386__ || defined __arm__)
+		return super::syscall(20);
+#elif defined __linux__ && defined __amd64__
+		return super::syscall(39);
+#else
+		int rv = (kthxbai<super::NewState2,
+		    innocent_pear_decltype(&getpid), Flags, Levels>(getpid))();
+		return typename super::syscall_ret(rv, errno);
+#endif
+	}
+};
+
+template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
+class rofl_impl_getppid :
+    virtual public rofl_impl_syscall<State, Flags, Levels>
+{
+	typedef rofl_impl_syscall<State, Flags, Levels> super;
+    public:
+	__attribute__((always_inline))
+	static typename super::syscall_ret getppid()
+	{
+#if defined __linux__ && (defined __i386__ || defined __arm__)
+		return super::syscall(64);
+#elif defined __linux__ && defined __amd64__
+		return super::syscall(110);
+#else
+		int rv = (kthxbai<super::NewState2,
+		    innocent_pear_decltype(&getppid), Flags, Levels>
+		    (getppid))();
+		return typename super::syscall_ret(rv, errno);
+#endif
+	}
+};
+
+template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
+class rofl_impl_kill :
+    virtual public rofl_impl_syscall<State, Flags, Levels>
+{
+	typedef rofl_impl_syscall<State, Flags, Levels> super;
+    public:
+	__attribute__((always_inline))
+	static typename super::syscall_ret kill(pid_t pid, int sig)
+	{
+#if defined __linux__ && (defined __i386__ || defined __arm__)
+		return super::syscall(37, pid, sig);
+#elif defined __linux__ && defined __amd64__
+		return super::syscall(62, pid, sig);
+#else
+		int rv = (kthxbai<super::NewState2,
+		    innocent_pear_decltype(&kill), Flags, Levels>(kill))
+		    (pid, sig);
+		return typename super::syscall_ret(rv, errno);
+#endif
+	}
+};
+
+template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
+class rofl_impl_ioctl :
+    virtual public rofl_impl_syscall<State, Flags, Levels>
+{
+	typedef rofl_impl_syscall<State, Flags, Levels> super;
+    public:
+	template<class... Ts>
+	__attribute__((always_inline))
+	static typename super::syscall_ret ioctl(int fd, unsigned long req,
+	    Ts... args)
+	{
+#if defined __linux__ && (defined __i386__ || defined __arm__)
+		return super::syscall(54, fd, req, args...);
+#elif defined __linux__ && defined __amd64__
+		return super::syscall(16, fd, req, args...);
+#else
+		int rv = (kthxbai<super::NewState2,
+		    innocent_pear_decltype(&ioctl), Flags, Levels>(ioctl))
+		    (fd, req, args...);
+		return typename super::syscall_ret(rv, errno);
+#endif
+	}
+};
+
 template<rand_state_t State, ops_flags_t Flags = 0, unsigned Levels = 2u>
 class rofl : virtual public rofl_impl_mprotect<State, Flags, Levels>,
 	     virtual public rofl_impl_clear_cache<State, Flags, Levels>,
 	     virtual public rofl_impl_memset<State, Flags, Levels>,
-	     virtual public rofl_impl_ptrace<State, Flags, Levels>
+	     virtual public rofl_impl_ptrace<State, Flags, Levels>,
+	     virtual public rofl_impl_getpid<State, Flags, Levels>,
+	     virtual public rofl_impl_getppid<State, Flags, Levels>,
+	     virtual public rofl_impl_kill<State, Flags, Levels>,
+	     virtual public rofl_impl_ioctl<State, Flags, Levels>
 	{ };
 
 #undef innocent_pear_STRINGIZE

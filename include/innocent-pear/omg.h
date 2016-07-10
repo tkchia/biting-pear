@@ -7,6 +7,7 @@
 #include <innocent-pear/bbq.h>
 #include <innocent-pear/kthxbai.h>
 #include <innocent-pear/nowai.h>
+#include <innocent-pear/rofl.h>
 
 namespace innocent_pear
 {
@@ -82,13 +83,14 @@ struct omg_impl_0
 	__attribute__((always_inline))
 	omg_impl_0()
 	{
-		constexpr rand_state_t State2 = update_inner(State);
-		constexpr rand_state_t State3 = update_inner(State2);
-		constexpr rand_state_t NewState = update_outer(State, Levels);
+		constexpr rand_state_t
+		    State2 = update_inner(State),
+		    NewState = update_outer(State, Levels),
+		    NewState2 = update_outer(NewState, Levels);
 		switch ((State2 >> 32) % 3) {
 		    case 0:
 			{
-				omg<State3, unsigned,
+				omg<NewState, unsigned,
 				    innocent_pear::ops::allow_all, Levels-1>();
 			}
 			break;
@@ -98,7 +100,7 @@ struct omg_impl_0
 			} // fall through
 		    default:
 			{
-				omg_impl_0<State3, Levels - 1>();
+				omg_impl_0<NewState2, Levels - 1>();
 			}
 		}
 	}
@@ -178,36 +180,32 @@ class omg<State, T, Flags, 0u>
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
 class omg
 {
-	static constexpr rand_state_t State2 = update_inner(State);
-	static constexpr rand_state_t State3 = update_inner(State2);
-	static constexpr rand_state_t NewState = update_outer(State, Levels);
+	static constexpr rand_state_t
+	    State2 = update_inner(State),
+	    NewState = update_outer(State, Levels),
+	    NewState2 = update_outer(State, Levels),
+	    NewState3 = update_outer(State, Levels);
+	typedef kthxbai<NewState, unsigned, Flags, Levels - 1> kthxbai1;
+	typedef rofl<NewState2, Flags, Levels - 1> rofl2;
+	typedef rofl<NewState3, Flags, Levels - 1> rofl3;
 	__attribute__((always_inline))
 	bool unsafe()
 	{
 		using namespace innocent_pear::ops;
-		constexpr unsigned Which2 = (State2 >> 56) % 4;
+		constexpr unsigned Which2 = (State2 >> 56) % 3;
 		switch (Which2) {
 		    case 0:
 			if (!(Flags & allow_signal_safes))
 				return false;
 			else {
-				kthxbai<State3,
-				    innocent_pear_decltype(&std::raise),
-				    Flags, Levels - 1> f(std::raise);
-				kthxbai<NewState, unsigned, Flags, Levels - 1>
-				    z(0);
-				f((int)z);
+				rofl2::kill(rofl3::getpid(), kthxbai1(0));
 				return true;
 			}
 		    case 1:
-		    case 2:
 			if (!(Flags & allow_signal_safes))
 				return false;
 			else {
-				kthxbai<State3, pid_t (*)(), Flags,
-				    Levels - 1>
-				    f(Which2 == 1 ? getpid : getppid);
-				f();
+				rofl2::kill(rofl3::getppid(), kthxbai1(0));
 				return true;
 			}
 		    default:
@@ -228,13 +226,13 @@ class omg
 		switch (Which) {
 		    case 0:
 			{
-				omg<State3, T, Flags, Levels - 1>();
+				omg<NewState, T, Flags, Levels - 1>();
 			}
 			break;
 		    case 1:
 			{
 				T x;
-				omg<State3, T, Flags, Levels - 1> zomg(x);
+				omg<NewState, T, Flags, Levels - 1> zomg(x);
 			}
 			break;
 #if defined __amd64__ || defined __i386__
@@ -264,7 +262,7 @@ class omg
 			{
 				void *q, *r;
 				__asm("movw %%cs, %w0" : "=g" (r));
-				kthxbai<State3, void *, Flags, Levels>
+				kthxbai<NewState, void *, Flags, Levels>
 				    p(&&foo, 1);
 				uint8_t x = static_cast<uint8_t>(State2 >> 24)
 				    / 2;
@@ -348,7 +346,7 @@ class omg
 				}
 			    bar:
 				{
-					omg_impl_0<NewState, Levels - 1>();
+					omg_impl_0<NewState2, Levels - 1>();
 				}
 			    foo:
 				;
@@ -360,10 +358,10 @@ class omg
 		    case 4:
 			{
 #   if defined __thumb__
-				kthxbai<State3, void *, Flags, Levels - 1>
+				kthxbai<NewState, void *, Flags, Levels - 1>
 				    p((char *)&&foo + 1, 1);
 #   else
-				kthxbai<State3, void *, Flags, Levels - 1>
+				kthxbai<NewState, void *, Flags, Levels - 1>
 				    p(&&foo, 1);
 #   endif
 				void *q = static_cast<void *>(p);
@@ -395,7 +393,7 @@ class omg
 					}
 				}
 				{
-					omg_impl_0<NewState, Levels - 1>();
+					omg_impl_0<NewState2, Levels - 1>();
 					__asm __volatile(".ltorg");
 				}
 			    foo:
@@ -410,31 +408,29 @@ class omg
 			// fall through
 		    default:
 			{
-				omg<State3, T, Flags, Levels - 1>();
 				omg<NewState, T, Flags, Levels - 1>();
+				omg<NewState2, T, Flags, Levels - 1>();
 			}
 		}
 	}
 	__attribute__((always_inline))
 	omg(T& x)
 	{
-		constexpr rand_state_t State2 = update_inner(State);
-		constexpr rand_state_t State3 = update_inner(State2);
 		switch ((State2 >> 32) % 3) {
 		    case 0:
 			{
-				omg<State3, T, Flags, Levels - 1> zomg(x);
+				omg<NewState, T, Flags, Levels - 1> zomg(x);
 			}
 			break;
 		    case 1:
 			{
-				omg<State3, T, Flags, Levels>();
+				omg<NewState, T, Flags, Levels>();
 			}
 			break;
 		    default:
 			{
-				kthxbai_impl<State3, T, Flags, Levels - 1>(x,
-				    pick_hi<T>(State3));
+				kthxbai_impl<NewState2, T, Flags, Levels - 1>
+				    (x, pick_hi<T>(NewState));
 			}
 		}
 	}
