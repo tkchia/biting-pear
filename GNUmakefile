@@ -257,7 +257,7 @@ endif
 		echo '#define innocent_pear_decltype __typeof' >>$@.tmp; \
 	fi
 	if test '$(conf_Have_asm_goto_cxx),$@' = 'yes,$(config.h.host)' -o \
-	   test '$(conf_Have_asm_goto_cxxt),$@' = 'yes,$(config.h.target)'; \
+		'$(conf_Have_asm_goto_cxxt),$@' = 'yes,$(config.h.target)'; \
 	then \
 		echo '#define innocent_pear_HAVE_ASM_GOTO 1' >>$@.tmp; \
 	else \
