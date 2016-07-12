@@ -1,3 +1,42 @@
+2016-07-12	Mostly compatibility fixes.
+
+		configure :
+		- now checks type of host-side wchar_t (again)
+		- now looks for std::mbrtowc(...) and ::mbrtowc(...), in
+		  case host implements neither mbrtoc16(...) nor
+		  mbrtoc32(...)
+		- now checks for __asm goto(...) support for both host and
+		  target
+		- now includes both <sys/types.h> and <sys/ptrace.h> when
+		  probing for ptrace(...) constants
+		- removed probing for PT_GETREGS and PT_SETREGS
+		- added probing for tcflow(...) and friends
+
+		GNUmakefile :
+		- $(conf_Have_cxx_typ_struct_x20_bfd) -> $(conf_Have_cxx_
+		  typ_struct__bbfd), following lolwutconf/ update
+		- modified $(config.h.host) and $(config.h.target) outputs
+		  per changes in `configure'
+		- added rule for compiling bin/*.ii to bin/*.s, for debugging
+
+		lolwutconf/ :
+		- bumped from 3473dd81a3 to 684f245d41
+
+		include/innocent-pear/dawg.h :
+		- moved operator<<(...) into innocent_pear::impl:: namespace
+
+		include/innocent-pear/kthxbai.h ,
+		include/innocent-pear/lolwut.h ,
+		include/innocent-pear/rofl.h :
+		- minor clang compatibility tweaks
+
+		include/innocent-pear/omg.h :
+		- now uses __asm goto(...) only when supported
+
+		share/innocent-pear/omnomnom.lxx :
+		- now uses mbrtowc(...) if host and target use the same
+		  wchar_t, instead of mbrtoc16(...) or mbrtoc32(...)
+
 2016-07-10	"This error code has no purpose."
 
 		include/innocent-pear/bbq.h :

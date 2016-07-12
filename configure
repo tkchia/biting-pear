@@ -18,30 +18,46 @@ conf_cxxt_probe_typ std::uintptr_t '#include <cinttypes>'
 conf_cxx_probe_typ ::uint64_t '#include <inttypes.h>'
 conf_cxxt_probe_typ ::uint64_t '#include <inttypes.h>'
 conf_cxxt_probe_typ ::uintptr_t '#include <inttypes.h>'
+conf_cxx_probe_wchar_typ
 conf_cxxt_probe_wchar_typ
 conf_cxx_probe_func std::mbrtoc16 4 '#include <cuchar>'
 conf_cxx_probe_func std::mbrtoc32 4 '#include <cuchar>'
+conf_cxx_probe_func std::mbrtowc 4 '#include <cwchar>'
 conf_cxx_probe_func ::mbrtoc16 4 '#include <uchar.h>'
 conf_cxx_probe_func ::mbrtoc32 4 '#include <uchar.h>'
+conf_cxx_probe_func ::mbrtowc 4 '#include <wchar.h>'
 conf_cxx_probe_func ::secure_getenv 1 '#include <cstdlib>'
 conf_cxx_probe_typ 'struct bfd' '#include <bfd.h>'
 conf_cxx_probe_lib bfd 'bfd-multiarch bfd' \
     '#include <bfd.h>' 'void foo() { bfd_openr("/dev/null", "binary"); }'
 conf_cxxt_probe_dyn_ld
+conf_cxx_probe_asm_goto
+conf_cxxt_probe_asm_goto
 conf_cxxt_probe_ctor_priority
-#
+# ..
+# :
 # The Linux ptrace(2) man page calls this PTRACE_TRACEME, but Linux
 # <sys/ptrace.h> also defines PT_TRACE_ME to the same value.  BSD uses the
 # name PT_TRACE_ME.
 #
-# Ditto for PT_GETREGS vs. PTRACE_GETREGS, etc.
+# Ditto for PT_READ_I vs. PTRACE_PEEKTEXT, etc.
 #
-conf_cxxt_probe_const PT_TRACE_ME '#include <sys/ptrace.h>'
+conf_cxxt_probe_const PT_TRACE_ME \
+    '#include <sys/types.h>' '#include <sys/ptrace.h>'
 conf_cxxt_probe_impld_func ::ptrace 4 'PT_TRACE_ME, 0, 0, 0' '-1' \
-    '#include <sys/ptrace.h>'
-conf_cxxt_probe_const PT_GETREGS '#include <sys/ptrace.h>'
-conf_cxxt_probe_const PT_SETREGS '#include <sys/ptrace.h>'
-conf_cxxt_probe_const PT_READ_I '#include <sys/ptrace.h>'
-conf_cxxt_probe_const PT_READ_D '#include <sys/ptrace.h>'
-conf_cxxt_probe_const PT_READ_U '#include <sys/ptrace.h>'
+    '#include <sys/types.h>' '#include <sys/ptrace.h>'
+conf_cxxt_probe_const PT_READ_I \
+    '#include <sys/types.h>' '#include <sys/ptrace.h>'
+conf_cxxt_probe_const PT_READ_D \
+    '#include <sys/types.h>' '#include <sys/ptrace.h>'
+conf_cxxt_probe_const PT_READ_U \
+    '#include <sys/types.h>' '#include <sys/ptrace.h>'
+#  .
+# .:
+conf_cxxt_probe_func ::tcflow 2 '#include <termios.h>'
+conf_cxxt_probe_const TCOOFF '#include <termios.h>'
+conf_cxxt_probe_const TCOON '#include <termios.h>'
+conf_cxxt_probe_const TCXONC '#include <sys/ioctl.h>'
+conf_cxxt_probe_const TIOCSTOP '#include <sys/ioctl.h>'
+conf_cxxt_probe_const TIOCSTART '#include <sys/ioctl.h>'
 conf_end

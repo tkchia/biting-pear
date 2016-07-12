@@ -354,6 +354,7 @@ class lolwut<State, T, Flags, 0u> : public lolwut_impl<State, T, Flags, 0u>
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
 class lolwut : public lolwut_impl<State, T, Flags, Levels>
 {
+	typedef lolwut_impl<State, T, Flags, Levels> super;
     public:
 	__attribute__((always_inline))
 	lolwut()
@@ -371,11 +372,11 @@ class lolwut : public lolwut_impl<State, T, Flags, Levels>
 	operator T *() const
 	{
 		unsigned disp;
-		kthxbai_impl<(this->NewState), unsigned, Flags, Levels>(disp,
+		kthxbai_impl<super::NewState, unsigned, Flags, Levels>(disp,
 		    this->Disp);
 		char *p;
-		if (((this->NewState ^ this->NewNewState) >> 32) % 4) {
-			lolwut<(this->NewNewState), char, Flags, Levels - 1>
+		if (((super::NewState ^ super::NewNewState) >> 32) % 4) {
+			lolwut<super::NewNewState, char, Flags, Levels - 1>
 			    thang(this->p_);
 			p = (char *)thang;
 		} else

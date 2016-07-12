@@ -54,7 +54,7 @@ modules.host = \
     share/innocent-pear/keyboard.o \
     share/innocent-pear/nomnom.o \
     share/innocent-pear/omnomnom.o
-ifeq "$(conf_Have_cxx_typ_struct_x20_bfd)" "yes"
+ifeq "$(conf_Have_cxx_typ_struct__bbfd)" "yes"
 ifeq "$(conf_Have_cxx_lib_bfd)" "yes"
 ifeq "$(conf_Have_cxx_var_tpls)" "yes"
 utils.host += \
@@ -149,11 +149,19 @@ $(config.h.host) $(config.h.target): config.cache
 	    '$(config.h.host)' = '$@'; then \
 		echo '#include <cuchar>' >>$@.tmp; \
 	fi
+	if test yes = '$(conf_Have_cxx_func_std_0mbrtowc)' -a \
+	    '$(config.h.host)' = '$@'; then \
+		echo '#include <cwchar>' >>$@.tmp; \
+	fi
 	if test \( \
 	    yes = '$(conf_Have_cxx_func__0mbrtoc16)' -o \
 	    yes = '$(conf_Have_cxx_func__0mbrtoc32)' \) -a \
 	    '$(config.h.host)' = '$@'; then \
 		echo '#include <uchar.h>' >>$@.tmp; \
+	fi
+	if test yes = '$(conf_Have_cxx_func__0mbrtowc)' -a \
+	    '$(config.h.host)' = '$@'; then \
+		echo '#include <wchar.h>' >>$@.tmp; \
 	fi
 	echo 'namespace innocent_pear { namespace impl {' >>$@.tmp
 	if test '$(conf_Have_cxx_typ_std_0uint64_1t),$@' = \
@@ -186,6 +194,13 @@ $(config.h.host) $(config.h.target): config.cache
 		echo 'using ::mbrtoc32;' >>$@.tmp; \
 	fi
 	if test 'yes,$(config.h.host)' = \
+	    '$(conf_Have_cxx_func_std_0mbrtowc),$@'; then \
+		echo 'using std::mbrtowc;' >>$@.tmp; \
+	elif test 'yes,$(config.h.host)' = \
+	    '$(conf_Have_cxx_func__0mbrtowc),$@'; then \
+		echo 'using ::mbrtowc;' >>$@.tmp; \
+	fi
+	if test 'yes,$(config.h.host)' = \
 	    '$(conf_Have_cxx_func__0secure_1getenv),$@'; then \
 		echo 'inline char *getenv(const char *name)' >>$@.tmp; \
 		echo '{ return ::secure_getenv(name); }' >>$@.tmp; \
@@ -193,6 +208,22 @@ $(config.h.host) $(config.h.target): config.cache
 		echo 'using std::getenv;' >>$@.tmp; \
 	fi
 	echo '} }' >>$@.tmp
+ifeq "char16_t" "$(conf_Typ_wchar_cxx)"
+	if test x'$@' = x'$(config.h.host)'; then \
+		echo "#define innocent_pear_HOST_WCHAR_IS_CHAR16 1"; \
+		echo "#undef innocent_pear_HOST_WCHAR_IS_CHAR32"; \
+	fi >>$@.tmp
+else ifeq "char32_t" "$(conf_Typ_wchar_cxx)"
+	if test x'$@' = x'$(config.h.host)'; then \
+		echo "#undef innocent_pear_HOST_WCHAR_IS_CHAR16"; \
+		echo "#define innocent_pear_HOST_WCHAR_IS_CHAR32 1"; \
+	fi >>$@.tmp
+else
+	if test x'$@' = x'$(config.h.host)'; then \
+		echo "#undef innocent_pear_HOST_WCHAR_IS_CHAR16"; \
+		echo "#undef innocent_pear_HOST_WCHAR_IS_CHAR32"; \
+	fi >>$@.tmp
+endif
 ifeq "char16_t" "$(conf_Typ_wchar_cxxt)"
 	if test x'$@' = x'$(config.h.host)'; then \
 		echo "#define innocent_pear_TARGET_WCHAR_IS_CHAR16 1"; \
@@ -225,6 +256,19 @@ endif
 	else \
 		echo '#define innocent_pear_decltype __typeof' >>$@.tmp; \
 	fi
+	if test '$(conf_Have_asm_goto_cxx),$@' = 'yes,$(config.h.host)' -o \
+	   test '$(conf_Have_asm_goto_cxxt),$@' = 'yes,$(config.h.target)'; \
+	then \
+		echo '#define innocent_pear_HAVE_ASM_GOTO 1' >>$@.tmp; \
+	else \
+		echo '#undef innocent_pear_HAVE_ASM_GOTO' >>$@.tmp; \
+	fi
+	if test '$(conf_Have_ctor_priority_cxxt),$@' = \
+	    'yes,$(config.h.target)'; then \
+		echo '#define innocent_pear_HAVE_CTOR_PRIORITY 1' >>$@.tmp; \
+	else \
+		echo '#undef innocent_pear_HAVE_CTOR_PRIORITY' >>$@.tmp; \
+	fi
 	set -e; \
 	if test '$(config.h.target)' = '$@'; then \
 		if test '$(conf_Have_cxxt_func__0ptrace)' = yes; then \
@@ -237,7 +281,7 @@ endif
 		else \
 			echo '#undef innocent_pear_HAVE_IMPLD_FUNC_PTRACE'; \
 		fi; \
-		$(foreach c,PT_TRACE_ME PT_GETREGS PT_SETREGS, \
+		$(foreach c,PT_TRACE_ME PT_READ_I PT_READ_D PT_READ_U, \
 			if test '$(conf_Have_cxxt_const_$(subst _,_1,$c))' = \
 			    yes; then \
 				echo \
@@ -336,6 +380,10 @@ bin/%.ii share/innocent-pear/%.ii : \
 
 bin/%: bin/%.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)
+
+# for debugging
+bin/%.s: bin/%.ii
+	$(CXX) $(CXXFLAGS) -S -o$@ $<
 
 bin/%.o: bin/%.ii
 	$(CXX) $(CXXFLAGS) -c -o$@ $<

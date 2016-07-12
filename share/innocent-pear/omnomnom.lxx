@@ -34,11 +34,21 @@ u8tl		[\x80-\xbf]
 #include <innocent-pear/bbq.h>
 
 #if defined innocent_pear_TARGET_WCHAR_IS_CHAR16
-#   define target_wchar_t char16_t
-#   define target_mbrtowc ::innocent_pear::impl::mbrtoc16
+#   if defined innocent_pear_HOST_WCHAR_IS_CHAR16
+#	define target_wchar_t wchar_t
+#	define target_mbrtowc ::innocent_pear::impl::mbrtowc
+#   else
+#	define target_wchar_t char16_t
+#	define target_mbrtowc ::innocent_pear::impl::mbrtoc16
+#   endif
 #elif defined innocent_pear_TARGET_WCHAR_IS_CHAR32
-#   define target_wchar_t char32_t
-#   define target_mbrtowc ::innocent_pear::impl::mbrtoc32
+#   if defined innocent_pear_HOST_WCHAR_IS_CHAR32
+#	define target_wchar_t wchar_t
+#	define target_mbrtowc ::innocent_pear::impl::mbrtowc
+#   else
+#	define target_wchar_t char32_t
+#	define target_mbrtowc ::innocent_pear::impl::mbrtoc32
+#   endif
 #else
 #   undef target_wchar_t
 #   undef target_mbrtowc

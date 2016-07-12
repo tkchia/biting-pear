@@ -81,13 +81,6 @@ class dawg_impl<State, CT, Flags, Ch, Chs...>
 		{ return 1u + sizeof...(Chs); }
 };
 
-} // innocent_pear::impl
-
-template<impl::rand_state_t State, impl::ops_flags_t Flags, char... Chs>
-    using dawg = impl::dawg_impl<State, char, Flags, Chs...>;
-
-} // innocent_pear
-
 template<class CT, innocent_pear::impl::rand_state_t State,
     innocent_pear::impl::ops_flags_t Flags>
 __attribute__((always_inline))
@@ -112,5 +105,12 @@ inline std::basic_ostream<CT>& operator<<(std::basic_ostream<CT>& os,
 	    f(static_cast<FT *>(&std::operator<<));
 	return f(os, s.front()) << s.rest();
 }
+
+} // innocent_pear::impl
+
+template<impl::rand_state_t State, impl::ops_flags_t Flags, char... Chs>
+    using dawg = impl::dawg_impl<State, char, Flags, Chs...>;
+
+} // innocent_pear
 
 #endif

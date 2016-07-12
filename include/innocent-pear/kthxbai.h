@@ -18,11 +18,11 @@ namespace impl
 
 template<impl::rand_state_t State, class T, impl::ops_flags_t Flags,
     unsigned Levels>
-struct omg;  // forward
+class omg;  // forward
 
 template<impl::rand_state_t State, class T, impl::ops_flags_t Flags,
     unsigned Levels>
-struct lolwut;  // forward
+class lolwut;  // forward
 
 template<class T>
 bool hi_bit(T x)
@@ -240,9 +240,9 @@ struct kthxbai_impl
 		    default:
 			{
 				T x1;
-				lolwut<State3, T, Flags, Levels - 1> p1 = &x1;
+				lolwut<State3, T, Flags, Levels - 1> p1(&x1);
 				lolwut<update_outer(State3, Levels), T, Flags,
-				    Levels - 1> p2 = &x1;
+				    Levels - 1> p2(&x1);
 				kthxbai_impl<NewState, T, Flags, Levels - 1>
 				    (*p1, v);
 				kthxbai_impl<0, T, Flags, 0>(x, *p2);

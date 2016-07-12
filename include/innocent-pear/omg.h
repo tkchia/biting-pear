@@ -235,7 +235,8 @@ class omg
 				omg<NewState, T, Flags, Levels - 1> zomg(x);
 			}
 			break;
-#if defined __amd64__ || defined __i386__
+#if (defined __amd64__ || defined __i386__) && \
+    defined innocent_pear_HAVE_ASM_GOTO
 #   ifdef __OPTIMIZE__
 #	define innocent_pear_RET_PREFIX(o) \
 					".if 0 == %c" #o "; " \
@@ -352,7 +353,8 @@ class omg
 				;
 			}
 			break;
-#elif defined __arm__ || defined __thumb__
+#elif (defined __arm__ || defined __thumb__) && \
+    defined innocent_pear_HAVE_ASM_GOTO
 		    case 2:
 		    case 3:
 		    case 4:

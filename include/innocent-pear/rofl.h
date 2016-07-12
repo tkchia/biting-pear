@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <type_traits>
+#include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <innocent-pear/bbq.h>
 #include <innocent-pear/kthxbai.h>
@@ -482,7 +483,7 @@ class rofl_impl_clear_cache :
 		kthxbai<super::NewState, unsigned, Flags, Levels> zero(0);
 		return super::syscall(0xf0002, start, end, (unsigned)zero);
 #else
-		__builtin___clear_cache(start, end);
+		__builtin___clear_cache((char *)start, (char *)end);
 		return typename super::syscall_ret(0, 0);
 #endif
 	}
