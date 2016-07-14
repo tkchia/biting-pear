@@ -5,7 +5,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <type_traits>
-#include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <innocent-pear/bbq.h>
 #include <innocent-pear/kthxbai.h>
@@ -47,6 +46,13 @@ class rofl_impl_base
 #define innocent_pear_STRINGIZE_1(x) #x
 extern long libc_syscall(long scno, ...)
     __asm(innocent_pear_STRINGIZE(__USER_LABEL_PREFIX__) "syscall");
+
+/*
+ * Also do not include <sys/ioctl.h> if we do not have to, since this file
+ * greatly pollutes the macro namespace with all its ioctl numbers...
+ */
+extern int libc_ioctl(int fd, unsigned long request, ...)
+    __asm(innocent_pear_STRINGIZE(__USER_LABEL_PREFIX__) "ioctl");
 
 template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
 class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
@@ -722,8 +728,8 @@ class rofl_impl_ioctl :
 		return super::syscall(16, fd, req, args...);
 #else
 		int rv = (kthxbai<super::NewState2,
-		    innocent_pear_decltype(&ioctl), Flags, Levels>(ioctl))
-		    (fd, req, args...);
+		    innocent_pear_decltype(&libc_ioctl), Flags, Levels>
+		    (libc_ioctl))(fd, req, args...);
 		return typename super::syscall_ret(rv, errno);
 #endif
 	}

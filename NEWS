@@ -1,3 +1,16 @@
+2016-07-14	Save the namespace!
+
+		include/innocent-pear/rofl.h :
+		- now no longer includes <sys/ioctl.h>; this is to avoid
+		  polluting the macro namespace with ioctl numbers
+
+		GNUmakefile :
+		- fixed typo: $(conf_Have_cxx_typ_struct__bbfd) -> $(conf_
+		  Have_cxx_typ_struct_bbfd)
+
+		bin/innocent-pear-doge.ccc :
+		- removed all string scrambling, to save compilation time
+
 2016-07-12	Mostly compatibility fixes.
 
 		configure :

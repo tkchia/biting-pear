@@ -23,7 +23,7 @@ typedef std::set<bfd_size_type> adreld;
 __attribute__((noinline))
 static void such()
 {
-	std::cerr << $"( ) failed: " << bfd_errmsg(bfd_get_error());
+	std::cerr << "( ) failed: " << bfd_errmsg(bfd_get_error());
 	amaze();
 }
 
@@ -41,10 +41,10 @@ static void check_object(bfd *ibfd)
 	if (!bfd_check_format(ibfd, bfd_object))
 		much("bfd_check_format");
 	const char *tgt = bfd_get_target(ibfd);
-	wow($"input file is for target ", tgt);
+	wow("input file is for target ", tgt);
 	if (bfd_get_flavour(ibfd) == bfd_target_coff_flavour &&
 	    std::strncmp(tgt, "pei-", (size_t)4) == 0)
-		many($"unsupported: Windows PE object");
+		many("unsupported: Windows PE object");
 }
 
 static void prep_sxn(bfd *ibfd, asection *isxn, void *cookie)
@@ -56,8 +56,8 @@ static void prep_sxn(bfd *ibfd, asection *isxn, void *cookie)
 		lma = bfd_section_lma(ibfd, isxn);
 	bfd_size_type size = bfd_section_size(ibfd, isxn);
 	std::ostringstream oss;
-	wow($"\t", name, $": vma 0x", std::hex, vma,
-	    $", lma 0x", lma, $", size 0x", size);
+	wow("\t", name, ": vma 0x", std::hex, vma,
+	    ", lma 0x", lma, ", size 0x", size);
 	asection *osxn = bfd_make_section_anyway_with_flags(obfd,name,flags);
 	if (!osxn)
 		much("bfd_make_section_anyway_with_flags");
@@ -78,7 +78,7 @@ static void prep_sxn(bfd *ibfd, asection *isxn, void *cookie)
 /* per phrack.org/issues/56/9.html */
 static void do_frob_1(bfd *ibfd, bfd *obfd)
 {
-	wow($"copying basic object attributes");
+	wow("copying basic object attributes");
 	if (!bfd_set_format(obfd, bfd_get_format(ibfd)))
 		much("bfd_set_format");
 	flagword fl = bfd_get_file_flags(ibfd);
@@ -92,36 +92,36 @@ static void do_frob_1(bfd *ibfd, bfd *obfd)
 
 static void do_frob_2(bfd *ibfd, bfd *obfd)
 {
-	wow($"preparing sections");
+	wow("preparing sections");
 	bfd_map_over_sections(ibfd, prep_sxn, obfd);
 }
 
 static void check_symbol(bfd *ibfd, asymbol *sym, const char *nm)
 {
 	if (!sym)
-		many($"symbol ", nm, $" is not defined");
+		many("symbol ", nm, " is not defined");
 	asection *sxn = sym->section;
 	const char *name = bfd_section_name(ibfd, sxn);
 	if (bfd_is_const_section(sxn))
-		many($"symbol ", nm, $" is in special section ", name);
+		many("symbol ", nm, " is in special section ", name);
 	flagword fl = bfd_get_section_flags(ibfd, sxn);
 	if ((fl & SEC_HAS_CONTENTS) == 0)
-		many($"symbol ", nm, $" is in non-content (possibly BSS) "
+		many("symbol ", nm, " is in non-content (possibly BSS) "
 		      "section ", name);
 	if ((fl & SEC_RELOC) != 0)
-		many($"symbol ", nm, $" is in a section that has static "
+		many("symbol ", nm, " is in a section that has static "
 		      "relocations");
 	symvalue val = sym->value;
-	wow($"symbol ", nm, $" = ", name, ' ', val < 0 ? '-' : '+',
-	    $" 0x", std::hex, val < 0 ? -val : val);
+	wow("symbol ", nm, " = ", name, ' ', val < 0 ? '-' : '+',
+	    " 0x", std::hex, val < 0 ? -val : val);
 	if (val < 0 || val > bfd_section_size(ibfd, sxn))
-		many($"symbol ", nm, $" lies outside section content");
+		many("symbol ", nm, " lies outside section content");
 }
 
 /* per phrack.org/issues/56/9.html */
 static void do_frob_3(bfd *ibfd, bfd *obfd, long *p_n_syms, asymbol ***p_syms)
 {
-	wow($"reading and copying symbol table");
+	wow("reading and copying symbol table");
 	long symtab_sz = bfd_get_symtab_upper_bound(ibfd), n_syms;
 	if (symtab_sz < 0 || symtab_sz > SSIZE_MAX)
 		much("bfd_get_symtab_upper_bound");
@@ -138,7 +138,7 @@ static void do_frob_3(bfd *ibfd, bfd *obfd, long *p_n_syms, asymbol ***p_syms)
 
 static void do_frob_4(bfd *ibfd, adreld *dreld)
 {
-	wow($"reading and scanning dynamic relocation tables");
+	wow("reading and scanning dynamic relocation tables");
 	long dssz = bfd_get_dynamic_symtab_upper_bound(ibfd);
 	if (dssz < 0 || dssz > SSIZE_MAX)
 		much("bfd_get_dynamic_symtab_upper_bound");
@@ -170,7 +170,7 @@ static void do_frob_5(bfd *ibfd, bfd *obfd, const char *bnm, const char *enm,
     asymbol **p_esym)
 {
 	*p_bsym = *p_esym = 0;
-	wow($"scanning symbol table");
+	wow("scanning symbol table");
 	for (long i = 0; i < n_syms; ++i) {
 		asymbol *sym = syms[i];
 		if (bfd_is_local_label(ibfd, sym) ||
@@ -185,16 +185,16 @@ static void do_frob_5(bfd *ibfd, bfd *obfd, const char *bnm, const char *enm,
 	check_symbol(ibfd, *p_esym, enm);
 	asection *sxn = (*p_bsym)->section;
 	if (sxn != (*p_esym)->section)
-		many($"symbols ", bnm, $" and ", enm,
-		     $"are in different sections");
+		many("symbols ", bnm, " and ", enm,
+		     "are in different sections");
 	if ((*p_bsym)->value > (*p_esym)->value)
-		many($"symbol ", enm, $" is before ", bnm);
+		many("symbol ", enm, " is before ", bnm);
 	bfd_size_type
 	    bsym_off = (*p_bsym)->value + bfd_section_lma(ibfd, sxn),
 	    esym_off = (*p_esym)->value + bfd_section_lma(ibfd, sxn);
 	adreld::const_iterator it = dreld->lower_bound(bsym_off);
 	if (it != dreld->end() && *it < esym_off)
-		many('[', bnm, $" ... ", enm, $"] has dynamic relocations");
+		many('[', bnm, " ... ", enm, "] has dynamic relocations");
 }
 
 static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
@@ -203,7 +203,7 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 	bfd *obfd = fortune->obfd;
 	asymbol **syms = fortune->syms;
 	asection *osxn = isxn->output_section;
-	wow($"\t", bfd_section_name(ibfd, osxn));
+	wow("\t", bfd_section_name(ibfd, osxn));
 	flagword fl = bfd_get_section_flags(ibfd, isxn);
 	if ((fl & (SEC_HAS_CONTENTS | SEC_RELOC)) == 0)
 		return;
@@ -233,10 +233,10 @@ static void do_frob_6(bfd *ibfd, bfd *obfd, asymbol *bsym, asymbol *esym,
     asymbol **syms, innocent_pear::impl::rand_state_t seed)
 {
 	afortune fortune = { obfd, syms };
-	wow($"copying sections");
+	wow("copying sections");
 	bfd_map_over_sections(ibfd, copy_sxn, &fortune);
 	asection *osxn = bsym->section->output_section;
-	wow($"frobbing section ", bfd_section_name(obfd, osxn));
+	wow("frobbing section ", bfd_section_name(obfd, osxn));
 	file_ptr off = bsym->value;
 	bfd_size_type sz = esym->value - bsym->value;
 	unsigned char stuff[sz];
@@ -250,7 +250,7 @@ static void do_frob_6(bfd *ibfd, bfd *obfd, asymbol *bsym, asymbol *esym,
 /* per phrack.org/issues/56/9.html */
 static void do_frob_7(bfd *ibfd, bfd *obfd)
 {
-	wow($"copying BFD back-end data");
+	wow("copying BFD back-end data");
 	if (!bfd_copy_private_bfd_data(ibfd, obfd))
 		much("bfd_copy_private_bfd_data");
 }
@@ -279,7 +279,7 @@ int main(int argc, char **argv)
 	bfd_init();
 	try {
 		if (argc != 6 || *argv[5] == 0)
-			many($"invalid arguments");
+			many("invalid arguments");
 		const char *ifn = argv[1], *ofn = argv[2],
 		    *bnm = argv[3], *enm = argv[4];
 		char *ep;
@@ -287,7 +287,7 @@ int main(int argc, char **argv)
 		seed = (innocent_pear::impl::rand_state_t)strtoumax(argv[5],
 		    &ep, 0);
 		if (*ep || errno != 0)
-			many($"invalid arguments");
+			many("invalid arguments");
 		ibfd = bfd_openr(ifn, 0);
 		if (!ibfd)
 			much("bfd_openr");
@@ -297,7 +297,7 @@ int main(int argc, char **argv)
 		std::snprintf(tfn, tfnl, "%s.XXXXXX", ofn);
 		int fd = mkstemp(tfn);
 		if (fd < 0)
-			many($"mkstemp(\"", tfn, $"\" failed: ",
+			many("mkstemp(\"", tfn, "\" failed: ",
 			    strerror(errno));
 		close(fd);
 		obfd = bfd_openw(tfn, bfd_get_target(ibfd));
@@ -309,11 +309,11 @@ int main(int argc, char **argv)
 		if (!closed)
 			much("bfd_close");
 		if (std::rename(tfn, ofn) != 0)
-			many($"rename( ) failed: ", strerror(errno));
+			many("rename( ) failed: ", strerror(errno));
 		tfn = 0;
 		bfd_close(ibfd);
 		ibfd = 0;
-		wow($"done");
+		wow("done");
 	} catch (int s) {
 		if (obfd)
 			bfd_close_all_done(obfd);
