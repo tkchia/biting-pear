@@ -8,6 +8,11 @@
 #include <sys/mman.h>
 #include <innocent-pear/bbq.h>
 #include <innocent-pear/kthxbai.h>
+/*
+ * <sys/ptrace.h> pollutes the macro (and enum) namespace a bit, but we
+ * include it since it is non-trivial to guess the correct prototype for
+ * ptrace(...)...
+ */
 #ifdef innocent_pear_HAVE_FUNC_PTRACE
 #   include <unistd.h>
 #   include <sys/ptrace.h>
@@ -26,9 +31,14 @@ template<rand_state_t State, unsigned Levels>
 class rofl_impl_base
 {
     protected:
-	static constexpr rand_state_t NewState = update_outer(State, Levels);
-	static constexpr rand_state_t State2 = update_inner(State);
-	static constexpr rand_state_t NewState2 = update_outer(State2, Levels);
+	static constexpr rand_state_t
+	    NewState = update_outer(State, Levels),
+	    State2 = update_inner(State),
+	    NewState2 = update_outer(State2, Levels),
+	    State3 = update_inner(State2),
+	    NewState3 = update_outer(State3, Levels),
+	    State4 = update_inner(State3),
+	    NewState4 = update_outer(State4, Levels);
 };
 
 /*
@@ -46,13 +56,15 @@ class rofl_impl_base
 #define innocent_pear_STRINGIZE_1(x) #x
 extern long libc_syscall(long scno, ...)
     __asm(innocent_pear_STRINGIZE(__USER_LABEL_PREFIX__) "syscall");
-
 /*
  * Also do not include <sys/ioctl.h> if we do not have to, since this file
- * greatly pollutes the macro namespace with all its ioctl numbers...
+ * greatly pollutes the macro namespace with all its ioctl numbers. 
+ * Similarly for <sys/termios.h>, which defines tcflow(...).
  */
 extern int libc_ioctl(int fd, unsigned long request, ...)
     __asm(innocent_pear_STRINGIZE(__USER_LABEL_PREFIX__) "ioctl");
+extern int libc_tcflow(int fd, int action)
+    __asm(innocent_pear_STRINGIZE(__USER_LABEL_PREFIX__) "tcflow");
 
 template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
 class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
@@ -587,8 +599,7 @@ class rofl_impl_ptrace :
 	static typename super::syscall_ret
 	ptrace_lib(Ts... xs)
 	{
-		long rv = (kthxbai<super::NewState2,
-		    innocent_pear_decltype(&ptrace), Flags, Levels>
+		long rv = (kthxbai<super::NewState2,innocent_pear_decltype(&ptrace), Flags, Levels>
 		    (ptrace))(xs...);
 		return typename super::syscall_ret(rv, errno);
 	}
@@ -722,15 +733,62 @@ class rofl_impl_ioctl :
 	static typename super::syscall_ret ioctl(int fd, unsigned long req,
 	    Ts... args)
 	{
+		if (__builtin_constant_p(req))
+			req = kthxbai<super::NewState3, unsigned long,
+			    Flags, Levels>(req);
 #if defined __linux__ && (defined __i386__ || defined __arm__)
 		return super::syscall(54, fd, req, args...);
 #elif defined __linux__ && defined __amd64__
 		return super::syscall(16, fd, req, args...);
 #else
 		int rv = (kthxbai<super::NewState2,
-		    innocent_pear_decltype(&libc_ioctl), Flags, Levels>
+		    int (*)(int, unsigned long, ...), Flags, Levels>
 		    (libc_ioctl))(fd, req, args...);
 		return typename super::syscall_ret(rv, errno);
+#endif
+	}
+};
+
+template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
+class rofl_impl_tcflow :
+    virtual public rofl_impl_ioctl<State, Flags, Levels>
+{
+	typedef rofl_impl_ioctl<State, Flags, Levels> super;
+    public:
+	template<class... Ts>
+	__attribute__((always_inline))
+	static typename super::syscall_ret tcflow(int fd, int action)
+	{
+		if (__builtin_constant_p(fd))
+			fd = kthxbai<super::NewState4, unsigned, Flags,
+			    Levels>((unsigned)fd);
+#ifdef innocent_pear_HAVE_CONST_TCXONC
+		if (__builtin_constant_p(action))
+			action = kthxbai<super::NewState4, unsigned, Flags,
+			    Levels>((unsigned)action);
+		return super::ioctl(fd,innocent_pear_VAL_CONST_TCXONC,action);
+#else
+#   if defined innocent_pear_HAVE_CONST_TCOOFF && \
+#      defined innocent_pear_HAVE_CONST_TIOCSTOP
+		if (__builtin_constant_p(action) &&
+		    action == innocent_pear_VAL_CONST_TCOOFF)
+			return super::ioctl(fd,
+			    innocent_pear_VAL_CONST_TIOCSTOP);
+#   endif
+#   if defined innocent_pear_HAVE_CONST_TCOON && \
+#      defined innocent_pear_HAVE_CONST_TIOCSTART
+		if (__builtin_constant_p(action) &&
+		    action == innocent_pear_VAL_CONST_TCOON)
+			return super::ioctl(fd,
+			    innocent_pear_VAL_CONST_TIOCSTART);
+#   endif
+#   ifdef innocent_pear_HAVE_FUNC_TCFLOW
+		int rv = (kthxbai<super::NewState2, int (*)(int, int),
+		    Flags, Levels>(libc_tcflow))(fd, action);
+		return typename super::syscall_ret(rv, errno);
+#   else
+		return typename super::syscall_ret(-1, ENOSYS);
+#   endif
 #endif
 	}
 };
@@ -743,7 +801,8 @@ class rofl : virtual public rofl_impl_mprotect<State, Flags, Levels>,
 	     virtual public rofl_impl_getpid<State, Flags, Levels>,
 	     virtual public rofl_impl_getppid<State, Flags, Levels>,
 	     virtual public rofl_impl_kill<State, Flags, Levels>,
-	     virtual public rofl_impl_ioctl<State, Flags, Levels>
+	     virtual public rofl_impl_ioctl<State, Flags, Levels>,
+	     virtual public rofl_impl_tcflow<State, Flags, Levels>
 	{ };
 
 #undef innocent_pear_STRINGIZE

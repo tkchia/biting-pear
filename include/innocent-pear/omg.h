@@ -22,6 +22,9 @@ class kthxbai;  // forward
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
 struct kthxbai_impl;  // forward
 
+template<impl::rand_state_t State, ops_flags_t Flags, unsigned Levels>
+class rofl;  // forward
+
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
 class omg;
 
@@ -192,7 +195,7 @@ class omg
 	bool unsafe()
 	{
 		using namespace innocent_pear::ops;
-		constexpr unsigned Which2 = (State2 >> 56) % 3;
+		constexpr unsigned Which2 = (State2 >> 56) % 4;
 		switch (Which2) {
 		    case 0:
 			if (!(Flags & allow_signal_safes))
@@ -208,6 +211,16 @@ class omg
 				rofl2::kill(rofl3::getppid(), kthxbai1(0));
 				return true;
 			}
+#if defined innocent_pear_HAVE_CONST_TCOOFF
+		    case 2:
+			if (!(Flags & under_munged_terminal))
+				return false;
+			else {
+				rofl2::tcflow(1,
+				    innocent_pear_VAL_CONST_TCOOFF);
+				return true;
+			}
+#endif
 		    default:
 			return false;
 		}

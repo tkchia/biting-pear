@@ -2,11 +2,14 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <sys/mman.h>
+#include <innocent-pear/orly.h>
+#include <innocent-pear/rofl.h>
 #ifdef innocent_pear_HAVE_IMPLD_FUNC_PTRACE
 #   include <sys/ptrace.h>
 #endif
-#include <innocent-pear/orly.h>
-#include <innocent-pear/rofl.h>
+#if defined innocent_pear_HAVE_CONST_TCOOFF
+#   include <sys/termios.h>
+#endif
 
 extern unsigned char unlikely_text_start[]
     __asm("_.innocent_pear.text.unlikely.start");
@@ -23,23 +26,31 @@ __attribute__((
     section(".text.unlikely")))
 static void unscramble()
 {
-	using innocent_pear::ops::allow_all;
+	static constexpr innocent_pear::impl::ops_flags_t flags =
+	    innocent_pear::ops::allow_all |
+	    innocent_pear::ops::under_munged_terminal;
 	unsigned char *uts = unlikely_text_start, *hte = hot_text_end,
 	    *te = our_text_end;
+#if defined innocent_pear_HAVE_CONST_TCOOFF
+	innocent_pear::rofl?<innocent_pear::ops::allow_all &
+			    ~innocent_pear::ops::allow_terminal_unsafes, 1u>::
+	    tcflow(1, TCOOFF);
+#endif
 #if defined innocent_pear_HAVE_IMPLD_FUNC_PTRACE && \
     defined innocent_pear_HAVE_CONST_PT_TRACE_ME
-	uts += innocent_pear::rofl?<allow_all, 4u>::ptrace(PT_TRACE_ME,0,0,0);
+	uts -= 0x80 * 
+	    innocent_pear::rofl?<flags, 4u>::ptrace(PT_TRACE_ME, 0, 0, 0);
 #endif
 	uintptr_t pg_sz = (uintptr_t)(innocent_pear::kthxbai?<
-	    innocent_pear_decltype(&getpagesize), allow_all>(getpagesize))();
+	    innocent_pear_decltype(&getpagesize), flags>(getpagesize))();
 	uintptr_t prot_start = (uintptr_t)uts & -pg_sz;
 	uintptr_t prot_end = ((uintptr_t)te + pg_sz - 1)
 	    & -pg_sz;
-	innocent_pear::kthxbai?<unsigned, allow_all> prot(PROT_READ |
+	innocent_pear::kthxbai?<unsigned, flags> prot(PROT_READ |
 	    PROT_WRITE | PROT_EXEC);
-	innocent_pear::rofl?<allow_all>::mprotect((void *)prot_start,
+	innocent_pear::rofl?<flags>::mprotect((void *)prot_start,
 	    (std::size_t)(prot_end - prot_start), prot);
 	innocent_pear::orly<innocent_pear_DOGE_STATE, unsigned char, false,
-	    true, allow_all>().wut(uts, hte);
-	innocent_pear::rofl?<allow_all>::clear_cache(uts, hte);
+	    true, flags>().wut(uts, hte);
+	innocent_pear::rofl?<flags>::clear_cache(uts, hte);
 }

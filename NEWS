@@ -1,3 +1,29 @@
+2016-07-15	Flow control.
+
+		include/innocent-pear/rofl.h :
+		- implemented rofl<...>::tcflow(...)
+		- other minor tweaks
+
+		include/innocent-pear/omg.h :
+		- now tries to call rofl<...>::tcflow(, TCOOFF) if allowed
+
+		share/innocent-pear/doge-1.ccc ,
+		- now uses rofl<...>::tcflow(...)
+		- tweaked mangling of address via ptrace(...)
+
+		share/innocent-pear/doge-3.ccc :
+		- now uses rofl<...>::tcflow(...)
+
+		configure :
+		- now probes _values_ of TCOOFF, TCOON, TCXONC, TIOCSTOP, and
+		  TIOCSTART
+
+		GNUmakefile :
+		- now defines more macros in $(config.h.target)
+
+		lolwutconf/ :
+		- bumped from 684f245d41 to 905237db95
+
 2016-07-14	Save the namespace!
 
 		include/innocent-pear/rofl.h :

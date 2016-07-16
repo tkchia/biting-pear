@@ -55,9 +55,9 @@ conf_cxxt_probe_const PT_READ_U \
 #  .
 # .:
 conf_cxxt_probe_func ::tcflow 2 '#include <termios.h>'
-conf_cxxt_probe_const TCOOFF '#include <termios.h>'
-conf_cxxt_probe_const TCOON '#include <termios.h>'
-conf_cxxt_probe_const TCXONC '#include <sys/ioctl.h>'
-conf_cxxt_probe_const TIOCSTOP '#include <sys/ioctl.h>'
-conf_cxxt_probe_const TIOCSTART '#include <sys/ioctl.h>'
+conf_cxxt_probe_const_val TCOOFF '#include <termios.h>'
+conf_cxxt_probe_const_val TCOON '#include <termios.h>'
+conf_cxxt_probe_const_val TCXONC '#include <sys/ioctl.h>'
+conf_cxxt_probe_const_val TIOCSTOP '#include <sys/ioctl.h>'
+conf_cxxt_probe_const_val TIOCSTART '#include <sys/ioctl.h>'
 conf_end

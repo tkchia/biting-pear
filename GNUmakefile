@@ -281,11 +281,27 @@ endif
 		else \
 			echo '#undef innocent_pear_HAVE_IMPLD_FUNC_PTRACE'; \
 		fi; \
+		if test '$(conf_Have_cxxt_func__0tcflow)' = yes; then \
+			echo '#define innocent_pear_HAVE_FUNC_TCFLOW 1'; \
+		else \
+			echo '#undef innocent_pear_HAVE_FUNC_TCFLOW'; \
+		fi; \
 		$(foreach c,PT_TRACE_ME PT_READ_I PT_READ_D PT_READ_U, \
 			if test '$(conf_Have_cxxt_const_$(subst _,_1,$c))' = \
 			    yes; then \
 				echo \
 				 '#define innocent_pear_HAVE_CONST_$c 1';\
+			else	echo \
+				 '#undef innocent_pear_HAVE_CONST_$c'; \
+			fi; ) \
+		$(foreach c,TCOOFF TCOON TCXONC TIOCSTOP TIOCSTART, \
+			if test '$(conf_Have_cxxt_const_$(subst _,_1,$c))' = \
+			    yes; then \
+				echo \
+				 '#define innocent_pear_HAVE_CONST_$c 1';\
+				echo \
+				 '#define innocent_pear_VAL_CONST_$c' \
+				    '$(conf_Val_cxxt_const_$(subst _,_1,$c))';\
 			else	echo \
 				 '#undef innocent_pear_HAVE_CONST_$c'; \
 			fi; ) \
