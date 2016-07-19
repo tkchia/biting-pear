@@ -1,3 +1,25 @@
+2016-07-19	"There is nothing new under the sun, but there are lots of
+		 old things we don't know yet."
+
+		configure :
+		- now also looks for mt19937_64 in standard C++ headers
+		- now checks that at least one of {std::mt19937_64, boost::
+		  mt19937_64}, one of {std::uint64_t, ::uint64_t}, and one
+		  of {std::uintptr_t, ::uintptr_t} are defined
+
+		GNUmakefile :
+		- now makes $(config.h.host) rope in mt19937_64 definition
+
+		share/innocent-pear/omnomnom.lxx :
+		- now looks for mt19937_64 definition as detected by
+		  `configure' script
+
+		lolwutconf/ :
+		- bumped to 66b1103cf5
+
+		README.md :
+		- added `git clone ...' command, to show `--recursive' option
+
 2016-07-15	Flow control.
 
 		include/innocent-pear/rofl.h :

@@ -163,6 +163,13 @@ $(config.h.host) $(config.h.target): config.cache
 	    '$(config.h.host)' = '$@'; then \
 		echo '#include <wchar.h>' >>$@.tmp; \
 	fi
+	if test '$(config.h.host)' = '$@'; then \
+		if test yes = '$(conf_Have_cxx_typ_std_0mt19937_164)'; then \
+			echo '#include <random>'; \
+		else \
+			echo '#include <boost/random/mersenne_twister.hpp>'; \
+		fi >>$@.tmp; \
+	fi
 	echo 'namespace innocent_pear { namespace impl {' >>$@.tmp
 	if test '$(conf_Have_cxx_typ_std_0uint64_1t),$@' = \
 	    'yes,$(config.h.host)'; then \
@@ -199,6 +206,13 @@ $(config.h.host) $(config.h.target): config.cache
 	elif test 'yes,$(config.h.host)' = \
 	    '$(conf_Have_cxx_func__0mbrtowc),$@'; then \
 		echo 'using ::mbrtowc;' >>$@.tmp; \
+	fi
+	if test '$(config.h.host)' = '$@'; then \
+		if test yes = '$(conf_Have_cxx_typ_std_0mt19937_164)'; then \
+			echo 'using std::mt19937_64;'; \
+		else \
+			echo 'using boost::mt19937_64;'; \
+		fi >>$@.tmp; \
 	fi
 	if test 'yes,$(config.h.host)' = \
 	    '$(conf_Have_cxx_func__0secure_1getenv),$@'; then \

@@ -6,6 +6,8 @@
 
 #### Installation
 
+> `git clone --recursive https://github.com/tkchia/innocent-pear.git`
+
 > [*source-path*`/`]`configure` [`--prefix=`*install-path*] [`--target=`*target-arch*] [`--target-dir=`*target-install-path*] [...]
 
 > `make check`

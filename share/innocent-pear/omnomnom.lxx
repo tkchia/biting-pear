@@ -29,7 +29,6 @@ u8tl		[\x80-\xbf]
 #include <exception>
 #include <vector>
 #include <unistd.h>
-#include <boost/random/mersenne_twister.hpp>
 #define innocent_pear_HOST_SIDE
 #include <innocent-pear/bbq.h>
 
@@ -56,7 +55,7 @@ u8tl		[\x80-\xbf]
 
 static std::string curr_fn, curr_str_enc;
 static long curr_ln_off = 0;
-static boost::mt19937_64 generator;
+static innocent_pear::impl::mt19937_64 generator;
 static std::vector<std::string> curr_str_chars;
 
 static void warn(const char *fmt, ...)
