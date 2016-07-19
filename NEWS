@@ -17,6 +17,9 @@
 		lolwutconf/ :
 		- bumped to 66b1103cf5
 
+		test/infra/travis-install-deps.sh :
+		- removed libboost-dev installation
+
 		README.md :
 		- added `git clone ...' command, to show `--recursive' option
 

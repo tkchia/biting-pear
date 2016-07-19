@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e -v -- flex libboost-dev binutils-multiarch-dev
+set -e -v -- flex binutils-multiarch-dev
 case "$TARGET" in
     i[3456]86-* | pentium[^4]* | k6-* | athlon-[^f]* | winchip* | \
     c3-* | geode-*)
