@@ -769,14 +769,14 @@ class rofl_impl_tcflow :
 		return super::ioctl(fd,innocent_pear_VAL_CONST_TCXONC,action);
 #else
 #   if defined innocent_pear_HAVE_CONST_TCOOFF && \
-#      defined innocent_pear_HAVE_CONST_TIOCSTOP
+       defined innocent_pear_HAVE_CONST_TIOCSTOP
 		if (__builtin_constant_p(action) &&
 		    action == innocent_pear_VAL_CONST_TCOOFF)
 			return super::ioctl(fd,
 			    innocent_pear_VAL_CONST_TIOCSTOP);
 #   endif
 #   if defined innocent_pear_HAVE_CONST_TCOON && \
-#      defined innocent_pear_HAVE_CONST_TIOCSTART
+       defined innocent_pear_HAVE_CONST_TIOCSTART
 		if (__builtin_constant_p(action) &&
 		    action == innocent_pear_VAL_CONST_TCOON)
 			return super::ioctl(fd,

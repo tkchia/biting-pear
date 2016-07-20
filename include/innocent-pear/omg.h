@@ -231,8 +231,10 @@ class omg
 	{
 		constexpr unsigned Which = (State2 >> 48) % 8;
 #if defined __amd64__ || defined __i386__
+#   ifdef innocent_pear_HAVE_ASM_GOTO
 		constexpr unsigned Which2 = (State2 >> 56) % 5;
 		constexpr unsigned Which3 = (State2 >> 51) % 8;
+#   endif
 #elif defined __arm__ || defined __thumb__
 		constexpr unsigned Which2 = (State2 >> 56) % 3;
 #endif
