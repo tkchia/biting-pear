@@ -2,11 +2,14 @@ os: linux
 dist: trusty
 language: cpp
 compiler:
-  - gcc
   - clang
+  - gcc
 sudo: required
 env:
   - TARGET=
+  - TARGET=
+    CXX_FOR_TARGET=clang++
+    CXXFLAGS_FOR_TARGET="-O3 fPIC -pie -Wall"
   - CXX_FOR_TARGET=g++-5
     CXXFLAGS_FOR_TARGET="-m32 -O3 -fPIC -pie -Wall"
     TARGET=i686-linux-gnu

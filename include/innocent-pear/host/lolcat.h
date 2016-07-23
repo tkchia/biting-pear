@@ -4,7 +4,7 @@
 #include <cerrno>
 #include <cstring>
 #include <string>
-#include <innocent-pear/host/derp.h>
+#include <innocent-pear/bbq.h>
 
 extern char *shocked(char *);
 extern void curious(char *);

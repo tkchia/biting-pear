@@ -11,7 +11,10 @@
 		- removed `-specs ...'
 		- some bug fixes
 
-		bin/innocent-pear-doge.cc ,
+		bin/innocent-pear-doge.cc :
+		- .ccc -> .cc
+		- now #define's innocent_pear_HOST_SIDE
+
 		share/innocent-pear/doge-1.cc ,
 		share/innocent-pear/doge-3.cc ,
 		share/innocent-pear/doge-8.cc ,
@@ -26,17 +29,24 @@
 		  .s files (host or target), if this flag is supported
 
 		.travis.yml :
-		- now also tests with clang++ as host-side compiler
+		- now also tests with clang++ as host-side compiler, and as
+		  target-side compiler for default processor type (x86-64)
 
 		share/innocent-pear/keyboard.cc :
 		- added two more parameters to keyboard(...) and
 		  keyboardest(...)
 		- removed keyboard(, )
 		- made keyboarder(...) local to module
+		- now #define's innocent_pear_HOST_SIDE
+
+		share/innocent-pear/nomnom.cc :
+		- now #define's innocent_pear_HOST_SIDE
+		- now includes derp.h via bbq.h, as it should
 
 		share/innocent-pear/calm.cc :
 		- now handles clang-style compiler passes
 		- updated keyboard(...) and keyboardest(...) calls
+		- now #define's innocent_pear_HOST_SIDE
 
 		share/innocent-pear/calm.spec :
 		- removed
@@ -51,9 +61,20 @@
 
 		include/innocent-pear/host/lolcat.h :
 		- updated per share/innocent-pear/keyboard.cc
+		- now includes derp.h via bbq.h, as it should
+
+		include/innocent-pear/rofl.h :
+		- now defines rofl<...>::ptrace_raw(...) under Linux even
+		  if rofl<...>::ptrace_lib(...) is undefined...
+
+		test/infra/travis-install-deps.sh :
+		- now installs clang if specified as target-side compiler
 
 		lolwutconf/ :
 		- bumped to b247d7a66c
+
+		.gitignore :
+		- added *.tmp
 
 2016-07-20	Somewhat minor fixes.
 

@@ -3,7 +3,8 @@
 #include <cstring>
 #include <fcntl.h>
 #include <unistd.h>
-#include <innocent-pear/host/derp.h>
+#define innocent_pear_HOST_SIDE
+#include <innocent-pear/bbq.h>
 
 #define DEFAULT_POLY	0x42f0e1eba9ea3693u
 

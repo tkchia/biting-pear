@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#define innocent_pear_HOST_SIDE
 #include <innocent-pear/host/lolcat.h>
 #include <innocent-pear/dawg.h>
 

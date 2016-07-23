@@ -1,6 +1,7 @@
 *~
 *.[ios]
 *.ii
+*.tmp
 lex.backup
 test-kthxbai
 test-kthxbai-p

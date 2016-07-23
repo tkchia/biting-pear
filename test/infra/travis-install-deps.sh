@@ -23,4 +23,6 @@ case "$TARGET" in
     armv[45678]* | arm-*)
 	set -- ${1+"$@"} g++-arm-linux-gnueabi qemu-user;;
 esac
+if test clang++ = "$CXX_FOR_TARGET"
+	then set -- ${1+"$@"} clang; fi
 exec sudo apt-get install -y ${1+"$@"}

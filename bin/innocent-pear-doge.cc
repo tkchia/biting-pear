@@ -8,6 +8,7 @@
 #include <utility>
 #include <unistd.h>
 #include <bfd.h>
+#define innocent_pear_HOST_SIDE
 #include <innocent-pear/dawg.h>
 #include <innocent-pear/host/lolcat.h>
 #include <innocent-pear/host/srsly.h>

@@ -603,20 +603,20 @@ class rofl_impl_ptrace :
 		    (ptrace))(xs...);
 		return typename super::syscall_ret(rv, errno);
 	}
+#endif
     public:
-#   ifdef __linux__
+#ifdef __linux__
 	template<class... Ts>
 	__attribute__((always_inline))
 	static typename super::syscall_ret
 	ptrace_raw(Ts... xs)
 	{
-#	if defined __amd64__
+#   if defined __amd64__
 		return super::syscall(101, xs...);
-#	else
+#   else
 		return super::syscall(26, xs...);
-#	endif
-	}
 #   endif
+	}
 #endif
 	__attribute__((always_inline))
 	static typename super::syscall_ret

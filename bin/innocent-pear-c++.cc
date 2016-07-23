@@ -18,6 +18,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#define innocent_pear_HOST_SIDE
 #include <innocent-pear/host/lolcat.h>
 #include <innocent-pear/dawg.h>
 
