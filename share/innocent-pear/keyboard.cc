@@ -11,30 +11,7 @@
 
 using innocent_pear::impl::uint64_t;
 
-__attribute__((noreturn))
-void keyboard(char **argv, const char *in, const char *out, bool v)
-{
-	if (v) {
-		std::string z;
-		if (in) {
-			z += " < ";
-			z += in;
-		}
-		if (out) {
-			z += " > ";
-			z += out;
-		}
-		squirrel(argv, z.c_str());
-	}
-	execvp(*argv, argv);
-	concern($"cannot run ", *argv);
-}
-
-__attribute__((noreturn))
-void keyboard(char **argv, bool v)
-	{ keyboard(argv, 0, 0, v); }
-
-void keyboarder(int fd, const char *fn, int fl, mode_t mo)
+static void keyboarder(int fd, const char *fn, int fl, mode_t mo)
 {
 	if (!fn)
 		return;
@@ -46,16 +23,52 @@ void keyboarder(int fd, const char *fn, int fl, mode_t mo)
 	close(ofd);
 }
 
-void keyboardest(char **argv, const char *in, const char *out, bool v)
+__attribute__((noreturn))
+void keyboard(char **argv, const char *in, const char *out, const char *err,
+    const char *seriouser, bool v)
+{
+	int oerr = -1;
+	if (v) {
+		std::string z;
+		if (in) {
+			z += " < ";
+			z += in;
+		}
+		if (out) {
+			z += " > ";
+			z += out;
+		}
+		if (err) {
+			z += " 2> ";
+			z += err;
+		}
+		if (seriouser)
+			z += seriouser;
+		squirrel(argv, z.c_str());
+	}
+	keyboarder(0, in, O_RDONLY, 0);
+	keyboarder(1, out, O_WRONLY | O_CREAT, 0600);
+	if (err) {
+		oerr = dup(2);
+		keyboarder(2, err, O_WRONLY | O_CREAT, 0600);
+	}
+	execvp(*argv, argv);
+	if (oerr != -1) {
+		dup2(oerr, 2);
+		close(oerr);
+	}
+	concern($"cannot run ", *argv);
+}
+
+void keyboardest(char **argv, const char *in, const char *out,
+    const char *err, const char *seriouser, bool v)
 {
 	pid_t sleepy = fork();
 	switch (sleepy) {
 	    case -1:
 		concern($"fork() failed");
 	    case 0:		/* child */
-		keyboarder(0, in, O_RDONLY, 0);
-		keyboarder(1, out, O_WRONLY | O_CREAT, 0600);
-		keyboard(argv, in, out, v);
+		keyboard(argv, in, out, err, seriouser, v);
 	}
 	/* parent */
 	int curiouser;

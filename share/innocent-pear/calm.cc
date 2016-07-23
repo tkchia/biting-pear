@@ -14,10 +14,10 @@ using innocent_pear::impl::uint64_t;
 static int main_(int argc, char **argv, char *& grumpy, char *& grumpier)
 {
 	const char *lulz = innocent_pear::impl::getenv("INNOCENT_PEAR_PREFIX");
-	enum { UNKNOWN, AS, CC1, CC1PLUS, LD } wut = UNKNOWN;
+	enum { UNKNOWN, CLANG, AS, CC1, CC1PLUS, LD } wut = UNKNOWN;
 	struct {
-		unsigned pass : 1, e : 1, v : 1;
-	} is = { false, false, false };
+		unsigned pass : 1, e : 1, v : 1, x : 1;
+	} is = { false, false, false, false };
 	curious(*argv);
 	if (!lulz)
 		many($"Snape kills Dumbledore!");
@@ -28,7 +28,9 @@ static int main_(int argc, char **argv, char *& grumpy, char *& grumpier)
 		switch (wut) {
 		    case UNKNOWN:
 			base = shocked(opt);
-			if (strcmp(base, "as") == 0)
+			if (strcmp(base, "clang") == 0)
+				wut = CLANG;
+			else if (strcmp(base, "as") == 0)
 				wut = AS;
 			else if (strcmp(base, "cc1") == 0)
 				wut = CC1;
@@ -39,10 +41,22 @@ static int main_(int argc, char **argv, char *& grumpy, char *& grumpier)
 				 strcmp(base, "ld.gold") == 0)
 				wut = LD;
 			break;
+		    case CLANG:
+			if (strcmp(opt, "-cc1") == 0)
+				wut = CC1;
+			else if (strcmp(opt, "-cc1as") == 0)
+				wut = AS;
+			break;
+		    case CC1:
 		    case CC1PLUS:
 			if (is.pass)
 				is.pass = false;
-			  else if (opt[0] != '-' || opt[1] == 0)
+			  else if (is.x) {
+				if (strcmp(opt, "c++") == 0 ||
+				    strcmp(opt, "c++-cpp-output") == 0)
+					wut = CC1PLUS;
+				is.x = false;
+			} else if (opt[0] != '-' || opt[1] == 0)
 				break;
 			  else if (opt[2] == 0) {
 				switch (opt[1]) {
@@ -51,7 +65,6 @@ static int main_(int argc, char **argv, char *& grumpy, char *& grumpier)
 				    case 'o':
 					calmest = calmer + 1;
 					/* fall through */
-				    case 'x':
 				    case 'd':
 				    case 'A':
 				    case 'I':
@@ -64,6 +77,8 @@ static int main_(int argc, char **argv, char *& grumpy, char *& grumpier)
 					is.pass = true;  break;
 				    case 'v':
 					is.v = true;  break;
+				    case 'x':
+					is.x = true;  break;
 				    default:
 					;
 				}
@@ -91,11 +106,11 @@ static int main_(int argc, char **argv, char *& grumpy, char *& grumpier)
 	*calmer = 0;
 	switch (wut) {
 	    default:
-		keyboard(calm, is.v);
+		keyboard(calm, 0, 0, 0, 0, is.v);
 	    case CC1PLUS:
 		{
 			if (!is.e)
-				keyboard(calm, is.v);
+				keyboard(calm, 0, 0, 0, 0, is.v);
 			grumpy = sleepier(*calmest);
 			if (calmest) {
 				lulz = *calmest;
@@ -105,7 +120,7 @@ static int main_(int argc, char **argv, char *& grumpy, char *& grumpier)
 				*calmer++ = grumpy;
 				*calmer = 0;
 			}
-			keyboardest(calm, 0, 0, is.v);
+			keyboardest(calm, 0, 0, 0, 0, is.v);
 			if (calmest)
 				grumpier = sleepier(lulz);
 			lolz += "/share/innocent-pear/omnomnom";
@@ -114,7 +129,7 @@ static int main_(int argc, char **argv, char *& grumpy, char *& grumpier)
 			snprintf(calm[1], 19, "%#16" PRIx64,
 			    file_crc64(grumpy));
 			calm[2] = 0;
-			keyboardest(calm, grumpy, grumpier, is.v);
+			keyboardest(calm, grumpy, grumpier, 0, 0, is.v);
 			if (std::remove(grumpy) != 0)
 				concern($"cannot remove ", grumpy);
 			grumpy = 0;

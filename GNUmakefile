@@ -67,12 +67,11 @@ endif
 endif
 installables.host = \
     $(utils.host) \
-    share/innocent-pear/calm.spec \
-    share/innocent-pear/doge-1.ccc \
+    share/innocent-pear/doge-1.cc \
     share/innocent-pear/doge-2.cc \
-    share/innocent-pear/doge-3.ccc \
+    share/innocent-pear/doge-3.cc \
     share/innocent-pear/doge-4.cc \
-    share/innocent-pear/doge-8.ccc \
+    share/innocent-pear/doge-8.cc \
     share/innocent-pear/doge-9.cc
 
 default all: check
@@ -322,6 +321,12 @@ endif
 	fi >>$@.tmp
 	set -e; \
 	if test '$(config.h.host)' = '$@'; then \
+		if test '$(conf_Have_cxxt_opt_wrapper)' = yes; then \
+			echo '#define' \
+			  'innocent_pear_CXX_FOR_TARGET_HAVE_OPT_WRAPPER 1'; \
+		else	echo '#undef' \
+			  'innocent_pear_CXX_FOR_TARGET_HAVE_OPT_WRAPPER'; \
+		fi; \
 		echo "#define innocent_pear_CXXFLAGS_FOR_TARGET \\" >>$@.tmp; \
 		set -- $(CXXFLAGS_FOR_TARGET); \
 		if test 0 != $$#; then \
@@ -332,9 +337,9 @@ endif
 				echo "$$arg" | \
 				    sed 's/["\\]/\\&/g; s/^/,"/; s/$$/"\\/';\
 			done; \
-		fi >>$@.tmp; \
-		echo '/* done */' >>$@.tmp; \
-	fi
+		fi; \
+		echo '/* done */'; \
+	fi >>$@.tmp
 	mv $@.tmp $@
 
 test/test-%.passed: test/test-% test/test-%.good
@@ -359,7 +364,7 @@ test/test-%: test/test-%.o
 	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
 	    $(LDFLAGS_FOR_TARGET) -o$@ $^ $(LDLIBS_FOR_TARGET)
 
-test/test-%.o: test/test-%.ccc
+test/test-%.o: test/test-%.cc
 
 test/test-orly-wut \
 test/test-orly-wut.o \
@@ -412,13 +417,16 @@ bin/%: bin/%.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)
 
 # for debugging
+ifeq "$(conf_Have_cxx_opt_fno_integrated_as)" "yes"
+bin/%.s : CXXFLAGS += -fno-integrated-as
+endif
 bin/%.s: bin/%.ii
 	$(CXX) $(CXXFLAGS) -S -o$@ $<
 
 bin/%.o: bin/%.ii
 	$(CXX) $(CXXFLAGS) -c -o$@ $<
 
-bin/%.ii: bin/%.ccc $(headers.host) $(headers.target) \
+bin/%.ii: bin/%.cc $(headers.host) $(headers.target) \
     share/innocent-pear/calm share/innocent-pear/omnomnom
 	$(preproc_for_host)
 
@@ -429,28 +437,30 @@ share/innocent-pear/%.o: share/innocent-pear/%.ii
 	$(CXX) $(CXXFLAGS) -c -o$@ $<
 
 # for debugging
+ifeq "$(conf_Have_cxx_opt_fno_integrated_as)" "yes"
+share/innocent-pear/%.s : CXXFLAGS += -fno-integrated-as
+endif
 share/innocent-pear/%.s: share/innocent-pear/%.ii
 	$(CXX) $(CXXFLAGS) -S -o$@ $<
 
-share/innocent-pear/%.ii: share/innocent-pear/%.ccc $(headers.host) \
+share/innocent-pear/%.ii: share/innocent-pear/%.cc $(headers.host) \
     $(headers.target) share/innocent-pear/omnomnom
 	$(preproc_for_host)
 
-share/innocent-pear/%.ii: share/innocent-pear/%.cc $(headers.host) \
-    $(headers.target)
-	mkdir -p $(@D)
-	$(CXX) -E $(CPPFLAGS) $(CXXFLAGS) -o$@ $<
-
-share/innocent-pear/omnomnom.o: share/innocent-pear/omnomnom.cc \
+share/innocent-pear/omnomnom: share/innocent-pear/omnomnom.cc \
     $(config.h.host)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o$@ $<
 
-%.o: %.ccc $(headers.target) $(installables.host)
+%.o: %.cc $(headers.target) $(installables.host)
 	mkdir -p $(@D)
 	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
 	    -c -o$@ $<
 
 # for debugging
-%.s: %.ccc $(headers.target) $(installables.host)
+ifeq "$(conf_Have_cxxt_opt_fno_integrated_as)" "yes"
+%.s : CXXFLAGS_FOR_TARGET += -fno-integrated-as
+endif
+%.s: %.cc $(headers.target) $(installables.host)
 	mkdir -p $(@D)
 	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
 	    -S -o$@ $<

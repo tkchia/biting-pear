@@ -145,7 +145,7 @@ struct kthxbai_impl
 				T x1, x2;
 				constexpr T v2 =
 				    pick_hi<T>(State2 ^ NewState) | 1;
-				constexpr T v2i = pow(v2);
+				T v2i = pow(v2);
 				T v1 = v * v2i;
 				kthxbai_impl<State3, T, Flags, Levels - 1>
 				    (x1, v1);

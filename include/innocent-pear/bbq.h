@@ -19,7 +19,7 @@ typedef uint_least32_t ops_flags_t;
 typedef uint64_t rand_state_t;
 
 template<class T, T P = ((T)1 << (sizeof(T) * CHAR_BIT - 1)) - 1>
-inline constexpr T pow(T x)
+constexpr T pow(T x)
 {
 	return P == 0 ? (T)1 :
 	    P % 2 == 0 ? pow<T, P / 2>(x * x) :
@@ -38,22 +38,25 @@ inline constexpr rand_state_t xorshl(rand_state_t s, unsigned i)
 	return s ^ s << i;
 }
 
+inline constexpr uint64_t i_vigna(uint64_t m)
+	{ return pow<uint64_t>(m); }
+
 inline constexpr rand_state_t vigna_1(rand_state_t s, unsigned a,
     unsigned b, unsigned c, uint64_t m)
 {
-	return xorshl(xorshl(xorshr(pow(m) * (s ? s : 1), a), b), c) * m;
+	return xorshl(xorshl(xorshr(i_vigna(m) * (s ? s : 1), a), b), c) * m;
 }
 
 inline constexpr rand_state_t vigna_5(rand_state_t s, unsigned a,
     unsigned b, unsigned c, uint64_t m)
 {
-	return xorshl(xorshr(xorshr(pow(m) * (s ? s : 1), a), c), b) * m;
+	return xorshl(xorshr(xorshr(i_vigna(m) * (s ? s : 1), a), c), b) * m;
 }
 
 inline constexpr rand_state_t vigna_7(rand_state_t s, unsigned a,
     unsigned b, unsigned c, uint64_t m)
 {
-	return xorshr(xorshr(xorshl(pow(m) * (s ? s : 1), b), a), c) * m;
+	return xorshr(xorshr(xorshl(i_vigna(m) * (s ? s : 1), b), a), c) * m;
 }
 
 inline constexpr rand_state_t update_outer(rand_state_t s, unsigned w)

@@ -159,6 +159,7 @@ class lolwut_impl
 			 *
 			 * -- 20160214
 			 */
+#	ifndef __clang__
 			if (Sign) {
 				__asm("leaq -%a2+%P1(%%rip), %0"
 				    : "=r" (p_)
@@ -170,7 +171,21 @@ class lolwut_impl
 				    : "X" (v), "n" ((unsigned long)Disp2));
 				p_ += Disp - Disp2;
 			}
+#	else
+			if (Sign) {
+				__asm("leaq -%a2+%c1@PLT(%%rip), %0"
+				    : "=r" (p_)
+				    : "X" (v), "n" ((unsigned long)Disp2));
+				p_ -= Disp - Disp2;
+			} else {
+				__asm("leaq %a2+%c1@PLT(%%rip), %0"
+				    : "=r" (p_)
+				    : "X" (v), "n" ((unsigned long)Disp2));
+				p_ += Disp - Disp2;
+			}
+#	endif
 			break;
+#	ifndef __clang__
 		    case 3:
 			/* Address of a static variable.  -- 20160225 */
 			if (Sign) {
@@ -184,6 +199,7 @@ class lolwut_impl
 				    : "n" ((unsigned long)Disp2), "X" (v));
 				p_ += Disp - Disp2;
 			}
+#	endif
 			break;
 #   endif
 #elif defined __i386__

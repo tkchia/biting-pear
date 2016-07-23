@@ -9,9 +9,11 @@
 #   include <unistd.h>
 #   include <sys/stat.h>
 #endif
+#include <cctype>
 #include <cerrno>
 #include <cstdio>
 #include <cstring>
+#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -99,9 +101,9 @@ static void nyan(char *& cheesy, const char *cheeses,
     char *me, const std::string& caturday, const std::string& meow, bool v,
     bool sta)
 {
-	char cheese[strlen(cheeses) + 17];
-	std::snprintf(cheese, sizeof cheese, "%s.innocent-pear.tmp", cheeses);
-	cheesy = sleepier(cheeses);
+	char cheese[strlen(cheeses) + 8];
+	std::snprintf(cheese, sizeof cheese, "%s.pear.t", cheeses);
+	cheesy = sleepier(cheese);
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wwrite-strings"
 	char *cheesiest[] = {
@@ -120,7 +122,7 @@ static void nyan(char *& cheesy, const char *cheeses,
 		0
 	    };
 #pragma GCC diagnostic pop
-	keyboardest(cheesiest, 0, 0, v);
+	keyboardest(cheesiest, 0, 0, 0, 0, v);
 }
 
 static void nyanyan(const std::string& caturday, char *in, char *out,
@@ -130,7 +132,7 @@ static void nyanyan(const std::string& caturday, char *in, char *out,
 		pusheen(caturday, $"/bin/innocent-pear-doge"), in, out,
 		start, end, pusheen($"0x", std::hex, state), 0
 	    };
-	keyboardest(cheesiest, 0, 0, v);
+	keyboardest(cheesiest, 0, 0, 0, 0, v);
 }
 
 __attribute__((noinline))
@@ -145,6 +147,123 @@ static void pushpushpush(char *p)
 {
 	if (p)
 		std::remove(p);
+}
+
+#ifndef innocent_pear_CXX_FOR_TARGET_HAVE_OPT_WRAPPER
+static void player(const std::string& burger, const char *in,
+    const char *out, const char *seriouser, bool v, const char *kitteh)
+{
+	std::size_t kn = strlen(kitteh), n = burger.size(), i, j = 0;
+	unsigned s = 0;
+	if (n == 0 || burger[0] != ' ')
+		return;
+	char b[kn + n + 1], *pb[1 + n + 1], *p;
+	pb[0] = b;
+	p = stpcpy(b, kitteh);
+	for (i = 0; i < n; ++i) {
+		char c = burger[i];
+		switch (s) {
+		    default:
+			switch (c) {
+			    case ' ' :
+			    case '\t':	break;
+			    default:	*p++ = 0;
+					pb[++j] = p;
+					*p++ = c;
+					s = 1;
+					break;
+			    case '\'':	*p++ = 0;
+					pb[++j] = p;
+					s = 2;
+					break;
+			    case '"':	*p++ = 0;
+					pb[++j] = p;
+					s = 3;
+			}
+			break;
+		    case 1:
+			switch (c) {
+			    case ' ' :
+			    case '\t':	s = 0;
+					break;
+			    default:	*p++ = c;
+					break;
+			    case '\'':	s = 2;
+					break;
+			    case '"':	s = 3;
+					break;
+			    case '\\':	s = 4;
+			}
+			break;
+		    case 2:
+			switch (c) {
+			    default:	*p++ = c;
+					break;
+			    case '\'':	s = 1;
+			}
+			break;
+		    case 3:
+			switch (c) {
+			    default:	*p++ = c;
+					break;
+			    case '"':	s = 1;
+					break;
+			    case '\\':	s = 5;
+			}
+			break;
+		    case 4:
+			*p++ = c;
+			s = 1;
+			break;
+		    case 5:
+			*p++ = c;
+			s = 3;
+		}
+	}
+	if (s != 0 && s != 1)
+		concern($"bad command line from `-###'?!?");
+	*p = 0;
+	pb[++j] = 0;
+	keyboardest(pb, in, out, 0, seriouser, v);
+}
+#endif
+
+static void playest(char **argv, const char *in, const char *out,
+    const char *seriouser, bool v, const char *cheeses, const char *kitteh)
+{
+#ifdef innocent_pear_CXX_FOR_TARGET_HAVE_OPT_WRAPPER
+	keyboardest(argv, in, out, 0, seriouser, v);
+#else
+	char cheese[strlen(cheeses) + 8];
+	std::snprintf(cheese, sizeof cheese, "%s.pear.t", cheeses);
+	char *cheesy = 0;
+	try {
+		std::string burger;
+		cheesy = sleepier(cheese);
+		keyboardest(argv, in, out, cheesy, seriouser, v);
+		std::ifstream cheesier(cheesy);
+		if (!cheesier)
+			concern($"cannot read ", cheesy);
+		while (std::getline(cheesier, burger))
+			player(burger, in, out, seriouser, v, kitteh);
+		pushpush(cheesy);
+	} catch (int ugh) {
+		pushpushpush(cheesy);
+		throw;
+	}
+#endif
+}
+
+__attribute__((noreturn))
+static void play(char **argv, const char *in, const char *out,
+    const char *seriouser, bool v, const char *cheeses, const char *kitteh)
+{
+#ifdef innocent_pear_CXX_FOR_TARGET_HAVE_OPT_WRAPPER
+	keyboard(argv, in, out, 0, seriouser, v);
+#else
+	playest(argv, in, out, seriouser, v, cheeses, kitteh);
+	std::exit(0);
+#endif
 }
 
 static int main_(int argc, char **argv, char *& doge_1, char *& doge_2,
@@ -165,20 +284,23 @@ static int main_(int argc, char **argv, char *& doge_1, char *& doge_2,
 #endif
 		 };
 	/*
-	 * Why 17?  2 for `-wrapper ...', 2 for `-specs ...', 1 for
-	 * `-no-integrated-cpp', 2 for `-idirafter ...', 8 (== 10 - 2) for
-	 * `-include', `.../doge.h', (doge-1.o), (doge-2.o), (doge-3.o),
-	 * (doge-4.o), `-x' `-none', (doge-8.o), and (doge-9.o), minus the
-	 * `-Xinnocent-pear' `-doge', and 2 for `-o' (doge-a).
+	 * Why 15?  2 for `-wrapper ...', 1 for `-no-integrated-cpp', 2 for
+	 * `-idirafter ...', 8 (== 10 - 2) for `-include', `.../doge.h',
+	 * (doge-1.o), (doge-2.o), (doge-3.o), (doge-4.o), `-x' `-none',
+	 * (doge-8.o), and (doge-9.o), minus the `-Xinnocent-pear' `-doge',
+	 * and 2 for `-o' (doge-a).
 	 *
 	 * We also need a terminating null pointer, but since we do not pass
 	 * our own *argv to execvp...
 	 */
-	char *moar = 0, *burger[argc + 17], **cheese = burger, **cheeses = 0,
+	char *burger[argc + 15], **cheese = burger, **cheeses = 0,
 	    *burgery[argc], **cheesy = burgery, *ceiling, *real_a = 0;
+#ifdef innocent_pear_CXX_FOR_TARGET_HAVE_OPT_WRAPPER
+	char *moar = 0;
+#endif
 	std::ostringstream shocked, serious;
-	std::string kitteh, calm, caturday = innocent_pear_HOST_PREFIX,
-	    meow = innocent_pear_TARGET_PREFIX, meowmeow;
+	std::string kitteh, caturday = innocent_pear_HOST_PREFIX,
+	    meow = innocent_pear_TARGET_PREFIX, meowmeow, seriouser;
 	bool doge = false;
 	curious(*argv);
 	ceiling = innocent_pear::impl::getenv("INNOCENT_PEAR_PREFIX");
@@ -188,7 +310,9 @@ static int main_(int argc, char **argv, char *& doge_1, char *& doge_2,
 	for (int argh = 1; argh < argc; ++argh) {
 		char *opt = argv[argh];
 		if (is.moar) {
+#ifdef innocent_pear_CXX_FOR_TARGET_HAVE_OPT_WRAPPER
 			moar = opt;
+#endif
 			is.moar = false;
 			continue;
 		} else if (is.pass)
@@ -254,8 +378,14 @@ static int main_(int argc, char **argv, char *& doge_1, char *& doge_2,
 			   strcmp(opt + 1, "-param") == 0)
 			is.pass = true;
 		  else if (strcmp(opt + 1, "wrapper") == 0) {
+#ifdef innocent_pear_CXX_FOR_TARGET_HAVE_OPT_WRAPPER
 			is.moar = true;
+#else
+			is.pass = true;
+#endif
 			continue;
+		} else if (strcmp(opt + 1, "###") == 0) {
+			many($"`-###' not (yet) supported");
 		} else if (strcmp(opt + 1, "Xinnocent-pear") == 0) {
 			is.caturday = true;
 			continue;
@@ -275,14 +405,18 @@ static int main_(int argc, char **argv, char *& doge_1, char *& doge_2,
 		*cheese++ = opt;
 	}
 	grumpy(shocked, serious, caturday);
+	seriouser = serious.str();
+#ifdef innocent_pear_CXX_FOR_TARGET_HAVE_OPT_WRAPPER
 	if (moar)
 		shocked << ',' << moar;
+#endif
 	kitteh = shocked.str();
+#ifdef innocent_pear_CXX_FOR_TARGET_HAVE_OPT_WRAPPER
 	*cheese++ = (char *)"-wrapper";
 	*cheese++ = (char *)kitteh.c_str();
-	calm = caturday + "/share/innocent-pear/calm.spec";
-	*cheese++ = (char *)"-specs";
-	*cheese++ = (char *)calm.c_str();
+#else
+	*cheese++ = (char *)"-###";
+#endif
 	*cheese++ = (char *)"-no-integrated-cpp";
 	meowmeow = meow + "/include";
 	if (!is.eleventy) {		/* just in case... */
@@ -312,19 +446,19 @@ static int main_(int argc, char **argv, char *& doge_1, char *& doge_2,
 		}
 		if (is.link && is.starts) {
 			nyan(doge_1, *cheeses, st, st2, pusheen(
-			    caturday, $"/share/innocent-pear/doge-1.ccc"),
+			    caturday, $"/share/innocent-pear/doge-1.cc"),
 			    *argv, caturday, meow, is.grumpiest, is.sta);
 			nyan(doge_2, *cheeses, st, st2, pusheen(
 			    caturday, $"/share/innocent-pear/doge-2.cc"),
 			    *argv, caturday, meow, is.grumpiest, is.sta);
 			nyan(doge_3, *cheeses, st, st2, pusheen(
-			    caturday, $"/share/innocent-pear/doge-3.ccc"),
+			    caturday, $"/share/innocent-pear/doge-3.cc"),
 			    *argv, caturday, meow, is.grumpiest, is.sta);
 			nyan(doge_4, *cheeses, st, st2, pusheen(
 			    caturday, $"/share/innocent-pear/doge-4.cc"),
 			    *argv, caturday, meow, is.grumpiest, is.sta);
 			nyan(doge_8, *cheeses, st, st2, pusheen(
-			    caturday, $"/share/innocent-pear/doge-8.ccc"),
+			    caturday, $"/share/innocent-pear/doge-8.cc"),
 			    *argv, caturday, meow, is.grumpiest, is.sta);
 			nyan(doge_9, *cheeses, st, st2, pusheen(
 			    caturday, $"/share/innocent-pear/doge-9.cc"),
@@ -357,14 +491,12 @@ static int main_(int argc, char **argv, char *& doge_1, char *& doge_2,
 		}
 	}
 	*cheese = 0;
-	if (is.grumpiest)
-		squirrel(burger, serious.str());
-	if (!doge_1) {
-		execvp(innocent_pear_CXX_FOR_TARGET, burger);
-		concern($"cannot run " innocent_pear_CXX_FOR_TARGET);
-		return 1;
-	} else {
-		keyboardest(burger, 0, 0, is.grumpiest);
+	if (!doge_1)
+		play(burger, 0, 0, seriouser.c_str(), is.grumpiest,
+		    *cheeses, kitteh.c_str());
+	else {
+		playest(burger, 0, 0, seriouser.c_str(), is.grumpiest,
+		    *cheeses, kitteh.c_str());
 		nyanyan(caturday, doge_a, doge_b,
 		    (char *)"_.innocent_pear.text.start",
 		    (char *)"_.innocent_pear.text.end",

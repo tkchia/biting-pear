@@ -1,3 +1,60 @@
+2016-07-23	Beginning of clang++ support.
+
+		configure :
+		- now tests if host and target compilers support
+		  `-fno-integrated-as', and if target supports `-wrapper'
+
+		bin/innocent-pear-c++.cc :
+		- .ccc -> .cc
+		- now supports sending compiler passes to calm.cc via using
+		  `-###' rather than `-wrapper'
+		- removed `-specs ...'
+		- some bug fixes
+
+		bin/innocent-pear-doge.cc ,
+		share/innocent-pear/doge-1.cc ,
+		share/innocent-pear/doge-3.cc ,
+		share/innocent-pear/doge-8.cc ,
+		share/innocent-pear/epic.cc ,
+		test/*.cc :
+		- .ccc -> .cc
+
+		GNUmakefile :
+		- .ccc -> .cc
+		- now writes results of `-wrapper' test to
+		- now adds `-fno-integrated-as' compiler flag when building
+		  .s files (host or target), if this flag is supported
+
+		.travis.yml :
+		- now also tests with clang++ as host-side compiler
+
+		share/innocent-pear/keyboard.cc :
+		- added two more parameters to keyboard(...) and
+		  keyboardest(...)
+		- removed keyboard(, )
+		- made keyboarder(...) local to module
+
+		share/innocent-pear/calm.cc :
+		- now handles clang-style compiler passes
+		- updated keyboard(...) and keyboardest(...) calls
+
+		share/innocent-pear/calm.spec :
+		- removed
+
+		include/innocent-pear/bbq.h ,
+		include/innocent-pear/kthxbai.h :
+		- tweaked calculations of multiplicative inverses
+
+		include/innocent-pear/lolwut.h :
+		- fixed or disabled __asm constructs which do not work well
+		  under clang++
+
+		include/innocent-pear/host/lolcat.h :
+		- updated per share/innocent-pear/keyboard.cc
+
+		lolwutconf/ :
+		- bumped to b247d7a66c
+
 2016-07-20	Somewhat minor fixes.
 
 		include/innocent-pear/omg.h :
