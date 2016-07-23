@@ -199,10 +199,10 @@ class lolwut_impl
 				    : "n" ((unsigned long)Disp2), "X" (v));
 				p_ += Disp - Disp2;
 			}
-#	endif
 			break;
+#	endif
 #   endif
-#elif defined __i386__
+#elif defined __i386__ && !defined __clang__
 		    case 1:
 		    case 3:
 			__asm("" : "=r" (p_) : "0" (&&qux));

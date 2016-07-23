@@ -54,9 +54,12 @@
 		share/innocent-pear/calm.spec :
 		- removed
 
-		include/innocent-pear/bbq.h ,
+		include/innocent-pear/bbq.h :
+		- tweaked calculations of multiplicative inverses
+
 		include/innocent-pear/kthxbai.h :
 		- tweaked calculations of multiplicative inverses
+		- `arplw' -> `arpl', as clang++ does not understand `arplw'
 
 		include/innocent-pear/lolwut.h :
 		- fixed or disabled __asm constructs which do not work well
