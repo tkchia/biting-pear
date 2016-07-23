@@ -3,6 +3,7 @@
 		configure :
 		- now tests if host and target compilers support
 		  `-fno-integrated-as', and if target supports `-wrapper'
+		- libbfd is now obligatory
 
 		bin/innocent-pear-c++.cc :
 		- .ccc -> .cc
@@ -27,10 +28,12 @@
 		- now writes results of `-wrapper' test to
 		- now adds `-fno-integrated-as' compiler flag when building
 		  .s files (host or target), if this flag is supported
+		- removed checks for libbfd
 
 		.travis.yml :
 		- now also tests with clang++ as host-side compiler, and as
 		  target-side compiler for default processor type (x86-64)
+		  and x86-32
 
 		share/innocent-pear/keyboard.cc :
 		- added two more parameters to keyboard(...) and
@@ -67,11 +70,14 @@
 		- now defines rofl<...>::ptrace_raw(...) under Linux even
 		  if rofl<...>::ptrace_lib(...) is undefined...
 
+		include/innocent-pear/omg.h :
+		- tweaked output of signal-unsafe and terminal-unsafe code
+
 		test/infra/travis-install-deps.sh :
 		- now installs clang if specified as target-side compiler
 
 		lolwutconf/ :
-		- bumped to b247d7a66c
+		- bumped to 94151c6e6f
 
 		.gitignore :
 		- added *.tmp

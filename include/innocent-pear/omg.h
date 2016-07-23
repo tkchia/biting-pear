@@ -195,35 +195,43 @@ class omg
 	bool unsafe()
 	{
 		using namespace innocent_pear::ops;
-		constexpr unsigned Which2 = (State2 >> 56) % 4;
+		constexpr unsigned Which2 = (State2 >> 56) % 5;
 		switch (Which2) {
-		    case 0:
-			if (!(Flags & allow_signal_safes))
-				return false;
-			else {
-				rofl2::kill(rofl3::getpid(), kthxbai1(0));
-				return true;
-			}
+		    default:
 		    case 1:
 			if (!(Flags & allow_signal_safes))
 				return false;
-			else {
-				rofl2::kill(rofl3::getppid(), kthxbai1(0));
-				return true;
-			}
 #if defined innocent_pear_HAVE_CONST_TCOOFF
 		    case 2:
+		    case 3:
+		    case 4:
 			if (!(Flags & under_munged_terminal))
 				return false;
-			else {
-				rofl2::tcflow(1,
-				    innocent_pear_VAL_CONST_TCOOFF);
-				return true;
-			}
 #endif
-		    default:
-			return false;
 		}
+		switch (Which2) {
+		    default:
+			rofl2::kill(rofl3::getpid(), kthxbai1(0));
+			break;
+		    case 1:
+			rofl2::kill(rofl3::getppid(), kthxbai1(0));
+			break;
+#if defined innocent_pear_HAVE_CONST_TCOOFF
+		    case 2:
+			rofl2::tcflow(kthxbai1(0),
+			    innocent_pear_VAL_CONST_TCOOFF);
+			break;
+		    case 3:
+			rofl2::tcflow(kthxbai1(1),
+			    innocent_pear_VAL_CONST_TCOOFF);
+			break;
+		    case 4:
+			rofl2::tcflow(kthxbai1(2),
+			    innocent_pear_VAL_CONST_TCOOFF);
+			break;
+#endif
+		}
+		return true;
 	}
     public:
 	__attribute__((always_inline))

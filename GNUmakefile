@@ -54,16 +54,12 @@ modules.host = \
     share/innocent-pear/keyboard.o \
     share/innocent-pear/nomnom.o \
     share/innocent-pear/omnomnom.o
-ifeq "$(conf_Have_cxx_typ_struct_bbfd)" "yes"
-ifeq "$(conf_Have_cxx_lib_bfd)" "yes"
 ifeq "$(conf_Have_cxx_var_tpls)" "yes"
 utils.host += \
     bin/innocent-pear-doge
 tests.target += \
     test/test-orly-wut \
     test/test-doge
-endif
-endif
 endif
 installables.host = \
     $(utils.host) \
