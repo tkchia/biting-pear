@@ -37,6 +37,12 @@ static void unscramble_2()
 #ifdef innocent_pear_HAVE_CONST_TCOON
 	innocent_pear::rofl?<innocent_pear::ops::allow_all &
 			    ~innocent_pear::ops::allow_terminal_unsafes>::
+	    tcflow(0, TCOON);
+	innocent_pear::rofl?<innocent_pear::ops::allow_all &
+			    ~innocent_pear::ops::allow_terminal_unsafes>::
 	    tcflow(1, TCOON);
+	innocent_pear::rofl?<innocent_pear::ops::allow_all &
+			    ~innocent_pear::ops::allow_terminal_unsafes>::
+	    tcflow(2, TCOON);
 #endif
 }

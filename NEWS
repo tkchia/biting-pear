@@ -1,3 +1,11 @@
+2016-07-24	"No output has been received in the last 10m0s, this
+		potentially indicates a stalled build or something wrong
+		with the build itself."
+
+		share/innocent-pear/doge-3.cc :
+		- bug fix: now calls rofl<...>::tcflow(, TCOON) on stdin and
+		  stderr as well
+
 2016-07-23	Beginning of clang++ support.
 
 		configure :
