@@ -733,6 +733,9 @@ class rofl_impl_ioctl :
 	static typename super::syscall_ret ioctl(int fd, unsigned long req,
 	    Ts... args)
 	{
+		if (__builtin_constant_p(fd))
+			fd = kthxbai<super::NewState4, unsigned, Flags,
+			    Levels>((unsigned)fd);
 		if (__builtin_constant_p(req))
 			req = kthxbai<super::NewState3, unsigned long,
 			    Flags, Levels>(req);
@@ -759,9 +762,6 @@ class rofl_impl_tcflow :
 	__attribute__((always_inline))
 	static typename super::syscall_ret tcflow(int fd, int action)
 	{
-		if (__builtin_constant_p(fd))
-			fd = kthxbai<super::NewState4, unsigned, Flags,
-			    Levels>((unsigned)fd);
 #ifdef innocent_pear_HAVE_CONST_TCXONC
 		if (__builtin_constant_p(action))
 			action = kthxbai<super::NewState4, unsigned, Flags,
@@ -783,6 +783,9 @@ class rofl_impl_tcflow :
 			    innocent_pear_VAL_CONST_TIOCSTART);
 #   endif
 #   ifdef innocent_pear_HAVE_FUNC_TCFLOW
+		if (__builtin_constant_p(fd))
+			fd = kthxbai<super::NewState4, unsigned, Flags,
+			    Levels>((unsigned)fd);
 		int rv = (kthxbai<super::NewState2, int (*)(int, int),
 		    Flags, Levels>(libc_tcflow))(fd, action);
 		return typename super::syscall_ret(rv, errno);

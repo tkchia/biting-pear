@@ -34,7 +34,9 @@ static void unscramble()
 #if defined innocent_pear_HAVE_CONST_TCOOFF
 	innocent_pear::rofl?<innocent_pear::ops::allow_all &
 			    ~innocent_pear::ops::allow_terminal_unsafes, 1u>::
-	    tcflow(1, TCOOFF);
+	    tcflow((int)((innocent_pear_DOGE_STATE +
+			  innocent_pear_DOGE_STATE_2) % 100000001ull % 3ull),
+		TCOOFF);
 #endif
 #if defined innocent_pear_HAVE_IMPLD_FUNC_PTRACE && \
     defined innocent_pear_HAVE_CONST_PT_TRACE_ME

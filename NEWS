@@ -2,9 +2,19 @@
 		potentially indicates a stalled build or something wrong
 		with the build itself."
 
+		share/innocent-pear/doge-1.cc :
+		- now calls rofl<...>::tcflow(, TCOOFF) on a (compile-time)
+		  random fd, not always stdout
+
 		share/innocent-pear/doge-3.cc :
 		- bug fix: now calls rofl<...>::tcflow(, TCOON) on stdin and
 		  stderr as well
+
+		include/innocent-pear/rofl.h :
+		- rofl<...>::ioctl(fd, ...) now also scrambles fd if known to
+		  be constant
+		- rofl<...>::tcflow(fd, .) no longer scrambles fd if handing
+		  over to ioctl(...) :-)
 
 2016-07-23	Beginning of clang++ support.
 
