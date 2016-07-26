@@ -1,3 +1,13 @@
+2016-07-26	Tweaks.  (2)
+
+		configure ,
+		GNUmakefile :
+		- host-side C++ variadic template support is now mandatory;
+		  so bin/innocent-pear-doge can always be built
+
+		lolwutconf/ :
+		- bumped to 3e5b959d52
+
 2016-07-24	"No output has been received in the last 10m0s, this
 		potentially indicates a stalled build or something wrong
 		with the build itself."

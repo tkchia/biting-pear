@@ -34,7 +34,9 @@ headers.target = \
 tests.target = \
     test/test-kthxbai \
     test/test-kthxbai-p \
-    test/test-orly
+    test/test-orly \
+    test/test-orly-wut \
+    test/test-doge
 ifeq "$(conf_Have_cxxt_var_tpls)" "yes"
 tests.target += \
     test/test-dawg \
@@ -44,6 +46,7 @@ tests.target += \
 endif
 utils.host = \
     bin/innocent-pear-c++ \
+    bin/innocent-pear-doge \
     share/innocent-pear/calm \
     share/innocent-pear/omnomnom
 modules.host = \
@@ -54,13 +57,6 @@ modules.host = \
     share/innocent-pear/keyboard.o \
     share/innocent-pear/nomnom.o \
     share/innocent-pear/omnomnom.o
-ifeq "$(conf_Have_cxx_var_tpls)" "yes"
-utils.host += \
-    bin/innocent-pear-doge
-tests.target += \
-    test/test-orly-wut \
-    test/test-doge
-endif
 installables.host = \
     $(utils.host) \
     share/innocent-pear/doge-1.cc \

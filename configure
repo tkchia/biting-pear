@@ -9,7 +9,7 @@ conf_mod c++ c++.target
 conf_cxxt_probe_opt_wrapper
 conf_cxx_probe_opt_fno_integrated_as
 conf_cxxt_probe_opt_fno_integrated_as
-conf_cxx_probe_var_tpls
+conf_cxx_chk_var_tpls
 conf_cxxt_probe_var_tpls
 conf_cxx_probe_decltype
 conf_cxxt_probe_decltype
