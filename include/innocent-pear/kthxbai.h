@@ -323,7 +323,6 @@ class kthxbai<State, void *, Flags, Levels> :
 		{ }
 };
 
-#ifdef innocent_pear_HAVE_CXX_VAR_TPLS
 template<rand_state_t State, class RetT, ops_flags_t Flags, unsigned Levels,
     class... ArgT>
 class kthxbai<State, RetT (*)(ArgT...), Flags, Levels> :
@@ -355,7 +354,6 @@ class kthxbai<State, RetT (*)(ArgT..., ...), Flags, Levels> :
 	    lolwut<State, func_type, Flags, Levels>(p, mode)
 		{ }
 };
-#endif
 
 template<rand_state_t State, class S, ops_flags_t Flags, unsigned Levels>
 class kthxbai<State, S *, Flags, Levels> :

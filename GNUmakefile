@@ -35,15 +35,12 @@ tests.target = \
     test/test-kthxbai \
     test/test-kthxbai-p \
     test/test-orly \
-    test/test-orly-wut \
-    test/test-doge
-ifeq "$(conf_Have_cxxt_var_tpls)" "yes"
-tests.target += \
     test/test-dawg \
     test/test-dawg-syn \
     test/test-yodawg \
-    test/test-yodawg-syn
-endif
+    test/test-yodawg-syn \
+    test/test-orly-wut \
+    test/test-doge
 utils.host = \
     bin/innocent-pear-c++ \
     bin/innocent-pear-doge \
@@ -245,14 +242,6 @@ else
 		echo "#undef innocent_pear_TARGET_WCHAR_IS_CHAR32"; \
 	fi >>$@.tmp
 endif
-	if test '$(conf_Have_cxx_var_tpls),$@' = 'yes,$(config.h.host)'; then\
-		echo '#define innocent_pear_HAVE_CXX_VAR_TPLS 1' >>$@.tmp; \
-	elif test '$(conf_Have_cxxt_var_tpls),$@' = \
-	    'yes,$(config.h.target)'; then \
-		echo '#define innocent_pear_HAVE_CXX_VAR_TPLS 1' >>$@.tmp; \
-	else \
-		echo '#undef innocent_pear_HAVE_CXX_VAR_TPLS' >>$@.tmp; \
-	fi
 	if test '$(conf_Have_cxx_decltype),$@' = 'yes,$(config.h.host)'; then\
 		echo '#define innocent_pear_decltype decltype' >>$@.tmp; \
 	elif test '$(conf_Have_cxxt_decltype),$@' = \

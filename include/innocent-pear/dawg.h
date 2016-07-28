@@ -7,10 +7,6 @@
 #include <innocent-pear/bbq.h>
 #include <innocent-pear/kthxbai.h>
 
-#ifndef innocent_pear_HAVE_CXX_VAR_TPLS
-#   error "this header needs support for C++11 variadic templates"
-#endif
-
 namespace innocent_pear
 {
 
