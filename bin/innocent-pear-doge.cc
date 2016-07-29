@@ -141,8 +141,15 @@ static void do_frob_4(bfd *ibfd, adreld *dreld)
 {
 	wow("reading and scanning dynamic relocation tables");
 	long dssz = bfd_get_dynamic_symtab_upper_bound(ibfd);
-	if (dssz < 0 || dssz > SSIZE_MAX)
+	if (dssz > SSIZE_MAX)
+		much("dynamic relocation table is impossibly big!");
+	if (dssz < 0) {
+		if (bfd_get_error() == bfd_error_invalid_operation) {
+			wow("\tno dynamic relocations");
+			return;
+		}
 		much("bfd_get_dynamic_symtab_upper_bound");
+	}
 	asymbol **dyn_syms = new asymbol *[(dssz + sizeof(asymbol *) - 1)
 	    / sizeof(asymbol *)];
 	if (bfd_canonicalize_dynamic_symtab(ibfd, dyn_syms) < 0)

@@ -1,3 +1,8 @@
+2016-07-29	Improved relocation handling.
+
+		bin/innocent-pear-doge.cc :
+		- no longer errors out if input has no dynamic relocations
+
 2016-07-28	Tweaks.  (3)
 
 		configure ,
