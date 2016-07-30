@@ -1,3 +1,16 @@
+2016-07-30	Tweaks.  (4)
+
+		bin/innocent-pear-c++.cc :
+		- now always passes `-fno-integrated-as' to target C++
+		  compiler, if supported
+		- now ignores any `-fintegrated-as' on input command line
+
+		GNUmakefile :
+		- now says in $(config.h.host) whether target compiler has
+		  `-fno-integrated-as'
+		- no longer specially passes `-fno-integrated-as' to make
+		  rule when building .s files for target
+
 2016-07-29	Improved relocation handling.
 
 		bin/innocent-pear-doge.cc :

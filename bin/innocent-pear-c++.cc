@@ -285,16 +285,16 @@ static int main_(int argc, char **argv, char *& doge_1, char *& doge_2,
 #endif
 		 };
 	/*
-	 * Why 15?  2 for `-wrapper ...', 1 for `-no-integrated-cpp', 2 for
-	 * `-idirafter ...', 8 (== 10 - 2) for `-include', `.../doge.h',
-	 * (doge-1.o), (doge-2.o), (doge-3.o), (doge-4.o), `-x' `-none',
-	 * (doge-8.o), and (doge-9.o), minus the `-Xinnocent-pear' `-doge',
-	 * and 2 for `-o' (doge-a).
+	 * Why 16?  2 for `-wrapper ...', 1 for `-no-integrated-cpp', 1 for
+	 * `-fno-integrated-as', 2 for `-idirafter ...', 8 (== 10 - 2) for
+	 * `-include', `.../doge.h', (doge-1.o), (doge-2.o), (doge-3.o),
+	 * (doge-4.o), `-x' `-none', (doge-8.o), and (doge-9.o), minus the
+	 * `-Xinnocent-pear' `-doge', and 2 for `-o' (doge-a).
 	 *
 	 * We also need a terminating null pointer, but since we do not pass
 	 * our own *argv to execvp...
 	 */
-	char *burger[argc + 15], **cheese = burger, **cheeses = 0,
+	char *burger[argc + 16], **cheese = burger, **cheeses = 0,
 	    *burgery[argc], **cheesy = burgery, *ceiling, *real_a = 0;
 #ifdef innocent_pear_CXX_FOR_TARGET_HAVE_OPT_WRAPPER
 	char *moar = 0;
@@ -385,9 +385,9 @@ static int main_(int argc, char **argv, char *& doge_1, char *& doge_2,
 			is.pass = true;
 #endif
 			continue;
-		} else if (strcmp(opt + 1, "###") == 0) {
+		} else if (strcmp(opt + 1, "###") == 0)
 			many($"`-###' not (yet) supported");
-		} else if (strcmp(opt + 1, "Xinnocent-pear") == 0) {
+		  else if (strcmp(opt + 1, "Xinnocent-pear") == 0) {
 			is.caturday = true;
 			continue;
 		} else if (strcmp(opt + 1, "nostdinc") == 0)
@@ -401,6 +401,14 @@ static int main_(int argc, char **argv, char *& doge_1, char *& doge_2,
 			*cheese++ = (char *)"-o";
 			cheeses = cheese;
 			*cheese++ = opt + 2;
+			continue;
+		} else if (strcmp(opt + 1, "fintegrated-as") == 0) {
+			/*
+			 * There is a high chance we will need the assembly
+			 * pass to be decoupled from the compilation pass
+			 * for everything to work properly, so...
+			 */
+			wow($"ignoring `-fintegrated-as'");
 			continue;
 		}
 		*cheese++ = opt;
@@ -419,6 +427,9 @@ static int main_(int argc, char **argv, char *& doge_1, char *& doge_2,
 	*cheese++ = (char *)"-###";
 #endif
 	*cheese++ = (char *)"-no-integrated-cpp";
+#ifdef innocent_pear_CXX_FOR_TARGET_DECOUPLE_AS
+	*cheese++ = (char *)"-fno-integrated-as";
+#endif
 	meowmeow = meow + "/include";
 	if (!is.eleventy) {		/* just in case... */
 		*cheese++ = (char *)"-idirafter";

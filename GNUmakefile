@@ -302,6 +302,12 @@ endif
 	fi >>$@.tmp
 	set -e; \
 	if test '$(config.h.host)' = '$@'; then \
+		if test '$(conf_Have_cxxt_opt_fno_integrated_as)' = yes; then \
+			echo '#define' \
+			  'innocent_pear_CXX_FOR_TARGET_DECOUPLE_AS 1'; \
+		else	echo '#undef' \
+			  'innocent_pear_CXX_FOR_TARGET_DECOUPLE_AS'; \
+		fi; \
 		if test '$(conf_Have_cxxt_opt_wrapper)' = yes; then \
 			echo '#define' \
 			  'innocent_pear_CXX_FOR_TARGET_HAVE_OPT_WRAPPER 1'; \
@@ -438,9 +444,6 @@ share/innocent-pear/omnomnom: share/innocent-pear/omnomnom.cc \
 	    -c -o$@ $<
 
 # for debugging
-ifeq "$(conf_Have_cxxt_opt_fno_integrated_as)" "yes"
-%.s : CXXFLAGS_FOR_TARGET += -fno-integrated-as
-endif
 %.s: %.cc $(headers.target) $(installables.host)
 	mkdir -p $(@D)
 	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
