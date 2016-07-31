@@ -1,4 +1,11 @@
-2016-07-31	Tweaks.  (5)
+2016-07-31	"RAM wasn't built in a day."
+
+		.travis.yml :
+		- factored out build command into a separate script
+
+		test/infra/travis-build-and-check.sh :
+		- initial version; build command factored out from .travis.yml
+		- added test of `./configure --help'
 
 		lolwutconf/ :
 		- bumped to 01f15b32fc

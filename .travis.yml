@@ -28,4 +28,4 @@ env:
   - TARGET=armv4-linux-gnueabi
   - TARGET=armv4t-linux-gnueabi
 install: ./test/infra/travis-install-deps.sh
-script: ./configure ${TARGET:+"--target=$TARGET"} && make && make check
+script: ./test/infra/travis-build-and-check.sh
