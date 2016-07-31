@@ -7,6 +7,9 @@
 		- initial version; build command factored out from .travis.yml
 		- added test of `./configure --help'
 
+		GNUmakefile :
+		- `make uninstall' should now remove host-side utilities
+
 		lolwutconf/ :
 		- bumped to da490e2042
 

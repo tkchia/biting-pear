@@ -87,6 +87,13 @@ install-target-files: $(headers.target)
 	install -m 644 $^ $(includedir.target)/innocent-pear
 
 uninstall:
+	for u in $(installables.host); do \
+		case "$$u" in \
+		    bin/*) \
+			rm -f $(bindir)/"$$u";; \
+		    *)	rm -f $(datarootdir)/innocent-pear/"$$u";; \
+		esac; \
+	done
 	$(foreach hdr,$(headers.target), \
 	    rm -f $(includedir.target)/innocent-pear/$(notdir $(hdr)) &&) \
 	    true
