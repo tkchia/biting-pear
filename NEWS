@@ -9,6 +9,8 @@
 
 		GNUmakefile :
 		- `make uninstall' should now remove host-side utilities
+		- split `uninstall' rule into two sub-rules
+		- marked `default', `check', etc. targets as `.PHONY'
 
 		lolwutconf/ :
 		- bumped to da490e2042

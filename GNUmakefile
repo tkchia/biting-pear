@@ -65,6 +65,10 @@ installables.host = \
 
 default all: check
 
+.PHONY: default all check install uninstall clean distclean \
+    install-host-files install-target-files \
+    uninstall-host-files uninstall-target-files
+
 check: $(tests.target:=.passed) $(installables.host)
 
 install: install-host-files install-target-files
@@ -86,7 +90,9 @@ install-target-files: $(headers.target)
 	install -d $(includedir.target)/innocent-pear
 	install -m 644 $^ $(includedir.target)/innocent-pear
 
-uninstall:
+uninstall: uninstall-host-files uninstall-target-files
+
+unnstall-host-files:
 	for u in $(installables.host); do \
 		case "$$u" in \
 		    bin/*) \
@@ -94,6 +100,8 @@ uninstall:
 		    *)	rm -f $(datarootdir)/innocent-pear/"$$u";; \
 		esac; \
 	done
+
+uninstall-target-files:
 	$(foreach hdr,$(headers.target), \
 	    rm -f $(includedir.target)/innocent-pear/$(notdir $(hdr)) &&) \
 	    true
