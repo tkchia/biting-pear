@@ -17,8 +17,8 @@ static int main_(int argc, char **argv, char *& grumpy, char *& grumpier)
 	const char *lulz = innocent_pear::impl::getenv("INNOCENT_PEAR_PREFIX");
 	enum { UNKNOWN, CLANG, AS, CC1, CC1PLUS, LD } wut = UNKNOWN;
 	struct {
-		unsigned pass : 1, e : 1, v : 1, x : 1;
-	} is = { false, false, false, false };
+		unsigned pass : 1, e : 1, v : 1, x : 1, pass_all : 1, doge : 1;
+	} is = { false, false, false, false, false, false };
 	curious(*argv);
 	if (!lulz)
 		many($"Snape kills Dumbledore!");
@@ -99,6 +99,28 @@ static int main_(int argc, char **argv, char *& grumpy, char *& grumpier)
 				   strcmp(opt + 1, "-param") == 0)
 				is.pass = true;
 			break;
+		    case AS:
+			if (is.pass)
+				is.pass = false;
+			  else if (is.pass_all || opt[0] != '-' || opt[1] == 0)
+				break;
+			  else if (opt[2] == 0) {
+				switch (opt[1]) {
+				    case '-':
+					is.pass_all = true;  break;
+				    case 'G':
+				    case 'I':
+				    case 'o':
+					is.pass = true;  break;
+				    default:
+					;
+				}
+			} else if (strcmp(opt + 1, "-Xinnocent-pear=doge")
+			    == 0) {
+				is.doge = true;
+				continue;
+			}
+			break;
 		    default:
 			;
 		}
@@ -140,6 +162,13 @@ static int main_(int argc, char **argv, char *& grumpy, char *& grumpier)
 				concern($"cannot rename ", grumpier, $" to ",
 				    lulz);
 			return 0;
+		}
+	    case AS:
+		{
+			if (is.doge)
+				wow($"currently ignoring "
+				     "--Xinnocent-pear=doge");
+			keyboard(calm, 0, 0, 0, 0, true/*is.v*/);
 		}
 	}
 }

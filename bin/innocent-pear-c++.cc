@@ -285,16 +285,21 @@ static int main_(int argc, char **argv, char *& doge_1, char *& doge_2,
 #endif
 		 };
 	/*
-	 * Why 16?  2 for `-wrapper ...', 1 for `-no-integrated-cpp', 1 for
-	 * `-fno-integrated-as', 2 for `-idirafter ...', 8 (== 10 - 2) for
-	 * `-include', `.../doge.h', (doge-1.o), (doge-2.o), (doge-3.o),
-	 * (doge-4.o), `-x' `-none', (doge-8.o), and (doge-9.o), minus the
-	 * `-Xinnocent-pear' `-doge', and 2 for `-o' (doge-a).
+	 * Why 17?  We need
+	 *
+	 *   * 2 for `-wrapper ...'
+	 *   * 3 for `-no-integrated-cpp' `-fno-integrated-as'
+	 *     `-Wa,--Xinnocent-pear=doge'
+	 *   * 2 for `-idirafter ...'
+	 *   * 8 (== 10 - 2) for `-include', `.../doge.h', (doge-1.o),
+	 *     (doge-2.o), (doge-3.o), (doge-4.o), `-x' `-none', (doge-8.o),
+	 *     and (doge-9.o), minus the `-Xinnocent-pear' `-doge'
+	 *   * and 2 for `-o' (doge-a).
 	 *
 	 * We also need a terminating null pointer, but since we do not pass
 	 * our own *argv to execvp...
 	 */
-	char *burger[argc + 16], **cheese = burger, **cheeses = 0,
+	char *burger[argc + 17], **cheese = burger, **cheeses = 0,
 	    *burgery[argc], **cheesy = burgery, *ceiling, *real_a = 0;
 #ifdef innocent_pear_CXX_FOR_TARGET_HAVE_OPT_WRAPPER
 	char *moar = 0;
@@ -430,6 +435,8 @@ static int main_(int argc, char **argv, char *& doge_1, char *& doge_2,
 #ifdef innocent_pear_CXX_FOR_TARGET_DECOUPLE_AS
 	*cheese++ = (char *)"-fno-integrated-as";
 #endif
+	if (doge)
+		*cheese++ = (char *)"-Wa,--Xinnocent-pear=doge";
 	meowmeow = meow + "/include";
 	if (!is.eleventy) {		/* just in case... */
 		*cheese++ = (char *)"-idirafter";

@@ -12,6 +12,14 @@
 		- split `uninstall' rule into two sub-rules
 		- marked `default', `check', etc. targets as `.PHONY'
 
+		bin/innocent-pear-c++.cc :
+		- now passes `--Xinnocent-pear=doge' to assembler pass, if
+		  `-Xinnocent-pear -doge' is seen
+
+		share/innocent-pear/calm.cc :
+		- wrapper for assembler pass now accepts `--Xinnocent-pear=
+		  doge', though this option currently does nothing
+
 		lolwutconf/ :
 		- bumped to da490e2042
 
