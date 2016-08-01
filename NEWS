@@ -1,3 +1,9 @@
+2016-08-01	Assembler back-end wrapper tweak.
+
+		share/innocent-pear/calm.cc :
+		- now handles long options for `as' which require separate
+		  arguments
+
 2016-07-31	"RAM wasn't built in a day."
 
 		.travis.yml :

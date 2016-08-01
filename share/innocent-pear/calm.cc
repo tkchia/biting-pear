@@ -115,7 +115,16 @@ static int main_(int argc, char **argv, char *& grumpy, char *& grumpier)
 				    default:
 					;
 				}
-			} else if (strcmp(opt + 1, "-Xinnocent-pear=doge")
+			} else if (opt[1] == '-' &&
+			   (strcmp(opt + 2, "debug-prefix-map") == 0 ||
+			    strcmp(opt + 2, "defsym") == 0 ||
+			    strcmp(opt + 2, "rename-section") == 0))
+				is.pass = true;
+			  else if (opt[1] == 'm' &&
+			   (strcmp(opt + 2, "errors-to-file") == 0 ||
+			    strcmp(opt + 2, "e") == 0))
+				is.pass = true;
+			  else if (strcmp(opt + 1, "-Xinnocent-pear=doge")
 			    == 0) {
 				is.doge = true;
 				continue;
