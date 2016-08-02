@@ -53,7 +53,8 @@ modules.host = \
     share/innocent-pear/epic.o \
     share/innocent-pear/keyboard.o \
     share/innocent-pear/nomnom.o \
-    share/innocent-pear/omnomnom.o
+    share/innocent-pear/omnomnom.o \
+    share/innocent-pear/sleepier.o
 installables.host = \
     $(utils.host) \
     share/innocent-pear/doge-1.cc \
@@ -62,6 +63,7 @@ installables.host = \
     share/innocent-pear/doge-4.cc \
     share/innocent-pear/doge-8.cc \
     share/innocent-pear/doge-9.cc
+RM ?= rm -f
 
 default all: check
 
@@ -96,21 +98,21 @@ unnstall-host-files:
 	for u in $(installables.host); do \
 		case "$$u" in \
 		    bin/*) \
-			rm -f $(bindir)/"$$u";; \
-		    *)	rm -f $(datarootdir)/innocent-pear/"$$u";; \
+			$(RM) $(bindir)/"$$u";; \
+		    *)	$(RM) $(datarootdir)/innocent-pear/"$$u";; \
 		esac; \
 	done
 
 uninstall-target-files:
 	$(foreach hdr,$(headers.target), \
-	    rm -f $(includedir.target)/innocent-pear/$(notdir $(hdr)) &&) \
+	    $(RM) $(includedir.target)/innocent-pear/$(notdir $(hdr)) &&) \
 	    true
 	-rmdir -p $(bindir) $(includedir.target)/innocent-pear \
 	    $(datarootdir)/innocent-pear
 
 clean:
 	find . -name '*.[ios]' -o -name '*~' -o -name '*.ii' | \
-	    xargs rm -f $(config.h.host) $(config.h.target) \
+	    xargs $(RM) $(config.h.host) $(config.h.target) \
 		lex.backup share/innocent-pear/omnomnom.cc \
 		$(tests.target) $(utils.host) lolwutconf.*
 ifeq "$(conf_Separate_build_dir)" "yes"
@@ -118,9 +120,9 @@ ifeq "$(conf_Separate_build_dir)" "yes"
 endif
 
 distclean: clean
-	rm -f config.cache
+	$(RM) config.cache
 ifeq "$(conf_Separate_build_dir)" "yes"
-	rm -f GNUmakefile
+	$(RM) GNUmakefile
 endif
 
 config.cache:
@@ -317,6 +319,11 @@ endif
 	fi >>$@.tmp
 	set -e; \
 	if test '$(config.h.host)' = '$@'; then \
+		if test '$(conf_Have_cxxt_func__0fdatasync)' = yes; then \
+			echo '#define innocent_pear_HAVE_FUNC_FDATASYNC 1'; \
+		else \
+			echo '#undef innocent_pear_HAVE_FUNC_FDATASYNC'; \
+		fi; \
 		if test '$(conf_Have_cxxt_opt_fno_integrated_as)' = yes; then \
 			echo '#define' \
 			  'innocent_pear_CXX_FOR_TARGET_DECOUPLE_AS 1'; \
@@ -349,18 +356,18 @@ test/test-%.passed: test/test-% test/test-%.good
 	@LANG=en_US.UTF-8 $(conf_Target_exec) ./$< >$(@:.passed=.1.tmp) \
 	    2>$(@:.passed=.2.tmp) ||\
 	    (echo "* $< exited with error: $$?" >&2 && \
-	     rm -f $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
+	     $(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
 	     exit 1)
 	@LANG=en_US.UTF-8 diff -U2 /dev/null $(@:.passed=.2.tmp) || \
 	    (echo "* $< produced output on stderr" >&2 && \
-	     rm -f $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
+	     $(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
 	     exit 1)
 	@LANG=en_US.UTF-8 diff -U2 $<.good $(@:.passed=.1.tmp) || \
 	    (echo "* $<'s expected output and actual output differ" >&2 && \
-	     rm -f $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
+	     $(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
 	     exit 1)
 	@echo "* $< passed" >&2
-	@rm -f $(@:.passed=.1.tmp) $(@:.passed=.2.tmp)
+	@$(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp)
 
 test/test-%: test/test-%.o
 	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
@@ -381,7 +388,7 @@ test/test-orly-wut: test/test-orly-wut.o test/test-orly-wut.ld \
 	    $(LDFLAGS_FOR_TARGET) -o$@.tmp $(filter %.o %.ld,$^) \
 	    $(LDLIBS_FOR_TARGET)
 	bin/innocent-pear-doge $@.tmp $@ __doge_start __doge_end $(state)
-	rm $@.tmp
+	$(RM) $@.tmp
 
 test/test-doge \
 test/test-doge.o \
@@ -392,17 +399,19 @@ define preproc_for_host
 	$(CXX) -E -x c++ $(CPPFLAGS) $(CXXFLAGS) -o$@.tmp $<
 	$(conf_Host_exec) share/innocent-pear/omnomnom <$@.tmp >$@.2.tmp
 	mv $@.2.tmp $@
-	rm $@.tmp
+	$(RM) $@.tmp
 endef
 
 bin/innocent-pear-c++: bin/innocent-pear-c++.o share/innocent-pear/epic.o \
-    share/innocent-pear/nomnom.o share/innocent-pear/keyboard.o
+    share/innocent-pear/nomnom.o share/innocent-pear/keyboard.o \
+    share/innocent-pear/sleepier.o
 
-bin/innocent-pear-doge: bin/innocent-pear-doge.o share/innocent-pear/epic.o
+bin/innocent-pear-doge: bin/innocent-pear-doge.o \
+    share/innocent-pear/epic.o share/innocent-pear/sleepier.o
 
 share/innocent-pear/calm: share/innocent-pear/calm.o \
     share/innocent-pear/epic.o share/innocent-pear/nomnom.o \
-    share/innocent-pear/keyboard.o
+    share/innocent-pear/keyboard.o share/innocent-pear/sleepier.o
 
 $(foreach m,$(modules.host), \
     $(eval $m: $(m:.o=.ii)))

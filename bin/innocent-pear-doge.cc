@@ -300,14 +300,7 @@ int main(int argc, char **argv)
 		if (!ibfd)
 			much("bfd_openr");
 		check_object(ibfd);
-		size_t tfnl = strlen(ofn) + 8;
-		tfn = new char[tfnl];
-		std::snprintf(tfn, tfnl, "%s.XXXXXX", ofn);
-		int fd = mkstemp(tfn);
-		if (fd < 0)
-			many("mkstemp(\"", tfn, "\" failed: ",
-			    strerror(errno));
-		close(fd);
+		tfn = sleepier(ofn);
 		obfd = bfd_openw(tfn, bfd_get_target(ibfd));
 		if (!obfd)
 			much("bfd_openw");
@@ -326,7 +319,7 @@ int main(int argc, char **argv)
 		if (obfd)
 			bfd_close_all_done(obfd);
 		if (tfn)
-			std::remove(tfn);
+			sleepiest(tfn);
 		if (ibfd)
 			bfd_close(ibfd);
 		return s;

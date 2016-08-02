@@ -1,3 +1,36 @@
+2016-08-02	Now shreds (some) intermediate files during build.
+
+		share/innocent-pear/keyboard.cc :
+		- moved sleepier(.) out to sleepier.cc
+
+		share/innocent-pear/sleepier.cc :
+		- split from keyboard.cc
+		- added sleepiest(.)
+
+		share/innocent-pear/calm.cc :
+		- now uses sleepiest(.)
+		- removed debugging code for assembler pass
+
+		bin/innocent-pear-c++.cc :
+		- now uses sleepiest(.)
+
+		bin/innocent-pear-doge.cc :
+		- now uses sleepier(.) and sleepiest(.)
+
+		include/innocent-pear/host/lolcat.h :
+		- added sleepiest(.) prototype
+
+		configure :
+		- now looks for fdatasync(.) host-side
+
+		GNUmakefile :
+		- added share/innocent-pear/sleepier.o as a dependency for
+		  host-side programs
+		- now defines and uses $(RM) for removing files and
+		  directories
+		- now says in $(config.h.host) whether fdatasync(.) exists
+		  host-side
+
 2016-08-01	Assembler back-end wrapper tweak.
 
 		share/innocent-pear/calm.cc :

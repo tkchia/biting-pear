@@ -18,6 +18,7 @@ extern void keyboard(char **, const char *, const char *, const char *,
 extern void keyboardest(char **, const char *, const char *, const char *,
     const char *, bool);
 extern char *sleepier(const char *);
+extern int sleepiest(const char *);
 
 template<class... Ts>
 __attribute__((always_inline))
