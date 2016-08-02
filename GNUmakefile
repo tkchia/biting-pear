@@ -319,7 +319,7 @@ endif
 	fi >>$@.tmp
 	set -e; \
 	if test '$(config.h.host)' = '$@'; then \
-		if test '$(conf_Have_cxxt_func__0fdatasync)' = yes; then \
+		if test '$(conf_Have_cxx_func__0fdatasync)' = yes; then \
 			echo '#define innocent_pear_HAVE_FUNC_FDATASYNC 1'; \
 		else \
 			echo '#undef innocent_pear_HAVE_FUNC_FDATASYNC'; \
