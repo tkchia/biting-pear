@@ -1,3 +1,8 @@
+2016-08-04	There is always another tweak.
+
+		test/test-doge.cc :
+		- removed unneeded #include's
+
 2016-08-02	Now shreds (some) intermediate files during build.
 
 		share/innocent-pear/keyboard.cc :
