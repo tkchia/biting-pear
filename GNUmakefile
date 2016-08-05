@@ -40,7 +40,8 @@ tests.target = \
     test/test-yodawg \
     test/test-yodawg-syn \
     test/test-orly-wut \
-    test/test-doge
+    test/test-doge \
+    test/test-doge-abs-reloc
 utils.host = \
     bin/innocent-pear-c++ \
     bin/innocent-pear-doge \
@@ -49,6 +50,7 @@ utils.host = \
 modules.host = \
     bin/innocent-pear-c++.o \
     bin/innocent-pear-doge.o \
+    bin/innocent-pear-dogecoin.o \
     share/innocent-pear/calm.o \
     share/innocent-pear/epic.o \
     share/innocent-pear/keyboard.o \
@@ -126,7 +128,11 @@ ifeq "$(conf_Separate_build_dir)" "yes"
 endif
 
 config.cache:
-	./configure
+	@echo '*'
+	@echo '* run `$(conf_Srcdir)/configure --help'\' \
+	      'to see how to build this project!'
+	@echo '*'
+	@exit 1
 
 $(config.h.host) $(config.h.target): config.cache
 	mkdir -p $(@D)
@@ -407,6 +413,9 @@ bin/innocent-pear-c++: bin/innocent-pear-c++.o share/innocent-pear/epic.o \
     share/innocent-pear/sleepier.o
 
 bin/innocent-pear-doge: bin/innocent-pear-doge.o \
+    share/innocent-pear/epic.o share/innocent-pear/sleepier.o
+
+bin/innocent-pear-dogecoin: bin/innocent-pear-dogecoin.o \
     share/innocent-pear/epic.o share/innocent-pear/sleepier.o
 
 share/innocent-pear/calm: share/innocent-pear/calm.o \

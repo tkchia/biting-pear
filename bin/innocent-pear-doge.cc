@@ -57,7 +57,7 @@ static void prep_sxn(bfd *ibfd, asection *isxn, void *cookie)
 		lma = bfd_section_lma(ibfd, isxn);
 	bfd_size_type size = bfd_section_size(ibfd, isxn);
 	std::ostringstream oss;
-	wow("\t", name, ": vma 0x", std::hex, vma,
+	wow("  ", name, ": vma 0x", std::hex, vma,
 	    ", lma 0x", lma, ", size 0x", size);
 	asection *osxn = bfd_make_section_anyway_with_flags(obfd,name,flags);
 	if (!osxn)
@@ -145,7 +145,7 @@ static void do_frob_4(bfd *ibfd, adreld *dreld)
 		much("dynamic relocation table is impossibly big!");
 	if (dssz < 0) {
 		if (bfd_get_error() == bfd_error_invalid_operation) {
-			wow("\tno dynamic relocations");
+			wow("  no dynamic relocations");
 			return;
 		}
 		much("bfd_get_dynamic_symtab_upper_bound");
@@ -211,7 +211,7 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 	bfd *obfd = fortune->obfd;
 	asymbol **syms = fortune->syms;
 	asection *osxn = isxn->output_section;
-	wow("\t", bfd_section_name(ibfd, osxn));
+	wow("  ", bfd_section_name(ibfd, osxn));
 	flagword fl = bfd_get_section_flags(ibfd, isxn);
 	if ((fl & (SEC_HAS_CONTENTS | SEC_RELOC)) == 0)
 		return;

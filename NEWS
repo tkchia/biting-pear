@@ -1,3 +1,23 @@
+2016-08-05	Prevent files from magically materializing due to bash
+		completion of makefile targets.  And, other things.
+
+		GNUmakefile :
+		- rule for config.cache now gives an error message instead
+		  of running ./configure
+		- added test-doge-abs-reloc test case
+		- added rules for building one bin/innocent-pear-dogecoin
+		  (for later use...)
+
+		test/test-doge-abs-reloc.cc ,
+		test/test-doge-abs-reloc.good :
+		- initial version
+
+		bin/innocent-pear-doge.cc :
+		- reformatted wow(...) messages to take up less screen space
+
+		.gitignore :
+		- added test-doge-abs-reloc
+
 2016-08-04	There is always another tweak.
 
 		test/test-doge.cc :
