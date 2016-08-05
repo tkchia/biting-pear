@@ -398,7 +398,10 @@ test/test-orly-wut: test/test-orly-wut.o test/test-orly-wut.ld \
 
 test/test-doge \
 test/test-doge.o \
-test/test-doge.s : CXXFLAGS_FOR_TARGET += -Xinnocent-pear -doge -v
+test/test-doge.s \
+test/test-doge-abs-reloc
+test/test-doge-abs-reloc.o \
+test/test-doge-abs-reloc.s : CXXFLAGS_FOR_TARGET += -Xinnocent-pear -doge -v
 
 define preproc_for_host
 	mkdir -p $(@D)
