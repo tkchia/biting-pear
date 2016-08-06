@@ -6,6 +6,9 @@
 		- now dumps (part of) compiled binaries for test-doge* test
 		  cases, for debugging
 
+		include/innocent-pear/bbq.h :
+		- innocent_pear::impl::pow<...>() is now Always Inline™
+
 		test/infra/travis-install-deps.sh :
 		- now also installs xz-utils, to allow use of xz
 

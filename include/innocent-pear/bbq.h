@@ -19,7 +19,8 @@ typedef uint_least32_t ops_flags_t;
 typedef uint64_t rand_state_t;
 
 template<class T, T P = ((T)1 << (sizeof(T) * CHAR_BIT - 1)) - 1>
-constexpr T pow(T x)
+__attribute__((always_inline))
+inline constexpr T pow(T x)
 {
 	return P == 0 ? (T)1 :
 	    P % 2 == 0 ? pow<T, P / 2>(x * x) :
