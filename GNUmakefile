@@ -359,6 +359,11 @@ endif
 	mv $@.tmp $@
 
 test/test-%.passed: test/test-% test/test-%.good
+	@case "$*" in \
+	    doge*) \
+		echo "* base64 dump of xz'd head of $< :"; \
+		xz -9c <'$<' | base64 | head -n 256 | sed 's,^,*  ,';; \
+	esac >&2
 	@echo "* running test $<" >&2
 	@LANG=en_US.UTF-8 $(conf_Target_exec) ./$< >$(@:.passed=.1.tmp) \
 	    2>$(@:.passed=.2.tmp) ||\

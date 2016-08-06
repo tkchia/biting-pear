@@ -3,6 +3,11 @@
 		GNUmakefile :
 		- now uses the new file names for the share/innocent-pear/
 		  doge-*.cc modules
+		- now dumps (part of) compiled binaries for test-doge* test
+		  cases, for debugging
+
+		test/infra/travis-install-deps.sh :
+		- now also installs xz-utils, to allow use of xz
 
 		share/innocent-pear/sleepier.cc ,
 		include/innocent-pear/host/lolcat.h :
