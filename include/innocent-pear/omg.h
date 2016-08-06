@@ -201,6 +201,7 @@ class omg
 		    case 1:
 			if (!(Flags & allow_signal_safes))
 				return false;
+			break;
 #if defined innocent_pear_HAVE_CONST_TCOOFF
 		    case 2:
 		    case 3:

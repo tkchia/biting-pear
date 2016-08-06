@@ -20,7 +20,7 @@ __attribute__((
 #else
     constructor,
 #endif
-    section(".text.unlikely")))
+    section(".text.unlikely"), optimize("no-reorder-blocks")))
 static void unscramble_2()
 {
 	static constexpr innocent_pear::impl::ops_flags_t flags =
@@ -34,15 +34,4 @@ static void unscramble_2()
 	    unsigned char, false, false, flags>().wut(ts, te);
 	innocent_pear::rofl?<flags>::clear_cache(ts, te);
 	innocent_pear::rofl?<flags>::memset(uts);
-#ifdef innocent_pear_HAVE_CONST_TCOON
-	innocent_pear::rofl?<innocent_pear::ops::allow_all &
-			    ~innocent_pear::ops::allow_terminal_unsafes>::
-	    tcflow(0, TCOON);
-	innocent_pear::rofl?<innocent_pear::ops::allow_all &
-			    ~innocent_pear::ops::allow_terminal_unsafes>::
-	    tcflow(1, TCOON);
-	innocent_pear::rofl?<innocent_pear::ops::allow_all &
-			    ~innocent_pear::ops::allow_terminal_unsafes>::
-	    tcflow(2, TCOON);
-#endif
 }

@@ -1,3 +1,45 @@
+2016-08-06	RAII for managing temporaries.  Refactoring.  Bug fixes.
+
+		GNUmakefile :
+		- now uses the new file names for the share/innocent-pear/
+		  doge-*.cc modules
+
+		share/innocent-pear/sleepier.cc ,
+		include/innocent-pear/host/lolcat.h :
+		- now defines sleepier_t class instead of sleepier(...) and
+		  sleepiest(...) routines
+
+		bin/innocent-pear-c++.cc :
+		- now uses the new file names for the share/innocent-pear/
+		  doge-*.cc modules
+		- now uses sleepier_t class
+
+		bin/innocent-pear-doge.cc ,
+		share/innocent-pear/calm.cc :
+		- now uses sleepier_t class
+
+		share/innocent-pear/doge-01.cc :
+		- renamed from share/innocent-pear/doge-1.cc
+
+		share/innocent-pear/doge-02.cc :
+		- renamed from share/innocent-pear/doge-2.cc
+
+		share/innocent-pear/doge-03.cc ,
+		share/innocent-pear/doge-04.cc :
+		- renamed and split from share/innocent-pear/doge-3.cc
+
+		share/innocent-pear/doge-05.cc :
+		- renamed from share/innocent-pear/doge-4.cc
+
+		share/innocent-pear/doge-98.cc :
+		- renamed from share/innocent-pear/doge-8.cc
+
+		share/innocent-pear/doge-99.cc :
+		- renamed from share/innocent-pear/doge-9.cc
+
+		include/innocent-pear/omg.h :
+		- fixed minor bug
+
 2016-08-05	Prevent files from magically materializing due to bash
 		completion of makefile targets.  And, other things.
 

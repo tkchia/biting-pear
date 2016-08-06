@@ -282,7 +282,6 @@ int main(int argc, char **argv)
 {
 	bfd *ibfd = 0, *obfd = 0;
 	innocent_pear::impl::rand_state_t seed = 0;
-	char *tfn = 0;
 	curious(*argv);
 	bfd_init();
 	try {
@@ -300,8 +299,8 @@ int main(int argc, char **argv)
 		if (!ibfd)
 			much("bfd_openr");
 		check_object(ibfd);
-		tfn = sleepier(ofn);
-		obfd = bfd_openw(tfn, bfd_get_target(ibfd));
+		sleepier_t tfn(ofn);
+		obfd = bfd_openw(tfn(), bfd_get_target(ibfd));
 		if (!obfd)
 			much("bfd_openw");
 		copy_and_frob_object(ibfd, obfd, bnm, enm, seed);
@@ -309,17 +308,13 @@ int main(int argc, char **argv)
 		obfd = 0;
 		if (!closed)
 			much("bfd_close");
-		if (std::rename(tfn, ofn) != 0)
-			many("rename( ) failed: ", strerror(errno));
-		tfn = 0;
+		tfn.sleepiest(ofn);
 		bfd_close(ibfd);
 		ibfd = 0;
 		wow("done");
 	} catch (int s) {
 		if (obfd)
 			bfd_close_all_done(obfd);
-		if (tfn)
-			sleepiest(tfn);
 		if (ibfd)
 			bfd_close(ibfd);
 		return s;

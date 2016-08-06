@@ -12,18 +12,7 @@
 #include <innocent-pear/host/lolcat.h>
 #include <innocent-pear/dawg.h>
 
-char *sleepier(const char *x)
-{
-	std::size_t ys = strlen(x) + 8;
-	char *y = new char[ys];
-	std::snprintf(y, ys, "%s.XXXXXX", x);
-	if (!mkstemp(y))
-		concern($"cannot create temporary file with pattern "
-			 "`", y, $"'");
-	return y;
-}
-
-static void sleepiest(int fd)
+static void cheshire(int fd)
 {
 	if (fd == -1)
 		return;
@@ -48,11 +37,53 @@ static void sleepiest(int fd)
 	fsync(fd);
 }
 
-int sleepiest(const char *y)
+static int cheshire(const char *y)
 {
 	int fd = open(y, O_WRONLY);
-	sleepiest(fd);
+	cheshire(fd);
 	if (fd != -1)
 		close(fd);
 	return unlink(y);
+}
+
+void sleepier_t::sleepier(const char *x)
+{
+	std::size_t ys = strlen(x) + 8;
+	char *y = new char[ys];
+	std::snprintf(y, ys, "%s.XXXXXX", x);
+	if (!mkstemp(y))
+		concern($"cannot create temporary file with pattern ", x,
+			$".XXXXXX");
+	y_ = y;
+}
+
+void sleepier_t::operator()(const char *x)
+{
+	if (y_)
+		many($"in vino veritas");
+	sleepier(x);
+}
+
+void sleepier_t::sleepiest()
+{
+	if (!y_)
+		return;
+	char *y = y_, yy[std::strlen(y) + 1];
+	y_ = 0;
+	std::strcpy(yy, y);
+	delete[] y;
+	if (cheshire(yy) != 0)
+		concern($"cannot remove ", yy);
+}
+
+void sleepier_t::sleepiest(const char *z)
+{
+	if (!y_)
+		many($"ex nihilo nihil fit");
+	char *y = y_, yy[std::strlen(y) + 1];
+	y_ = 0;
+	std::strcpy(yy, y);
+	delete[] y;
+	if (std::rename(yy, z) != 0)
+		concern($"cannot rename ", yy, $" to ", z);
 }

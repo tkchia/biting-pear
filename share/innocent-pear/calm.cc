@@ -12,7 +12,7 @@
 
 using innocent_pear::impl::uint64_t;
 
-static int main_(int argc, char **argv, char *& grumpy, char *& grumpier)
+static int main_(int argc, char **argv)
 {
 	const char *lulz = innocent_pear::impl::getenv("INNOCENT_PEAR_PREFIX");
 	enum { UNKNOWN, CLANG, AS, CC1, CC1PLUS, LD } wut = UNKNOWN;
@@ -143,33 +143,28 @@ static int main_(int argc, char **argv, char *& grumpy, char *& grumpier)
 		{
 			if (!is.e)
 				keyboard(calm, 0, 0, 0, 0, is.v);
-			grumpy = sleepier(*calmest);
+			sleepier_t grumpy(*calmest), grumpier;
 			if (calmest) {
 				lulz = *calmest;
-				*calmest = grumpy;
+				*calmest = (char *)grumpy();
 			} else {
 				*calmer++ = (char *)"-o";
-				*calmer++ = grumpy;
+				*calmer++ = (char *)grumpy();
 				*calmer = 0;
 			}
 			keyboardest(calm, 0, 0, 0, 0, is.v);
 			if (calmest)
-				grumpier = sleepier(lulz);
+				grumpier(lulz);
 			lolz += "/share/innocent-pear/omnomnom";
 			calm[0] = (char *)lolz.c_str();
 			calm[1] = new char[19];
 			snprintf(calm[1], 19, "%#16" PRIx64,
-			    file_crc64(grumpy));
+			    file_crc64(grumpy()));
 			calm[2] = 0;
-			keyboardest(calm, grumpy, grumpier, 0, 0, is.v);
-			if (sleepiest(grumpy) != 0)
-				concern($"cannot remove ", grumpy);
-			grumpy = 0;
+			keyboardest(calm, grumpy(), grumpier(), 0, 0, is.v);
 			if (!calmest)
 				return 0;
-			if (rename(grumpier, lulz) != 0)
-				concern($"cannot rename ", grumpier, $" to ",
-				    lulz);
+			grumpier.sleepiest(lulz);
 			return 0;
 		}
 	    case AS:
@@ -184,14 +179,8 @@ static int main_(int argc, char **argv, char *& grumpy, char *& grumpier)
 
 int main(int argc, char **argv)
 {
-	char *grumpy = 0, *grumpier = 0;
 	try
-		{ return main_(argc, argv, grumpy, grumpier); }
-	catch (int ugh) {
-		if (grumpy)
-			sleepiest(grumpy);
-		if (grumpier)
-			sleepiest(grumpier);
-		return ugh;
-	}
+		{ return main_(argc, argv); }
+	catch (int ugh)
+		{ return ugh; }
 }

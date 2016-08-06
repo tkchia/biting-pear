@@ -59,12 +59,13 @@ modules.host = \
     share/innocent-pear/sleepier.o
 installables.host = \
     $(utils.host) \
-    share/innocent-pear/doge-1.cc \
-    share/innocent-pear/doge-2.cc \
-    share/innocent-pear/doge-3.cc \
-    share/innocent-pear/doge-4.cc \
-    share/innocent-pear/doge-8.cc \
-    share/innocent-pear/doge-9.cc
+    share/innocent-pear/doge-01.cc \
+    share/innocent-pear/doge-02.cc \
+    share/innocent-pear/doge-03.cc \
+    share/innocent-pear/doge-04.cc \
+    share/innocent-pear/doge-05.cc \
+    share/innocent-pear/doge-98.cc \
+    share/innocent-pear/doge-99.cc
 RM ?= rm -f
 
 default all: check

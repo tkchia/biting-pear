@@ -75,4 +75,24 @@ inline void concern(Ts... msg)
 	many(msg..., ": ", strerror(err));
 }
 
+class sleepier_t
+{
+	char *y_;
+	void sleepier(const char *x);
+    public:
+	sleepier_t()
+		{ y_ = 0; }
+	sleepier_t(const char *x)
+		{ sleepier(x); }
+	void operator()(const char *);
+	const char *operator()() const
+		{ return y_; }
+	void sleepiest(const char *);
+	void sleepiest();
+	~sleepier_t()
+		{ sleepiest(); }
+	bool operator!()
+		{ return y_ == 0; }
+};
+
 #endif
