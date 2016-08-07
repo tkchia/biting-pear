@@ -1,3 +1,11 @@
+2016-08-07	"The chicken was involved, the pig was committed."
+
+		GNUmakefile :
+		- `make' and `make all' now no longer run tests like `make
+		  check' does
+		- now uses `private' modifier on $(CXXFLAGS_FOR_TARGET)
+		  changes for test-orly-wut and test-doge* test cases
+
 2016-08-06	RAII for managing temporaries.  Refactoring.  Bug fixes.
 
 		GNUmakefile :

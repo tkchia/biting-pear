@@ -66,15 +66,17 @@ installables.host = \
     share/innocent-pear/doge-05.cc \
     share/innocent-pear/doge-98.cc \
     share/innocent-pear/doge-99.cc
+installables.target = \
+    $(headers.target)
 RM ?= rm -f
 
-default all: check
+default all: $(installables.host) $(installables.target)
 
 .PHONY: default all check install uninstall clean distclean \
     install-host-files install-target-files \
     uninstall-host-files uninstall-target-files
 
-check: $(tests.target:=.passed) $(installables.host)
+check: all $(tests.target:=.passed)
 
 install: install-host-files install-target-files
 
@@ -91,9 +93,9 @@ install-host-files: $(installables.host)
 		esac; \
 	done
 
-install-target-files: $(headers.target)
+install-target-files: $(installables.target)
 	install -d $(includedir.target)/innocent-pear
-	install -m 644 $^ $(includedir.target)/innocent-pear
+	install -m 644 $(headers.target) $(includedir.target)/innocent-pear
 
 uninstall: uninstall-host-files uninstall-target-files
 
@@ -389,10 +391,10 @@ test/test-%.o: test/test-%.cc
 
 test/test-orly-wut \
 test/test-orly-wut.o \
-test/test-orly-wut.s : state = 0x293c42fc93032e55
+test/test-orly-wut.s : private state = 0x293c42fc93032e55
 
 test/test-orly-wut.o \
-test/test-orly-wut.s : CXXFLAGS_FOR_TARGET += -DSTATE=$(state)
+test/test-orly-wut.s : private CXXFLAGS_FOR_TARGET += -DSTATE=$(state)
 
 test/test-orly-wut: test/test-orly-wut.o test/test-orly-wut.ld \
     bin/innocent-pear-doge
@@ -407,7 +409,8 @@ test/test-doge.o \
 test/test-doge.s \
 test/test-doge-abs-reloc \
 test/test-doge-abs-reloc.o \
-test/test-doge-abs-reloc.s : CXXFLAGS_FOR_TARGET += -Xinnocent-pear -doge -v
+test/test-doge-abs-reloc.s : \
+    private CXXFLAGS_FOR_TARGET += -Xinnocent-pear -doge -v
 
 define preproc_for_host
 	mkdir -p $(@D)
