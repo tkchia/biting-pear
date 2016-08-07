@@ -3,6 +3,7 @@
 
 #include <cerrno>
 #include <cstring>
+#include <iostream>
 #include <string>
 #include <innocent-pear/bbq.h>
 
@@ -19,6 +20,7 @@ extern void keyboardest(char **, const char *, const char *, const char *,
     const char *, bool);
 extern char *sleepier(const char *);
 extern int sleepiest(const char *);
+extern innocent_pear::impl::uint64_t lolrus(const char *, const char *);
 
 template<class... Ts>
 __attribute__((always_inline))

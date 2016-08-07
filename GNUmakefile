@@ -55,6 +55,7 @@ modules.host = \
     share/innocent-pear/calm.o \
     share/innocent-pear/epic.o \
     share/innocent-pear/keyboard.o \
+    share/innocent-pear/lolrus.o \
     share/innocent-pear/nomnom.o \
     share/innocent-pear/omnomnom.o \
     share/innocent-pear/sleepier.o
@@ -427,7 +428,8 @@ bin/innocent-pear-c++: bin/innocent-pear-c++.o share/innocent-pear/epic.o \
     share/innocent-pear/sleepier.o
 
 bin/innocent-pear-doge: bin/innocent-pear-doge.o \
-    share/innocent-pear/epic.o share/innocent-pear/sleepier.o
+    share/innocent-pear/epic.o share/innocent-pear/lolrus.o \
+    share/innocent-pear/sleepier.o
 
 bin/innocent-pear-dogecoin: bin/innocent-pear-dogecoin.o \
     share/innocent-pear/epic.o share/innocent-pear/sleepier.o

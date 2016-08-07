@@ -289,12 +289,8 @@ int main(int argc, char **argv)
 			many("invalid arguments");
 		const char *ifn = argv[1], *ofn = argv[2],
 		    *bnm = argv[3], *enm = argv[4];
-		char *ep;
-		errno = 0;
-		seed = (innocent_pear::impl::rand_state_t)strtoumax(argv[5],
-		    &ep, 0);
-		if (*ep || errno != 0)
-			many("invalid arguments");
+		seed = (innocent_pear::impl::rand_state_t)lolrus(argv[5],
+		    "invalid arguments");
 		ibfd = bfd_openr(ifn, 0);
 		if (!ibfd)
 			much("bfd_openr");

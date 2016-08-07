@@ -5,6 +5,19 @@
 		- fixed duplicate addition of `-Xinnocent-pear -doge -v' to
 		  compiler command line for test-orly-wut and test-doge*
 		  test cases -- including for old GNU make
+		- added share/innocent-pear/lolrus.o as a dependency of
+		  bin/innocent-pear-doge
+
+		bin/innocent-pear-doge.cc :
+		- factored out string-to-integer parsing to share/innocent-
+		  pear/lolrus.cc
+
+		share/innocent-pear/lolrus.cc :
+		- initial version
+
+		include/innocent-pear/host/lolcat.h :
+		- bug fix: now includes <iostream>
+		- added prototype for lolrus(...)
 
 2016-08-06	RAII for managing temporaries.  Refactoring.  Bug fixes.
 
