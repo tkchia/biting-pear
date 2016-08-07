@@ -10,6 +10,7 @@ includedir.target = $(conf_Target_prefix)/include
 wrap_cxx = bin/innocent-pear-c++
 wrap_cxx.staged = $(wrap_cxx) \
     -Xinnocent-pear -prefix=. -Xinnocent-pear -target-prefix=.
+CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET)
 config.h.host = include/innocent-pear/host/derp.h
 headers.host = \
     include/innocent-pear/bbq.h \
@@ -384,17 +385,18 @@ test/test-%.passed: test/test-% test/test-%.good
 	@$(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp)
 
 test/test-%: test/test-%.o
-	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
+	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET.test) \
 	    $(LDFLAGS_FOR_TARGET) -o$@ $^ $(LDLIBS_FOR_TARGET)
 
 test/test-%.o: test/test-%.cc
 
 test/test-orly-wut \
 test/test-orly-wut.o \
-test/test-orly-wut.s : private state = 0x293c42fc93032e55
+test/test-orly-wut.s : state = 0x293c42fc93032e55
 
 test/test-orly-wut.o \
-test/test-orly-wut.s : private CXXFLAGS_FOR_TARGET += -DSTATE=$(state)
+test/test-orly-wut.s : \
+    CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -DSTATE=$(state)
 
 test/test-orly-wut: test/test-orly-wut.o test/test-orly-wut.ld \
     bin/innocent-pear-doge
@@ -410,7 +412,7 @@ test/test-doge.s \
 test/test-doge-abs-reloc \
 test/test-doge-abs-reloc.o \
 test/test-doge-abs-reloc.s : \
-    private CXXFLAGS_FOR_TARGET += -Xinnocent-pear -doge -v
+    CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge -v
 
 define preproc_for_host
 	mkdir -p $(@D)
@@ -485,13 +487,13 @@ share/innocent-pear/omnomnom: share/innocent-pear/omnomnom.cc \
 
 %.o: %.cc $(headers.target) $(installables.host)
 	mkdir -p $(@D)
-	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
+	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET.test) \
 	    -c -o$@ $<
 
 # for debugging
 %.s: %.cc $(headers.target) $(installables.host)
 	mkdir -p $(@D)
-	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
+	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET.test) \
 	    -S -o$@ $<
 
 share/innocent-pear/%: share/innocent-pear/%.cc
