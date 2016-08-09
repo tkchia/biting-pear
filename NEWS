@@ -1,3 +1,12 @@
+2016-08-09	"Going the speed of light is bad for your age."
+
+		bin/innocent-pear-dogecoin.cc :
+		- initial version; for later use
+
+		GNUmakefile :
+		- changed to compile and install bin/innocent-pear-dogecoin
+		  properly
+
 2016-08-07	"The chicken was involved, the pig was committed."
 
 		GNUmakefile :

@@ -46,6 +46,7 @@ tests.target = \
 utils.host = \
     bin/innocent-pear-c++ \
     bin/innocent-pear-doge \
+    bin/innocent-pear-dogecoin \
     share/innocent-pear/calm \
     share/innocent-pear/omnomnom
 modules.host = \
@@ -432,7 +433,8 @@ bin/innocent-pear-doge: bin/innocent-pear-doge.o \
     share/innocent-pear/sleepier.o
 
 bin/innocent-pear-dogecoin: bin/innocent-pear-dogecoin.o \
-    share/innocent-pear/epic.o share/innocent-pear/sleepier.o
+    share/innocent-pear/epic.o share/innocent-pear/lolrus.o \
+    share/innocent-pear/sleepier.o
 
 share/innocent-pear/calm: share/innocent-pear/calm.o \
     share/innocent-pear/epic.o share/innocent-pear/nomnom.o \
