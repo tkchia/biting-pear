@@ -214,6 +214,9 @@ static void do_frob_5(bfd *ibfd, fortune_t *fortune)
 	wow("  ", cnt, " absolute relocation", cnt == 1 ? "" : "s", " found");
 }
 
+static bool sxn_name_comparator(asection *sxn1, asection *sxn2)
+	{ return strcmp(sxn1->name, sxn2->name) < 0; }
+
 static void do_frob_6(bfd *ibfd, bfd *obfd, fortune_t *fortune)
 {
 	wow("creating new sections");
@@ -242,6 +245,7 @@ static void do_frob_6(bfd *ibfd, bfd *obfd, fortune_t *fortune)
 			much("bfd_set_section_alignment");
 		fortune->xsxns.push_back(xsxn);
 	}
+	fortune->xsxns.sort(sxn_name_comparator);
 }
 
 static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
@@ -283,6 +287,7 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 		sxn_list_t& xsxns = fortune->xsxns;
 		asection *xsxn = xsxns.front();
 		xsxns.pop_front();
+		wow("    ~> ", bfd_section_name(obfd, xsxn));
 		sz = fortune->addr_octets;
 		unsigned char stuff[sz];
 		memset(stuff, 0, sz);
