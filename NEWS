@@ -1,3 +1,14 @@
+2016-08-12	"Biochemistry is the study of carbon compounds that crawl."
+
+		lolwutconf/ :
+		- bumped to 4de7cac154
+
+		configure :
+		- modified to use conf_bfd_chk_exists()
+
+		.gitignore :
+		- added innocent-pear-dogecoin
+
 2016-08-09	"Going the speed of light is bad for your age."
 
 		bin/innocent-pear-dogecoin.cc :
