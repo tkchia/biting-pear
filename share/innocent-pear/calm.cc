@@ -108,9 +108,11 @@ static int main_(int argc, char **argv)
 				switch (opt[1]) {
 				    case '-':
 					is.pass_all = true;  break;
+				    case 'o':
+					calmest = calmer + 1;
+					/* fall through */
 				    case 'G':
 				    case 'I':
-				    case 'o':
 					is.pass = true;  break;
 				    default:
 					;
@@ -156,12 +158,13 @@ static int main_(int argc, char **argv)
 			if (calmest)
 				grumpier(lulz);
 			lolz += "/share/innocent-pear/omnomnom";
-			calm[0] = (char *)lolz.c_str();
-			calm[1] = new char[19];
-			snprintf(calm[1], 19, "%#16" PRIx64,
+			char *wut[3];
+			wut[0] = (char *)lolz.c_str();
+			wut[1] = new char[19];
+			snprintf(wut[1], 19, "%#16" PRIx64,
 			    file_crc64(grumpy()));
-			calm[2] = 0;
-			keyboardest(calm, grumpy(), grumpier(), 0, 0, is.v);
+			wut[2] = 0;
+			keyboardest(wut, grumpy(), grumpier(), 0, 0, is.v);
 			if (!calmest)
 				return 0;
 			grumpier.sleepiest(lulz);
@@ -169,10 +172,26 @@ static int main_(int argc, char **argv)
 		}
 	    case AS:
 		{
-			if (is.doge)
-				wow($"currently ignoring "
-				     "--Xinnocent-pear=doge");
-			keyboard(calm, 0, 0, 0, 0, is.v);
+			if (!is.doge)
+				keyboard(calm, 0, 0, 0, 0, is.v);
+			if (!calmest)
+				many($"no `-o' for assembly pass back-end?!?");
+			lulz = *calmest;
+			sleepier_t grumpy(lulz), grumpier(lulz);
+			*calmest = (char *)grumpy();
+			keyboardest(calm, 0, 0, 0, 0, is.v);
+			lolz += "/bin/innocent-pear-dogecoin";
+			char *wut[5];
+			wut[0] = (char *)lolz.c_str();
+			wut[1] = (char *)grumpy();
+			wut[2] = (char *)grumpier();
+			wut[3] = new char[19];
+			snprintf(wut[3], 19, "%#16" PRIx64,
+			    file_crc64(grumpy()));
+			wut[4] = 0;
+			keyboardest(wut, 0, 0, 0, 0, is.v);
+			grumpier.sleepiest(lulz);
+			return 0;
 		}
 	}
 }

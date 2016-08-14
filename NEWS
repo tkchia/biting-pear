@@ -1,3 +1,37 @@
+2016-08-14	Scrambling of (some) data sections, finally.
+
+		share/innocent-pear/doge.ld :
+		- initial version
+
+		bin/innocent-pear-c++.cc :
+		- now scrambles .rodata and .data sections by way of bin/
+		  innocent-pear-doge
+		- now uses share/innocent-pear/doge.ld
+
+		bin/innocent-pear-dogecoin.cc :
+		- now emits section names of the form .innocent_pear.
+		  dogecoin.* rather than .rodata.innocent_pear.dogecoin.*
+		- now no longer sorts new sections by name, this being done
+		  in share/innocent-pear/doge.ld
+
+		share/innocent-pear/calm.cc :
+		- now uses bin/innocent-pear-dogecoin if assembler pass is
+		  given `--Xinnocent-pear=doge'
+
+		share/innocent-pear/doge-01.cc ,
+		share/innocent-pear/doge-03.cc ,
+		share/innocent-pear/doge-05.cc ,
+		share/innocent-pear/doge-98.cc ,
+		share/innocent-pear/doge-99.cc :
+		- updated to handle scrambled .rodata and .data sections, as
+		  well as absolute relocations
+
+		GNUmakefile :
+		- added share/innocent-pear/doge.ld as a dependency
+
+		README.md :
+		- well, there goes one bug...
+
 2016-08-12	"Biochemistry is the study of carbon compounds that crawl."
 
 		lolwutconf/ :

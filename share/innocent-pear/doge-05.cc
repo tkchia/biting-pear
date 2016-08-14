@@ -1,3 +1,6 @@
-unsigned char our_text_start[0]
-    __asm("_.innocent_pear.text.start")
+unsigned char our_text_start[0] __asm("_.innocent_pear.text.start")
     __attribute__((section(".text")));
+unsigned char our_rodata_start[0] __asm("_.innocent_pear.rodata.start")
+    __attribute__((section(".rodata")));
+unsigned char our_data_start[0] __asm("_.innocent_pear.data.start")
+    __attribute__((section(".data")));

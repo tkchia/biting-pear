@@ -68,7 +68,8 @@ installables.host = \
     share/innocent-pear/doge-04.cc \
     share/innocent-pear/doge-05.cc \
     share/innocent-pear/doge-98.cc \
-    share/innocent-pear/doge-99.cc
+    share/innocent-pear/doge-99.cc \
+    share/innocent-pear/doge.ld
 installables.target = \
     $(headers.target)
 RM ?= rm -f

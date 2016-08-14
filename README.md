@@ -28,6 +28,6 @@ There is also a rather undocumented C++ API for various code obfuscation subtask
 
 ## Bugs
 
-Data sections are not yet scrambled.
+The scrambling is probably not yet very strong.
 
 The C++ API should really be documented.
