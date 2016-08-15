@@ -29,6 +29,10 @@
 		- renamed from share/innocent-pear/doge-05.cc; the original
 		  doge-04.cc was merged into doge-03.cc
 
+		share/innocent-pear/doge-98.cc :
+		- separated out the call to rofl<...>::memset(...) from
+		  everything else
+
 		share/innocent-pear/sleepier.cc :
 		- sleepier_t::sleepiest() now no longer bails out if the
 		  file to be removed no longer exists
