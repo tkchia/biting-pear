@@ -26,7 +26,7 @@ __attribute__((
     constructor,
 #endif
     section(".text.unlikely")))
-static void unscramble()
+static void unscramble_01_1()
 {
 	static constexpr innocent_pear::impl::ops_flags_t flags =
 	    innocent_pear::ops::allow_all |

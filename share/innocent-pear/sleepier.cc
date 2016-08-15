@@ -1,3 +1,4 @@
+#include <cerrno>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -43,6 +44,7 @@ static int cheshire(const char *y)
 	cheshire(fd);
 	if (fd != -1)
 		close(fd);
+	errno = 0;
 	return unlink(y);
 }
 
@@ -72,7 +74,7 @@ void sleepier_t::sleepiest()
 	y_ = 0;
 	std::strcpy(yy, y);
 	delete[] y;
-	if (cheshire(yy) != 0)
+	if (cheshire(yy) != 0 && errno != ENOENT)
 		concern($"cannot remove ", yy);
 }
 

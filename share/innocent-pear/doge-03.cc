@@ -25,31 +25,66 @@ extern unsigned char our_data_end[] __asm("_.innocent_pear.data.end");
 extern uintptr_t dogecoin_start[] __asm("_.innocent_pear.dogecoin.start");
 extern uintptr_t dogecoin_end[] __asm("_.innocent_pear.dogecoin.end");
 
-__attribute__((
 #ifdef innocent_pear_HAVE_CTOR_PRIORITY
-    constructor(101),
+#   define innocent_pear_CTOR	constructor(101)
 #else
-    constructor,
+#   define innocent_pear_CTOR	constructor
 #endif
-    section(".text.unlikely"), optimize("no-reorder-blocks")))
-static void unscramble_2()
+#define innocent_pear_DOGE \
+	__attribute__((innocent_pear_CTOR, section(".text.unlikely"))) \
+	static void
+#define innocent_pear_DOGE_MEMSET \
+	__attribute__((innocent_pear_CTOR, section(".text.unlikely"), \
+	    optimize("no-reorder-blocks"))) \
+	static void
+
+static constexpr innocent_pear::impl::ops_flags_t flags =
+    innocent_pear::ops::allow_all |
+    innocent_pear::ops::under_munged_terminal;
+static constexpr innocent_pear::impl::ops_flags_t flags2 =
+    innocent_pear::ops::allow_all &
+   ~innocent_pear::ops::allow_terminal_unsafes;
+
+innocent_pear_DOGE unscramble_03_1()
 {
-	static constexpr innocent_pear::impl::ops_flags_t flags =
-	    innocent_pear::ops::allow_all |
-	    innocent_pear::ops::under_munged_terminal;
-	using innocent_pear::impl::update_outer;
-	using innocent_pear::impl::update_inner;
-	unsigned char *uts = unlikely_text_start,
-	    *ts = our_text_start, *te = our_text_end,
-	    *rs = our_rodata_start, *re = our_rodata_end,
-	    *ds = our_data_start, *de = our_data_end;
+	unsigned char *ts = our_text_start, *te = our_text_end;
 	innocent_pear::orly<innocent_pear_DOGE_STATE_2,
 	    unsigned char, false, false, flags>().wut(ts, te);
 	innocent_pear::rofl?<flags>::clear_cache(ts, te);
+}
+
+innocent_pear_DOGE_MEMSET unscramble_03_2()
+{
+	unsigned char *uts = unlikely_text_start;
+	innocent_pear::rofl?<flags>::memset(uts);
+}
+
+innocent_pear_DOGE unscramble_03_3()
+{
+	unsigned char *rs = our_rodata_start, *re = our_rodata_end;
 	innocent_pear::orly<innocent_pear_DOGE_STATE_3,
 	    unsigned char, false, false, flags>().wut(rs, re);
+}
+
+innocent_pear_DOGE_MEMSET unscramble_03_4()
+{
+	innocent_pear::rofl?<flags>::memset((void *)unscramble_03_2);
+}
+
+innocent_pear_DOGE unscramble_03_5()
+{
+	unsigned char *ds = our_data_start, *de = our_data_end;
 	innocent_pear::orly<innocent_pear_DOGE_STATE_4,
 	    unsigned char, false, false, flags>().wut(ds, de);
+}
+
+innocent_pear_DOGE_MEMSET unscramble_03_6()
+{
+	innocent_pear::rofl?<flags>::memset((void *)unscramble_03_4);
+}
+
+innocent_pear_DOGE unscramble_03_7()
+{
 	for (uintptr_t *dp = dogecoin_start; dp != dogecoin_end; ++dp) {
 		uintptr_t *rp = reinterpret_cast<uintptr_t *>(
 		    reinterpret_cast<uintptr_t>(dp) + *dp);
@@ -65,5 +100,22 @@ static void unscramble_2()
 		std::fprintf(stderr, "now *rp == %#" PRIxPTR "\n", *rp);
 #endif
 	}
-	innocent_pear::rofl?<flags>::memset(uts);
 }
+
+innocent_pear_DOGE_MEMSET unscramble_03_8()
+{
+	innocent_pear::rofl?<flags>::memset((void *)unscramble_03_6);
+}
+#ifdef innocent_pear_HAVE_CONST_TCOON
+innocent_pear_DOGE unscramble_03_9()
+{
+	innocent_pear::rofl?<flags2>::tcflow(0, TCOON);
+	innocent_pear::rofl?<flags2>::tcflow(1, TCOON);
+	innocent_pear::rofl?<flags2>::tcflow(2, TCOON);
+}
+
+innocent_pear_DOGE_MEMSET unscramble_03_10()
+{
+	innocent_pear::rofl?<flags>::memset((void *)unscramble_03_8);
+}
+#endif

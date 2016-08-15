@@ -1,3 +1,38 @@
+2016-08-15	Scrambling of (some) data sections, finally.  (2)
+
+		GNUmakefile :
+		- removed share/innocent-pear/doge-05.cc as a dependency
+		- now dumps a larger portion of the compiled binaries for
+		  test-doge* test cases
+		- now no longer passes `-v' to compiler front-end when
+		  building test/test-doge-abs-reloc
+
+		bin/innocent-pear-c++.cc :
+		- no longer compiles doge-05.cc when in `-Xinnocent-pear
+		  -doge' mode
+		- string constants are no longer scrambled
+
+		include/innocent-pear/rofl.h :
+		- hopefully fixed register assignment for 3-argument
+		  syscalls in ARM Thumb mode for g++ >= 5
+
+		share/innocent-pear/doge-01.cc :
+		- slightly renamed the constructor routine
+
+		share/innocent-pear/doge-03.cc :
+		- merged doge-04.cc into this file
+		- separated out the calls to rofl<...>::memset(...) from
+		  the routines that do other things
+		- rofl<...>::memset(...) should now be called more often too
+
+		share/innocent-pear/doge-04.cc :
+		- renamed from share/innocent-pear/doge-05.cc; the original
+		  doge-04.cc was merged into doge-03.cc
+
+		share/innocent-pear/sleepier.cc :
+		- sleepier_t::sleepiest() now no longer bails out if the
+		  file to be removed no longer exists
+
 2016-08-14	Scrambling of (some) data sections, finally.
 
 		share/innocent-pear/doge.ld :

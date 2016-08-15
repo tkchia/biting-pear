@@ -66,7 +66,6 @@ installables.host = \
     share/innocent-pear/doge-02.cc \
     share/innocent-pear/doge-03.cc \
     share/innocent-pear/doge-04.cc \
-    share/innocent-pear/doge-05.cc \
     share/innocent-pear/doge-98.cc \
     share/innocent-pear/doge-99.cc \
     share/innocent-pear/doge.ld
@@ -368,7 +367,7 @@ test/test-%.passed: test/test-% test/test-%.good
 	@case "$*" in \
 	    doge*) \
 		echo "* base64 dump of xz'd head of $< :"; \
-		xz -9c <'$<' | base64 | head -n 256 | sed 's,^,*  ,';; \
+		xz -9c <'$<' | base64 | head -n 384 | sed 's,^,*  ,';; \
 	esac >&2
 	@echo "* running test $<" >&2
 	@LANG=en_US.UTF-8 $(conf_Target_exec) ./$< >$(@:.passed=.1.tmp) \
@@ -411,11 +410,13 @@ test/test-orly-wut: test/test-orly-wut.o test/test-orly-wut.ld \
 
 test/test-doge \
 test/test-doge.o \
-test/test-doge.s \
+test/test-doge.s : \
+    CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge -v
+
 test/test-doge-abs-reloc \
 test/test-doge-abs-reloc.o \
 test/test-doge-abs-reloc.s : \
-    CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge -v
+    CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge
 
 define preproc_for_host
 	mkdir -p $(@D)

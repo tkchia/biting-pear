@@ -362,13 +362,26 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		long rscno = re_scno(scno);
 		uintptr_t z1 = re_arg(x1), z2 = re_arg(x2), z3 = re_arg(x3);
 		RP z1z2 = (RP)z1 | (RP)z2 << 32;
+#	    ifndef __thumb__
 		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
 				 innocent_pear_ASM_REG_CHK("%1", "r2")
 				 innocent_pear_ASM_REG_CHK("%2", "r7")
-				 "svc #0"
+				 "mov r2, %1; svc #0"
 		    : "=Cs" (z1z2), "=Cs" (z3), "=l" (rscno)
 		    : "0" (z1z2), "1" (z3), "2" (rscno)
 		    : "r3", "r4", "r5", "r6", "ip", "memory", "cc");
+#	    else
+		/*
+		 * In Thumb mode, the above may assign z1z2 to <r1, r2> and
+		 * z3 to r0.  ;-(
+		 */
+		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
+				 innocent_pear_ASM_REG_CHK("%2", "r7")
+				 "mov r2, %1; svc #0"
+		    : "=Cs" (z1z2), "=h" (z3), "=l" (rscno)
+		    : "0" (z1z2), "1" (z3), "2" (rscno)
+		    : "r2", "r3", "r4", "r5", "r6", "ip", "memory", "cc");
+#	    endif
 		return re_rv((long)z1z2);
 	}
 #	else /* if instead __GNUC__ < 5... */

@@ -33,7 +33,7 @@ static void grumpy(std::ostringstream& oss, std::ostringstream& info_oss,
 	if (fee != -1) {
 		std::ostringstream fd_oss;
 		std::string fd_str;
-		fd_oss << $"/dev/fd/" << fee;
+		fd_oss << "/dev/fd/" << fee;
 		fd_str = fd_oss.str();
 		int fie = open(fd_str.c_str(), O_RDONLY);
 		if (fie != -1) {
@@ -114,15 +114,16 @@ static void nyan(sleepier_t& cheesy, const char *cheeses,
 	char *cheesiest[] = {
 		me,
 		innocent_pear_CXXFLAGS_FOR_TARGET /* ... */,
-		"-Xinnocent-pear", pusheen($"-prefix=", caturday),
-		"-Xinnocent-pear", pusheen($"-target-prefix=", meow),
-		pusheen($"-Dinnocent_pear_DOGE_STATE=0x", std::hex, state),
-		pusheen($"-Dinnocent_pear_DOGE_STATE_2=0x", std::hex, state2),
-		pusheen($"-Dinnocent_pear_DOGE_STATE_3=0x", std::hex, state3),
-		pusheen($"-Dinnocent_pear_DOGE_STATE_4=0x", std::hex, state4),
+		"-Xinnocent-pear", pusheen("-prefix=", caturday),
+		"-Xinnocent-pear", pusheen("-target-prefix=", meow),
+		pusheen("-Dinnocent_pear_DOGE_STATE=0x", std::hex, state),
+		pusheen("-Dinnocent_pear_DOGE_STATE_2=0x", std::hex, state2),
+		pusheen("-Dinnocent_pear_DOGE_STATE_3=0x", std::hex, state3),
+		pusheen("-Dinnocent_pear_DOGE_STATE_4=0x", std::hex, state4),
 		sta ? (char *)"-Uinnocent_pear_DYN_LD_CXX_TARGET" :
 		      (char *)"-Dinnocent_pear_DYN_LD_CXX_TARGET",
 		"-c", cheesier, "-o", (char *)cheesy(),
+		"-fno-toplevel-reorder",
 		"-fno-stack-protector",
 		v ? (char *)"-v" : (char *)"-fno-stack-protector",
 		sta ? (char *)"-static" : (char *)"-fno-stack-protector",
@@ -137,9 +138,9 @@ static void nyanyan(const std::string& caturday, const char *in,
     innocent_pear::impl::rand_state_t state, bool v)
 {
 	char *cheesiest[] = {
-		pusheen(caturday, $"/bin/innocent-pear-doge"),
+		pusheen(caturday, "/bin/innocent-pear-doge"),
 		(char *)in, (char *)out, (char *)start, (char *)end,
-		pusheen($"0x", std::hex, state), 0
+		pusheen("0x", std::hex, state), 0
 	    };
 	keyboardest(cheesiest, 0, 0, 0, 0, v);
 }
@@ -216,7 +217,7 @@ static void player(const std::string& burger, const char *in,
 		}
 	}
 	if (s != 0 && s != 1)
-		concern($"bad command line from `-###'?!?");
+		concern("bad command line from `-###'?!?");
 	*p = 0;
 	pb[++j] = 0;
 	keyboardest(pb, in, out, 0, seriouser, v);
@@ -236,7 +237,7 @@ static void playest(char **argv, const char *in, const char *out,
 	keyboardest(argv, in, out, cheesy(), seriouser, v);
 	std::ifstream cheesier(cheesy());
 	if (!cheesier)
-		concern($"cannot read ", cheesy());
+		concern("cannot read ", cheesy());
 	while (std::getline(cheesier, burger))
 		player(burger, in, out, seriouser, v, kitteh);
 #endif
@@ -270,22 +271,22 @@ static int main_(int argc, char **argv)
 #endif
 		 };
 	/*
-	 * Why 19?  We need
+	 * Why 18?  We need
 	 *
 	 *   * 2 for `-wrapper ...'
 	 *   * 3 for `-no-integrated-cpp' `-fno-integrated-as'
 	 *     `-Wa,--Xinnocent-pear=doge'
 	 *   * 2 for `-idirafter ...'
-	 *   * 10 (== 12 - 2) for `-include', `.../doge.h', (doge-01.o),
-	 *     (doge-02.o), (doge-03.o), (doge-04.o), (doge-05.o), `-x'
-	 *     `-none', (doge-98.o), (doge-99.o), and (doge.ld), minus the
+	 *   * 9 (== 11 - 2) for `-include', `.../doge.h', (doge-01.o),
+	 *     (doge-02.o), (doge-03.o), (doge-04.o), `-x' `-none',
+	 *     (doge-98.o), (doge-99.o), and (doge.ld), minus the
 	 *     `-Xinnocent-pear' `-doge'
 	 *   * and 2 for `-o' (doge-a).
 	 *
 	 * We also need a terminating null pointer, but since we do not pass
 	 * our own *argv to execvp...
 	 */
-	char *burger[argc + 19], **cheese = burger, **cheeses = 0,
+	char *burger[argc + 18], **cheese = burger, **cheeses = 0,
 	    *burgery[argc], **cheesy = burgery, *ceiling, *real_a = 0;
 #ifdef innocent_pear_CXX_FOR_TARGET_HAVE_OPT_WRAPPER
 	char *moar = 0;
@@ -316,7 +317,7 @@ static int main_(int argc, char **argv)
 			if (!grumpier(opt, "-prefix=", caturday) &&
 			    !grumpier(opt, "-target-prefix=", meow) &&
 			    !grumpier(opt, "-doge", doge))
-				many($"unrecognized option `-Xinnocent-pear ",
+				many("unrecognized option `-Xinnocent-pear ",
 				    opt, '\'');
 			is.caturday = false;
 			continue;
@@ -377,7 +378,7 @@ static int main_(int argc, char **argv)
 #endif
 			continue;
 		} else if (strcmp(opt + 1, "###") == 0)
-			many($"`-###' not (yet) supported");
+			many("`-###' not (yet) supported");
 		  else if (strcmp(opt + 1, "Xinnocent-pear") == 0) {
 			is.caturday = true;
 			continue;
@@ -399,7 +400,7 @@ static int main_(int argc, char **argv)
 			 * pass to be decoupled from the compilation pass
 			 * for everything to work properly, so...
 			 */
-			wow($"ignoring `-fintegrated-as'");
+			wow("ignoring `-fintegrated-as'");
 			continue;
 		}
 		*cheese++ = opt;
@@ -429,15 +430,15 @@ static int main_(int argc, char **argv)
 		*cheese++ = (char *)meowmeow.c_str();
 	}
 	if (setenv("INNOCENT_PEAR_PREFIX", caturday.c_str(), 1) != 0)
-		concern($"cannot set INNOCENT_PEAR_EXEC_PREFIX for "
+		concern("cannot set INNOCENT_PEAR_EXEC_PREFIX for "
 		    innocent_pear_CXX_FOR_TARGET " process");
 	if (setenv("INNOCENT_PEAR_DRIVER_CXX", *argv, 1) != 0)
-		concern($"cannot set INNOCENT_PEAR_DRIVER_CXX for "
+		concern("cannot set INNOCENT_PEAR_DRIVER_CXX for "
 		    innocent_pear_CXX_FOR_TARGET " process");
 	uint64_t crc = 0, crc2 = 0;
 	rand_state_t st = 0, st2 = 0, st3 = 0, st4 = 0;
-	sleepier_t doge_01, doge_02, doge_03, doge_04, doge_05,
-	    doge_98, doge_99, doge_a, doge_b, doge_c, doge_d;
+	sleepier_t doge_01, doge_02, doge_03, doge_04, doge_98, doge_99,
+	    doge_a, doge_b, doge_c, doge_d;
 	if (doge) {
 		while (cheesy != burgery) {
 			--cheesy;
@@ -457,25 +458,22 @@ static int main_(int argc, char **argv)
 		}
 		if (is.link && is.starts) {
 			nyan(doge_01, *cheeses, st, st2, st3, st4, pusheen(
-			    caturday, $"/share/innocent-pear/doge-01.cc"),
+			    caturday, "/share/innocent-pear/doge-01.cc"),
 			    *argv, caturday, meow, is.grumpiest, is.sta);
 			nyan(doge_02, *cheeses, st, st2, st3, st4, pusheen(
-			    caturday, $"/share/innocent-pear/doge-02.cc"),
+			    caturday, "/share/innocent-pear/doge-02.cc"),
 			    *argv, caturday, meow, is.grumpiest, is.sta);
 			nyan(doge_03, *cheeses, st, st2, st3, st4, pusheen(
-			    caturday, $"/share/innocent-pear/doge-03.cc"),
+			    caturday, "/share/innocent-pear/doge-03.cc"),
 			    *argv, caturday, meow, is.grumpiest, is.sta);
 			nyan(doge_04, *cheeses, st, st2, st3, st4, pusheen(
-			    caturday, $"/share/innocent-pear/doge-04.cc"),
-			    *argv, caturday, meow, is.grumpiest, is.sta);
-			nyan(doge_05, *cheeses, st, st2, st3, st4, pusheen(
-			    caturday, $"/share/innocent-pear/doge-05.cc"),
+			    caturday, "/share/innocent-pear/doge-04.cc"),
 			    *argv, caturday, meow, is.grumpiest, is.sta);
 			nyan(doge_98, *cheeses, st, st2, st3, st4, pusheen(
-			    caturday, $"/share/innocent-pear/doge-98.cc"),
+			    caturday, "/share/innocent-pear/doge-98.cc"),
 			    *argv, caturday, meow, is.grumpiest, is.sta);
 			nyan(doge_99, *cheeses, st, st2, st3, st4, pusheen(
-			    caturday, $"/share/innocent-pear/doge-99.cc"),
+			    caturday, "/share/innocent-pear/doge-99.cc"),
 			    *argv, caturday, meow, is.grumpiest, is.sta);
 			doge_a(*cheeses);
 			doge_b(*cheeses);
@@ -483,30 +481,29 @@ static int main_(int argc, char **argv)
 			doge_d(*cheeses);
 			real_a = *cheeses;
 			*cheeses = (char *)doge_a();
-			std::memmove(burger + 8, burger + 1,
+			std::memmove(burger + 7, burger + 1,
 			    (cheese - burger - 1) * sizeof(char *));
-			cheese += 7;
+			cheese += 6;
 			burger[1] = (char *)"-include";
 			burger[2] = pusheen(meowmeow,
-			    $"/innocent-pear/doge.h");
+			    "/innocent-pear/doge.h");
 			burger[3] = (char *)doge_01();
 			burger[4] = (char *)doge_02();
 			burger[5] = (char *)doge_03();
 			burger[6] = (char *)doge_04();
-			burger[7] = (char *)doge_05();
 			*cheese++ = (char *)"-x";
 			*cheese++ = (char *)"none";
 			*cheese++ = (char *)doge_98();
 			*cheese++ = (char *)doge_99();
 			*cheese++ = pusheen(caturday,
-			    $"/share/innocent-pear/doge.ld");
+			    "/share/innocent-pear/doge.ld");
 		} else {
 			std::memmove(burger + 3, burger + 1,
 			    (cheese - burger - 1) * sizeof(char *));
 			cheese += 2;
 			burger[1] = (char *)"-include";
 			burger[2] = pusheen(meowmeow,
-			    $"/innocent-pear/doge.h");
+			    "/innocent-pear/doge.h");
 		}
 	}
 	*cheese = 0;
