@@ -283,18 +283,51 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 		sxn_list_t& xsxns = fortune->xsxns;
 		asection *xsxn = xsxns.front();
 		xsxns.pop_front();
-		wow("    ~> ", bfd_section_name(obfd, xsxn));
 		sz = fortune->addr_octets;
 		unsigned char stuff[sz];
-		memset(stuff, 0, sz);
-		if (!bfd_set_section_contents(obfd, xsxn, stuff, 0, sz))
-			much("bfd_set_section_contents");
 		arelent *xrel = new arelent, **xrels = new arelent *[1];
+		xrels[0] = xrel;
 		xrel->sym_ptr_ptr = osxn->symbol_ptr_ptr;
 		xrel->address = 0;
-		xrel->addend = pr->address;
-		xrel->howto = fortune->extra_howto;
-		xrels[0] = xrel;
+		howto = fortune->extra_howto;
+		xrel->howto = howto;
+		/*
+		 * Here we need to decide whether to stash the place offset
+		 * (pr->address) in the section contents, or in the new
+		 * relocation's addend field (xrel->addend).
+		 *
+		 * From the libbfd info file:
+		 *
+		 *	"All relocations for all ELF USE_RELA targets should
+		 *	 set this [.partial_inplace] field to FALSE (values
+		 *	 of TRUE should be looked on with suspicion). 
+		 *	 However, the converse is not true: not all
+		 *	 relocations of all ELF USE_REL targets set this
+		 *	 field to TRUE.  Why this is so is peculiar to each
+		 *	 particular target."
+		 *
+		 * And indeed howto->partial_inplace is unreliable.  (E.g. 
+		 * libbfd has .partial_inplace == false for R_ARM_REL32 in a
+		 * 32-bit ARM target, but totally ignores xrel->addend when
+		 * actually applying R_ARM_REL32 relocations.)
+		 *
+		 * So instead of using .partial_inplace, use .src_mask.  If
+		 * .src_mask says that we can fit the place offset into the
+		 * section contents, then do so.
+		 */
+		bfd_size_type off = pr->address;
+		bfd_vma mask = howto->src_mask;
+		if ((off & mask) == off) {
+			wow("    ~> p ", bfd_section_name(obfd, xsxn));
+			bfd_put(sz * 8, obfd, off, stuff);
+			xrel->addend = 0;
+		} else {
+			wow("    ~> a ", bfd_section_name(obfd, xsxn));
+			memset(stuff, 0, sz);
+			xrel->addend = off;
+		}
+		if (!bfd_set_section_contents(obfd, xsxn, stuff, 0, sz))
+			much("bfd_set_section_contents");
 		bfd_set_reloc(obfd, xsxn, xrels, 1u);
 	}
 	bfd_set_reloc(obfd, osxn, orels, (unsigned)nrels);

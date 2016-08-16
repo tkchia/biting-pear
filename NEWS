@@ -1,3 +1,15 @@
+2016-08-16	Fixed one relocation handling bug.  More bugs to go...
+
+		bin/innocent-pear-dogecoin.cc :
+		- now uses in-place relocation addends whenever possible,
+		  when creating new pc-relative relocations
+
+		GNUmakefile :
+		- `make clean' now also removes *.pear.t.?????? temporaries
+
+		share/innocent-pear/doge-03.cc :
+		- tweaked code formatting
+
 2016-08-15	Scrambling of (some) data sections, finally.  (2)
 
 		GNUmakefile :

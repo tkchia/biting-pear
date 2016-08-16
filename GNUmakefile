@@ -119,7 +119,8 @@ uninstall-target-files:
 	    $(datarootdir)/innocent-pear
 
 clean:
-	find . -name '*.[ios]' -o -name '*~' -o -name '*.ii' | \
+	find . -name '*.[ios]' -o -name '*~' -o -name '*.ii' \
+	    -o -name '*.pear.t.??????' | \
 	    xargs $(RM) $(config.h.host) $(config.h.target) \
 		lex.backup share/innocent-pear/omnomnom.cc \
 		$(tests.target) $(utils.host) lolwutconf.*

@@ -106,6 +106,7 @@ innocent_pear_DOGE_MEMSET unscramble_03_8()
 {
 	innocent_pear::rofl?<flags>::memset((void *)unscramble_03_6);
 }
+
 #ifdef innocent_pear_HAVE_CONST_TCOON
 innocent_pear_DOGE unscramble_03_9()
 {
