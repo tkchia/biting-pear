@@ -442,7 +442,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		long rscno = re_scno(scno);
 		uintptr_t z1 = re_arg(x1), z2 = re_arg(x2), z3 = re_arg(x3);
 		RP z1z2 = (RP)z1 | (RP)z2 << 32;
-#	    ifndef __ARM_ARCH_4T__
+#	    ifndef __thumb__
 		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
 				 innocent_pear_ASM_REG_CHK("%1", "r2")
 				 "mov r7, %2; svc #0"

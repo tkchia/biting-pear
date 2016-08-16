@@ -10,6 +10,10 @@
 		share/innocent-pear/doge-03.cc :
 		- tweaked code formatting
 
+		include/innocent-pear/rofl.h :
+		- hopefully fixed register assignment for 3-argument
+		  syscalls in ARM Thumb mode for g++ < 5
+
 2016-08-15	Scrambling of (some) data sections, finally.  (2)
 
 		GNUmakefile :
