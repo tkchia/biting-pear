@@ -366,6 +366,20 @@ endif
 	fi >>$@.tmp
 	mv $@.tmp $@
 
+# for debugging
+test/test-%.debug.passed: test/test-%.debug test/test-%.good
+	@echo "* running test $<" >&2
+	@LANG=en_US.UTF-8 $(conf_Target_exec) ./$< >$(@:.passed=.1.tmp) || \
+	    (echo "* $< exited with error: $$?" >&2 && \
+	     $(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
+	     exit 1)
+	@LANG=en_US.UTF-8 diff -U2 $(<:.debug=.good) $(@:.passed=.1.tmp) || \
+	    (echo "* $<'s expected output and actual output differ" >&2 && \
+	     $(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
+	     exit 1)
+	@echo "* $< passed" >&2
+	@$(RM) $(@:.passed=.1.tmp)
+
 test/test-%.passed: test/test-% test/test-%.good
 	@case "$*" in \
 	    doge*) \
@@ -388,19 +402,6 @@ test/test-%.passed: test/test-% test/test-%.good
 	     exit 1)
 	@echo "* $< passed" >&2
 	@$(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp)
-
-test/test-%.debug.passed: test/test-%.debug test/test-%.good
-	@echo "* running test $<" >&2
-	@LANG=en_US.UTF-8 $(conf_Target_exec) ./$< >$(@:.passed=.1.tmp) || \
-	    (echo "* $< exited with error: $$?" >&2 && \
-	     $(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
-	     exit 1)
-	@LANG=en_US.UTF-8 diff -U2 $(<:.debug=.good) $(@:.passed=.1.tmp) || \
-	    (echo "* $<'s expected output and actual output differ" >&2 && \
-	     $(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
-	     exit 1)
-	@echo "* $< passed" >&2
-	@$(RM) $(@:.passed=.1.tmp)
 
 # for debugging
 test/test-%.debug: test/test-%.debug.o
