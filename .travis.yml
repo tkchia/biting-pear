@@ -27,5 +27,5 @@ env:
   - TARGET=armv6-linux-gnueabi
   - TARGET=armv4-linux-gnueabi
   - TARGET=armv4t-linux-gnueabi
-install: ./test/infra/travis-install-deps.sh
-script: ./test/infra/travis-build-and-check.sh
+install: ./infra/travis-install-deps.sh
+script: ./infra/travis-build-and-check.sh

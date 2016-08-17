@@ -41,24 +41,23 @@ static void unscramble_01_1()
 		% 100000001ull % 3ull), TCOOFF);
 #endif
 #if defined innocent_pear_HAVE_IMPLD_FUNC_PTRACE && \
-    defined innocent_pear_HAVE_CONST_PT_TRACE_ME && \
-    !defined innocent_pear_DEBUG
+    defined innocent_pear_HAVE_CONST_PT_TRACE_ME
 	uts -= 0x80 * 
 	    innocent_pear::rofl?<flags, 4u>::ptrace(PT_TRACE_ME, 0, 0, 0);
 #endif
 	uintptr_t pg_sz = (uintptr_t)(innocent_pear::kthxbai?<
-	    innocent_pear_decltype(&getpagesize), flags>(getpagesize))();
+	    innocent_pear_decltype(&getpagesize), flags, 4u>(getpagesize))();
 	uintptr_t prot_start = (uintptr_t)uts & -pg_sz;
 	uintptr_t prot_end = ((uintptr_t)te + pg_sz - 1) & -pg_sz;
-	innocent_pear::kthxbai?<unsigned, flags> prot(PROT_READ |
+	innocent_pear::kthxbai?<unsigned, flags, 4u> prot(PROT_READ |
 	    PROT_WRITE | PROT_EXEC);
-	innocent_pear::rofl?<flags>::mprotect((void *)prot_start,
+	innocent_pear::rofl?<flags, 4u>::mprotect((void *)prot_start,
 	    (std::size_t)(prot_end - prot_start), prot);
 	prot_start = (uintptr_t)rs & -pg_sz;
 	prot_end = ((uintptr_t)re + pg_sz - 1) & -pg_sz;
-	innocent_pear::rofl?<flags>::mprotect((void *)prot_start,
+	innocent_pear::rofl?<flags, 4u>::mprotect((void *)prot_start,
 	    (std::size_t)(prot_end - prot_start), prot);
 	innocent_pear::orly<innocent_pear_DOGE_STATE, unsigned char, false,
 	    true, flags>().wut(uts, hte);
-	innocent_pear::rofl?<flags>::clear_cache(uts, hte);
+	innocent_pear::rofl?<flags, 4u>::clear_cache(uts, hte);
 }

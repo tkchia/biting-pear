@@ -1,3 +1,24 @@
+2016-08-17	Some provisions for debugging...
+
+		bin/innocent-pear-c++.cc :
+		- now accepts `-Xinnocent-pear -debug-doge' option
+
+		include/innocent-pear/rofl.h :
+		- now recognizes and acts on innocent_pear_DEBUG macro
+
+		share/innocent-pear/doge-01.cc :
+		- moved test of innocent_pear_DEBUG macro to rofl.h
+		- upped layers of operand scrambling
+
+		GNUmakefile :
+		- added rules for building test-doge and test-doge-abs-reloc
+		  test cases in debug mode
+
+		.travis.yml ,
+		infra/travis-build-and-check.sh ,
+		infra/travis-install-deps.sh :
+		- test/infra/ -> infra/
+
 2016-08-16	Fixed one relocation handling bug.  More bugs to go...
 
 		bin/innocent-pear-dogecoin.cc :

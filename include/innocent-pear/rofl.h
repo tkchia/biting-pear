@@ -17,6 +17,9 @@
 #   include <unistd.h>
 #   include <sys/ptrace.h>
 #endif
+#ifdef innocent_pear_DEBUG
+#   include <cstdio>
+#endif
 
 namespace innocent_pear
 {
@@ -641,6 +644,23 @@ class rofl_impl_ptrace :
 #endif
 	    req, pid_t pid, void *addr, void *data)
 	{
+#if defined innocent_pear_DEBUG
+		if (req == PT_TRACE_ME) {
+			static volatile bool traced = false;
+			std::fprintf(stderr, "ptrace(%ld, %ld, %p, %p) = ",
+			    (long)req, (long)pid, addr, data);
+			if (!traced) {
+				std::fprintf(stderr, "0\n");
+				std::fflush(stderr);
+				traced = true;
+				return typename super::syscall_ret(0, 0);
+			} else {
+				std::fprintf(stderr, "-1; EPERM\n");
+				std::fflush(stderr);
+				return typename super::syscall_ret(-1, EPERM);
+			}
+		}
+#endif
 #if defined __linux__ && \
     (defined __amd64__ || defined __i386__ || defined _arm__)
 		if (
@@ -775,6 +795,15 @@ class rofl_impl_tcflow :
 	__attribute__((always_inline))
 	static typename super::syscall_ret tcflow(int fd, int action)
 	{
+#if defined innocent_pear_DEBUG && \
+    defined innocent_pear_HAVE_CONST_TCOOFF && \
+    defined innocent_pear_HAVE_CONST_TCOON
+		if (action == innocent_pear_VAL_CONST_TCOOFF ||
+		    action == innocent_pear_VAL_CONST_TCOON) {
+			std::fprintf(stderr, "tcflow(%d, %d)\n", fd, action);
+			return typename super::syscall_ret(0, 0);
+		}
+#endif
 #ifdef innocent_pear_HAVE_CONST_TCXONC
 		if (__builtin_constant_p(action))
 			action = kthxbai<super::NewState4, unsigned, Flags,

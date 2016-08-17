@@ -41,8 +41,10 @@ tests.target = \
     test/test-yodawg \
     test/test-yodawg-syn \
     test/test-orly-wut \
+    test/test-doge.debug \
     test/test-doge \
-    test/test-doge-abs-reloc
+    test/test-doge-abs-reloc \
+    test/test-doge-abs-reloc.debug
 utils.host = \
     bin/innocent-pear-c++ \
     bin/innocent-pear-doge \
@@ -387,11 +389,33 @@ test/test-%.passed: test/test-% test/test-%.good
 	@echo "* $< passed" >&2
 	@$(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp)
 
+test/test-%.debug.passed: test/test-%.debug test/test-%.good
+	@echo "* running test $<" >&2
+	@LANG=en_US.UTF-8 $(conf_Target_exec) ./$< >$(@:.passed=.1.tmp) || \
+	    (echo "* $< exited with error: $$?" >&2 && \
+	     $(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
+	     exit 1)
+	@LANG=en_US.UTF-8 diff -U2 $(<:.debug=.good) $(@:.passed=.1.tmp) || \
+	    (echo "* $<'s expected output and actual output differ" >&2 && \
+	     $(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
+	     exit 1)
+	@echo "* $< passed" >&2
+	@$(RM) $(@:.passed=.1.tmp)
+
 test/test-%: test/test-%.o
 	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET.test) \
 	    $(LDFLAGS_FOR_TARGET) -o$@ $^ $(LDLIBS_FOR_TARGET)
 
+# for debugging
+test/test-%.debug: test/test-%.debug.o
+	$(conf_Host_exec) $(wrap_cxx.staged) -Xinnocent-pear -debug-doge \
+	    $(CXXFLAGS_FOR_TARGET.test) $(LDFLAGS_FOR_TARGET) -o$@ \
+	    $^ $(LDLIBS_FOR_TARGET)
+
 test/test-%.o: test/test-%.cc
+
+# for debugging
+test/test-%.debug.o: test/test-%.cc
 
 test/test-orly-wut \
 test/test-orly-wut.o \
@@ -411,12 +435,18 @@ test/test-orly-wut: test/test-orly-wut.o test/test-orly-wut.ld \
 
 test/test-doge \
 test/test-doge.o \
-test/test-doge.s : \
+test/test-doge.s \
+test/test-doge.debug \
+test/test-doge.debug.o \
+test/test-doge.debug.s : \
     CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge -v
 
 test/test-doge-abs-reloc \
 test/test-doge-abs-reloc.o \
-test/test-doge-abs-reloc.s : \
+test/test-doge-abs-reloc.s \
+test/test-doge-abs-reloc.debug \
+test/test-doge-abs-reloc.debug.o \
+test/test-doge-abs-reloc.debug.s : \
     CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge
 
 define preproc_for_host
@@ -494,14 +524,20 @@ share/innocent-pear/omnomnom: share/innocent-pear/omnomnom.cc \
 
 %.o: %.cc $(headers.target) $(installables.host)
 	mkdir -p $(@D)
-	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET.test) \
-	    -c -o$@ $<
+	$(conf_Host_exec) $(wrap_cxx.staged) $(CPPFLAGS_FOR_TARGET) \
+	    $(CXXFLAGS_FOR_TARGET.test) -c -o$@ $<
+
+# for debugging
+%.debug.o: %.cc $(headers.target) $(installables.host)
+	mkdir -p $(@D)
+	$(conf_Host_exec) $(wrap_cxx.staged) $(CPPFLAGS_FOR_TARGET) \
+	    -Dinnocent_pear_DEBUG=1 $(CXXFLAGS_FOR_TARGET.test) -c -o$@ $<
 
 # for debugging
 %.s: %.cc $(headers.target) $(installables.host)
 	mkdir -p $(@D)
-	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET.test) \
-	    -S -o$@ $<
+	$(conf_Host_exec) $(wrap_cxx.staged) $(CPPFLAGS_FOR_TARGET) \
+	    $(CXXFLAGS_FOR_TARGET.test) -S -o$@ $<
 
 share/innocent-pear/%: share/innocent-pear/%.cc
 	mkdir -p $(@D)
@@ -512,7 +548,7 @@ share/innocent-pear/omnomnom.cc: share/innocent-pear/omnomnom.lxx
 	$(LEX) $(LFLAGS) -t -o$@ $< >$@.tmp
 	mv $@.tmp $@
 
-.PHONY: test/test-%.passed
+.PHONY: test/test-%.passed test/test-%.debug.passed
 
-.PRECIOUS: config.cache %.ii %.cc %.s %.o bin/%.o share/innocent-pear/%.o \
-    helper/% $(tests.target) $(installables.host)
+.PRECIOUS: config.cache %.ii %.cc %.s %.debug %.debug.o %.o bin/%.o \
+    share/innocent-pear/%.o helper/% $(tests.target) $(installables.host)
