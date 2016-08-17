@@ -43,8 +43,8 @@ tests.target = \
     test/test-orly-wut \
     test/test-doge.debug \
     test/test-doge \
-    test/test-doge-abs-reloc \
-    test/test-doge-abs-reloc.debug
+    test/test-doge-abs-reloc.debug \
+    test/test-doge-abs-reloc
 utils.host = \
     bin/innocent-pear-c++ \
     bin/innocent-pear-doge \
@@ -402,15 +402,15 @@ test/test-%.debug.passed: test/test-%.debug test/test-%.good
 	@echo "* $< passed" >&2
 	@$(RM) $(@:.passed=.1.tmp)
 
-test/test-%: test/test-%.o
-	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET.test) \
-	    $(LDFLAGS_FOR_TARGET) -o$@ $^ $(LDLIBS_FOR_TARGET)
-
 # for debugging
 test/test-%.debug: test/test-%.debug.o
 	$(conf_Host_exec) $(wrap_cxx.staged) -Xinnocent-pear -debug-doge \
 	    $(CXXFLAGS_FOR_TARGET.test) $(LDFLAGS_FOR_TARGET) -o$@ \
 	    $^ $(LDLIBS_FOR_TARGET)
+
+test/test-%: test/test-%.o
+	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET.test) \
+	    $(LDFLAGS_FOR_TARGET) -o$@ $^ $(LDLIBS_FOR_TARGET)
 
 test/test-%.o: test/test-%.cc
 
