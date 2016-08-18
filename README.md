@@ -28,6 +28,8 @@ There is also a rather undocumented C++ API for various code obfuscation subtask
 
 ## Bugs
 
+ELF section groups are not handled correctly.  These figure quite a lot in x86-64 and x86-32 code, so the handling really needs to be fixed.
+
 The scrambling is probably not yet very strong.
 
 The C++ API should really be documented.
