@@ -44,7 +44,9 @@ tests.target = \
     test/test-doge.debug \
     test/test-doge \
     test/test-doge-abs-reloc.debug \
-    test/test-doge-abs-reloc
+    test/test-doge-abs-reloc \
+    test/test-doge-eh.debug \
+    test/test-doge-eh
 utils.host = \
     bin/innocent-pear-c++ \
     bin/innocent-pear-doge \
@@ -70,7 +72,8 @@ installables.host = \
     share/innocent-pear/doge-04.cc \
     share/innocent-pear/doge-98.cc \
     share/innocent-pear/doge-99.cc \
-    share/innocent-pear/doge.ld
+    share/innocent-pear/doge-i.ld \
+    share/innocent-pear/doge-n.ld
 installables.target = \
     $(headers.target)
 RM ?= rm -f
@@ -447,7 +450,13 @@ test/test-doge-abs-reloc.o \
 test/test-doge-abs-reloc.s \
 test/test-doge-abs-reloc.debug \
 test/test-doge-abs-reloc.debug.o \
-test/test-doge-abs-reloc.debug.s : \
+test/test-doge-abs-reloc.debug.s \
+test/test-doge-eh \
+test/test-doge-eh.o \
+test/test-doge-eh.s \
+test/test-doge-eh.debug \
+test/test-doge-eh.debug.o \
+test/test-doge-eh.debug.s : \
     CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge
 
 define preproc_for_host

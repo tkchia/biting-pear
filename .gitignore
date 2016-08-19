@@ -13,6 +13,8 @@ test-yodawg-syn
 test-orly-wut
 test-doge
 test-doge-abs-reloc
+test-doge-eh
+*.debug
 omnomnom.cc
 omnomnom
 config.cache

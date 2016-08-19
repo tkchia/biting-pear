@@ -27,6 +27,7 @@ typedef std::list<asection *> sxn_list_t;
 struct fortune_t
 {
 	bfd *obfd;
+	unsigned long n_syms;
 	asymbol **syms;
 	unsigned addr_octets, alignment_power;
 	reloc_howto_type *from_howto, *to_howto, *extra_howto;
@@ -124,7 +125,7 @@ static void do_frob_2(bfd *ibfd, bfd *obfd, fortune_t *fortune)
 	fortune->total_abs_reloc_count = 0;
 }
 
-static void prep_sxn(bfd *ibfd, asection *isxn, void *cookie)
+static void prep_sxn_i(bfd *ibfd, asection *isxn, void *cookie)
 {
 	fortune_t *fortune = (fortune_t *)cookie;
 	bfd *obfd = fortune->obfd;
@@ -148,20 +149,20 @@ static void prep_sxn(bfd *ibfd, asection *isxn, void *cookie)
 		much("bfd_set_section_alignment");
 	isxn->output_section = osxn;
 	isxn->output_offset = 0;
-	if (!bfd_copy_private_section_data(ibfd, isxn, obfd, osxn))
-		much("bfd_copy_private_section_data");
 }
 
 static void do_frob_3(bfd *ibfd, fortune_t *fortune)
 {
 	wow("preparing existing sections");
-	bfd_map_over_sections(ibfd, prep_sxn, fortune);
+	bfd_map_over_sections(ibfd, prep_sxn_i, fortune);
 }
 
 /* per phrack.org/issues/56/9.html */
 static void do_frob_4(bfd *ibfd, bfd *obfd, fortune_t *fortune)
 {
 	wow("reading and copying symbol table");
+	fortune->n_syms = 0;
+	fortune->syms = 0;
 	long symtab_sz = bfd_get_symtab_upper_bound(ibfd), n_syms;
 	if (symtab_sz < 0 || symtab_sz > SSIZE_MAX)
 		much("bfd_get_symtab_upper_bound");
@@ -172,7 +173,89 @@ static void do_frob_4(bfd *ibfd, bfd *obfd, fortune_t *fortune)
 		much("bfd_canonicalize_symtab");
 	if (!bfd_set_symtab(obfd, syms, n_syms))
 		much("bfd_set_symtab");
+	fortune->n_syms = n_syms;
 	fortune->syms = syms;
+}
+
+static void prep_sxn_ii(bfd *ibfd, asection *isxn, void *cookie)
+{
+	/* OK, this is a really, really bad idea... */
+	typedef struct
+	{
+		unsigned sh_name, sh_type;
+		bfd_vma sh_flags, sh_addr;
+		file_ptr sh_offset;
+		bfd_size_type sh_size;
+		unsigned sh_link, sh_info;
+		bfd_vma sh_addralign;
+		bfd_size_type sh_entsize;
+		asection *bfd_section;
+		unsigned char *contents;
+	} Elf_Internal_Shdr;
+	struct bfd_elf_section_reloc_data
+	{
+		Elf_Internal_Shdr *hdr;
+		unsigned count;
+		int idx;
+		struct elf_link_hash_entry **hashes;
+	};
+	struct bfd_elf_section_data
+	{
+		Elf_Internal_Shdr this_hdr;
+		struct flag_info *section_flag_info;
+		struct bfd_elf_section_reloc_data rel, rela;
+		int this_idx, dynindx;
+		asection *linked_to;
+		struct elf_internal_rela *relocs;
+		void *local_dynrel;
+		asection *sreloc;
+		union {
+			const char *name;
+			asymbol *id;
+		} group;
+		asection *sec_group;
+		/* ... */
+	};
+	const unsigned SHT_GROUP = 0x11;
+	fortune_t *fortune = (fortune_t *)cookie;
+	flagword flags = bfd_get_section_flags(ibfd, isxn);
+	if ((flags & SEC_GROUP) == 0)
+		return;
+	bfd_elf_section_data *psd = (bfd_elf_section_data *)isxn->used_by_bfd;
+	if (!psd)
+		return;
+	Elf_Internal_Shdr *psh = &psd->this_hdr;
+	if (psh->sh_type != SHT_GROUP || psh->sh_flags != 0 ||
+	    psh->sh_addr != bfd_section_vma(ibfd, isxn) ||
+	    psh->sh_info == 0 || psh->sh_info >= fortune->n_syms ||
+	    psh->bfd_section != isxn ||
+	    psd->group.id != 0)
+		return;
+	asymbol *id = fortune->syms[psh->sh_info - 1];
+	psd->group.id = id;
+	wow("  ", bfd_section_name(ibfd, isxn), '[', id->name, ']');
+}
+
+static void prep_sxn_iii(bfd *ibfd, asection *isxn, void *cookie)
+{
+	fortune_t *fortune = (fortune_t *)cookie;
+	bfd *obfd = fortune->obfd;
+	const char *name = bfd_section_name(ibfd, isxn);
+	wow("  ", name);
+	asection *osxn = isxn->output_section;
+	if (!bfd_copy_private_section_data(ibfd, isxn, obfd, osxn))
+		much("bfd_copy_private_section_data");
+}
+
+static void do_frob_5(bfd *ibfd, fortune_t *fortune)
+{
+	if (fortune->syms != 0 &&
+	    bfd_get_flavour(ibfd) == bfd_target_elf_flavour) {
+		wow("fishing out section group signatures");
+		bfd_map_over_sections(ibfd, prep_sxn_ii, fortune);
+	}
+	wow("copying BFD back-end data for sections");
+	bfd_map_over_sections(ibfd, prep_sxn_iii, fortune);
 }
 
 static bool are_same_reloc_type(reloc_howto_type *h1, reloc_howto_type *h2)
@@ -199,6 +282,18 @@ static void count_sxn_relocs(bfd *ibfd, asection *isxn, void *cookie)
 		many("libbfd scanned the same section twice for some reason");
 	fortune->reloc_count[isxn] = nrels;
 	fortune->relocs[isxn] = rels;
+	/*
+	 * Do not frob relocations belonging to sections containing group
+	 * information.
+	 *
+	 * In addition, at this point we do not frob relocations belonging
+	 * to link-once sections, or sections which _belong_ to groups
+	 * (which may mark the sections as being link-once).  It may make
+	 * sense in the future to frob relocations on _some_ link-once
+	 * sections, but this needs to be done right.
+	 */
+	if ((fl & SEC_LINK_ONCE) != 0 || bfd_is_group_section(ibfd, isxn))
+		return;
 	for (long i = 0; i < nrels; ++i) {
 		arelent *pr = rels[i];
 		if (are_same_reloc_type(pr->howto, fortune->from_howto))
@@ -206,15 +301,16 @@ static void count_sxn_relocs(bfd *ibfd, asection *isxn, void *cookie)
 	}
 }
 
-static void do_frob_5(bfd *ibfd, fortune_t *fortune)
+static void do_frob_6(bfd *ibfd, fortune_t *fortune)
 {
 	wow("collecting and counting relocations");
 	bfd_map_over_sections(ibfd, count_sxn_relocs, fortune);
 	long cnt = fortune->total_abs_reloc_count;
-	wow("  ", cnt, " absolute relocation", cnt == 1 ? "" : "s", " found");
+	wow("  ", cnt, " frobbable absolute relocation",
+	    cnt == 1 ? "" : "s", " found");
 }
 
-static void do_frob_6(bfd *ibfd, bfd *obfd, fortune_t *fortune)
+static void do_frob_7(bfd *ibfd, bfd *obfd, fortune_t *fortune)
 {
 	wow("creating new sections");
 	long nxsxns = fortune->total_abs_reloc_count;
@@ -253,20 +349,25 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 	flagword fl = bfd_get_section_flags(ibfd, isxn);
 	if ((fl & (SEC_HAS_CONTENTS | SEC_RELOC)) == 0)
 		return;
-	bfd_size_type sz = bfd_section_size(ibfd, isxn);
-	if (sz) {
-		unsigned char stuff[sz];
-		if (!bfd_get_section_contents(ibfd, isxn, stuff, 0, sz))
-			much("bfd_get_section_contents");
-		if (!bfd_set_section_contents(obfd, osxn, stuff, 0, sz))
-			much("bfd_set_section_contents");
+	if ((fl & SEC_GROUP) == 0) {
+		bfd_size_type sz = bfd_section_size(ibfd, isxn);
+		if (sz) {
+			unsigned char stuff[sz];
+			if (!bfd_get_section_contents(ibfd,isxn,stuff,0,sz))
+				much("bfd_get_section_contents");
+			if (!bfd_set_section_contents(obfd,osxn,stuff,0,sz))
+				much("bfd_set_section_contents");
+		}
 	}
-	if ((fl & SEC_RELOC) == 0)
-		return;
-	if (fortune->relocs.count(isxn) == 0)
+	if ((fl & SEC_RELOC) == 0 || fortune->relocs.count(isxn) == 0)
 		return;
 	long nrels = fortune->reloc_count[isxn];
 	arelent **rels = fortune->relocs[isxn];
+	if ((fl & SEC_LINK_ONCE) != 0 || bfd_is_group_section(ibfd, isxn)) {
+		wow("    not frobbing");
+		bfd_set_reloc(obfd, osxn, rels, (unsigned)nrels);
+		return;
+	}
 	arelent **orels = new arelent *[nrels];
 	for (long i = 0; i < nrels; ++i) {
 		arelent *pr = rels[i];
@@ -283,7 +384,7 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 		sxn_list_t& xsxns = fortune->xsxns;
 		asection *xsxn = xsxns.front();
 		xsxns.pop_front();
-		sz = fortune->addr_octets;
+		bfd_size_type sz = fortune->addr_octets;
 		unsigned char stuff[sz];
 		arelent *xrel = new arelent, **xrels = new arelent *[1];
 		xrels[0] = xrel;
@@ -334,7 +435,7 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 }
 
 /* per phrack.org/issues/56/9.html */
-static void do_frob_7(bfd *ibfd, fortune_t *fortune)
+static void do_frob_8(bfd *ibfd, fortune_t *fortune)
 {
 	wow("copying and frobbing sections");
 	bfd_map_over_sections(ibfd, copy_sxn, fortune);
@@ -343,7 +444,7 @@ static void do_frob_7(bfd *ibfd, fortune_t *fortune)
 }
 
 /* per phrack.org/issues/56/9.html */
-static void do_frob_8(bfd *ibfd, bfd *obfd)
+static void do_frob_9(bfd *ibfd, bfd *obfd)
 {
 	wow("copying BFD back-end data");
 	if (!bfd_copy_private_bfd_data(ibfd, obfd))
@@ -358,9 +459,10 @@ static void copy_and_frob_object(bfd *ibfd, bfd *obfd)
 	do_frob_3(ibfd, &fortune);
 	do_frob_4(ibfd, obfd, &fortune);
 	do_frob_5(ibfd, &fortune);
-	do_frob_6(ibfd, obfd, &fortune);
-	do_frob_7(ibfd, &fortune);
-	do_frob_8(ibfd, obfd);
+	do_frob_6(ibfd, &fortune);
+	do_frob_7(ibfd, obfd, &fortune);
+	do_frob_8(ibfd, &fortune);
+	do_frob_9(ibfd, obfd);
 }
 
 int main(int argc, char **argv)

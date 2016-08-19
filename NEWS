@@ -1,3 +1,36 @@
+2016-08-19	"...then lobbest thou thy Holy Hand Grenade of Antioch
+		 towards thy foe..."
+
+		bin/innocent-pear-dogecoin.cc :
+		- now correctly fishes out section group signatures
+		- no longer frobs relocations in link-once sections, group
+		  information sections, or group members
+		  members
+
+		bin/innocent-pear-c++.cc :
+		- now also passes share/innocent-pear/doge-i.ld (with -T) to
+		  linker back-end
+
+		bin/innocent-pear-doge.cc :
+		- no longer tries to scramble group information sections
+
+		test/test-doge-eh.cc ,
+		test/test-doge-eh.good :
+		- added new test case; currently fails for x86-64 target
+
+		share/innocent-pear/doge-i.ld :
+		- initial version
+
+		share/innocent-pear/doge-n.ld :
+		- renamed from share/innocent-pear/doge.ld
+
+		GNUmakefile :
+		- updated to use doge-i.ld and doge-n.ld
+		- added test-doge-eh test case
+
+		.gitignore :
+		- added test-doge-eh and *.debug patterns
+
 2016-08-18	"Don't panic."
 
 		README.md :

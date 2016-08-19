@@ -273,22 +273,22 @@ static int main_(int argc, char **argv)
 #endif
 		 };
 	/*
-	 * Why 18?  We need
+	 * Why 19?  We need
 	 *
 	 *   * 2 for `-wrapper ...'
 	 *   * 3 for `-no-integrated-cpp' `-fno-integrated-as'
 	 *     `-Wa,--Xinnocent-pear=doge'
 	 *   * 2 for `-idirafter ...'
-	 *   * 9 (== 11 - 2) for `-include', `.../doge.h', (doge-01.o),
-	 *     (doge-02.o), (doge-03.o), (doge-04.o), `-x' `-none',
-	 *     (doge-98.o), (doge-99.o), and (doge.ld), minus the
-	 *     `-Xinnocent-pear' `-doge'
+	 *   * 10 (== 12 - 2) for `-include', `.../doge.h',
+	 *     `-Wl,-T,(doge-i.ld)', (doge-01.o), (doge-02.o), (doge-03.o),
+	 *     (doge-04.o), `-x' `-none', (doge-98.o), (doge-99.o), and
+	 *     (doge-n.ld), minus the `-Xinnocent-pear' `-doge'
 	 *   * and 2 for `-o' (doge-a).
 	 *
 	 * We also need a terminating null pointer, but since we do not pass
 	 * our own *argv to execvp...
 	 */
-	char *burger[argc + 18], **cheese = burger, **cheeses = 0,
+	char *burger[argc + 19], **cheese = burger, **cheeses = 0,
 	    *burgery[argc], **cheesy = burgery, *ceiling, *real_a = 0;
 #ifdef innocent_pear_CXX_FOR_TARGET_HAVE_OPT_WRAPPER
 	char *moar = 0;
@@ -490,22 +490,24 @@ static int main_(int argc, char **argv)
 			doge_d(*cheeses);
 			real_a = *cheeses;
 			*cheeses = (char *)doge_a();
-			std::memmove(burger + 7, burger + 1,
+			std::memmove(burger + 8, burger + 1,
 			    (cheese - burger - 1) * sizeof(char *));
-			cheese += 6;
+			cheese += 7;
 			burger[1] = (char *)"-include";
 			burger[2] = pusheen(meowmeow,
 			    "/innocent-pear/doge.h");
-			burger[3] = (char *)doge_01();
-			burger[4] = (char *)doge_02();
-			burger[5] = (char *)doge_03();
-			burger[6] = (char *)doge_04();
+			burger[3] = pusheen("-Wl,-T,", caturday,
+			    "/share/innocent-pear/doge-i.ld");
+			burger[4] = (char *)doge_01();
+			burger[5] = (char *)doge_02();
+			burger[6] = (char *)doge_03();
+			burger[7] = (char *)doge_04();
 			*cheese++ = (char *)"-x";
 			*cheese++ = (char *)"none";
 			*cheese++ = (char *)doge_98();
 			*cheese++ = (char *)doge_99();
 			*cheese++ = pusheen(caturday,
-			    "/share/innocent-pear/doge.ld");
+			    "/share/innocent-pear/doge-n.ld");
 		} else {
 			std::memmove(burger + 3, burger + 1,
 			    (cheese - burger - 1) * sizeof(char *));

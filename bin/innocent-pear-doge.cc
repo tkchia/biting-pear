@@ -215,13 +215,15 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 	flagword fl = bfd_get_section_flags(ibfd, isxn);
 	if ((fl & (SEC_HAS_CONTENTS | SEC_RELOC)) == 0)
 		return;
-	bfd_size_type sz = bfd_section_size(ibfd, isxn);
-	if (sz) {
-		unsigned char stuff[sz];
-		if (!bfd_get_section_contents(ibfd, isxn, stuff, 0, sz))
-			much("bfd_get_section_contents");
-		if (!bfd_set_section_contents(obfd, osxn, stuff, 0, sz))
-			much("bfd_set_section_contents");
+	if ((fl & SEC_GROUP) == 0) {
+		bfd_size_type sz = bfd_section_size(ibfd, isxn);
+		if (sz) {
+			unsigned char stuff[sz];
+			if (!bfd_get_section_contents(ibfd,isxn,stuff,0,sz))
+				much("bfd_get_section_contents");
+			if (!bfd_set_section_contents(obfd,osxn,stuff,0,sz))
+				much("bfd_set_section_contents");
+		}
 	}
 	if ((fl & SEC_RELOC) == 0)
 		return;
