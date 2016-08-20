@@ -1,3 +1,12 @@
+2016-08-20	"Don't panic."  (2)
+
+		GNUmakefile :
+		- now also dumps compiled debug binaries
+
+		bin/innocent-pear-doge.c :
+		- now simply forbids section groups and link-once sections
+		  in its input
+
 2016-08-19	"...then lobbest thou thy Holy Hand Grenade of Antioch
 		 towards thy foe..."
 

@@ -371,6 +371,11 @@ endif
 
 # for debugging
 test/test-%.debug.passed: test/test-%.debug test/test-%.good
+	@case "$*" in \
+	    doge*) \
+		echo "* base64 dump of xz'd head of $< :"; \
+		xz -9c <'$<' | base64 | head -n 384 | sed 's,^,*  ,';; \
+	esac >&2
 	@echo "* running test $<" >&2
 	@LANG=en_US.UTF-8 $(conf_Target_exec) ./$< >$(@:.passed=.1.tmp) || \
 	    (echo "* $< exited with error: $$?" >&2 && \
