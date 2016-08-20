@@ -17,6 +17,9 @@
 		- now copies a few more bits of a BFD asection from input to
 		  output, following GNU objcopy
 
+		README.md :
+		- updated bug list
+
 2016-08-19	"...then lobbest thou thy Holy Hand Grenade of Antioch
 		 towards thy foe..."
 
