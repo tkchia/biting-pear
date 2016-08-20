@@ -63,7 +63,7 @@ static void prep_sxn(bfd *ibfd, asection *isxn, void *cookie)
 		many("unexpected section group");
 	if ((flags & SEC_LINK_ONCE) != 0)
 		many("unexpected link-once section");
-	asection *osxn = bfd_make_section_anyway_with_flags(obfd,name,flags);
+	asection *osxn = bfd_make_section_anyway_with_flags(obfd, name, flags);
 	if (!osxn)
 		much("bfd_make_section_anyway_with_flags");
 	if (!bfd_set_section_size(obfd, osxn, size))
@@ -76,6 +76,8 @@ static void prep_sxn(bfd *ibfd, asection *isxn, void *cookie)
 		much("bfd_set_section_alignment");
 	isxn->output_section = osxn;
 	isxn->output_offset = 0;
+	osxn->entsize = isxn->entsize;
+	osxn->compress_status = isxn->compress_status;
 	if (!bfd_copy_private_section_data(ibfd, isxn, obfd, osxn))
 		much("bfd_copy_private_section_data");
 }
@@ -101,6 +103,13 @@ static void do_frob_2(bfd *ibfd, bfd *obfd)
 	bfd_map_over_sections(ibfd, prep_sxn, obfd);
 }
 
+static void do_frob_3(bfd *ibfd, bfd *obfd)
+{
+	wow("copying BFD back-end header data");
+	if (!bfd_copy_private_header_data(ibfd, obfd))
+		much("bfd_copy_private_header_data");
+}
+
 static void check_symbol(bfd *ibfd, asymbol *sym, const char *nm)
 {
 	if (!sym)
@@ -124,7 +133,7 @@ static void check_symbol(bfd *ibfd, asymbol *sym, const char *nm)
 }
 
 /* per phrack.org/issues/56/9.html */
-static void do_frob_3(bfd *ibfd, bfd *obfd, long *p_n_syms, asymbol ***p_syms)
+static void do_frob_4(bfd *ibfd, bfd *obfd, long *p_n_syms, asymbol ***p_syms)
 {
 	wow("reading and copying symbol table");
 	long symtab_sz = bfd_get_symtab_upper_bound(ibfd), n_syms;
@@ -141,7 +150,7 @@ static void do_frob_3(bfd *ibfd, bfd *obfd, long *p_n_syms, asymbol ***p_syms)
 	*p_syms = syms;
 }
 
-static void do_frob_4(bfd *ibfd, adreld *dreld)
+static void do_frob_5(bfd *ibfd, adreld *dreld)
 {
 	wow("reading and scanning dynamic relocation tables");
 	long dssz = bfd_get_dynamic_symtab_upper_bound(ibfd);
@@ -177,7 +186,7 @@ static void do_frob_4(bfd *ibfd, adreld *dreld)
 }
 
 /* per phrack.org/issues/56/9.html */
-static void do_frob_5(bfd *ibfd, bfd *obfd, const char *bnm, const char *enm,
+static void do_frob_6(bfd *ibfd, bfd *obfd, const char *bnm, const char *enm,
     long n_syms, asymbol **syms, adreld *dreld, asymbol **p_bsym,
     asymbol **p_esym)
 {
@@ -241,7 +250,7 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 }
 
 /* per phrack.org/issues/56/9.html */
-static void do_frob_6(bfd *ibfd, bfd *obfd, asymbol *bsym, asymbol *esym,
+static void do_frob_7(bfd *ibfd, bfd *obfd, asymbol *bsym, asymbol *esym,
     asymbol **syms, innocent_pear::impl::rand_state_t seed)
 {
 	afortune fortune = { obfd, syms };
@@ -260,9 +269,9 @@ static void do_frob_6(bfd *ibfd, bfd *obfd, asymbol *bsym, asymbol *esym,
 }
 
 /* per phrack.org/issues/56/9.html */
-static void do_frob_7(bfd *ibfd, bfd *obfd)
+static void do_frob_8(bfd *ibfd, bfd *obfd)
 {
-	wow("copying BFD back-end data");
+	wow("copying remaining BFD back-end data");
 	if (!bfd_copy_private_bfd_data(ibfd, obfd))
 		much("bfd_copy_private_bfd_data");
 }
@@ -275,11 +284,12 @@ static void copy_and_frob_object(bfd *ibfd, bfd *obfd, const char *bnm,
 	adreld dreld;
 	do_frob_1(ibfd, obfd);
 	do_frob_2(ibfd, obfd);
-	do_frob_3(ibfd, obfd, &n_syms, &syms);
-	do_frob_4(ibfd, &dreld);
-	do_frob_5(ibfd, obfd, bnm, enm, n_syms, syms, &dreld, &bsym, &esym);
-	do_frob_6(ibfd, obfd, bsym, esym, syms, seed);
-	do_frob_7(ibfd, obfd);
+	do_frob_3(ibfd, obfd);
+	do_frob_4(ibfd, obfd, &n_syms, &syms);
+	do_frob_5(ibfd, &dreld);
+	do_frob_6(ibfd, obfd, bnm, enm, n_syms, syms, &dreld, &bsym, &esym);
+	do_frob_7(ibfd, obfd, bsym, esym, syms, seed);
+	do_frob_8(ibfd, obfd);
 }
 
 int main(int argc, char **argv)

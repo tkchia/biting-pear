@@ -1,11 +1,21 @@
-2016-08-20	"Don't panic."  (2)
+2016-08-20	So there is bfd_copy_private_header_data(...), and then
+		there is bfd_copy_private_bfd_data(...).  ¯\_(ツ)_/¯
 
 		GNUmakefile :
 		- now also dumps compiled debug binaries
 
-		bin/innocent-pear-doge.c :
+		bin/innocent-pear-doge.cc :
 		- now simply forbids section groups and link-once sections
 		  in its input
+		- hopefully now correctly handles programs that throw and
+		  catch exceptions -- ELF PT_GNU_EH_FRAME segments are now
+		  copied
+		- now copies a few more bits of a BFD asection from input to
+		  output, following GNU objcopy
+
+		bin/innocent-pear-dogecoin.cc :
+		- now copies a few more bits of a BFD asection from input to
+		  output, following GNU objcopy
 
 2016-08-19	"...then lobbest thou thy Holy Hand Grenade of Antioch
 		 towards thy foe..."

@@ -149,6 +149,8 @@ static void prep_sxn_i(bfd *ibfd, asection *isxn, void *cookie)
 		much("bfd_set_section_alignment");
 	isxn->output_section = osxn;
 	isxn->output_offset = 0;
+	osxn->entsize = isxn->entsize;
+	osxn->compress_status = isxn->compress_status;
 }
 
 static void do_frob_3(bfd *ibfd, fortune_t *fortune)
@@ -258,6 +260,13 @@ static void do_frob_5(bfd *ibfd, fortune_t *fortune)
 	bfd_map_over_sections(ibfd, prep_sxn_iii, fortune);
 }
 
+static void do_frob_6(bfd *ibfd, bfd *obfd)
+{
+	wow("copying BFD back-end header data");
+	if (!bfd_copy_private_header_data(ibfd, obfd))
+		much("bfd_copy_private_header_data");
+}
+
 static bool are_same_reloc_type(reloc_howto_type *h1, reloc_howto_type *h2)
 {
 	/* Is there a better way to compare these things? */
@@ -301,7 +310,7 @@ static void count_sxn_relocs(bfd *ibfd, asection *isxn, void *cookie)
 	}
 }
 
-static void do_frob_6(bfd *ibfd, fortune_t *fortune)
+static void do_frob_7(bfd *ibfd, fortune_t *fortune)
 {
 	wow("collecting and counting relocations");
 	bfd_map_over_sections(ibfd, count_sxn_relocs, fortune);
@@ -310,7 +319,7 @@ static void do_frob_6(bfd *ibfd, fortune_t *fortune)
 	    cnt == 1 ? "" : "s", " found");
 }
 
-static void do_frob_7(bfd *ibfd, bfd *obfd, fortune_t *fortune)
+static void do_frob_8(bfd *ibfd, bfd *obfd, fortune_t *fortune)
 {
 	wow("creating new sections");
 	long nxsxns = fortune->total_abs_reloc_count;
@@ -435,7 +444,7 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 }
 
 /* per phrack.org/issues/56/9.html */
-static void do_frob_8(bfd *ibfd, fortune_t *fortune)
+static void do_frob_9(bfd *ibfd, fortune_t *fortune)
 {
 	wow("copying and frobbing sections");
 	bfd_map_over_sections(ibfd, copy_sxn, fortune);
@@ -444,9 +453,9 @@ static void do_frob_8(bfd *ibfd, fortune_t *fortune)
 }
 
 /* per phrack.org/issues/56/9.html */
-static void do_frob_9(bfd *ibfd, bfd *obfd)
+static void do_frob_10(bfd *ibfd, bfd *obfd)
 {
-	wow("copying BFD back-end data");
+	wow("copying remaining BFD back-end data");
 	if (!bfd_copy_private_bfd_data(ibfd, obfd))
 		much("bfd_copy_private_bfd_data");
 }
@@ -459,10 +468,11 @@ static void copy_and_frob_object(bfd *ibfd, bfd *obfd)
 	do_frob_3(ibfd, &fortune);
 	do_frob_4(ibfd, obfd, &fortune);
 	do_frob_5(ibfd, &fortune);
-	do_frob_6(ibfd, &fortune);
-	do_frob_7(ibfd, obfd, &fortune);
-	do_frob_8(ibfd, &fortune);
-	do_frob_9(ibfd, obfd);
+	do_frob_6(ibfd, obfd);
+	do_frob_7(ibfd, &fortune);
+	do_frob_8(ibfd, obfd, &fortune);
+	do_frob_9(ibfd, &fortune);
+	do_frob_10(ibfd, obfd);
 }
 
 int main(int argc, char **argv)
