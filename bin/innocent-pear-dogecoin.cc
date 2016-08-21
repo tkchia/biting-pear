@@ -29,7 +29,7 @@ struct fortune_t
 	bfd *obfd;
 	unsigned long n_syms;
 	asymbol **syms;
-	unsigned addr_octets, alignment_power;
+	unsigned addr_octets, alignment_power, pcrel_adj;
 	reloc_howto_type *from_howto, *to_howto, *extra_howto;
 	long total_abs_reloc_count;
 	sxn_to_reloc_count_map_t reloc_count;
@@ -119,6 +119,10 @@ static void do_frob_2(bfd *ibfd, bfd *obfd, fortune_t *fortune)
 	fortune->obfd = obfd;
 	fortune->addr_octets = addr_bits / 8;
 	fortune->alignment_power = get_align(addr_bits) - 3;
+	if (bfd_get_arch(obfd) == bfd_arch_i386)
+		fortune->pcrel_adj = 4;
+	else
+		fortune->pcrel_adj = 0;
 	fortune->from_howto = from;
 	fortune->to_howto = to;
 	fortune->extra_howto = extra;
@@ -385,28 +389,14 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 			orels[i] = pr;
 			continue;
 		}
-		wow("    frobbing reloc. at +0x", std::hex, pr->address);
-		arelent *pfr = new arelent;
-		*pfr = *pr;
-		pfr->howto = fortune->to_howto;
-		orels[i] = pfr;
-		sxn_list_t& xsxns = fortune->xsxns;
-		asection *xsxn = xsxns.front();
-		xsxns.pop_front();
-		bfd_size_type sz = fortune->addr_octets;
-		unsigned char stuff[sz];
-		arelent *xrel = new arelent, **xrels = new arelent *[1];
-		xrels[0] = xrel;
-		xrel->sym_ptr_ptr = osxn->symbol_ptr_ptr;
-		xrel->address = 0;
-		howto = fortune->extra_howto;
-		xrel->howto = howto;
 		/*
-		 * Here we need to decide whether to stash the place offset
-		 * (pr->address) in the section contents, or in the new
-		 * relocation's addend field (xrel->addend).
+		 * (1) We need to decide whether to stash the place offset
+		 *     (pr->address) in the section contents, or in the new
+		 *     relocation's addend field (xrel->addend).  We also
+		 *     need to decide how (and whether) to adjust the addend
+		 *     for the original relocation.
 		 *
-		 * From the libbfd info file:
+		 *     From the libbfd info file:
 		 *
 		 *	"All relocations for all ELF USE_RELA targets should
 		 *	 set this [.partial_inplace] field to FALSE (values
@@ -416,18 +406,67 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 		 *	 field to TRUE.  Why this is so is peculiar to each
 		 *	 particular target."
 		 *
-		 * And indeed howto->partial_inplace is unreliable.  (E.g. 
-		 * libbfd has .partial_inplace == false for R_ARM_REL32 in a
-		 * 32-bit ARM target, but totally ignores xrel->addend when
-		 * actually applying R_ARM_REL32 relocations.)
+		 *     And indeed howto->partial_inplace is unreliable. 
+		 *     (E.g. libbfd has .partial_inplace == false for
+		 *     R_ARM_REL32 in a 32-bit ARM target, but totally
+		 *     ignores xrel->addend when actually applying
+		 *     R_ARM_REL32 relocations.)
 		 *
-		 * So instead of using .partial_inplace, use .src_mask.  If
-		 * .src_mask says that we can fit the place offset into the
-		 * section contents, then do so.
+		 *     So instead of using .partial_inplace, use .src_mask. 
+		 *     If .src_mask says that we can fit the place offset
+		 *     into the section contents, then do so.
+		 *
+		 * (2) To take care of relocations referring to mergeable
+		 *     sections (SEC_MERGE), we need to take into account
+		 *     how a linker decides which locations are reachable
+		 *     when doing a mark-and-sweep.
+		 *
+		 *     In particular, for an i386 target when a direct `jmp'
+		 *     or `call' will have an offset relative to the
+		 *     instructions _end_, an R_386_PC32 at place P for
+		 *     symbol S with addend A is taken to refer to S + A +
+		 *     4, not S + A.
+		 *
+		 *     This means S + A + 4 will be marked as reachable, and
+		 *     S + A not necessarily so!
+		 *
+		 *     Thus, for i386, we subtract 4 to the addends of the
+		 *     R_386_PC32 relocations, and in the target startup
+		 *     code (in share/innocent-pear/), we add 4 back in.
 		 */
+		wow("    frobbing reloc. at +0x", std::hex, pr->address);
+		bfd_size_type sz = fortune->addr_octets;
+		unsigned char stuff[sz];
+		bfd_vma adj = fortune->pcrel_adj;
+		arelent *pfr = new arelent;
+		*pfr = *pr;
+		pfr->howto = fortune->to_howto;
+		if (adj != 0) {
+			if (pfr->howto->src_mask != 0) {
+				if (!bfd_get_section_contents(obfd, osxn,
+				    stuff, pfr->address, sz))
+					much("bfd_get_section_contents");
+				bfd_put(sz * 8, obfd, bfd_get(sz * 8, obfd,
+				    stuff) - adj, stuff);
+				if (!bfd_set_section_contents(obfd, osxn,
+				    stuff, pfr->address, sz))
+					much("bfd_set_section_contents");
+			} else
+				pfr->addend -= adj;
+		}
+		orels[i] = pfr;
+		sxn_list_t& xsxns = fortune->xsxns;
+		asection *xsxn = xsxns.front();
+		xsxns.pop_front();
+		arelent *xrel = new arelent, **xrels = new arelent *[1];
+		xrels[0] = xrel;
+		xrel->sym_ptr_ptr = osxn->symbol_ptr_ptr;
+		xrel->address = 0;
+		howto = fortune->extra_howto;
+		xrel->howto = howto;
 		bfd_size_type off = pr->address;
-		bfd_vma mask = howto->src_mask;
-		if ((off & mask) == off) {
+		off -= adj;
+		if (howto->src_mask != 0) {
 			wow("    ~> p ", bfd_section_name(obfd, xsxn));
 			bfd_put(sz * 8, obfd, off, stuff);
 			xrel->addend = 0;

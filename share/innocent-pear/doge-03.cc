@@ -85,9 +85,14 @@ innocent_pear_DOGE_MEMSET unscramble_03_6()
 
 innocent_pear_DOGE unscramble_03_7()
 {
+#ifdef __i386__
+#   define ADJ		4
+#else
+#   define ADJ		0
+#endif
 	for (uintptr_t *dp = dogecoin_start; dp != dogecoin_end; ++dp) {
 		uintptr_t *rp = reinterpret_cast<uintptr_t *>(
-		    reinterpret_cast<uintptr_t>(dp) + *dp);
+		    reinterpret_cast<uintptr_t>(dp) + *dp + ADJ);
 #ifdef innocent_pear_DEBUG
 		std::fprintf(stderr, "dp == %p\n"
 				     "*dp == %#" PRIxPTR "\n"
@@ -95,7 +100,7 @@ innocent_pear_DOGE unscramble_03_7()
 				     "*rp == %#" PRIxPTR "\n",
 		    dp, *dp, rp, *rp);
 #endif
-		*rp += reinterpret_cast<uintptr_t>(rp);
+		*rp += reinterpret_cast<uintptr_t>(rp) + ADJ;
 #ifdef innocent_pear_DEBUG
 		std::fprintf(stderr, "now *rp == %#" PRIxPTR "\n", *rp);
 #endif
