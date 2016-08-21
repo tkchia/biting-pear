@@ -13,6 +13,9 @@
 		include/innocent-pear/rofl.h :
 		- trying to fix "`asm' operand has impossible constraints"
 		  under g++ 4 when compiling 0-argument syscalls for ARM
+		- now marks fewer registers as clobbered when compiling
+		  2-argument syscalls for ARM under g++ 4, to reduce
+		  register pressure
 
 		include/innocent-pear/orly.h :
 		- wut(...) now purposely inhibits alias analysis

@@ -446,7 +446,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 				 "mov r7, %1; svc #0"
 		    : "=l" (z1z2), "=h" (rscno)
 		    : "0" (z1z2), "1" (rscno)
-		    : "r2", "r3", "r4", "r5", "r6", "r7", "memory", "cc");
+		    : "r2", "r4", "r6", "r7", "memory", "cc");
 		return re_rv((long)z1z2);
 	}
 	template<class T1, class T2, class T3>
