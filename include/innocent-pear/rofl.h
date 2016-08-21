@@ -393,12 +393,26 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 	{
 		typedef unsigned long long RP;
 		long rscno = re_scno(scno), rv;
+#	    if 0
 		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
 				 "mov r7, %1; svc #0"
 		    : "=l" (rv), "=h" (rscno)
 		    : "1" (rscno)
 		    : "r1", "r2", "r3", "r4", "r5", "r6", "r7",
 		      "memory", "cc");
+#	    else
+		/*
+		 *	"./include/innocent-pear/rofl.h: In function `void
+		 *	 unscramble_01_1()':
+		 *	"./include/innocent-pear/rofl.h:401:24: error: can't
+		 *	 find a register in class `LO_REGS' while reloading
+		 *	 `asm'"
+		 */
+		__asm __volatile("mov r7, %1; svc #0; mov %0, r0"
+		    : "=r" (rv)
+		    : "r" (rscno)
+		    : "r0", "r7", "memory", "cc");
+#	    endif
 		return re_rv(rv);
 	}
 	template<class T1>

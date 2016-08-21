@@ -1,3 +1,14 @@
+2016-08-21	There is always another bug.
+
+		share/innocent-pear/doge-i.ld :
+		- now also separates out .data.rel relocations -- apparently
+		  used in g++ 4.8.4 to refer to RTTI constructs -- from the
+		  rest of .data
+
+		include/innocent-pear/rofl.h :
+		- trying to fix "`asm' operand has impossible constraints"
+		  under g++ 4 when compiling 0-argument syscalls for ARM
+
 2016-08-20	So there is bfd_copy_private_header_data(...), and then
 		there is bfd_copy_private_bfd_data(...).  ¯\_(ツ)_/¯
 
