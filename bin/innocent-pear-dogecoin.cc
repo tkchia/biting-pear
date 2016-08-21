@@ -119,7 +119,7 @@ static void do_frob_2(bfd *ibfd, bfd *obfd, fortune_t *fortune)
 	fortune->obfd = obfd;
 	fortune->addr_octets = addr_bits / 8;
 	fortune->alignment_power = get_align(addr_bits) - 3;
-	if (bfd_get_arch(obfd) == bfd_arch_i386)
+	if (bfd_get_arch(obfd) == bfd_arch_i386 && addr_bits == 32)
 		fortune->pcrel_adj = 4;
 	else
 		fortune->pcrel_adj = 0;
