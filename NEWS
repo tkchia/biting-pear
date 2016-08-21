@@ -1,13 +1,11 @@
 2016-08-21	"The moving cursor writes, and having written, blinks on."
 
 		configure :
-		- now uses `-fPIE' instead of `-fPIC' on default, for both
-		  host and target, to compile executables
 		- now passes `-static' in $CXXFLAGS_FOR_TARGET on default
 
 		.travis.yml :
-		- now passes `-static' and `-fPIE' in $CXXFLAGS_FOR_TARGET
-		  if $CXX_FOR_TARGET is explicitly given
+		- now passes `-static' in $CXXFLAGS_FOR_TARGET if
+		  $CXX_FOR_TARGET is explicitly given
 
 		README.md :
 		- updated project and bug descriptions
