@@ -1,4 +1,12 @@
-2016-08-21	There is always another bug.
+2016-08-21	"The moving cursor writes, and having written, blinks on."
+
+		configure :
+		- now uses `-fPIE' instead of `-fPIC' on default, for both
+		  host and target, to compile executables
+		- now passes `-static' in $CXX_FOR_TARGET on default
+
+		README.md :
+		- updated project and bug descriptions
 
 		bin/innocent-pear-dogecoin.cc ,
 		share/innocent-pear/doge-03.cc :

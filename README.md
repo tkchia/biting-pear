@@ -20,7 +20,7 @@
 
 ## Description
 
-`innocent-pear-c++` is a wrapper around the GNU C++ compiler (`g++`(1)) which tries to obscure the code of compiled programs.
+`innocent-pear-c++` is a wrapper around the GNU C++ compiler (`g++`(1)) or `clang++` compiler which tries to obscure the code of compiled programs.
 
 If `-Xinnocent-pear -doge` is specified, it scrambles the text sections of a program and adds constructor routines to unscramble them.
 
@@ -28,6 +28,18 @@ There is also a rather undocumented C++ API for various code obfuscation subtask
 
 ## Bugs
 
-The scrambling is probably not yet very strong.
+The scrambling of text and data is probably not yet very strong.
 
 The C++ API should really be documented.
+
+If `innocent-pear` is explicitly set up to compile target-side programs
+
+  * using `clang++`
+  * with dynamic linking
+  * where the programs handle exceptions,
+
+the program may fail with a runtime error on certain platforms:
+
+> `./test/test-doge-eh.debug: error while loading shared libraries: unexpected reloc type 0x18`
+
+This is because I have not found a clean way to separate the absolute relocations referring to RTTI structures in `libstdc++` (`_ZTIi`, etc.). Partly to avert this issue, `innocent-pear` currently produces static target-side binaries on default.
