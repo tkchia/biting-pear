@@ -2,7 +2,7 @@
 
 set -e
 : "${CXXFLAGS=-O3 -fPIC -pie -Wall}"
-: "${CXXFLAGS_FOR_TARGET=-static -O3 -fPIC -pie -Wall}"
+: "${CXXFLAGS_FOR_TARGET=-O3 -fPIC -pie -Wall}"
 . "`dirname "$0"`"/lolwutconf/configure.inc
 conf_begin ${1+"$@"}
 conf_mod c++ c++.target bfd

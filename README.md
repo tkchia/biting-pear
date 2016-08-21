@@ -42,4 +42,4 @@ the programs may fail with a runtime error on certain platforms:
 
 > `./test/test-doge-eh.debug: error while loading shared libraries: unexpected reloc type 0x18`
 
-This is because I have not found a clean way to separate the absolute relocations referring to RTTI structures in `libstdc++` (`_ZTIi`, etc.). Partly to avert this issue, `innocent-pear` currently produces static target-side binaries on default.
+This is because I have not found a clean way to break up the absolute relocations referring to RTTI structures in `libstdc++` (`_ZTIi`, etc.), or to separate the relocations from the scrambled data.
