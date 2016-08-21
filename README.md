@@ -38,7 +38,7 @@ If `innocent-pear` is explicitly set up to compile target-side programs
   * with dynamic linking
   * where the programs handle exceptions,
 
-the program may fail with a runtime error on certain platforms:
+the programs may fail with a runtime error on certain platforms:
 
 > `./test/test-doge-eh.debug: error while loading shared libraries: unexpected reloc type 0x18`
 

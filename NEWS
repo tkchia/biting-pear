@@ -3,7 +3,11 @@
 		configure :
 		- now uses `-fPIE' instead of `-fPIC' on default, for both
 		  host and target, to compile executables
-		- now passes `-static' in $CXX_FOR_TARGET on default
+		- now passes `-static' in $CXXFLAGS_FOR_TARGET on default
+
+		.travis.yml :
+		- now passes `-static' and `-fPIE' in $CXXFLAGS_FOR_TARGET
+		  if $CXX_FOR_TARGET is explicitly given
 
 		README.md :
 		- updated project and bug descriptions
