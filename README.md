@@ -35,7 +35,7 @@ The C++ API should really be documented.
 If `innocent-pear` is explicitly set up to compile target-side programs
 
   * using `clang++`
-  * with dynamic linking
+  * with `libstdc++` linked in dynamically
   * where the programs handle exceptions,
 
 the programs may fail with a runtime error on certain platforms:

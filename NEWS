@@ -3,6 +3,11 @@
 		README.md :
 		- updated project and bug descriptions
 
+		configure ,
+		.travis.yml :
+		- now passes `-static-libstdc++' in $CXX_FOR_TARGET on
+		  default
+
 		bin/innocent-pear-dogecoin.cc ,
 		share/innocent-pear/doge-03.cc :
 		- tweaked creation and processing of R_386_PC32 relocations
