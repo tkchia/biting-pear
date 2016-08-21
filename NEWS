@@ -30,6 +30,9 @@
 		include/innocent-pear/orly.h :
 		- wut(...) now purposely inhibits alias analysis
 
+		test/test-doge-eh.cc :
+		- tweaked code formatting
+
 2016-08-20	So there is bfd_copy_private_header_data(...), and then
 		there is bfd_copy_private_bfd_data(...).  ¯\_(ツ)_/¯
 
