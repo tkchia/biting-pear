@@ -458,7 +458,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 				 "svc #0; "
 				 "mov %0, r0"
 		    : "=r" (rv)
-		    : "r" (z1), "h" (z2), "h" (rscno)
+		    : "r" (z1), "r" (z2), "r" (rscno)
 		    : "r0", "r1", "r7", "memory", "cc");
 		return re_rv(rv);
 #	    endif
