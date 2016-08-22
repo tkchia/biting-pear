@@ -1,3 +1,26 @@
+2016-08-22	"Two heads are more numerous than one."
+
+		GNUmakefile :
+		- now dumps smaller portions of compiled test binaries, but
+		  does a `readelf -e' on each of them
+
+		include/innocent-pear/orly.h :
+		- now spews debug output for orly<...>::wut(...) if
+		  innocent_pear_DEBUG is defined
+
+		include/innocent-pear/rofl.h :
+		- now spews debug output for rofl<...>::mprotect(...) if
+		  innocent_pear_DEBUG is defined
+		- redid 2-argument syscalls for ARM under g++ 4...
+
+		share/innocent-pear/doge-01.cc :
+		- reduced layers of operand scrambling, to make compilation
+		  tractable on my machine  :-/
+		- now avoids overlapping rofl<...>::mprotect(...) calls
+
+		share/innocent-pear/doge-98.cc :
+		- now avoids overlapping rofl<...>::mprotect(...) calls
+
 2016-08-21	"The moving cursor writes, and having written, blinks on."
 
 		README.md :

@@ -441,6 +441,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 			return use_libc_syscall(scno, x1, x2);
 		long rscno = re_scno(scno);
 		uintptr_t z1 = re_arg(x1), z2 = re_arg(x2);
+#	    if 0
 		RP z1z2 = (RP)z1 | (RP)z2 << 32;
 		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
 				 "mov r7, %1; svc #0"
@@ -448,6 +449,19 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		    : "0" (z1z2), "1" (rscno)
 		    : "r2", "r4", "r6", "r7", "memory", "cc");
 		return re_rv((long)z1z2);
+#	    else
+		/* g++ 4's register allocator is not cool enough. */
+		long rv;
+		__asm __volatile("mov r0, %1; "
+				 "mov r1, %2; "
+				 "mov r7, %3; "
+				 "svc #0; "
+				 "mov %0, r0"
+		    : "=r" (rv)
+		    : "r" (z1), "h" (z2), "h" (rscno)
+		    : "r0", "r1", "r7", "memory", "cc");
+		return rv;
+#	    endif
 	}
 	template<class T1, class T2, class T3>
 	__attribute__((always_inline))
@@ -504,6 +518,10 @@ class rofl_impl_mprotect :
 	static typename super::syscall_ret
 	mprotect(void *addr, std::size_t len, int prot)
 	{
+#ifdef innocent_pear_DEBUG
+		std::fprintf(stderr, "mprotect(%p, %#zx, %#x)\n", addr,
+		    len, (unsigned)prot);
+#endif
 #if defined __linux__ && (defined __i386__ || defined __arm__)
 		return super::syscall(125, addr, len, prot);
 #elif defined __linux__ && defined __amd64__

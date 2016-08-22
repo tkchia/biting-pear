@@ -48,6 +48,8 @@ innocent_pear_DOGE_L scramble_98_2()
 	    ((void *)prot_start, (std::size_t)(prot_end - prot_start),
 	    (int)(unsigned)prot);
 	prot_start = (uintptr_t)our_rodata_start & -pg_sz;
+	if (prot_start < prot_end)
+		prot_start = prot_end;
 	prot_end = ((uintptr_t)our_rodata_end + pg_sz - 1) & -pg_sz;
 	innocent_pear::rofl?<allow_debugger_unsafes>::mprotect
 	    ((void *)prot_start, (std::size_t)(prot_end - prot_start),

@@ -4,6 +4,9 @@
 #include <innocent-pear/bbq.h>
 #include <innocent-pear/nowai.h>
 #include <innocent-pear/yarly.h>
+#ifdef innocent_pear_DEBUG
+#   include <cstdio>
+#endif
 
 namespace innocent_pear
 {
@@ -120,6 +123,9 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 		 * the outset.
 		 */
 		__asm __volatile("" : "=g" (p), "=g" (q) : "0" (p), "1" (q));
+#ifdef innocent_pear_DEBUG
+		std::fprintf(stderr, "orly<...>::wut(%p, %p, %p)\n", p, q, r);
+#endif
 		if (sizeof(T) != 1)
 			q = p + (std::ptrdiff_t)(q - p);
 		if (Boreal) {
