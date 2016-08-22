@@ -17,9 +17,14 @@
 		- reduced layers of operand scrambling, to make compilation
 		  tractable on my machine  :-/
 		- now avoids overlapping rofl<...>::mprotect(...) calls
+		- now unprotects up to (our) end of .data.rel.ro
 
 		share/innocent-pear/doge-98.cc :
 		- now avoids overlapping rofl<...>::mprotect(...) calls
+		- now reprotects up to (our) end of .data.rel.ro
+
+		share/innocent-pear/doge-99.cc :
+		- added _.innocent_pear.relro.end
 
 2016-08-21	"The moving cursor writes, and having written, blinks on."
 

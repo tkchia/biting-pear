@@ -17,7 +17,7 @@ extern unsigned char hot_text_end[]
     __asm("_.innocent_pear.text.hot.end");
 extern unsigned char our_text_end[] __asm("_.innocent_pear.text.end");
 extern unsigned char our_rodata_start[] __asm("_.innocent_pear.rodata.start");
-extern unsigned char our_rodata_end[] __asm("_.innocent_pear.rodata.end");
+extern unsigned char our_relro_end[] __asm("_.innocent_pear.relro.end");
 
 __attribute__((
 #ifdef innocent_pear_HAVE_CTOR_PRIORITY
@@ -32,7 +32,7 @@ static void unscramble_01_1()
 	    innocent_pear::ops::allow_all |
 	    innocent_pear::ops::under_munged_terminal;
 	unsigned char *uts = unlikely_text_start, *hte = hot_text_end,
-	    *te = our_text_end, *rs = our_rodata_start, *re = our_rodata_end;
+	    *te = our_text_end, *rs = our_rodata_start, *rre = our_relro_end;
 #if defined innocent_pear_HAVE_CONST_TCOOFF
 	innocent_pear::rofl?<innocent_pear::ops::allow_all &
 			    ~innocent_pear::ops::allow_terminal_unsafes, 1u>::
@@ -56,7 +56,7 @@ static void unscramble_01_1()
 	prot_start = (uintptr_t)rs & -pg_sz;
 	if (prot_start < prot_end)
 		prot_start = prot_end;
-	prot_end = ((uintptr_t)re + pg_sz - 1) & -pg_sz;
+	prot_end = ((uintptr_t)rre + pg_sz - 1) & -pg_sz;
 	innocent_pear::rofl?<flags, 3u>::mprotect((void *)prot_start,
 	    (std::size_t)(prot_end - prot_start), prot);
 	innocent_pear::orly<innocent_pear_DOGE_STATE, unsigned char, false,

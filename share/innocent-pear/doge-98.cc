@@ -12,7 +12,7 @@ extern unsigned char startup_text_start[]
     __asm("_.innocent_pear.text.startup.start");
 extern unsigned char our_text_end[] __asm("_.innocent_pear.text.end");
 extern unsigned char our_rodata_start[] __asm("_.innocent_pear.rodata.start");
-extern unsigned char our_rodata_end[] __asm("_.innocent_pear.rodata.end");
+extern unsigned char our_relro_end[] __asm("_.innocent_pear.relro.end");
 
 #ifdef innocent_pear_HAVE_CTOR_PRIORITY
 #   define innocent_pear_CTOR_L	constructor(65535)
@@ -50,7 +50,7 @@ innocent_pear_DOGE_L scramble_98_2()
 	prot_start = (uintptr_t)our_rodata_start & -pg_sz;
 	if (prot_start < prot_end)
 		prot_start = prot_end;
-	prot_end = ((uintptr_t)our_rodata_end + pg_sz - 1) & -pg_sz;
+	prot_end = ((uintptr_t)our_relro_end + pg_sz - 1) & -pg_sz;
 	innocent_pear::rofl?<allow_debugger_unsafes>::mprotect
 	    ((void *)prot_start, (std::size_t)(prot_end - prot_start),
 	    (int)(unsigned)prot);
