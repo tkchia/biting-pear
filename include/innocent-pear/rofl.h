@@ -460,7 +460,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		    : "=r" (rv)
 		    : "r" (z1), "h" (z2), "h" (rscno)
 		    : "r0", "r1", "r7", "memory", "cc");
-		return rv;
+		return re_rv(rv);
 #	    endif
 	}
 	template<class T1, class T2, class T3>
