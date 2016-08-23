@@ -273,7 +273,8 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		return re_rv(rv);
 	}
 #   elif defined __arm__ && defined __thumb__
-    public:
+    private:
+#	if __GNUC__ >= 5
 		/*
 		 * It will be good if I can use the __asm("r0") style of
 		 * register variables to specify exactly which values go
@@ -289,216 +290,75 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		 *
 		 * g++ 5 has a semi-documented "Cs" (caller saves)
 		 * constraint which we can use to distinguish between r0--r3
-		 * and r4--r7.  g++ 4 does not have "Cs" though, so I
-		 * arrange to put the syscall number in a high register
-		 * (r8--r12) before moving it into r7, which is not very
-		 * optimal.
+		 * and r4--r7.  g++ 4 does not have "Cs" though. :-(
 		 *
 		 * A side effect of using clobber lists, is that many
 		 * registers which are not touched at all by the syscall are
 		 * considered by the compiler to be clobbered.
 		 */
-#	define innocent_pear_ASM_REG_CHK(rx, ry) \
-		".ifnc " rx ", " ry "; " \
-		".error \"innocent_pear::rofl_impl_syscall<...>: " \
-		    "line " innocent_pear_STRINGIZE(__LINE__) ": " \
-		    "value meant for " ry " goes to " rx "!\"; " \
-		".endif; "
-#	if __GNUC__ >= 5
 	__attribute__((always_inline))
-	static syscall_ret syscall(long scno)
+	static long syscall_raw(uintptr_t x1, uintptr_t x2, uintptr_t x3,
+	    long scno)
 	{
 		typedef unsigned long long RP;
-		long rscno = re_scno(scno), rv;
-		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
-				 innocent_pear_ASM_REG_CHK("%1", "r7")
-				 "svc #0"
-		    : "=Cs" (rv), "=l" (rscno)
-		    : "1" (rscno)
-		    : "r1", "r2", "r3", "r4", "r5", "r6", "ip",
-		      "memory", "cc");
-		return re_rv(rv);
+		RP x1x2 = (RP)x1 | (RP)x2 << 32, rv;
+		__asm __volatile("mov r2, %2; svc #0"
+		    : "=Cs" (rv)
+		    : "0" (x1x2), "h" (x3), "l" (scno)
+		    : "r2", "r3", "r4", "r5", "r6", "memory", "cc");
+		return (long)rv;
 	}
-	template<class T1>
-	__attribute__((always_inline))
-	static syscall_ret syscall(long scno, T1 x1)
+#	else	/* __GNUC__ < 5 */
+	__attribute__((noinline, naked))
+	static long syscall_raw(uintptr_t x1, uintptr_t x2, uintptr_t x3,
+	    long scno)
 	{
-		typedef unsigned long long RP;
-		if (wutwut(x1))
-			return use_libc_syscall(scno, x1);
-		long rscno = re_scno(scno);
-		uintptr_t z1 = re_arg(x1);
-		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
-				 innocent_pear_ASM_REG_CHK("%1", "r7")
-				 "svc #0"
-		    : "=Cs" (z1), "=l" (rscno)
-		    : "0" (z1), "1" (rscno)
-		    : "r1", "r2", "r3", "r4", "r5", "r6", "ip",
-		      "memory", "cc");
-		return re_rv((long)z1);
-	}
-	template<class T1, class T2>
-	__attribute__((always_inline))
-	static syscall_ret syscall(long scno, T1 x1, T2 x2)
-	{
-		typedef unsigned long long RP;
-		if (wutwut(x1, x2))
-			return use_libc_syscall(scno, x1, x2);
-		long rscno = re_scno(scno);
-		uintptr_t z1 = re_arg(x1), z2 = re_arg(x2);
-		RP z1z2 = (RP)z1 | (RP)z2 << 32;
-		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
-				 innocent_pear_ASM_REG_CHK("%1", "r7")
-				 "svc #0"
-		    : "=Cs" (z1z2), "=l" (rscno)
-		    : "0" (z1z2), "1" (rscno)
-		    : "r2", "r3", "r4", "r5", "r6", "ip", "memory", "cc");
-		return re_rv((long)z1z2);
-	}
-	template<class T1, class T2, class T3>
-	__attribute__((always_inline))
-	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3)
-	{
-		typedef unsigned long long RP;
-		if (wutwut(x1, x2, x3))
-			return use_libc_syscall(scno, x1, x2, x3);
-		long rscno = re_scno(scno);
-		uintptr_t z1 = re_arg(x1), z2 = re_arg(x2), z3 = re_arg(x3);
-		RP z1z2 = (RP)z1 | (RP)z2 << 32;
-#	    ifndef __thumb__
-		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
-				 innocent_pear_ASM_REG_CHK("%1", "r2")
-				 innocent_pear_ASM_REG_CHK("%2", "r7")
-				 "mov r2, %1; svc #0"
-		    : "=Cs" (z1z2), "=Cs" (z3), "=l" (rscno)
-		    : "0" (z1z2), "1" (z3), "2" (rscno)
-		    : "r3", "r4", "r5", "r6", "ip", "memory", "cc");
-#	    else
-		/*
-		 * In Thumb mode, the above may assign z1z2 to <r1, r2> and
-		 * z3 to r0.  ;-(
-		 */
-		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
-				 innocent_pear_ASM_REG_CHK("%2", "r7")
-				 "mov r2, %1; svc #0"
-		    : "=Cs" (z1z2), "=h" (z3), "=l" (rscno)
-		    : "0" (z1z2), "1" (z3), "2" (rscno)
-		    : "r2", "r3", "r4", "r5", "r6", "ip", "memory", "cc");
-#	    endif
-		return re_rv((long)z1z2);
-	}
-#	else /* if instead __GNUC__ < 5... */
-	__attribute__((always_inline))
-	static syscall_ret syscall(long scno)
-	{
-		typedef unsigned long long RP;
-		long rscno = re_scno(scno), rv;
-#	    if 0
-		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
-				 "mov r7, %1; svc #0"
-		    : "=l" (rv), "=h" (rscno)
-		    : "1" (rscno)
-		    : "r1", "r2", "r3", "r4", "r5", "r6", "r7",
-		      "memory", "cc");
-#	    else
-		/*
-		 *	"./include/innocent-pear/rofl.h: In function `void
-		 *	 unscramble_01_1()':
-		 *	"./include/innocent-pear/rofl.h:401:24: error: can't
-		 *	 find a register in class `LO_REGS' while reloading
-		 *	 `asm'"
-		 */
-		__asm __volatile("mov r7, %1; svc #0; mov %0, r0"
-		    : "=r" (rv)
-		    : "r" (rscno)
-		    : "r0", "r7", "memory", "cc");
-#	    endif
-		return re_rv(rv);
-	}
-	template<class T1>
-	__attribute__((always_inline))
-	static syscall_ret syscall(long scno, T1 x1)
-	{
-		typedef unsigned long long RP;
-		if (wutwut(x1))
-			return use_libc_syscall(scno, x1);
-		long rscno = re_scno(scno);
-		uintptr_t z1 = re_arg(x1);
-		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
-				 "mov r7, %1; svc #0"
-		    : "=l" (z1), "=h" (rscno)
-		    : "0" (z1), "1" (rscno)
-		    : "r1", "r2", "r3", "r4", "r5", "r6", "r7",
-		      "memory", "cc");
-		return re_rv((long)z1);
-	}
-	template<class T1, class T2>
-	__attribute__((always_inline))
-	static syscall_ret syscall(long scno, T1 x1, T2 x2)
-	{
-		typedef unsigned long long RP;
-		if (wutwut(x1, x2))
-			return use_libc_syscall(scno, x1, x2);
-		long rscno = re_scno(scno);
-		uintptr_t z1 = re_arg(x1), z2 = re_arg(x2);
-#	    if 0
-		RP z1z2 = (RP)z1 | (RP)z2 << 32;
-		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
-				 "mov r7, %1; svc #0"
-		    : "=l" (z1z2), "=h" (rscno)
-		    : "0" (z1z2), "1" (rscno)
-		    : "r2", "r4", "r6", "r7", "memory", "cc");
-		return re_rv((long)z1z2);
-#	    else
-		/* g++ 4's register allocator is not cool enough. */
-		long rv;
-		__asm __volatile("mov r0, %1; "
-				 "mov r1, %2; "
-				 "mov r7, %3; "
-				 "svc #0; "
-				 "mov %0, r0"
-		    : "=r" (rv)
-		    : "r" (z1), "r" (z2), "r" (rscno)
-		    : "r0", "r1", "r7", "memory", "cc");
-		return re_rv(rv);
-#	    endif
-	}
-	template<class T1, class T2, class T3>
-	__attribute__((always_inline))
-	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3)
-	{
-		typedef unsigned long long RP;
-		if (wutwut(x1, x2, x3))
-			return use_libc_syscall(scno, x1, x2, x3);
-		long rscno = re_scno(scno);
-		uintptr_t z1 = re_arg(x1), z2 = re_arg(x2), z3 = re_arg(x3);
-		RP z1z2 = (RP)z1 | (RP)z2 << 32;
-#	    ifndef __thumb__
-		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
-				 innocent_pear_ASM_REG_CHK("%1", "r2")
-				 "mov r7, %2; svc #0"
-		    : "=l" (z1z2), "=l" (z3), "=h" (rscno)
-		    : "0" (z1z2), "1" (z3), "2" (rscno)
-		    : "r3", "r4", "r5", "r6", "r7", "memory", "cc");
-#	    else
-		/*
-		 *	"/tmp/cc4qfQ1y.s:264: Error: innocent_pear::
-		 *	 rofl_impl_syscall<...>: line 410: value meant for
-		 *	 r0 goes to r1!
-		 *	 /tmp/cc4qfQ1y.s:264: Error: innocent_pear::
-		 *	 rofl_impl_syscall<...>: line 411: value meant for
-		 *	 r2 goes to r0!"
-		 */
-		__asm __volatile(innocent_pear_ASM_REG_CHK("%0", "r0")
-				 "mov r7, %2; mov r2, %1; svc #0"
-		    : "=l" (z1z2), "=h" (z3), "=h" (rscno)
-		    : "0" (z1z2), "1" (z3), "2" (rscno)
-		    : "r2", "r3", "r4", "r5", "r6", "r7", "memory", "cc");
-#	    endif
-		return re_rv((long)z1z2);
+		/* assume Thumb support means `bx lr' support... */
+		__asm("push {r7, lr}; "
+		      "mov r7, r3; "
+		      "svc #0; "
+		      "pop {r7, lr}; "
+		      "bx lr");
 	}
 #	endif
-#	undef innocent_pear_ASM_REG_CHK
+    public:
+	__attribute__((always_inline))
+	static syscall_ret syscall(long scno)
+	{
+		uintptr_t x1, x2, x3;
+		__asm("" : "=r" (x1), "=r" (x2), "=r" (x3));
+		return re_rv(syscall_raw(x1, x2, x3, re_scno(scno)));
+	}
+	template<class T1>
+	__attribute__((always_inline))
+	static syscall_ret syscall(long scno, T1 x1)
+	{
+		uintptr_t x2, x3;
+		if (wutwut(x1))
+			return use_libc_syscall(scno, x1);
+		__asm("" : "=r" (x2), "=r" (x3));
+		return re_rv(syscall_raw(re_arg(x1), x2, x3, re_scno(scno)));
+	}
+	template<class T1, class T2>
+	__attribute__((always_inline))
+	static syscall_ret syscall(long scno, T1 x1, T2 x2)
+	{
+		uintptr_t x3;
+		if (wutwut(x1, x2))
+			return use_libc_syscall(scno, x1, x2);
+		__asm("" : "=r" (x3));
+		return re_rv(syscall_raw(re_arg(x1), re_arg(x2), x3,
+		    re_scno(scno)));
+	}
+	template<class T1, class T2, class T3>
+	__attribute__((always_inline))
+	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3)
+	{
+		if (wutwut(x1, x2, x3))
+			return use_libc_syscall(scno, x1, x2, x3);
+		return re_rv(syscall_raw(re_arg(x1), re_arg(x2), re_arg(x3),
+		    re_scno(scno)));
+	}
 #   endif
 #endif
     public:

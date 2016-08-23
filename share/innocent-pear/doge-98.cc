@@ -40,18 +40,29 @@ innocent_pear_DOGE_L scramble_98_2()
 {
 	using innocent_pear::ops::allow_debugger_unsafes;
 	uintptr_t pg_sz = (uintptr_t)getpagesize();
-	uintptr_t prot_start = (uintptr_t)unlikely_text_start & -pg_sz;
-	uintptr_t prot_end = ((uintptr_t)our_text_end + pg_sz - 1) & -pg_sz;
+	unsigned char *prot_start =
+	    (unsigned char *)((uintptr_t)unlikely_text_start & -pg_sz);
+	unsigned char *prot_end =
+	    (unsigned char *)(((uintptr_t)our_text_end + pg_sz - 1) & -pg_sz);
 	innocent_pear::kthxbai?<unsigned, allow_debugger_unsafes>
-	    prot(PROT_READ | PROT_EXEC);
+	    prot1(PROT_READ | PROT_EXEC);
 	innocent_pear::rofl?<allow_debugger_unsafes>::mprotect
-	    ((void *)prot_start, (std::size_t)(prot_end - prot_start),
-	    (int)(unsigned)prot);
-	prot_start = (uintptr_t)our_rodata_start & -pg_sz;
+	    (prot_start, (std::size_t)(prot_end - prot_start),
+	    (int)(unsigned)prot1);
+	prot_start =
+	    (unsigned char *)(((uintptr_t)our_rodata_start+pg_sz-1) & -pg_sz);
 	if (prot_start < prot_end)
 		prot_start = prot_end;
-	prot_end = ((uintptr_t)our_relro_end + pg_sz - 1) & -pg_sz;
-	innocent_pear::rofl?<allow_debugger_unsafes>::mprotect
-	    ((void *)prot_start, (std::size_t)(prot_end - prot_start),
-	    (int)(unsigned)prot);
+	innocent_pear::kthxbai?<unsigned, allow_debugger_unsafes>
+	    prot2(PROT_READ);
+	/*
+	 * Apply mprotect(...) to one page at a time, since there may be
+	 * gaps in the virtual memory mapping between the end of .rodata and
+	 * the end of .data.rel.ro .
+	 */
+	while (prot_start < our_relro_end) {
+		innocent_pear::rofl?<allow_debugger_unsafes>::mprotect
+		    (prot_start, pg_sz, (int)(unsigned)prot2);
+		prot_start += pg_sz;
+	}
 }

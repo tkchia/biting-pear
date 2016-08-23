@@ -63,6 +63,11 @@ static void prep_sxn(bfd *ibfd, asection *isxn, void *cookie)
 		many("unexpected section group");
 	if ((flags & SEC_LINK_ONCE) != 0)
 		many("unexpected link-once section");
+	if ((flags & (SEC_ALLOC | SEC_READONLY)) == (SEC_ALLOC | SEC_READONLY))
+	{
+		wow("    making read/write");
+		flags &= ~(flagword)SEC_READONLY;
+	}
 	asection *osxn = bfd_make_section_anyway_with_flags(obfd, name, flags);
 	if (!osxn)
 		much("bfd_make_section_anyway_with_flags");
