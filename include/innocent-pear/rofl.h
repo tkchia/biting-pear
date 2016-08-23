@@ -314,10 +314,10 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 	    long scno)
 	{
 		/* assume Thumb support means `bx lr' support... */
-		__asm("push {r7, lr}; "
-		      "mov r7, r3; "
+		__asm("mov ip, r7; "
+		      "movs r7, r3; "
 		      "svc #0; "
-		      "pop {r7, lr}; "
+		      "mov r7, ip; "
 		      "bx lr");
 	}
 #	endif
