@@ -22,7 +22,7 @@
 
 `innocent-pear-c++` is a wrapper around the GNU C++ compiler (`g++`(1)) or `clang++` compiler which tries to obscure the code of compiled programs.
 
-If `-Xinnocent-pear -doge` is specified, it scrambles the text sections of a program and adds constructor routines to unscramble them.
+If `-Xinnocent-pear -doge` is specified, it scrambles parts of the text and data sections of a program and adds constructor routines to unscramble them.
 
 There is also a rather undocumented C++ API for various code obfuscation subtasks.
 

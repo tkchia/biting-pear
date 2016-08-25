@@ -280,9 +280,10 @@ static int main_(int argc, char **argv)
 	 *     `-Wa,--Xinnocent-pear=doge'
 	 *   * 2 for `-idirafter ...'
 	 *   * 10 (== 12 - 2) for `-include', `.../doge.h',
-	 *     `-Wl,-T,(doge-i.ld)', (doge-01.o), (doge-02.o), (doge-03.o),
-	 *     (doge-04.o), `-x' `-none', (doge-98.o), (doge-99.o), and
-	 *     (doge-n.ld), minus the `-Xinnocent-pear' `-doge'
+	 *     `-Wl,-T,(doge-i.ld),...', (doge-01.o), (doge-02.o),
+	 *     (doge-03.o), (doge-04.o), `-x' `-none', (doge-98.o),
+	 *     (doge-99.o), and (doge-n.ld), minus the `-Xinnocent-pear'
+	 *     `-doge'
 	 *   * and 2 for `-o' (doge-a).
 	 *
 	 * We also need a terminating null pointer, but since we do not pass
@@ -497,7 +498,7 @@ static int main_(int argc, char **argv)
 			burger[2] = pusheen(meowmeow,
 			    "/innocent-pear/doge.h");
 			burger[3] = pusheen("-Wl,-T,", caturday,
-			    "/share/innocent-pear/doge-i.ld");
+			    "/share/innocent-pear/doge-i.ld,-z,norelro");
 			burger[4] = (char *)doge_01();
 			burger[5] = (char *)doge_02();
 			burger[6] = (char *)doge_03();

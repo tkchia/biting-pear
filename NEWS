@@ -1,3 +1,40 @@
+2016-08-25	Properly process page permissions.
+
+		bin/innocent-pear-c++.cc :
+		- now passes `-z norelro' to linker back-end, since our
+		  constructor code is meant to take over relro handling
+
+		bin/innocent-pear-doge.cc :
+		- undid change that made all allocatable sections
+		  read/write; this is to prevent the ELF linker from lumping
+		  everything into a single rwx segment
+
+		include/innocent-pear-rofl.h :
+		- rofl<...>::mprotect(, , prot) tries to scramble `prot'
+		  argument, and dumps return status when in debug mode
+
+		share/innocent-pear/doge-01.cc :
+		- now unprotects from our .text start to our .rodata end,
+		  but does not touch .data.rel.ro (which should be read/write
+		  at this point anyway)
+
+		share/innocent-pear/doge-02.cc ,
+		share/innocent-pear/doge-04.cc ,
+		share/innocent-pear/doge-99.cc :
+		- marked labels in read-only sections as `extern const' and
+		  gave them initializers
+
+		share/innocent-pear/doge-03.cc :
+		- now makes .rodata ~ .data.rel.ro r--
+		- now makes .data ~ .bss rw-
+		- upped scrambling levels
+
+		share/innocent-pear/doge-98.cc :
+		- now only makes .text r-x
+
+		README.md :
+		- updated description
+
 2016-08-23	"Loose bits sink chips."
 
 		bin/innocent-pear-doge.cc :

@@ -379,19 +379,28 @@ class rofl_impl_mprotect :
 	mprotect(void *addr, std::size_t len, int prot)
 	{
 #ifdef innocent_pear_DEBUG
-		std::fprintf(stderr, "mprotect(%p, %#zx, %#x)\n", addr,
+		std::fprintf(stderr, "mprotect(%p, %#zx, %#x)", addr,
 		    len, (unsigned)prot);
 #endif
+		if (__builtin_constant_p(prot))
+			prot = kthxbai<super::NewState3, unsigned, Flags,
+			    Levels>((unsigned)prot);
 #if defined __linux__ && (defined __i386__ || defined __arm__)
-		return super::syscall(125, addr, len, prot);
+		typename super::syscall_ret ret
+		    (super::syscall(125, addr, len, prot));
 #elif defined __linux__ && defined __amd64__
-		return super::syscall(10, addr, len, prot);
+		typename super::syscall_ret ret
+		    (super::syscall(10, addr, len, prot));
 #else
 		int rv = (kthxbai<super::NewState2,
 		    innocent_pear_decltype(&mprotect),
 		    Flags, Levels>(mprotect))(addr, len, prot);
-		return typename super::syscall_ret(rv, errno);
+		typename super::syscall_ret ret(rv, errno);
 #endif
+#ifdef innocent_pear_DEBUG
+		std::fprintf(stderr, " = %ld; %d\n", (long)ret, ret.err());
+#endif
+		return ret;
 	}
 };
 
