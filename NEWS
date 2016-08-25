@@ -35,6 +35,9 @@
 		README.md :
 		- updated description
 
+		lolwutconf/ :
+		- bumped to d9025dfe29
+
 2016-08-23	"Loose bits sink chips."
 
 		bin/innocent-pear-doge.cc :
