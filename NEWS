@@ -1,3 +1,13 @@
+2016-08-26	"A celebrity is a person who is known for his well-knownness."
+
+		include/innocent-pear/orly.h :
+		- generalized orly<...>::wut(...) into orly<...>::wot(...)
+		  which allows arbitrary operations on data items
+		- unrolled main loops in orly<...>::wot(...)
+
+		include/innocent-pear/host/srsly.h :
+		- slightly rewrote loop iterating of srsly<...>::wut(...)
+
 2016-08-25	Properly process page permissions.
 
 		bin/innocent-pear-c++.cc :

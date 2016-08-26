@@ -82,6 +82,17 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 {
 	typedef orly_impl<State, T, Boreal, BigBad, Flags, Levels> super;
 	typedef orly<State, T, false, BigBad, Flags, Levels> austral;
+	class woot
+	{
+		T *o_;
+	    public:
+		__attribute__((always_inline))
+		woot(T *o) : o_(o)
+			{ }
+		__attribute__((always_inline))
+		void operator()(T i)
+			{ *o_++ = i; }
+	};
     public:
 	__attribute__((always_inline))
 	T operator()(T x0 = super::DefX0,
@@ -105,8 +116,9 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 			    (z, x1, x2, x3, x4, x5, x6, x7, x8, x9);
 		}
 	}
+	template<class C>
 	__attribute__((always_inline))
-	void wut(T *p, T *q, T *r)
+	void wot(T *p, T *q, C& c)
 	{
 		T y0,
 		  y1 = austral()(),
@@ -126,10 +138,42 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 #ifdef innocent_pear_DEBUG
 		std::fprintf(stderr, "orly<...>::wut(%p, %p, %p)\n", p, q, r);
 #endif
-		if (sizeof(T) != 1)
-			q = p + (std::ptrdiff_t)(q - p);
+		std::size_t n = q - p;
 		if (Boreal) {
-			while (p != q) {
+			while (n >= 10) {
+				y0 = (*this)(*p++, y1, y2, y3, y4,
+					     y5, y6, y7, y8, y9);
+				c(y0);
+				y1 = (*this)(*p++, y2, y3, y4, y5,
+					     y6, y7, y8, y9, y0);
+				c(y1);
+				y2 = (*this)(*p++, y3, y4, y5, y6,
+					     y7, y8, y9, y0, y1);
+				c(y2);
+				y3 = (*this)(*p++, y4, y5, y6, y7,
+					     y8, y9, y0, y1, y2);
+				c(y3);
+				y4 = (*this)(*p++, y5, y6, y7, y8,
+					     y9, y0, y1, y2, y3);
+				c(y4);
+				y5 = (*this)(*p++, y6, y7, y8, y9,
+					     y0, y1, y2, y3, y4);
+				c(y5);
+				y6 = (*this)(*p++, y7, y8, y9, y0,
+					     y1, y2, y3, y4, y5);
+				c(y6);
+				y7 = (*this)(*p++, y8, y9, y0, y1,
+					     y2, y3, y4, y5, y6);
+				c(y7);
+				y8 = (*this)(*p++, y9, y0, y1, y2,
+					     y3, y4, y5, y6, y7);
+				c(y8);
+				y9 = (*this)(*p++, y0, y1, y2, y3,
+					     y4, y5, y6, y7, y8);
+				c(y9);
+				n -= 10;
+			}
+			while (n-- != 0) {
 				y0 = (*this)(*p++, y1, y2, y3, y4,
 					     y5, y6, y7, y8, y9);
 				y1 = y2;
@@ -140,13 +184,47 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 				y6 = y7;
 				y7 = y8;
 				y8 = y9;
-				*r++ = y9 = y0;
+				y9 = y0;
+				c(y9);
 			}
 		} else {
-			while (p != q) {
+			while (n >= 10) {
 				y0 = *p++;
-				*r++ = (*this)(y0, y1, y2, y3, y4,
-					       y5, y6, y7, y8, y9);
+				c((*this)(y0, y1, y2, y3, y4,
+					  y5, y6, y7, y8, y9));
+				y1 = *p++;
+				c((*this)(y1, y2, y3, y4, y5,
+					  y6, y7, y8, y9, y0));
+				y2 = *p++;
+				c((*this)(y2, y3, y4, y5, y6,
+					  y7, y8, y9, y0, y1));
+				y3 = *p++;
+				c((*this)(y3, y4, y5, y6, y7,
+					  y8, y9, y0, y1, y2));
+				y4 = *p++;
+				c((*this)(y4, y5, y6, y7, y8,
+					  y9, y0, y1, y2, y3));
+				y5 = *p++;
+				c((*this)(y5, y6, y7, y8, y9,
+					  y0, y1, y2, y3, y4));
+				y6 = *p++;
+				c((*this)(y6, y7, y8, y9, y0,
+					  y1, y2, y3, y4, y5));
+				y7 = *p++;
+				c((*this)(y7, y8, y9, y0, y1,
+					  y2, y3, y4, y5, y6));
+				y8 = *p++;
+				c((*this)(y8, y9, y0, y1, y2,
+					  y3, y4, y5, y6, y7));
+				y9 = *p++;
+				c((*this)(y9, y0, y1, y2, y3,
+					  y4, y5, y6, y7, y8));
+				n -= 10;
+			}
+			while (n-- != 0) {
+				y0 = *p++;
+				c((*this)(y0, y1, y2, y3, y4,
+					  y5, y6, y7, y8, y9));
 				y1 = y2;
 				y2 = y3;
 				y3 = y4;
@@ -158,6 +236,12 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 				y9 = y0;
 			}
 		}
+	}
+	__attribute__((always_inline))
+	void wut(T *p, T *q, T *r)
+	{
+		woot w(r);
+		wot(p, q, w);
 	}
 	__attribute__((always_inline))
 	void wut(T *p, T *q)

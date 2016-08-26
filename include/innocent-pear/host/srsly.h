@@ -185,10 +185,9 @@ class srsly : public srsly_impl<T, Boreal, Levels>
 		  y7 = a(y6, y5, y4, y3, y2, y1),
 		  y8 = a(y7, y6, y5, y4, y3, y2, y1),
 		  y9 = a(y8, y7, y6, y5, y4, y3, y2, y1);
-		if (sizeof(T) != 1)
-			q = p + (std::ptrdiff_t)(q - p);
+		std::size_t n = q - p;
 		if (Boreal) {
-			while (p != q) {
+			while (n-- != 0) {
 				y0 = (*this)(*p, y1, y2, y3, y4,
 					     y5, y6, y7, y8, y9);
 				y1 = y2;
@@ -202,7 +201,7 @@ class srsly : public srsly_impl<T, Boreal, Levels>
 				*p++ = y9 = y0;
 			}
 		} else {
-			while (p != q) {
+			while (n-- != 0) {
 				y0 = *p;
 				*p++ = (*this)(y0, y1, y2, y3, y4,
 					       y5, y6, y7, y8, y9);
