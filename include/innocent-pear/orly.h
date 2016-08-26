@@ -135,9 +135,6 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 		 * the outset.
 		 */
 		__asm __volatile("" : "=g" (p), "=g" (q) : "0" (p), "1" (q));
-#ifdef innocent_pear_DEBUG
-		std::fprintf(stderr, "orly<...>::wut(%p, %p, %p)\n", p, q, r);
-#endif
 		std::size_t n = q - p;
 		if (Boreal) {
 			while (n >= 10) {
@@ -240,6 +237,9 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 	__attribute__((always_inline))
 	void wut(T *p, T *q, T *r)
 	{
+#ifdef innocent_pear_DEBUG
+		std::fprintf(stderr, "orly<...>::wut(%p, %p, %p)\n", p, q, r);
+#endif
 		woot w(r);
 		wot(p, q, w);
 	}
