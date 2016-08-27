@@ -442,7 +442,7 @@ static int main_(int argc, char **argv)
 	uint64_t crc = 0, crc2 = 0;
 	rand_state_t st = 0, st2 = 0, st3 = 0, st4 = 0;
 	sleepier_t doge_01, doge_02, doge_03, doge_04, doge_98, doge_99,
-	    doge_a, doge_b, doge_c, doge_d;
+	    doge_a, doge_b;
 	if (doge) {
 		while (cheesy != burgery) {
 			--cheesy;
@@ -487,8 +487,6 @@ static int main_(int argc, char **argv)
 			    debug_doge);
 			doge_a(*cheeses);
 			doge_b(*cheeses);
-			doge_c(*cheeses);
-			doge_d(*cheeses);
 			real_a = *cheeses;
 			*cheeses = (char *)doge_a();
 			std::memmove(burger + 8, burger + 1,
@@ -529,15 +527,17 @@ static int main_(int argc, char **argv)
 		    (char *)"_.innocent_pear.data.start",
 		    (char *)"_.innocent_pear.data.end",
 		    st4, is.grumpiest);
-		nyanyan(caturday, doge_b(), doge_c(),
+		doge_a.cheshire();
+		nyanyan(caturday, doge_b(), doge_a(),
 		    (char *)"_.innocent_pear.rodata.start",
 		    (char *)"_.innocent_pear.rodata.end",
 		    st3, is.grumpiest);
-		nyanyan(caturday, doge_c(), doge_d(),
+		doge_b.cheshire();
+		nyanyan(caturday, doge_a(), doge_b(),
 		    (char *)"_.innocent_pear.text.start",
 		    (char *)"_.innocent_pear.text.end",
 		    st2, is.grumpiest);
-		nyanyan(caturday, doge_d(), real_a,
+		nyanyan(caturday, doge_b(), real_a,
 		    (char *)"_.innocent_pear.text.unlikely.start",
 		    (char *)"_.innocent_pear.text.hot.end",
 		    st, is.grumpiest);

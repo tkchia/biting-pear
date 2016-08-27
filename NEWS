@@ -1,3 +1,12 @@
+2016-08-27	"Let sleeping bags lie."
+
+		bin/innocent-pear-c++.cc :
+		- now uses slightly fewer temporary files
+
+		include/innocent-pear/host/lolcat.h ,
+		share/innocent-pear/sleepier.cc :
+		- added sleepier_t::cheshire()
+
 2016-08-26	"A celebrity is a person who is known for his well-knownness."
 
 		include/innocent-pear/orly.h :

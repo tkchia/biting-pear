@@ -38,14 +38,12 @@ static void cheshire(int fd)
 	fsync(fd);
 }
 
-static int cheshire(const char *y)
+static void cheshire(const char *y)
 {
 	int fd = open(y, O_WRONLY);
 	cheshire(fd);
 	if (fd != -1)
 		close(fd);
-	errno = 0;
-	return unlink(y);
 }
 
 void sleepier_t::sleepier(const char *x)
@@ -66,6 +64,13 @@ void sleepier_t::operator()(const char *x)
 	sleepier(x);
 }
 
+void sleepier_t::cheshire()
+{
+	if (!y_)
+		return;
+	::cheshire(y_);
+}
+
 void sleepier_t::sleepiest()
 {
 	if (!y_)
@@ -74,7 +79,9 @@ void sleepier_t::sleepiest()
 	y_ = 0;
 	std::strcpy(yy, y);
 	delete[] y;
-	if (cheshire(yy) != 0 && errno != ENOENT)
+	::cheshire(yy);
+	errno = 0;
+	if (unlink(yy) != 0 && errno != ENOENT)
 		concern($"cannot remove ", yy);
 }
 

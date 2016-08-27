@@ -89,11 +89,12 @@ class sleepier_t
 	void operator()(const char *);
 	const char *operator()() const
 		{ return y_; }
-	void sleepiest(const char *);
+	void cheshire();
 	void sleepiest();
+	void sleepiest(const char *);
 	~sleepier_t()
 		{ sleepiest(); }
-	bool operator!()
+	bool operator!() const
 		{ return y_ == 0; }
 };
 
