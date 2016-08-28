@@ -298,6 +298,19 @@ endif
 	else \
 		echo '#undef innocent_pear_HAVE_CTOR_PRIORITY' >>$@.tmp; \
 	fi
+ifeq "little-endian" "$(conf_Endianness_cxxt)"
+	set -e; \
+	if test '$(config.h.target)' = '$@'; \
+		then echo '#define innocent_pear_ENDIANNESS 1234' >>$@.tmp; fi
+else ifeq "big-endian" "$(conf_Endianness_cxxt)"
+	set -e; \
+	if test '$(config.h.target)' = '$@'; \
+		then echo '#define innocent_pear_ENDIANNESS 4321' >>$@.tmp; fi
+else
+	set -e; \
+	if test '$(config.h.target)' = '$@'; \
+		then echo '#undef innocent_pear_ENDIANNESS' >>$@.tmp; fi
+endif
 	set -e; \
 	if test '$(config.h.target)' = '$@'; then \
 		if test '$(conf_Have_cxxt_func__0ptrace)' = yes; then \

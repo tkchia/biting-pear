@@ -1,4 +1,27 @@
-2016-08-28	"Let sleeping bags lie."  (2)
+2016-08-28	"For far more marvelous is the truth than any artists of the
+		past imagined!  ...  What men are poets who can speak of
+		Jupiter if he were like a man, but if he is an immense
+		spinning sphere of methane and ammonia must be silent?"
+
+		bin/innocent-pear-c++.cc :
+		- now scrambles part of .data.rel.ro, and the `dogecoin'
+		  array
+
+		configure ,
+		GNUmakefile :
+		- now tries to detect and output target-side endianness
+
+		share/innocent-pear/doge-03.cc :
+		- now unscrambles part of .data.rel.ro
+		- now unscrambles and processes the `dogecoin' array without
+		  modifying it in place
+
+		share/innocent-pear/doge-04.cc :
+		- now defines .innocent_pear.relro.start
+
+		test/test-doge-abs-reloc.cc ,
+		test/test-doge-abs-reloc.good :
+		- added relocations in read-only section (.data.rel.ro)
 
 		lolwutconf/ :
 		- bumped to e4cff39ceb

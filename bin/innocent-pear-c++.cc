@@ -22,6 +22,10 @@
 #include <innocent-pear/host/lolcat.h>
 #include <innocent-pear/dawg.h>
 
+typedef struct {
+	innocent_pear::impl::rand_state_t i, ii, iii, iv, v, vi;
+} states_t;
+
 static innocent_pear::impl::mt19937_64 generator1, generator2;
 
 static void grumpy(std::ostringstream& oss, std::ostringstream& info_oss,
@@ -98,13 +102,9 @@ inline char *pusheen(Ts... msg)
 	return (char *)s->c_str();
 }
 
-static void nyan(sleepier_t& cheesy, const char *cheeses,
-    innocent_pear::impl::rand_state_t state,
-    innocent_pear::impl::rand_state_t state2,
-    innocent_pear::impl::rand_state_t state3,
-    innocent_pear::impl::rand_state_t state4, char *cheesier,
-    char *me, const std::string& caturday, const std::string& meow, bool v,
-    bool sta, bool debug_doge)
+static void nyan(sleepier_t& cheesy, const char *cheeses, states_t st,
+    char *cheesier, char *me, const std::string& caturday,
+    const std::string& meow, bool v, bool sta, bool debug_doge)
 {
 	char cheese[strlen(cheeses) + 8];
 	std::snprintf(cheese, sizeof cheese, "%s.pear.t", cheeses);
@@ -116,10 +116,12 @@ static void nyan(sleepier_t& cheesy, const char *cheeses,
 		innocent_pear_CXXFLAGS_FOR_TARGET /* ... */,
 		"-Xinnocent-pear", pusheen("-prefix=", caturday),
 		"-Xinnocent-pear", pusheen("-target-prefix=", meow),
-		pusheen("-Dinnocent_pear_DOGE_STATE=0x", std::hex, state),
-		pusheen("-Dinnocent_pear_DOGE_STATE_2=0x", std::hex, state2),
-		pusheen("-Dinnocent_pear_DOGE_STATE_3=0x", std::hex, state3),
-		pusheen("-Dinnocent_pear_DOGE_STATE_4=0x", std::hex, state4),
+		pusheen("-Dinnocent_pear_DOGE_STATE=0x", std::hex, st.i),
+		pusheen("-Dinnocent_pear_DOGE_STATE_2=0x", std::hex, st.ii),
+		pusheen("-Dinnocent_pear_DOGE_STATE_3=0x", std::hex, st.iii),
+		pusheen("-Dinnocent_pear_DOGE_STATE_4=0x", std::hex, st.iv),
+		pusheen("-Dinnocent_pear_DOGE_STATE_5=0x", std::hex, st.v),
+		pusheen("-Dinnocent_pear_DOGE_STATE_6=0x", std::hex, st.vi),
 		sta ? (char *)"-Uinnocent_pear_DYN_LD_CXX_TARGET" :
 		      (char *)"-Dinnocent_pear_DYN_LD_CXX_TARGET",
 		debug_doge ? (char *)"-Dinnocent_pear_DEBUG=1" :
@@ -260,7 +262,6 @@ static void play(char **argv, const char *in, const char *out,
 static int main_(int argc, char **argv)
 {
 	using innocent_pear::impl::uint64_t;
-	using innocent_pear::impl::rand_state_t;
 	struct {
 		unsigned moar : 1, pass : 1, caturday : 1, eleventy : 1,
 			 grumpiest : 1, link : 1, starts : 1, o : 1,
@@ -440,7 +441,7 @@ static int main_(int argc, char **argv)
 		concern("cannot set INNOCENT_PEAR_DRIVER_CXX for "
 		    innocent_pear_CXX_FOR_TARGET " process");
 	uint64_t crc = 0, crc2 = 0;
-	rand_state_t st = 0, st2 = 0, st3 = 0, st4 = 0;
+	states_t st;
 	sleepier_t doge_01, doge_02, doge_03, doge_04, doge_98, doge_99,
 	    doge_a, doge_b;
 	if (doge) {
@@ -451,37 +452,39 @@ static int main_(int argc, char **argv)
 		}
 		generator1.seed(crc);
 		generator2.seed(crc2 ^ crc);
-		st = generator1();
-		st2 = generator2();
-		st3 = generator1();
-		st4 = generator2();
+		st.i = generator1();
+		st.ii = generator2();
+		st.iii = generator1();
+		st.iv = generator2();
+		st.v = generator1();
+		st.vi = generator2();
 		if (is.link && !cheeses) {
 			*cheese++ = (char *)"-o";
 			cheeses = cheese;
 			*cheese++ = (char *)"a.out";
 		}
 		if (is.link && is.starts) {
-			nyan(doge_01, *cheeses, st, st2, st3, st4, pusheen(
+			nyan(doge_01, *cheeses, st, pusheen(
 			    caturday, "/share/innocent-pear/doge-01.cc"),
 			    *argv, caturday, meow, is.grumpiest, is.sta,
 			    debug_doge);
-			nyan(doge_02, *cheeses, st, st2, st3, st4, pusheen(
+			nyan(doge_02, *cheeses, st, pusheen(
 			    caturday, "/share/innocent-pear/doge-02.cc"),
 			    *argv, caturday, meow, is.grumpiest, is.sta,
 			    debug_doge);
-			nyan(doge_03, *cheeses, st, st2, st3, st4, pusheen(
+			nyan(doge_03, *cheeses, st, pusheen(
 			    caturday, "/share/innocent-pear/doge-03.cc"),
 			    *argv, caturday, meow, is.grumpiest, is.sta,
 			    debug_doge);
-			nyan(doge_04, *cheeses, st, st2, st3, st4, pusheen(
+			nyan(doge_04, *cheeses, st, pusheen(
 			    caturday, "/share/innocent-pear/doge-04.cc"),
 			    *argv, caturday, meow, is.grumpiest, is.sta,
 			    debug_doge);
-			nyan(doge_98, *cheeses, st, st2, st3, st4, pusheen(
+			nyan(doge_98, *cheeses, st, pusheen(
 			    caturday, "/share/innocent-pear/doge-98.cc"),
 			    *argv, caturday, meow, is.grumpiest, is.sta,
 			    debug_doge);
-			nyan(doge_99, *cheeses, st, st2, st3, st4, pusheen(
+			nyan(doge_99, *cheeses, st, pusheen(
 			    caturday, "/share/innocent-pear/doge-99.cc"),
 			    *argv, caturday, meow, is.grumpiest, is.sta,
 			    debug_doge);
@@ -524,23 +527,33 @@ static int main_(int argc, char **argv)
 		playest(burger, 0, 0, seriouser.c_str(), is.grumpiest,
 		    *cheeses, kitteh.c_str());
 		nyanyan(caturday, doge_a(), doge_b(),
+		    (char *)"_.innocent_pear.dogecoin.start",
+		    (char *)"_.innocent_pear.dogecoin.end",
+		    st.vi, is.grumpiest);
+		doge_a.cheshire();
+		nyanyan(caturday, doge_b(), doge_a(),
 		    (char *)"_.innocent_pear.data.start",
 		    (char *)"_.innocent_pear.data.end",
-		    st4, is.grumpiest);
+		    st.v, is.grumpiest);
+		doge_b.cheshire();
+		nyanyan(caturday, doge_a(), doge_b(),
+		    (char *)"_.innocent_pear.relro.start",
+		    (char *)"_.innocent_pear.relro.end",
+		    st.iv, is.grumpiest);
 		doge_a.cheshire();
 		nyanyan(caturday, doge_b(), doge_a(),
 		    (char *)"_.innocent_pear.rodata.start",
 		    (char *)"_.innocent_pear.rodata.end",
-		    st3, is.grumpiest);
+		    st.iii, is.grumpiest);
 		doge_b.cheshire();
 		nyanyan(caturday, doge_a(), doge_b(),
 		    (char *)"_.innocent_pear.text.start",
 		    (char *)"_.innocent_pear.text.end",
-		    st2, is.grumpiest);
+		    st.ii, is.grumpiest);
 		nyanyan(caturday, doge_b(), real_a,
 		    (char *)"_.innocent_pear.text.unlikely.start",
 		    (char *)"_.innocent_pear.text.hot.end",
-		    st, is.grumpiest);
+		    st.i, is.grumpiest);
 		return 0;
 	}
 }
