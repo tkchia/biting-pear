@@ -1,3 +1,9 @@
+2016-08-30	"Adde parvum parvo manus acervus erit."
+
+		.travis.yml :
+		- trying target compilation with `-static' (but without
+		  `-fPIC -pie'; apparently the two still cannot mix on Linux)
+
 2016-08-28	"For far more marvelous is the truth than any artists of the
 		past imagined!  ...  What men are poets who can speak of
 		Jupiter if he were like a man, but if he is an immense
