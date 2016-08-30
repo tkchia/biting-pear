@@ -28,11 +28,19 @@ There is also a rather undocumented C++ API for various code obfuscation subtask
 
 ## Bugs
 
-The scrambling of text and data is probably not yet very strong.
+**(1)** The scrambling of text and data is probably not yet very strong.
 
-The C++ API should really be documented.
+**(2)** The C++ API should really be documented.
 
-If `innocent-pear` is explicitly set up to compile target-side programs
+**(3)** If `innocent-pear` is explicitly set up to compile target side programs on x86-64
+
+  * using `clang++`
+  * with static linking (`-static`)
+  * and using a small code model (the default, `-mcmodel=small`),
+
+the compilation may fail because `clang++` produces 32-bit absolute relocations for 64-bit addresses.  This case should really be detected automatically, and the code model changed to something else.
+
+**(4)** If `innocent-pear` is explicitly set up to compile target-side programs
 
   * using `clang++`
   * with `libstdc++` linked in dynamically
