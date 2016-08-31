@@ -1,3 +1,18 @@
+2016-08-31	Rediagnosed and refixed partly misdiagnosed bug.
+
+		.travis.yml :
+		- now trying target compilation with `-static' and without
+		  `-mcmodel=medium'
+
+		include/innocent-pear/lolwut.h :
+		- lolwut_impl<...>:
+		  - now narrows Disp2 to 0...0x1000 if compiling with
+		    `clang++ -static' for x86-64
+		  - added one more __asm(...) barrier at the end of set(...)
+
+		README.md :
+		- re-updated bugs list
+
 2016-08-30	"Adde parvum parvo magnus acervus erit."
 
 		.travis.yml :

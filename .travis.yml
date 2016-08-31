@@ -8,7 +8,7 @@ sudo: required
 env:
   - TARGET=
   - TARGET=
-    CXXFLAGS_FOR_TARGET="-O3 -Wall -static -mcmodel=medium"
+    CXXFLAGS_FOR_TARGET="-O3 -Wall -static"
   - TARGET=
     CXX_FOR_TARGET=g++
     CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall -static-libstdc++"

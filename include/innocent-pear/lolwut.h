@@ -47,7 +47,22 @@ class lolwut_impl
 	 *     whole displacement into the `leaq', i.e.  set `Disp2' ==
 	 *     `Disp'.
 	 *
-	 * (2) On ARM without Thumb mode, when compiling under g++ 4.7, we
+	 * (2) `clang++ -static' targeting x86-64 may produce a 32-bit
+	 *     absolute relocation (R_X86_64_32) with +Disp2 or -Disp2 as
+	 *     part of its addend, which leads to build errors if the
+	 *     resulting address cannot fit into unsigned 32 bits.
+	 *
+	 *     To reduce the chances of this happening, for now we make
+	 *     `Disp2' no larger than the minimum page size (0x1000) -- this
+	 *     assumes that no static code or data will ever end up at the
+	 *     addresses 0...0xfff or 0xfffff000...0xffffffff.
+	 *
+	 *     (Obviously, this workaround is less than ideal.  It would
+	 *     help a bit if clang++ defines macros which tell us which code
+	 *     model it is using, like g++ does (e.g.  __code_model_medium__
+	 *     for `-mcmodel=medium'), but clang++ does not do so...)
+	 *
+	 * (3) On ARM without Thumb mode, when compiling under g++ 4.7, we
 	 *     do a similar splitting exercise to work around a compiler
 	 *     bug:
 	 *
@@ -59,16 +74,22 @@ class lolwut_impl
 	 *	 test/test-dawg.ccc:13:1: internal compiler error: in
 	 *	 extract_insn, at recog.c:2123"
 	 *
-	 * (3) On x86-32, `Disp2' is a displacement for the global offset
+	 * (4) On x86-32, `Disp2' is a displacement for the global offset
 	 *     table (GOT) entry of the target item.  We make sure that
 	 *     `Disp2' can _not_ be expressed as an 8-bit sign-extended
 	 *     offset.
 	 */
 #if defined __amd64__
+#   if !defined __clang__ || defined __pic__ || defined __pie__
 	static constexpr unsigned Disp2 =
 	    Disp < 0x60000000u && State2 > NewState ? Disp :
 		(Disp > 2 ?
 		 impl::pick_hi<unsigned>(State2 ^ State3) % (Disp / 2) : 0);
+#   else
+	static constexpr unsigned Disp2 =
+	    Disp <= 0x1000u ? Disp :
+		impl::pick_hi<unsigned>(State2 ^ State3) % 0x1001u;
+#   endif
 #elif defined __i386__
 	static constexpr unsigned Disp2 =
 	    ((State2 ^ State3) >> 20) % 0xffffff00u + 0x80u;
@@ -320,6 +341,21 @@ class lolwut_impl
 				    : "0" (reinterpret_cast<char*>(v)+Disp2));
 				p_ += Disp - Disp2;
 			}
+#elif defined __amd64__ && defined __clang__ && \
+    !defined __pic__ && !defined __pie__
+#   pragma message \
+	"may emit inferior code to avoid clang -static issue on x86-64"
+			if (Sign) {
+				__asm __volatile(""
+				    : "=r" (p_)
+				    : "0" (reinterpret_cast<char*>(v)-Disp2));
+				p_ -= Disp - Disp2;
+			} else {
+				__asm __volatile(""
+				    : "=r" (p_)
+				    : "0" (reinterpret_cast<char*>(v)+Disp2));
+				p_ += Disp - Disp2;
+			}
 #else
 			if (Sign)
 				__asm __volatile(""
@@ -331,6 +367,7 @@ class lolwut_impl
 				    : "0" (reinterpret_cast<char *>(v)+Disp));
 #endif
 		}
+		__asm("" : "=g" (p_) : "0" (p_));
 	}
 };
 
