@@ -43,9 +43,7 @@ tests.target = \
     test/test-orly-wut \
     test/test-doge.debug \
     test/test-doge \
-    test/test-doge-abs-reloc.debug \
     test/test-doge-abs-reloc \
-    test/test-doge-eh.debug \
     test/test-doge-eh
 utils.host = \
     bin/innocent-pear-c++ \

@@ -7,25 +7,22 @@ compiler:
 sudo: required
 env:
   - TARGET=
-  - TARGET=
-    CXXFLAGS_FOR_TARGET="-O3 -Wall -static"
-  - TARGET=
     CXX_FOR_TARGET=g++
-    CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall -static-libstdc++"
   - TARGET=
     CXX_FOR_TARGET=clang++
+  - TARGET=
+    CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall -static-libstdc++"
+  - TARGET=i686-linux-gnu
+  - TARGET=i386-linux-gnu
+  - TARGET=i686-linux-gnu
     CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall -static-libstdc++"
   - TARGET=i686-linux-gnu
     CXX_FOR_TARGET=g++-5
-    CXXFLAGS_FOR_TARGET="-m32 -O3 -fPIC -pie -Wall -static-libstdc++"
-  - TARGET=i686-linux-gnu
-    CXX_FOR_TARGET=clang++
-    CXXFLAGS_FOR_TARGET="-m32 -O3 -fPIC -pie -Wall -static-libstdc++"
   - TARGET=i386-linux-gnu
     CXX_FOR_TARGET=g++-5
-    CXXFLAGS_FOR_TARGET="-m32 -O3 -fPIC -pie -Wall -static-libstdc++"
-  - TARGET=i386-linux-gnu
   - TARGET=armv7-a-linux-gnueabi
+  - TARGET=armv7-a-linux-gnueabi
+    CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall -static-libstdc++"
   - TARGET=armv6-linux-gnueabi
   - TARGET=armv4-linux-gnueabi
   - TARGET=armv4t-linux-gnueabi

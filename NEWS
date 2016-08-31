@@ -1,14 +1,22 @@
 2016-08-31	Rediagnosed and refixed partly misdiagnosed bug.
 
 		.travis.yml :
-		- now trying target compilation with `-static' and without
-		  `-mcmodel=medium'
+		- partially streamlined test matrix...
+		- now uses `-static' for most tests, but also includes
+		  `-static-libstdc++' for a few targets
 
 		include/innocent-pear/lolwut.h :
 		- lolwut_impl<...>:
 		  - now narrows Disp2 to 0...0x1000 if compiling with
 		    `clang++ -static' for x86-64
 		  - added one more __asm(...) barrier at the end of set(...)
+
+		configure :
+		- `-fPIC -pie' `-static-libstdc++' -> `-static' in
+		  $CXXFLAGS_FOR_TARGET on default
+
+		GNUmakefile :
+		- `make check' no longer builds and runs most *.debug tests
 
 		README.md :
 		- re-updated bugs list
