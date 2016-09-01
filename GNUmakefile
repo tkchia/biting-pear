@@ -385,7 +385,7 @@ test/test-%.debug.passed: test/test-%.debug test/test-%.good
 	@case "$*" in \
 	    doge*) \
 		echo "* base64 dump of xz'd head of $< :"; \
-		xz -9c <'$<' | base64 | head -n 128 | sed 's,^,*  ,'; \
+		xz -9c <'$<' | base64 | head -n 32 | sed 's,^,*  ,'; \
 		echo "* readelf -e of $< :"; \
 		readelf -e '$<' | sed 's,^,*  ,';; \
 	esac >&2

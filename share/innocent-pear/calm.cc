@@ -17,7 +17,8 @@ static int main_(int argc, char **argv)
 	const char *lulz = innocent_pear::impl::getenv("INNOCENT_PEAR_PREFIX");
 	enum { UNKNOWN, CLANG, AS, CC1, CC1PLUS, LD } wut = UNKNOWN;
 	struct {
-		unsigned pass : 1, e : 1, v : 1, x : 1, pass_all : 1, doge : 1;
+		unsigned pass : 1, e : 1, v : 1, x : 1, pass_all : 1,
+		dogecoin : 1;
 	} is = { false, false, false, false, false, false };
 	curious(*argv);
 	if (!lulz)
@@ -126,9 +127,9 @@ static int main_(int argc, char **argv)
 			   (strcmp(opt + 2, "errors-to-file") == 0 ||
 			    strcmp(opt + 2, "e") == 0))
 				is.pass = true;
-			  else if (strcmp(opt + 1, "-Xinnocent-pear=doge")
+			  else if (strcmp(opt + 1, "-Xinnocent-pear=dogecoin")
 			    == 0) {
-				is.doge = true;
+				is.dogecoin = true;
 				continue;
 			}
 			break;
@@ -172,7 +173,7 @@ static int main_(int argc, char **argv)
 		}
 	    case AS:
 		{
-			if (!is.doge)
+			if (!is.dogecoin)
 				keyboard(calm, 0, 0, 0, 0, is.v);
 			if (!calmest)
 				many($"no `-o' for assembly pass back-end?!?");

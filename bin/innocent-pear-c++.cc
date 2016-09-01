@@ -265,8 +265,9 @@ static int main_(int argc, char **argv)
 	struct {
 		unsigned moar : 1, pass : 1, caturday : 1, eleventy : 1,
 			 grumpiest : 1, link : 1, starts : 1, o : 1,
-			 sta : 1;
+			 dogecoin : 1, sta : 1;
 	} is = { false, false, false, false, false, true, true, false,
+		 false,
 #ifdef innocent_pear_DYN_LD_CXX_TARGET
 		 false
 #else
@@ -278,7 +279,7 @@ static int main_(int argc, char **argv)
 	 *
 	 *   * 2 for `-wrapper ...'
 	 *   * 3 for `-no-integrated-cpp' `-fno-integrated-as'
-	 *     `-Wa,--Xinnocent-pear=doge'
+	 *     `-Wa,--Xinnocent-pear=dogecoin'
 	 *   * 2 for `-idirafter ...'
 	 *   * 10 (== 12 - 2) for `-include', `.../doge.h',
 	 *     `-Wl,-T,(doge-i.ld),...', (doge-01.o), (doge-02.o),
@@ -371,6 +372,12 @@ static int main_(int argc, char **argv)
 			    strcmp(opt + 2, "assembler") == 0 ||
 			    strcmp(opt + 2, "linker") == 0))
 			is.pass = true;
+		  else if (opt[1] == 'f' &&
+			   (strcmp(opt + 2, "pic") == 0 ||
+			    strcmp(opt + 2, "PIC") == 0 ||
+			    strcmp(opt + 2, "pie") == 0 ||
+			    strcmp(opt + 2, "PIE") == 0))
+			is.dogecoin = true;
 		  else if (strcmp(opt + 1, "arch") == 0 ||
 			   strcmp(opt + 1, "aux-info") == 0 ||
 			   strcmp(opt + 1, "-param") == 0)
@@ -393,6 +400,8 @@ static int main_(int argc, char **argv)
 		  else if (strcmp(opt + 1, "static") == 0)
 			is.sta = true;
 #endif
+		  else if (strcmp(opt + 1, "pie") == 0)
+			is.dogecoin = true;
 		  else if (opt[1] == 'o') {
 			/* Split `-ofoo' into `-o' `foo'. */
 			*cheese++ = (char *)"-o";
@@ -427,8 +436,8 @@ static int main_(int argc, char **argv)
 #ifdef innocent_pear_CXX_FOR_TARGET_DECOUPLE_AS
 	*cheese++ = (char *)"-fno-integrated-as";
 #endif
-	if (doge)
-		*cheese++ = (char *)"-Wa,--Xinnocent-pear=doge";
+	if (doge && is.dogecoin)
+		*cheese++ = (char *)"-Wa,--Xinnocent-pear=dogecoin";
 	meowmeow = meow + "/include";
 	if (!is.eleventy) {		/* just in case... */
 		*cheese++ = (char *)"-idirafter";

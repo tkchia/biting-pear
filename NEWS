@@ -1,3 +1,20 @@
+2016-09-01	Let static relocations lie.
+
+		bin/innocent-pear-c++.cc :
+		- now only passes `-Wa,--Xinnocent-pear=dogecoin' (formerly
+		  `-Wa,--Xinnocent-pear=doge') if building position-
+		  -independent code
+
+		bin/innocent-pear-dogecoin.cc :
+		- now no longer frobs relocations in mergeable sections or
+		  sorted sections
+
+		share/innocent-pear/calm.cc :
+		- `--Xinnocent-pear=doge' -> `--Xinnocent-pear=dogecoin'
+
+		GNUmakefile :
+		- now dumps even smaller portions of compiled test binaries
+
 2016-08-31	Rediagnosed and refixed partly misdiagnosed bug.
 
 		.travis.yml :

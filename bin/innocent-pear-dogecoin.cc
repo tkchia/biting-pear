@@ -300,12 +300,14 @@ static void count_sxn_relocs(bfd *ibfd, asection *isxn, void *cookie)
 	 * information.
 	 *
 	 * In addition, at this point we do not frob relocations belonging
-	 * to link-once sections, or sections which _belong_ to groups
-	 * (which may mark the sections as being link-once).  It may make
-	 * sense in the future to frob relocations on _some_ link-once
-	 * sections, but this needs to be done right.
+	 * to link-once sections, mergeable sections, sorted sections, or
+	 * sections which _belong_ to groups (which may mark the sections as
+	 * being link-once).  It may make sense in the future to frob
+	 * relocations on _some_ link-once, mergeable, or sorted sections,
+	 * but this needs to be done right.
 	 */
-	if ((fl & SEC_LINK_ONCE) != 0 || bfd_is_group_section(ibfd, isxn))
+	if ((fl & (SEC_LINK_ONCE | SEC_MERGE | SEC_SORT_ENTRIES)) != 0 ||
+	    bfd_is_group_section(ibfd, isxn))
 		return;
 	for (long i = 0; i < nrels; ++i) {
 		arelent *pr = rels[i];
@@ -376,7 +378,8 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 		return;
 	long nrels = fortune->reloc_count[isxn];
 	arelent **rels = fortune->relocs[isxn];
-	if ((fl & SEC_LINK_ONCE) != 0 || bfd_is_group_section(ibfd, isxn)) {
+	if ((fl & (SEC_LINK_ONCE | SEC_MERGE | SEC_SORT_ENTRIES)) != 0 ||
+	    bfd_is_group_section(ibfd, isxn)) {
 		wow("    not frobbing");
 		bfd_set_reloc(obfd, osxn, rels, (unsigned)nrels);
 		return;
