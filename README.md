@@ -8,6 +8,8 @@
 
 > `git clone --recursive https://github.com/tkchia/innocent-pear.git`
 
+> ...*install* `g++` *or* `clang++`, *and* `libbfd`...
+
 > [*source-path*`/`]`configure` [`--prefix=`*install-path*] [`--target=`*target-arch*] [`--target-dir=`*target-install-path*] [...]
 
 > `make check`
@@ -35,11 +37,13 @@ There is also a rather undocumented C++ API for various code obfuscation subtask
 **(3)** If `innocent-pear` is explicitly set up to compile target-side programs
 
   * using `clang++`
-  * with `libstdc++` linked in dynamically
+  * with `libstdc++` linked in dynamically (i.e. no `-static` or `-static-libstdc++`)
   * where the programs handle exceptions,
 
-the programs may fail with a runtime error on certain platforms:
+the programs may fail with a runtime error on certain platforms, including x86-64 and x86-32:
 
 > `./test/test-doge-eh.debug: error while loading shared libraries: unexpected reloc type 0x18`
 
 This is because I have not found a clean way to break up the absolute relocations referring to RTTI structures in `libstdc++` (`_ZTIi`, etc.), or to separate the relocations from the scrambled data.
+
+Linux/ARM32 platforms (`arm*-linux-gnueabi` and `arm*-linux-gnueabihf`) should be free of this problem, since ARM exception tables are position independent.

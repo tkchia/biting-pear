@@ -22,9 +22,12 @@ env:
     CXX_FOR_TARGET=g++-5
   - TARGET=armv7-a-linux-gnueabi
   - TARGET=armv7-a-linux-gnueabi
-    CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall -static-libstdc++"
+    CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
   - TARGET=armv6-linux-gnueabi
   - TARGET=armv4-linux-gnueabi
   - TARGET=armv4t-linux-gnueabi
+  - TARGET=armv7-a-linux-gnueabihf
+  - TARGET=armv7-a-linux-gnueabihf
+    CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
 install: ./infra/travis-install-deps.sh
 script: ./infra/travis-build-and-check.sh

@@ -20,6 +20,8 @@ case "$TARGET" in
 	else
 		set -- ${1+"$@"} g++-multilib
 	fi;;
+    armv[45678]*hf | arm-*hf)
+	set -- ${1+"$@"} g++-arm-linux-gnueabihf qemu-user;;
     armv[45678]* | arm-*)
 	set -- ${1+"$@"} g++-arm-linux-gnueabi qemu-user;;
 esac

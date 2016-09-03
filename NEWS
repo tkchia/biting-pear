@@ -1,3 +1,17 @@
+2016-09-03	Added tests for ARM hard-float target.
+
+		.travis.yml :
+		- added tests for armv7-a-linux-gnueabihf target
+
+		infra/travis-install-deps.sh :
+		- now handles ARM hard-float targets
+
+		README.md :
+		- updated
+
+		lolwutconf/ :
+		- bumped to 2525030506
+
 2016-09-01	Let static relocations lie.
 
 		bin/innocent-pear-c++.cc :
