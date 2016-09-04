@@ -1,3 +1,9 @@
+2016-09-04	"It usually takes more than three weeks to prepare a good
+		impromptu speech."
+
+		GNUmakefile :
+		- now dumps yet smaller portions of compiled test binaries
+
 2016-09-03	Added tests for ARM hard-float target.
 
 		.travis.yml :
