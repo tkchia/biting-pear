@@ -18,6 +18,9 @@
 		- added check against infinite template recursion
 		- added >> operator for dawg_impl<...> (and dawg<...>)
 
+		include/innocent-pear/yodawg.h :
+		- updated to fit new definition of dawg_impl<...>
+
 		include/innocent-pear/rofl.h :
 		- added open(...) and close(...) syscalls
 		- some tweaks

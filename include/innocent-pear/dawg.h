@@ -136,7 +136,7 @@ inline std::basic_ostream<CT>& operator<<(std::basic_ostream<CT>& os,
 }
 
 template<rand_state_t State, ops_flags_t Flags, char... Chs>
-using dawg = dawg_impl<State, char, Flags, 3u, Chs...>;
+using dawg = dawg_impl<State, char, Flags, 2u, Chs...>;
 
 } // innocent_pear::impl
 
