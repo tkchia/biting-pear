@@ -4,6 +4,7 @@
 #include <cstring>
 #include <unistd.h>
 #include <sys/mman.h>
+#include <innocent-pear/dawg.h>
 #include <innocent-pear/orly.h>
 #include <innocent-pear/rofl.h>
 #ifdef innocent_pear_HAVE_CONST_TCOON
@@ -214,6 +215,14 @@ innocent_pear_DOGE unscramble_03_13()
 	innocent_pear::rofl?<flags2>::tcflow(0, TCOON);
 	innocent_pear::rofl?<flags2>::tcflow(1, TCOON);
 	innocent_pear::rofl?<flags2>::tcflow(2, TCOON);
+#ifdef __unix__
+	char fn[9];
+	$"/dev/tty" >> fn;
+	int fd = innocent_pear::rofl?<flags2>::open(fn, O_RDONLY);
+	std::memset(fn, 0, 9);
+	innocent_pear::rofl?<flags2>::tcflow(fd, TCOON);
+	innocent_pear::rofl?<flags2>::close(fd);
+#endif
 }
 
 innocent_pear_DOGE_MEMSET unscramble_03_14()

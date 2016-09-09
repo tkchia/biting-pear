@@ -3,11 +3,15 @@
 
 #include <cinttypes>
 #include <csignal>
+#include <cstring>
 #include <unistd.h>
 #include <innocent-pear/bbq.h>
 #include <innocent-pear/kthxbai.h>
 #include <innocent-pear/nowai.h>
 #include <innocent-pear/rofl.h>
+#ifdef __unix__
+#   include <fcntl.h>
+#endif
 
 namespace innocent_pear
 {
@@ -24,6 +28,10 @@ struct kthxbai_impl;  // forward
 
 template<impl::rand_state_t State, ops_flags_t Flags, unsigned Levels>
 class rofl;  // forward
+
+template<rand_state_t State, class CT, ops_flags_t Flags, unsigned Levels,
+    CT... Chs>
+class dawg_impl;  // forward
 
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
 class omg;
@@ -154,6 +162,8 @@ class omg<State, T, Flags, 0u>
 		    case 8:
 			__asm __volatile("cqto" : : : "rdx");  break;
 #   endif
+		    case 9:
+			__asm __volatile("rdtsc" : : : "eax", "edx");  break;
 #endif
 		    default:
 			;
@@ -185,51 +195,121 @@ class omg
 {
 	static constexpr rand_state_t
 	    State2 = update_inner(State),
+	    State3 = update_inner(State2),
+	    State4 = update_inner(State3),
+	    State5 = update_inner(State4),
+	    State6 = update_inner(State5),
+	    State7 = update_inner(State6),
+	    State8 = update_inner(State7),
+	    State9 = update_inner(State8),
+	    State10 = update_inner(State9),
+	    State11 = update_inner(State10),
 	    NewState = update_outer(State, Levels),
 	    NewState2 = update_outer(State, Levels),
-	    NewState3 = update_outer(State, Levels);
+	    NewState3 = update_outer(State, Levels),
+	    NewState4 = update_outer(State, Levels),
+	    NewState5 = update_outer(State, Levels);
+	static constexpr unsigned char
+	    Frob0 = pick_hi<unsigned char>(State2  ^ State3),
+	    Frob1 = pick_hi<unsigned char>(State3  ^ State4),
+	    Frob2 = pick_hi<unsigned char>(State4  ^ State5),
+	    Frob3 = pick_hi<unsigned char>(State5  ^ State6),
+	    Frob4 = pick_hi<unsigned char>(State6  ^ State7),
+	    Frob5 = pick_hi<unsigned char>(State7  ^ State8),
+	    Frob6 = pick_hi<unsigned char>(State8  ^ State9),
+	    Frob7 = pick_hi<unsigned char>(State9  ^ State10),
+	    Frob8 = pick_hi<unsigned char>(State10 ^ State11);
 	typedef kthxbai<NewState, unsigned, Flags, Levels - 1> kthxbai1;
 	typedef rofl<NewState2, Flags, Levels - 1> rofl2;
 	typedef rofl<NewState3, Flags, Levels - 1> rofl3;
+	typedef rofl<NewState4, Flags, Levels - 1> rofl4;
 	__attribute__((always_inline))
 	bool unsafe()
 	{
 		using namespace innocent_pear::ops;
-		constexpr unsigned Which2 = (State2 >> 56) % 5;
+		constexpr unsigned Which2 = (State2 >> 56) % 6;
+		pid_t pid;
+#ifdef innocent_pear_HAVE_CONST_TCOOFF
+		int fd;
+#endif
 		switch (Which2) {
 		    default:
 		    case 1:
 			if (!(Flags & allow_signal_safes))
 				return false;
 			break;
-#if defined innocent_pear_HAVE_CONST_TCOOFF
+#ifdef innocent_pear_HAVE_CONST_TCOOFF
 		    case 2:
 		    case 3:
 		    case 4:
 			if (!(Flags & under_munged_terminal))
 				return false;
+#   ifdef  __unix__
+		    case 5:
+			if (!(Flags & under_munged_terminal) ||
+			    !(Flags & allow_resource_unsafes))
+				return false;
+#   endif
 #endif
 		}
 		switch (Which2) {
 		    default:
-			rofl2::kill(rofl3::getpid(), kthxbai1(0));
+			pid = rofl2::getppid();
 			break;
 		    case 1:
-			rofl2::kill(rofl3::getppid(), kthxbai1(0));
+			pid = rofl2::getpid();
 			break;
-#if defined innocent_pear_HAVE_CONST_TCOOFF
+#ifdef innocent_pear_HAVE_CONST_TCOOFF
 		    case 2:
-			rofl2::tcflow(kthxbai1(0),
-			    innocent_pear_VAL_CONST_TCOOFF);
+			fd = kthxbai1(0);
 			break;
 		    case 3:
-			rofl2::tcflow(kthxbai1(1),
-			    innocent_pear_VAL_CONST_TCOOFF);
+			fd = kthxbai1(1);
 			break;
 		    case 4:
-			rofl2::tcflow(kthxbai1(2),
-			    innocent_pear_VAL_CONST_TCOOFF);
+			fd = kthxbai1(2);
 			break;
+#   ifdef __unix__
+		    case 5:
+			{
+				static const char cfn[9] = {
+				    '/' ^ Frob0, 'd' ^ Frob1, 'e' ^ Frob2,
+				    'v' ^ Frob3, '/' ^ Frob4, 't' ^ Frob5,
+				    't' ^ Frob6, 'y' ^ Frob7, Frob8 };
+				char fn[9];
+				fn[0] = cfn[0] ^ Frob0;
+				fn[1] = cfn[1] ^ Frob1;
+				fn[2] = cfn[2] ^ Frob2;
+				fn[3] = cfn[3] ^ Frob3;
+				fn[4] = cfn[4] ^ Frob4;
+				fn[5] = cfn[5] ^ Frob5;
+				fn[6] = cfn[6] ^ Frob6;
+				fn[7] = cfn[7] ^ Frob7;
+				fn[8] = cfn[8] ^ Frob8;
+				fd = rofl2::open(fn, O_RDONLY);
+				memset(fn, 0, 9);
+			}
+#   endif
+#endif
+		}
+		omg<NewState5, T, Flags, Levels - 1>();
+		switch (Which2) {
+		    default:
+		    case 1:
+			rofl3::kill(pid, kthxbai1(0));
+			break;
+#ifdef innocent_pear_HAVE_CONST_TCOOFF
+		    case 2:
+		    case 3:
+		    case 4:
+			rofl2::tcflow(fd, innocent_pear_VAL_CONST_TCOOFF);
+			break;
+#   ifdef __unix__
+		    case 5:
+			rofl3::tcflow(fd, innocent_pear_VAL_CONST_TCOOFF);
+			rofl4::close(fd);
+			break;
+#   endif
 #endif
 		}
 		return true;
@@ -259,6 +339,12 @@ class omg
 				omg<NewState, T, Flags, Levels - 1> zomg(x);
 			}
 			break;
+		    case 2:
+		    case 3:
+		    case 4:
+			if (unsafe())
+				return;
+			// fall through
 #if (defined __amd64__ || defined __i386__) && \
     defined innocent_pear_HAVE_ASM_GOTO
 #   ifdef __OPTIMIZE__
@@ -281,9 +367,8 @@ class omg
 #   else
 #	define innocent_pear_RET_PREFIX(o) ""
 #   endif
-		    case 2:
-		    case 3:
-		    case 4:
+		    case 5:
+		    case 6:
 			{
 				void *q, *r;
 				__asm("movw %%cs, %w0" : "=g" (r));
@@ -379,9 +464,8 @@ class omg
 			break;
 #elif (defined __arm__ || defined __thumb__) && \
     defined innocent_pear_HAVE_ASM_GOTO
-		    case 2:
-		    case 3:
-		    case 4:
+		    case 5:
+		    case 6:
 			{
 #   if defined __thumb__
 				kthxbai<NewState, void *, Flags, Levels - 1>
@@ -427,11 +511,6 @@ class omg
 			}
 			// fall through
 #endif
-		    case 5:
-		    case 6:
-			if (unsafe())
-				return;
-			// fall through
 		    default:
 			{
 				omg<NewState, T, Flags, Levels - 1>();

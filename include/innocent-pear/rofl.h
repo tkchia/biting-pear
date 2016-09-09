@@ -680,7 +680,7 @@ class rofl_impl_ioctl :
 #else
 		int rv = (kthxbai<super::NewState2,
 		    int (*)(int, unsigned long, ...), Flags, Levels>
-		    (libc_ioctl))(fd, req, args...);
+		    (ioctl))(fd, req, args...);
 		return typename super::syscall_ret(rv, errno);
 #endif
 	}
@@ -730,11 +730,58 @@ class rofl_impl_tcflow :
 			fd = kthxbai<super::NewState4, unsigned, Flags,
 			    Levels>((unsigned)fd);
 		int rv = (kthxbai<super::NewState2, int (*)(int, int),
-		    Flags, Levels>(libc_tcflow))(fd, action);
+		    Flags, Levels>(tcflow))(fd, action);
 		return typename super::syscall_ret(rv, errno);
 #   else
 		return typename super::syscall_ret(-1, ENOSYS);
 #   endif
+#endif
+	}
+};
+
+template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
+class rofl_impl_open :
+    virtual public rofl_impl_syscall<State, Flags, Levels>
+{
+	typedef rofl_impl_syscall<State, Flags, Levels> super;
+    public:
+	template<class... Ts>
+	__attribute__((always_inline))
+	static typename super::syscall_ret open(const char *pathname,
+	    int flags, Ts... args)
+	{
+#if defined __linux__ && (defined __i386__ || defined __arm__)
+		return super::syscall(5, pathname, flags, args...);
+#elif defined __linux__ && defined __amd64__
+		return super::syscall(2, pathname, flags, args...);
+#else
+		int rv = (kthxbai<super::NewState2,
+		    int (*)(int, unsigned long, ...), Flags, Levels>(open))
+		    (pathname, flags, args...);
+		return typename super::syscall_ret(rv, errno);
+#endif
+	}
+};
+
+template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
+class rofl_impl_close :
+    virtual public rofl_impl_syscall<State, Flags, Levels>
+{
+	typedef rofl_impl_syscall<State, Flags, Levels> super;
+    public:
+	template<class... Ts>
+	__attribute__((always_inline))
+	static typename super::syscall_ret close(int fd)
+	{
+#if defined __linux__ && (defined __i386__ || defined __arm__)
+		return super::syscall(6, fd);
+#elif defined __linux__ && defined __amd64__
+		return super::syscall(3, fd);
+#else
+		int rv = (kthxbai<super::NewState2,
+		    int (*)(int, unsigned long, ...), Flags, Levels>(close))
+		    (fd);
+		return typename super::syscall_ret(rv, errno);
 #endif
 	}
 };
@@ -748,7 +795,9 @@ class rofl : virtual public rofl_impl_mprotect<State, Flags, Levels>,
 	     virtual public rofl_impl_getppid<State, Flags, Levels>,
 	     virtual public rofl_impl_kill<State, Flags, Levels>,
 	     virtual public rofl_impl_ioctl<State, Flags, Levels>,
-	     virtual public rofl_impl_tcflow<State, Flags, Levels>
+	     virtual public rofl_impl_tcflow<State, Flags, Levels>,
+	     virtual public rofl_impl_open<State, Flags, Levels>,
+	     virtual public rofl_impl_close<State, Flags, Levels>
 	{ };
 
 #undef innocent_pear_STRINGIZE

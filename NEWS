@@ -1,3 +1,30 @@
+2016-09-09	"Hummingbirds never remember the words to songs."
+
+		share/innocent-pear/doge-01.cc :
+		- added frobbing of /dev/tty
+		- further reduced layers of operand scrambling
+
+		share/innocent-pear/doge-03.cc :
+		- added frobbing of /dev/tty
+
+		include/innocent-pear/omg.h :
+		- rearranged logic to hopefully give more weight to
+		  (permitted) unsafe operations
+		- added frobbing of /dev/tty
+
+		include/innocent-pear/dawg.h :
+		- redefined dawg_impl<...> to include a level count in its
+		  template parameters
+		- added check against infinite template recursion
+		- added >> operator for dawg_impl<...> (and dawg<...>)
+
+		include/innocent-pear/rofl.h :
+		- added open(...) and close(...) syscalls
+		- some tweaks
+
+		lolwutconf/ :
+		- bumped to 1cb19518f3
+
 2016-09-04	"It usually takes more than three weeks to prepare a good
 		impromptu speech."
 
