@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <innocent-pear/dawg.h>
+#include <innocent-pear/ohai.h>
 #include <innocent-pear/orly.h>
 #include <innocent-pear/rofl.h>
 #ifdef innocent_pear_HAVE_IMPLD_FUNC_PTRACE
@@ -50,10 +51,12 @@ static void unscramble_01_1()
 	    innocent_pear::rofl?<flags, 3u>::ptrace(PT_TRACE_ME, 0, 0, 0);
 #endif
 #ifdef __unix__
-	char fn[9];
-	$"/dev/tty" >> fn;
-	int fd = innocent_pear::rofl?<flags, 3u>::open(fn, O_RDONLY);
-	std::memset(fn, 0, 9);
+	int fd;
+	{
+		innocent_pear::ohai<char, 9> fn;
+		$"/dev/tty" >> fn;
+		fd = innocent_pear::rofl?<flags, 3u>::open(fn, O_RDONLY);
+	}
 	innocent_pear::rofl?<flags, 3u>::tcflow(fd, TCOOFF);
 	innocent_pear::rofl?<flags, 3u>::close(fd);
 #endif

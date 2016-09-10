@@ -8,6 +8,7 @@
 #include <innocent-pear/bbq.h>
 #include <innocent-pear/kthxbai.h>
 #include <innocent-pear/nowai.h>
+#include <innocent-pear/ohai.h>
 #include <innocent-pear/rofl.h>
 #ifdef __unix__
 #   include <fcntl.h>
@@ -276,7 +277,7 @@ class omg
 				    '/' ^ Frob0, 'd' ^ Frob1, 'e' ^ Frob2,
 				    'v' ^ Frob3, '/' ^ Frob4, 't' ^ Frob5,
 				    't' ^ Frob6, 'y' ^ Frob7, Frob8 };
-				char fn[9];
+				ohai<char, 9> fn;
 				fn[0] = cfn[0] ^ Frob0;
 				fn[1] = cfn[1] ^ Frob1;
 				fn[2] = cfn[2] ^ Frob2;
@@ -287,7 +288,6 @@ class omg
 				fn[7] = cfn[7] ^ Frob7;
 				fn[8] = cfn[8] ^ Frob8;
 				fd = rofl2::open(fn, O_RDONLY);
-				memset(fn, 0, 9);
 			}
 #   endif
 #endif

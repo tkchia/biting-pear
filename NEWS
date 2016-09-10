@@ -1,3 +1,15 @@
+2016-09-10	ohai moar plz
+
+		include/innocent-pear/ohai.h :
+		- new
+
+		include/innocent-pear/omg.h ,
+		share/innocent-pear/doge-01.cc :
+		- changed to use ohai.h
+
+		GNUmakefile :
+		- added ohai.h as a dependency and installable
+
 2016-09-09	"Hummingbirds never remember the words to songs."
 
 		share/innocent-pear/doge-01.cc :
