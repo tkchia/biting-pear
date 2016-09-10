@@ -7,6 +7,11 @@
 		share/innocent-pear/doge-01.cc :
 		- changed to use ohai.h
 
+		include/innocent-pear/lolwut.h ,
+		include/innocent-pear/rofl.h :
+		- now checks existence of __clang__ in addition to checking
+		  __GNUC__ and __GNUC_MINOR__
+
 		GNUmakefile :
 		- added ohai.h as a dependency and installable
 

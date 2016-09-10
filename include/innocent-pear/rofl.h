@@ -136,10 +136,10 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		u.x = x;
 		return u.up;
 	}
-#   if defined __i386__ && __GNUC__ < 5
+#   if defined __i386__ && !defined __clang__ && __GNUC__ < 5
 #	pragma message \
 	    "may emit inferior code, as g++ < 5 cannot spill %ebx"
-#   elif defined __i386__ && __GNUC__ >= 5
+#   elif defined __i386__ && (defined __clang__ || __GNUC__ >= 5)
     public:
 	__attribute__((always_inline))
 	static syscall_ret syscall(long scno)
@@ -274,7 +274,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 	}
 #   elif defined __arm__ && defined __thumb__
     private:
-#	if __GNUC__ >= 5
+#	if defined __clang__ || __GNUC__ >= 5
 		/*
 		 * It will be good if I can use the __asm("r0") style of
 		 * register variables to specify exactly which values go
@@ -308,7 +308,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		    : "r2", "r3", "r4", "r5", "r6", "memory", "cc");
 		return (long)rv;
 	}
-#	else	/* __GNUC__ < 5 */
+#	else	/* !defined __clang__ && __GNUC__ < 5 */
 	__attribute__((noinline, naked))
 	static long syscall_raw(uintptr_t x1, uintptr_t x2, uintptr_t x3,
 	    long scno)

@@ -93,7 +93,7 @@ class lolwut_impl
 #elif defined __i386__
 	static constexpr unsigned Disp2 =
 	    ((State2 ^ State3) >> 20) % 0xffffff00u + 0x80u;
-#elif defined __arm__ && !defined __thumb__ && \
+#elif defined __arm__ && !defined __thumb__ && !defined __clang__ && \
       __GNUC__ == 4 && __GNUC_MINOR__ <= 7
 	static constexpr unsigned Disp2 = Disp > 2 ?
 	    impl::pick_hi<unsigned>(State2 ^ State3) % (Disp / 2) : 0;
@@ -326,7 +326,7 @@ class lolwut_impl
 #   endif
 #endif
 		    default:
-#if defined __arm__ && !defined __thumb__ && \
+#if defined __arm__ && !defined __thumb__ && !defined __clang__ && \
     (__GNUC__ == 4 && __GNUC_MINOR__ <= 7)
 #   pragma message \
 	"may emit inferior code to avoid g++ < 4.8 bug"
