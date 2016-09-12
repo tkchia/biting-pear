@@ -145,7 +145,8 @@ uninstall-target-files:
 	    $(datarootdir)/innocent-pear
 
 clean:
-	find . -name '*.[ios]' -o -name '*~' -o -name '*.ii' \
+	find . -name '*.[ios]' -a \! -path './KeccakCodePackage/*' \
+	    -o -name '*~' -o -name '*.ii' \
 	    -o -name '*.pear.t.??????' | \
 	    xargs $(RM) -r $(config.h.host) $(config.h.target) \
 		lex.backup share/innocent-pear/omnomnom.cc \
