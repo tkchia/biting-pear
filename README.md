@@ -34,7 +34,21 @@ There is also a rather undocumented C++ API for various code obfuscation subtask
 
 **(2)** The C++ API should really be documented.
 
-**(3)** If `innocent-pear` is explicitly set up to compile target-side programs
+**(3)** Compiling for an x86-32 target using `g++` 4.8.4 may cause the compiler to crash:
+
+```
+./share/innocent-pear/doge-01.cc: In function ‘void unscramble_01_1()’:
+./share/innocent-pear/doge-01.cc:73:1: internal compiler error: Segmentation fault
+ }
+ ^
+Please submit a full bug report,
+with preprocessed source if appropriate.
+See <file:///usr/share/doc/gcc-4.8/README.Bugs> for instructions.
+```
+
+I do not know what exactly is causing this.  For now, consider using either `g++` 5 or above, or `clang++`, to compile x86-32 code.
+
+**(4)** If `innocent-pear` is explicitly set up to compile target-side programs
 
   * using `clang++`
   * with `libstdc++` linked in dynamically (i.e. no `-static` or `-static-libstdc++`)
@@ -42,7 +56,9 @@ There is also a rather undocumented C++ API for various code obfuscation subtask
 
 the programs may fail with a runtime error on certain platforms, including x86-64 and x86-32:
 
-> `./test/test-doge-eh.debug: error while loading shared libraries: unexpected reloc type 0x18`
+```
+./test/test-doge-eh.debug: error while loading shared libraries: unexpected reloc type 0x18
+```
 
 This is because I have not found a clean way to break up the absolute relocations referring to RTTI structures in `libstdc++` (`_ZTIi`, etc.), or to separate the relocations from the scrambled data.
 

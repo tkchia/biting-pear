@@ -13,13 +13,23 @@ env:
   - TARGET=
     CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall -static-libstdc++"
   - TARGET=i686-linux-gnu
+    CXX_FOR_TARGET=clang++
+    CXXFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -Wall -static"
   - TARGET=i386-linux-gnu
+    CXX_FOR_TARGET=clang++
+    CXXFLAGS_FOR_TARGET="-m32 -march=i386 -O3 -Wall -static"
   - TARGET=i686-linux-gnu
-    CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall -static-libstdc++"
+    CXX_FOR_TARGET=clang++
+    CXXFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -fPIC -pie -Wall -static-libstdc++"
   - TARGET=i686-linux-gnu
     CXX_FOR_TARGET=g++-5
+    CXXFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -Wall -static"
   - TARGET=i386-linux-gnu
     CXX_FOR_TARGET=g++-5
+    CXXFLAGS_FOR_TARGET="-m32 -march=i386 -O3 -Wall -static"
+  - TARGET=i686-linux-gnu
+    CXX_FOR_TARGET=g++-5
+    CXXFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -fPIC -pie -Wall -static-libstdc++"
   - TARGET=armv7-a-linux-gnueabi
   - TARGET=armv7-a-linux-gnueabi
     CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"

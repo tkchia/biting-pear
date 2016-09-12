@@ -47,6 +47,14 @@
 		.gitignore :
 		- added `keccak' (actually infra/keccak/)
 
+		.travis.yml :
+		- replacing tests for x86-32 target under g++ 4, with tests
+		  for x86-32 target under clang++
+		- added proper $CXXFLAGS_FOR_TARGET settings for x86-32 target
+
+		README.md :
+		- updated bug list
+
 2016-09-10	ohai moar plz
 
 		include/innocent-pear/ohai.h :
