@@ -11,6 +11,7 @@
 #endif
 #include <cctype>
 #include <cerrno>
+#include <climits>
 #include <cstdio>
 #include <cstring>
 #include <fstream>
@@ -21,12 +22,15 @@
 #define innocent_pear_HOST_SIDE
 #include <innocent-pear/host/lolcat.h>
 #include <innocent-pear/dawg.h>
+#include "KeccakPRG.h"
+
+using innocent_pear::impl::uint64_t;
 
 typedef struct {
 	innocent_pear::impl::rand_state_t i, ii, iii, iv, v, vi;
 } states_t;
 
-static innocent_pear::impl::mt19937_64 generator1, generator2;
+static KeccakWidth1600_SpongePRG_Instance prg;
 
 static void grumpy(std::ostringstream& oss, std::ostringstream& info_oss,
     const std::string& prefix)
@@ -100,6 +104,18 @@ inline char *pusheen(Ts... msg)
 	push(oss, msg...);
 	std::string *s = new std::string(oss.str());
 	return (char *)s->c_str();
+}
+
+static uint64_t fetch()
+{
+	unsigned char buf[sizeof(uint64_t)];
+	uint64_t x = 0;
+	KeccakWidth1600_SpongePRG_Fetch(&prg, buf, sizeof buf);
+	for (unsigned i = 0; i < sizeof buf; ++i) {
+		x <<= CHAR_BIT;
+		x |= buf[i];
+	}
+	return x;
 }
 
 static void nyan(sleepier_t& cheesy, const char *cheeses, states_t st,
@@ -279,7 +295,7 @@ static int main_(int argc, char **argv)
 	 *
 	 *   * 2 for `-wrapper ...'
 	 *   * 3 for `-no-integrated-cpp' `-fno-integrated-as'
-	 *     `-Wa,--Xinnocent-pear=dogecoin'
+	 *     `-Wa,--Xinnocent-pear=dogecoin=...'
 	 *   * 2 for `-idirafter ...'
 	 *   * 10 (== 12 - 2) for `-include', `.../doge.h',
 	 *     `-Wl,-T,(doge-i.ld),...', (doge-01.o), (doge-02.o),
@@ -436,8 +452,6 @@ static int main_(int argc, char **argv)
 #ifdef innocent_pear_CXX_FOR_TARGET_DECOUPLE_AS
 	*cheese++ = (char *)"-fno-integrated-as";
 #endif
-	if (doge && is.dogecoin)
-		*cheese++ = (char *)"-Wa,--Xinnocent-pear=dogecoin";
 	meowmeow = meow + "/include";
 	if (!is.eleventy) {		/* just in case... */
 		*cheese++ = (char *)"-idirafter";
@@ -449,24 +463,32 @@ static int main_(int argc, char **argv)
 	if (setenv("INNOCENT_PEAR_DRIVER_CXX", *argv, 1) != 0)
 		concern("cannot set INNOCENT_PEAR_DRIVER_CXX for "
 		    innocent_pear_CXX_FOR_TARGET " process");
-	uint64_t crc = 0, crc2 = 0;
 	states_t st;
 	sleepier_t doge_01, doge_02, doge_03, doge_04, doge_98, doge_99,
 	    doge_a, doge_b;
 	if (doge) {
+		KeccakWidth1600_SpongePRG_Initialize(&prg, 254u);
 		while (cheesy != burgery) {
 			--cheesy;
-			crc = file_crc64(*cheesy, 0, crc);
-			crc2 = file_crc64(*cheesy, 0x1b, crc2);
+			int fd = open(*cheesy, O_RDONLY);
+			if (fd == -1)
+				continue;
+			ssize_t n;
+			unsigned char buf[4096];
+			while ((n = read(fd, buf, sizeof buf)) > 0)
+				KeccakWidth1600_SpongePRG_Feed(&prg, buf, n);
+			close(fd);
 		}
-		generator1.seed(crc);
-		generator2.seed(crc2 ^ crc);
-		st.i = generator1();
-		st.ii = generator2();
-		st.iii = generator1();
-		st.iv = generator2();
-		st.v = generator1();
-		st.vi = generator2();
+		st.i = fetch();
+		st.ii = fetch();
+		st.iii = fetch();
+		st.iv = fetch();
+		st.v = fetch();
+		st.vi = fetch();
+		if (is.dogecoin)
+			*cheese++ = pusheen("-Wa,--Xinnocent-pear=dogecoin=0x",
+			    std::hex, fetch());
+		KeccakWidth1600_SpongePRG_Forget(&prg);
 		if (is.link && !cheeses) {
 			*cheese++ = (char *)"-o";
 			cheeses = cheese;

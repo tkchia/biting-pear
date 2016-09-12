@@ -1,3 +1,6 @@
 [submodule "lolwutconf"]
 	path = lolwutconf
 	url = https://github.com/tkchia/lolwutconf.git
+[submodule "KeccakCodePackage"]
+	path = KeccakCodePackage
+	url = https://github.com/gvanas/KeccakCodePackage.git

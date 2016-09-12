@@ -15,11 +15,6 @@ conf_cxx_probe_decltype
 conf_cxxt_probe_decltype
 conf_cxxt_probe_endianness
 #
-conf_cxx_probe_typ std::mt19937_64 '#include <random>'
-conf_cxx_probe_typ boost::mt19937_64 \
-    '#include <boost/random/mersenne_twister.hpp>'
-conf_cxx_chk_typ_1_of std::mt19937_64 boost::mt19937_64
-#
 conf_cxx_probe_typ std::uint64_t '#include <cinttypes>'
 conf_cxx_probe_typ ::uint64_t '#include <inttypes.h>'
 conf_cxx_chk_typ_1_of std::uint64_t ::uint64_t

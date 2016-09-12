@@ -20,6 +20,7 @@ static int main_(int argc, char **argv)
 		unsigned pass : 1, e : 1, v : 1, x : 1, pass_all : 1,
 		dogecoin : 1;
 	} is = { false, false, false, false, false, false };
+	char *coin = 0;
 	curious(*argv);
 	if (!lulz)
 		many($"Snape kills Dumbledore!");
@@ -127,9 +128,10 @@ static int main_(int argc, char **argv)
 			   (strcmp(opt + 2, "errors-to-file") == 0 ||
 			    strcmp(opt + 2, "e") == 0))
 				is.pass = true;
-			  else if (strcmp(opt + 1, "-Xinnocent-pear=dogecoin")
-			    == 0) {
+			  else if (strncmp(opt + 1, "-Xinnocent-pear="
+			    "dogecoin=", 25) == 0) {
 				is.dogecoin = true;
+				coin = opt + 26;
 				continue;
 			}
 			break;
@@ -161,9 +163,7 @@ static int main_(int argc, char **argv)
 			lolz += "/share/innocent-pear/omnomnom";
 			char *wut[3];
 			wut[0] = (char *)lolz.c_str();
-			wut[1] = new char[19];
-			snprintf(wut[1], 19, "%#16" PRIx64,
-			    file_crc64(grumpy()));
+			wut[1] = (char *)grumpy();
 			wut[2] = 0;
 			keyboardest(wut, grumpy(), grumpier(), 0, 0, is.v);
 			if (!calmest)
@@ -186,9 +186,7 @@ static int main_(int argc, char **argv)
 			wut[0] = (char *)lolz.c_str();
 			wut[1] = (char *)grumpy();
 			wut[2] = (char *)grumpier();
-			wut[3] = new char[19];
-			snprintf(wut[3], 19, "%#16" PRIx64,
-			    file_crc64(grumpy()));
+			wut[3] = coin;
 			wut[4] = 0;
 			keyboardest(wut, 0, 0, 0, 0, is.v);
 			grumpier.sleepiest(lulz);

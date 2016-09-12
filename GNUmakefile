@@ -1,4 +1,4 @@
--include config.cache
+include config.cache
 
 conf_Srcdir ?= .
 include $(conf_Srcdir)/lolwutconf/lolwutconf.mk
@@ -6,18 +6,38 @@ include $(conf_Srcdir)/lolwutconf/lolwutconf.mk
 bindir = $(conf_Prefix)/bin
 datarootdir = $(conf_Prefix)/share
 includedir.target = $(conf_Target_prefix)/include
+#
+# The header files in KeccakCodePackage are scattered across the directory
+# tree.  To work around this, I arrange to copy all the header files to a
+# single (new) directory, and do a single `-I' to point to them.
+#
+# See the definition of $(headers.host), the `clean' rule, and the rules
+# for the `infra/keccak/' files below.  Also note that we compile the .c
+# source files for Keccak as C++.
+#
+CPPFLAGS += -Iinfra/keccak -DKeccakP200_excluded -DKeccakP400_excluded \
+    -DKeccakP800_excluded
 
 wrap_cxx = bin/innocent-pear-c++
 wrap_cxx.staged = $(wrap_cxx) \
     -Xinnocent-pear -prefix=. -Xinnocent-pear -target-prefix=.
 CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET)
 config.h.host = include/innocent-pear/host/derp.h
+headers.keccak.host = \
+    infra/keccak/KeccakPRG.h \
+    infra/keccak/KeccakPRG.inc \
+    infra/keccak/align.h \
+    infra/keccak/brg_endian.h \
+    infra/keccak/KeccakDuplex.h \
+    infra/keccak/KeccakDuplex.inc \
+    infra/keccak/KeccakP-1600-SnP.h
 headers.host = \
     include/innocent-pear/bbq.h \
     include/innocent-pear/nowai.h \
     include/innocent-pear/host/lolcat.h \
     include/innocent-pear/host/rly.h \
     include/innocent-pear/host/srsly.h \
+    $(headers.keccak.host) \
     $(config.h.host)
 config.h.target = include/innocent-pear/derp.h
 headers.target = \
@@ -60,9 +80,11 @@ modules.host = \
     share/innocent-pear/epic.o \
     share/innocent-pear/keyboard.o \
     share/innocent-pear/lolrus.o \
-    share/innocent-pear/nomnom.o \
     share/innocent-pear/omnomnom.o \
-    share/innocent-pear/sleepier.o
+    share/innocent-pear/sleepier.o \
+    infra/keccak/KeccakPRG.o \
+    infra/keccak/KeccakDuplex.o \
+    infra/keccak/KeccakP-1600-reference.o
 installables.host = \
     $(utils.host) \
     share/innocent-pear/doge-01.cc \
@@ -125,9 +147,9 @@ uninstall-target-files:
 clean:
 	find . -name '*.[ios]' -o -name '*~' -o -name '*.ii' \
 	    -o -name '*.pear.t.??????' | \
-	    xargs $(RM) $(config.h.host) $(config.h.target) \
+	    xargs $(RM) -r $(config.h.host) $(config.h.target) \
 		lex.backup share/innocent-pear/omnomnom.cc \
-		$(tests.target) $(utils.host) lolwutconf.*
+		$(tests.target) $(utils.host) infra/keccak lolwutconf.*
 ifeq "$(conf_Separate_build_dir)" "yes"
 	-rmdir helper test util
 endif
@@ -488,9 +510,16 @@ define preproc_for_host
 	$(RM) $@.tmp
 endef
 
+define keccak_cp
+	mkdir -p $(@D)
+	cp $^ $@.tmp
+	mv $@.tmp $@
+endef
+
 bin/innocent-pear-c++: bin/innocent-pear-c++.o share/innocent-pear/epic.o \
-    share/innocent-pear/nomnom.o share/innocent-pear/keyboard.o \
-    share/innocent-pear/sleepier.o
+    share/innocent-pear/keyboard.o share/innocent-pear/sleepier.o \
+    infra/keccak/KeccakPRG.o infra/keccak/KeccakDuplex.o \
+    infra/keccak/KeccakP-1600-reference.o
 
 bin/innocent-pear-doge: bin/innocent-pear-doge.o \
     share/innocent-pear/epic.o share/innocent-pear/lolrus.o \
@@ -501,13 +530,13 @@ bin/innocent-pear-dogecoin: bin/innocent-pear-dogecoin.o \
     share/innocent-pear/sleepier.o
 
 share/innocent-pear/calm: share/innocent-pear/calm.o \
-    share/innocent-pear/epic.o share/innocent-pear/nomnom.o \
-    share/innocent-pear/keyboard.o share/innocent-pear/sleepier.o
+    share/innocent-pear/epic.o share/innocent-pear/keyboard.o \
+    share/innocent-pear/sleepier.o
 
 $(foreach m,$(modules.host), \
     $(eval $m: $(m:.o=.ii)))
 
-bin/%.ii share/innocent-pear/%.ii : \
+bin/%.ii share/innocent-pear/%.ii infra/keccak/%.ii: \
     CPPFLAGS += -Dinnocent_pear_HOST_PREFIX=\"$(conf_Prefix)\" \
 		-Dinnocent_pear_TARGET_PREFIX=\"$(conf_Target_prefix)\" \
 		-Dinnocent_pear_CXX_FOR_TARGET=\"$(CXX_FOR_TARGET)\" \
@@ -545,13 +574,20 @@ endif
 share/innocent-pear/%.s: share/innocent-pear/%.ii
 	$(CXX) $(CXXFLAGS) -S -o$@ $<
 
+infra/keccak/%.o: infra/keccak/%.ii $(headers.keccak.host)
+	$(CXX) $(CXXFLAGS) -c -o$@ $<
+
 share/innocent-pear/%.ii: share/innocent-pear/%.cc $(headers.host) \
     $(headers.target) share/innocent-pear/omnomnom
 	$(preproc_for_host)
 
+infra/keccak/%.ii: infra/keccak/%.cc $(headers.keccak.host)
+	$(CXX) -E -x c++ $(CPPFLAGS) $(CXXFLAGS) -o$@ $<
+
 share/innocent-pear/omnomnom: share/innocent-pear/omnomnom.cc \
-    $(config.h.host)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o$@ $<
+    infra/keccak/KeccakPRG.o infra/keccak/KeccakDuplex.o \
+    infra/keccak/KeccakP-1600-reference.o $(config.h.host)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o$@ $(filter-out %.h,$^)
 
 %.o: %.cc $(headers.target) $(installables.host)
 	mkdir -p $(@D)
@@ -578,6 +614,38 @@ share/innocent-pear/omnomnom.cc: share/innocent-pear/omnomnom.lxx
 	mkdir -p $(@D)
 	$(LEX) $(LFLAGS) -t -o$@ $< >$@.tmp
 	mv $@.tmp $@
+
+infra/keccak/KeccakPRG.h: KeccakCodePackage/Modes/KeccakPRG.h
+	$(keccak_cp)
+
+infra/keccak/KeccakPRG.cc: KeccakCodePackage/Modes/KeccakPRG.c
+	$(keccak_cp)
+
+infra/keccak/KeccakPRG.inc: KeccakCodePackage/Modes/KeccakPRG.inc
+	$(keccak_cp)
+
+infra/keccak/align.h: KeccakCodePackage/Common/align.h
+	$(keccak_cp)
+
+infra/keccak/brg_endian.h: KeccakCodePackage/Common/brg_endian.h
+	$(keccak_cp)
+
+infra/keccak/KeccakDuplex.h: KeccakCodePackage/Constructions/KeccakDuplex.h
+	$(keccak_cp)
+
+infra/keccak/KeccakDuplex.cc: KeccakCodePackage/Constructions/KeccakDuplex.c
+	$(keccak_cp)
+
+infra/keccak/KeccakDuplex.inc: KeccakCodePackage/Constructions/KeccakDuplex.inc
+	$(keccak_cp)
+
+infra/keccak/KeccakP-1600-SnP.h: \
+    KeccakCodePackage/SnP/KeccakP-1600/Reference/KeccakP-1600-SnP.h
+	$(keccak_cp)
+
+infra/keccak/KeccakP-1600-reference.cc: \
+    KeccakCodePackage/SnP/KeccakP-1600/Reference/KeccakP-1600-reference.c
+	$(keccak_cp)
 
 .PHONY: test/test-%.passed test/test-%.debug.passed
 

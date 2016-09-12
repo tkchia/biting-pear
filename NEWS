@@ -1,3 +1,47 @@
+2016-09-12	Now uses a pseudorandom number generator based on Keccak
+		hashing of input files, instead of CRC-64 checksums, to seed
+		downstream generators.
+
+		.gitmodules ,
+		KeccakCodePackage/ :
+		- added submodule for Gilles Van Assche et al.'s
+		  KeccakCodePackage (https://github.com/gvanas/
+		  KeccakCodePackage); at commit e39f89a449
+
+		GNUmakefile :
+		- added rules for building Keccak code
+		- bin/innocent-pear-c++ and share/innocent-pear/omnomnom now
+		  have Keccak code as dependencies
+		- share/innocent-pear/calm no longer needs share/innocent-
+		  pear/nomnom.o to be built
+		- now _requires_ config.cache to be present to work
+
+		bin/innocent-pear-c++.cc :
+		- now uses KeccakWidth1600_SpongePRG_Instance, instead of
+		  mt19937_64, as its PRNG
+		- changed `-Wa,--Xinnocent-pear=dogecoin...' option so that
+		  it passes a seed to share/innocent-pear/calm
+
+		share/innocent-pear/calm.cc :
+		- now accepts seed from `--Xinnocent-pear-dogecoin...' option
+		  instead of computing its own seed
+
+		share/innocent-pear/omnomnom.lxx :
+		- now uses KeccakWidth1600_SpongePRG_Instance, instead of
+		  mt19937_64, as its PRNG
+
+		share/innocent-pear/nomnom.cc :
+		- removed
+
+		include/innocent-pear/host/lolcat.h :
+		- removed unneeded file_crc64(...) prototype
+
+		configure :
+		- added check for std::mt19937_64 and boost::mt19937_64
+
+		.gitignore :
+		- added `keccak' (actually infra/keccak/)
+
 2016-09-10	ohai moar plz
 
 		include/innocent-pear/ohai.h :

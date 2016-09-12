@@ -20,6 +20,7 @@ u8tl		[\x80-\xbf]
 %{
 #include <cerrno>
 #include <cinttypes>
+#include <climits>
 #include <clocale>
 #include <cstdarg>
 #include <cstdio>
@@ -28,9 +29,11 @@ u8tl		[\x80-\xbf]
 #include <ctime>
 #include <exception>
 #include <vector>
+#include <fcntl.h>
 #include <unistd.h>
 #define innocent_pear_HOST_SIDE
 #include <innocent-pear/bbq.h>
+#include "KeccakPRG.h"
 
 #if defined innocent_pear_TARGET_WCHAR_IS_CHAR16
 #   if defined innocent_pear_HOST_WCHAR_IS_CHAR16
@@ -53,9 +56,11 @@ u8tl		[\x80-\xbf]
 #   undef target_mbrtowc
 #endif
 
+using innocent_pear::impl::uint64_t;
+
 static std::string curr_fn, curr_str_enc;
 static long curr_ln_off = 0;
-static innocent_pear::impl::mt19937_64 generator;
+static KeccakWidth1600_SpongePRG_Instance prg;
 static std::vector<std::string> curr_str_chars;
 
 static void warn(const char *fmt, ...)
@@ -84,6 +89,18 @@ static void die(const char *fmt, ...)
 	std::putc('\n', stderr);
 	std::fflush(stderr);
 	throw std::exception();
+}
+
+static uint64_t fetch()
+{
+	unsigned char buf[sizeof(uint64_t)];
+	uint64_t x = 0;
+	KeccakWidth1600_SpongePRG_Fetch(&prg, buf, sizeof buf);
+	for (unsigned i = 0; i < sizeof buf; ++i) {
+		x <<= CHAR_BIT;
+		x |= buf[i];
+	}
+	return x;
 }
 
 static void blurt(const char *s, size_t n)
@@ -184,13 +201,13 @@ static void flush_str()
 
 "?"{ws}"<"{ws}">"	{
 				blurt(yytext + 1, yyleng - 2);
-				blurfl("0x%" PRIx64 ">", generator());
+				blurfl("0x%" PRIx64 ">", fetch());
 			}
 "?"{ws}"<"{ws}		{
 				char *p = strchr(yytext + 1, '<'),
 				     *q = yytext + yyleng;
 				blurt(yytext + 1, p - yytext);
-				blurfl("0x%" PRIx64 ",", generator());
+				blurfl("0x%" PRIx64 ",", fetch());
 				blurt(p + 1, q - p - 1);
 			}
 "["{ws}"]"{ws}\"	{
@@ -204,7 +221,7 @@ static void flush_str()
 "$"{ws}\"		{
 				blurt(yytext + 1, yyleng - 2);
 				blurfl("::innocent_pear::dawg<0x%" PRIx64
-				    ",0,", generator());
+				    ",0,", fetch());
 				curr_str_enc = "";
 				BEGIN(Such);
 			}
@@ -224,7 +241,7 @@ static void flush_str()
 				blurt(yytext + 1, p - yytext - 1);
 				blurt(p + 1, q - p - 1);
 				blurfl("::innocent_pear::yodawg<0x%" PRIx64
-				    ",0,", generator());
+				    ",0,", fetch());
 				curr_str_enc = "L";
 				BEGIN(Such);
 			}
@@ -377,6 +394,7 @@ static void flush_str()
 
 int main(int argc, char **argv)
 {
+	int fd, rv;
 	try {
 		if (!std::setlocale(LC_COLLATE, "en_US.UTF-8") ||
 		    !std::setlocale(LC_CTYPE, "en_US.UTF-8"))
@@ -384,14 +402,24 @@ int main(int argc, char **argv)
 			    std::strerror(errno));
 		switch (argc) {
 		    case 1:
-			generator.seed(0x218384fc78e17428);  break;
+			KeccakWidth1600_SpongePRG_Initialize(&prg, 254u);
+			break;
 		    case 2:
-			generator.seed((uint64_t)std::strtoumax(argv[1],0,0));
+			KeccakWidth1600_SpongePRG_Initialize(&prg, 254u);
+			if ((fd = open(argv[1], O_RDONLY))== -1)
+				break;
+			unsigned char buf[4096];
+			ssize_t n;
+			while ((n = read(fd, buf, sizeof buf)) > 0)
+				KeccakWidth1600_SpongePRG_Feed(&prg, buf, n);
+			close(fd);
 			break;
 		    default:
 			die("usage: %s [(seed)]", argv[0]);
 		}
-		return yylex();
+		rv = yylex();
 	} catch (std::exception& ex)
-		{ return 1; }
+		{ rv = 1; }
+	KeccakWidth1600_SpongePRG_Forget(&prg);
+	return rv;
 }
