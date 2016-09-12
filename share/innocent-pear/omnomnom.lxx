@@ -28,7 +28,7 @@ u8tl		[\x80-\xbf]
 #include <cstring>
 #include <ctime>
 #include <exception>
-#incldue <string>
+#include <string>
 #include <vector>
 #include <fcntl.h>
 #include <unistd.h>
