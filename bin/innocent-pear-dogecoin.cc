@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <bfd.h>
 #define innocent_pear_HOST_SIDE
+#include <innocent-pear/bbq.h>
 #include <innocent-pear/dawg.h>
 #include <innocent-pear/host/lolcat.h>
 #include <innocent-pear/host/srsly.h>
@@ -18,7 +19,6 @@
 #define NEW_SXN_NAME_TPL ".innocent_pear.dogecoin"
 
 using innocent_pear::impl::uint64_t;
-using innocent_pear::impl::mt19937_64;
 
 typedef std::map<asection *, long> sxn_to_reloc_count_map_t;
 typedef std::map<asection *, arelent **> sxn_to_relocs_map_t;
@@ -53,7 +53,7 @@ inline void much(Ts... msg)
 	such();
 }
 
-static mt19937_64 generator;
+static innocent_pear::impl::rand_state_t prg;
 
 static unsigned get_align(unsigned x)
 {
@@ -332,8 +332,8 @@ static void do_frob_8(bfd *ibfd, bfd *obfd, fortune_t *fortune)
 	for (long i = 0; i < nxsxns; ++i) {
 		std::size_t nm_sz = sizeof(NEW_SXN_NAME_TPL) + 17;
 		char *nm = new char[nm_sz];
-		snprintf(nm, nm_sz, NEW_SXN_NAME_TPL ".%016" PRIx64,
-		    (uint64_t)generator());
+		prg = innocent_pear::impl::update_outer(prg, 5);
+		snprintf(nm, nm_sz, NEW_SXN_NAME_TPL ".%016" PRIx64, prg);
 		if (i == 16)
 			wow("  ...");
 		else if (i < 16)
@@ -526,7 +526,7 @@ int main(int argc, char **argv)
 		if (argc != 4)
 			many("invalid arguments");
 		const char *ifn = argv[1], *ofn = argv[2];
-		generator.seed(lolrus(argv[3], "invalid arguments"));
+		prg = lolrus(argv[3], "invalid arguments");
 		ibfd = bfd_openr(ifn, 0);
 		if (!ibfd)
 			much("bfd_openr");

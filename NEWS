@@ -23,6 +23,10 @@
 		- changed `-Wa,--Xinnocent-pear=dogecoin...' option so that
 		  it passes a seed to share/innocent-pear/calm
 
+		bin/innocent-pear-dogecoin.cc :
+		- removed the dependency on mt19937_64; switched to using a
+		  xorshift generator
+
 		share/innocent-pear/calm.cc :
 		- now accepts seed from `--Xinnocent-pear-dogecoin...' option
 		  instead of computing its own seed
