@@ -207,13 +207,6 @@ $(config.h.host) $(config.h.target): config.cache
 	    '$(config.h.host)' = '$@'; then \
 		echo '#include <wchar.h>' >>$@.tmp; \
 	fi
-	if test '$(config.h.host)' = '$@'; then \
-		if test yes = '$(conf_Have_cxx_typ_std_0mt19937_164)'; then \
-			echo '#include <random>'; \
-		else \
-			echo '#include <boost/random/mersenne_twister.hpp>'; \
-		fi >>$@.tmp; \
-	fi
 	echo 'namespace innocent_pear { namespace impl {' >>$@.tmp
 	if test '$(conf_Have_cxx_typ_std_0uint64_1t),$@' = \
 	    'yes,$(config.h.host)'; then \

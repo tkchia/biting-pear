@@ -15,6 +15,7 @@
 		- share/innocent-pear/calm no longer needs share/innocent-
 		  pear/nomnom.o to be built
 		- now _requires_ config.cache to be present to work
+		- removed code for including C++ header with mt19937_64
 
 		bin/innocent-pear-c++.cc :
 		- now uses KeccakWidth1600_SpongePRG_Instance, instead of
@@ -37,7 +38,7 @@
 		- removed unneeded file_crc64(...) prototype
 
 		configure :
-		- added check for std::mt19937_64 and boost::mt19937_64
+		- removed check for std::mt19937_64 and boost::mt19937_64
 
 		.gitignore :
 		- added `keccak' (actually infra/keccak/)
