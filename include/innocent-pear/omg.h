@@ -224,8 +224,9 @@ class omg
 	typedef rofl<NewState2, Flags, Levels - 1> rofl2;
 	typedef rofl<NewState3, Flags, Levels - 1> rofl3;
 	typedef rofl<NewState4, Flags, Levels - 1> rofl4;
+    public:
 	__attribute__((always_inline))
-	bool unsafe()
+	static bool unsafe()
 	{
 		using namespace innocent_pear::ops;
 		constexpr unsigned Which2 = (State2 >> 56) % 6;

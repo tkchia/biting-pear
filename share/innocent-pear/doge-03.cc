@@ -13,6 +13,7 @@
 #ifdef innocent_pear_DEBUG
 #   include <cstdio>
 #endif
+#include "doge.h"
 
 using innocent_pear::impl::uintptr_t;
 
@@ -31,19 +32,6 @@ extern unsigned char our_bss_end[] __asm("_end");
 extern unsigned char dogecoin_start[] __asm("_.innocent_pear.dogecoin.start");
 extern unsigned char dogecoin_end[] __asm("_.innocent_pear.dogecoin.end");
 
-#ifdef innocent_pear_HAVE_CTOR_PRIORITY
-#   define innocent_pear_CTOR	constructor(101)
-#else
-#   define innocent_pear_CTOR	constructor
-#endif
-#define innocent_pear_DOGE \
-	__attribute__((innocent_pear_CTOR, section(".text.unlikely"))) \
-	static void
-#define innocent_pear_DOGE_MEMSET \
-	__attribute__((innocent_pear_CTOR, section(".text.unlikely"), \
-	    optimize("no-reorder-blocks"))) \
-	static void
-
 static constexpr innocent_pear::impl::ops_flags_t flags =
     innocent_pear::ops::allow_all |
     innocent_pear::ops::under_munged_terminal;
@@ -54,9 +42,12 @@ static constexpr innocent_pear::impl::ops_flags_t flags2 =
 innocent_pear_DOGE unscramble_03_01()
 {
 	unsigned char *ts = our_text_start, *te = our_text_end;
+	innocent_pear_CHAFF(flags);
 	innocent_pear::orly<innocent_pear_DOGE_STATE_2,
 	    unsigned char, false, false, flags>().wut(ts, te);
+	innocent_pear_CHAFF(flags);
 	innocent_pear::rofl?<flags, 3u>::clear_cache(ts, te);
+	innocent_pear_CHAFF(flags);
 }
 
 innocent_pear_DOGE_MEMSET unscramble_03_02()

@@ -1,3 +1,19 @@
+2016-09-13	"Has anyone ever tasted an `end'?  Are they really bitter?"
+
+		include/innocent-pear/omg.h :
+		- omg<...>::unsafe() is now public -- and static -- and can
+		  thus be used by outside code
+
+		share/innocent-pear/doge.h :
+		- new; partly from doge-03.cc
+
+		share/innocent-pear/doge-01.cc ,
+		share/innocent-pear/doge-03.cc :
+		- now uses doge.h
+
+		GNUmakefile :
+		- added share/innocent-pear/doge.h as an installable file
+
 2016-09-12	Now uses a pseudorandom number generator based on Keccak
 		hashing of input files, instead of CRC-64 checksums, to seed
 		downstream generators.
