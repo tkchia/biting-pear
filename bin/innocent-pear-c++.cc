@@ -30,6 +30,12 @@ typedef struct {
 	innocent_pear::impl::rand_state_t i, ii, iii, iv, v, vi;
 } states_t;
 
+static const char * const doge_i_tags[] = { "01", "02", "03", "04" };
+static const char * const doge_n_tags[] = { "98", "99" };
+static constexpr std::size_t
+    NumDogeIParts = sizeof(doge_i_tags) / sizeof(*doge_i_tags),
+    NumDogeNParts = sizeof(doge_n_tags) / sizeof(*doge_n_tags);
+
 static KeccakWidth1600_SpongePRG_Instance prg;
 
 static void grumpy(std::ostringstream& oss, std::ostringstream& info_oss,
@@ -39,18 +45,16 @@ static void grumpy(std::ostringstream& oss, std::ostringstream& info_oss,
 #ifdef __unix__
 	int fee = open(wrapper.c_str(), O_RDONLY);
 	if (fee != -1) {
-		std::ostringstream fd_oss;
-		std::string fd_str;
-		fd_oss << "/dev/fd/" << fee;
-		fd_str = fd_oss.str();
-		int fie = open(fd_str.c_str(), O_RDONLY);
+		char om[9 + (2 + sizeof(int) * CHAR_BIT) / 3];
+		std::snprintf(om, sizeof om, "/dev/fd/%d", fee);
+		int fie = open(om, O_RDONLY);
 		if (fie != -1) {
 			struct stat foe, fum;
 			if (fstat(fee, &foe) == 0 && fstat(fie, &fum) == 0 &&
 			    foe.st_ino == fum.st_ino &&
 			    foe.st_dev == fum.st_dev) {
 				close(fie);
-				oss << fd_str;
+				oss << om;
 				info_oss << ' ' << fee << "< " << wrapper;
 				return;
 			}
@@ -291,24 +295,24 @@ static int main_(int argc, char **argv)
 #endif
 		 };
 	/*
-	 * Why 19?  We need
+	 * Why 13 + NumDogeIParts + NumDogeNParts?  We need
 	 *
-	 *   * 2 for `-wrapper ...'
+	 *   * 2 for `-wrapper' `...'
 	 *   * 3 for `-no-integrated-cpp' `-fno-integrated-as'
 	 *     `-Wa,--Xinnocent-pear=dogecoin=...'
-	 *   * 2 for `-idirafter ...'
-	 *   * 10 (== 12 - 2) for `-include', `.../doge.h',
-	 *     `-Wl,-T,(doge-i.ld),...', (doge-01.o), (doge-02.o),
-	 *     (doge-03.o), (doge-04.o), `-x' `-none', (doge-98.o),
-	 *     (doge-99.o), and (doge-n.ld), minus the `-Xinnocent-pear'
-	 *     `-doge'
-	 *   * and 2 for `-o' (doge-a).
+	 *   * 2 for `-idirafter' `...'
+	 *   * 3 for `-include', `.../doge.h', `-Wl,-T,(doge-i.ld),...'
+	 *   * NumDogeIParts for (doge-01.o), (doge-02.o), ...
+	 *   * 0 (== 2 - 2) for `-x' `-none' minus `-Xinnocent-pear' `-doge'
+	 *   * NumDogeNParts for ..., (doge-99.o)
+	 *   * and 3 for (doge-n.ld), and `-o' (doge-a).
 	 *
 	 * We also need a terminating null pointer, but since we do not pass
 	 * our own *argv to execvp...
 	 */
-	char *burger[argc + 19], **cheese = burger, **cheeses = 0,
-	    *burgery[argc], **cheesy = burgery, *ceiling, *real_a = 0;
+	char *burger[argc + 13 + NumDogeIParts + NumDogeNParts],
+	    **cheese = burger, **cheeses = 0, *burgery[argc],
+	    **cheesy = burgery, *ceiling, *real_a = 0;
 #ifdef innocent_pear_CXX_FOR_TARGET_HAVE_OPT_WRAPPER
 	char *moar = 0;
 #endif
@@ -464,7 +468,7 @@ static int main_(int argc, char **argv)
 		concern("cannot set INNOCENT_PEAR_DRIVER_CXX for "
 		    innocent_pear_CXX_FOR_TARGET " process");
 	states_t st;
-	sleepier_t doge_01, doge_02, doge_03, doge_04, doge_98, doge_99,
+	sleepier_t doge_i[NumDogeIParts], doge_n[NumDogeNParts],
 	    doge_a, doge_b;
 	if (doge) {
 		KeccakWidth1600_SpongePRG_Initialize(&prg, 254u);
@@ -495,50 +499,37 @@ static int main_(int argc, char **argv)
 			*cheese++ = (char *)"a.out";
 		}
 		if (is.link && is.starts) {
-			nyan(doge_01, *cheeses, st, pusheen(
-			    caturday, "/share/innocent-pear/doge-01.cc"),
-			    *argv, caturday, meow, is.grumpiest, is.sta,
-			    debug_doge);
-			nyan(doge_02, *cheeses, st, pusheen(
-			    caturday, "/share/innocent-pear/doge-02.cc"),
-			    *argv, caturday, meow, is.grumpiest, is.sta,
-			    debug_doge);
-			nyan(doge_03, *cheeses, st, pusheen(
-			    caturday, "/share/innocent-pear/doge-03.cc"),
-			    *argv, caturday, meow, is.grumpiest, is.sta,
-			    debug_doge);
-			nyan(doge_04, *cheeses, st, pusheen(
-			    caturday, "/share/innocent-pear/doge-04.cc"),
-			    *argv, caturday, meow, is.grumpiest, is.sta,
-			    debug_doge);
-			nyan(doge_98, *cheeses, st, pusheen(
-			    caturday, "/share/innocent-pear/doge-98.cc"),
-			    *argv, caturday, meow, is.grumpiest, is.sta,
-			    debug_doge);
-			nyan(doge_99, *cheeses, st, pusheen(
-			    caturday, "/share/innocent-pear/doge-99.cc"),
-			    *argv, caturday, meow, is.grumpiest, is.sta,
-			    debug_doge);
+			std::size_t s;
+			for (s = 0; s < NumDogeIParts; ++s)
+				nyan(doge_i[s], *cheeses, st,
+				    pusheen(caturday, "/share/innocent-pear/"
+					"doge-", doge_i_tags[s], ".cc"),
+				    *argv, caturday, meow, is.grumpiest,
+				    is.sta, debug_doge);
+			for (s = 0; s < NumDogeNParts; ++s)
+				nyan(doge_n[s], *cheeses, st,
+				    pusheen(caturday, "/share/innocent-pear/"
+					"doge-", doge_n_tags[s], ".cc"),
+				    *argv, caturday, meow, is.grumpiest,
+				    is.sta, debug_doge);
 			doge_a(*cheeses);
 			doge_b(*cheeses);
 			real_a = *cheeses;
 			*cheeses = (char *)doge_a();
-			std::memmove(burger + 8, burger + 1,
+			std::memmove(burger + 4 + NumDogeIParts, burger + 1,
 			    (cheese - burger - 1) * sizeof(char *));
-			cheese += 7;
+			cheese += 3 + NumDogeIParts;
 			burger[1] = (char *)"-include";
 			burger[2] = pusheen(meowmeow,
 			    "/innocent-pear/doge.h");
 			burger[3] = pusheen("-Wl,-T,", caturday,
 			    "/share/innocent-pear/doge-i.ld,-z,norelro");
-			burger[4] = (char *)doge_01();
-			burger[5] = (char *)doge_02();
-			burger[6] = (char *)doge_03();
-			burger[7] = (char *)doge_04();
+			for (s = 0; s < NumDogeIParts; ++s)
+				burger[4 + s] = (char *)doge_i[s]();
 			*cheese++ = (char *)"-x";
 			*cheese++ = (char *)"none";
-			*cheese++ = (char *)doge_98();
-			*cheese++ = (char *)doge_99();
+			for (s = 0; s < NumDogeNParts; ++s)
+				*cheese++ = (char *)doge_n[s]();
 			*cheese++ = pusheen(caturday,
 			    "/share/innocent-pear/doge-n.ld");
 		} else {
@@ -551,7 +542,7 @@ static int main_(int argc, char **argv)
 		}
 	}
 	*cheese = 0;
-	if (!doge_01)
+	if (!doge_i[0])
 		play(burger, 0, 0, seriouser.c_str(), is.grumpiest,
 		    *cheeses, kitteh.c_str());
 	else {
