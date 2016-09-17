@@ -1,3 +1,12 @@
+2016-09-17	"Has anyone ever tasted an `end'?  Are they really bitter?"
+		(3)
+
+		.travis.yml :
+		- removed armv4-linux-gnueabi test configuration
+
+		README.md :
+		- added note on armv4-linux-gnueabi compiler crash
+
 2016-09-16	"Has anyone ever tasted an `end'?  Are they really bitter?"
 		(2)
 
