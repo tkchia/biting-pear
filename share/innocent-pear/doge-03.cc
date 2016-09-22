@@ -13,7 +13,7 @@
 #ifdef innocent_pear_DEBUG
 #   include <cstdio>
 #endif
-#include "doge.h"
+#include "doge-i.h"
 
 using innocent_pear::impl::uintptr_t;
 
@@ -39,55 +39,38 @@ static constexpr innocent_pear::impl::ops_flags_t flags2 =
     innocent_pear::ops::allow_all &
    ~innocent_pear::ops::allow_terminal_unsafes;
 
-innocent_pear_DOGE unscramble_03_01()
-{
-	unsigned char *ts = our_text_start, *te = our_text_end;
-	innocent_pear_CHAFF(flags);
-	innocent_pear::orly<innocent_pear_DOGE_STATE_2,
-	    unsigned char, false, false, flags>().wut(ts, te);
-	innocent_pear_CHAFF(flags);
-	innocent_pear::rofl?<flags, 3u>::clear_cache(ts, te);
-	innocent_pear_CHAFF(flags);
-}
-
-innocent_pear_DOGE_MEMSET unscramble_03_02()
-{
-	unsigned char *uts = unlikely_text_start;
-	innocent_pear::rofl?<flags, 3u>::memset(uts);
-}
-
-innocent_pear_DOGE unscramble_03_03()
+innocent_pear_DOGE("03") unscramble_03_03()
 {
 	unsigned char *rs = our_rodata_start, *re = our_rodata_end;
 	innocent_pear::orly<innocent_pear_DOGE_STATE_3,
 	    unsigned char, false, false, flags>().wut(rs, re);
 }
 
-innocent_pear_DOGE_MEMSET unscramble_03_04()
+innocent_pear_DOGE_MEMSET("03") unscramble_03_04()
 {
-	innocent_pear::rofl?<flags, 3u>::memset((void *)unscramble_03_02);
+	innocent_pear::rofl?<flags, 3u>::memset((void *)unscramble_03_03);
 }
 
-innocent_pear_DOGE unscramble_03_05()
+innocent_pear_DOGE("03") unscramble_03_05()
 {
 	unsigned char *rrs = our_relro_start, *rre = our_relro_end;
 	innocent_pear::orly<innocent_pear_DOGE_STATE_4,
 	    unsigned char, false, false, flags>().wut(rrs, rre);
 }
 
-innocent_pear_DOGE_MEMSET unscramble_03_06()
+innocent_pear_DOGE_MEMSET("03") unscramble_03_06()
 {
 	innocent_pear::rofl?<flags, 3u>::memset((void *)unscramble_03_04);
 }
 
-innocent_pear_DOGE unscramble_03_07()
+innocent_pear_DOGE("03") unscramble_03_07()
 {
 	unsigned char *ds = our_data_start, *de = our_data_end;
 	innocent_pear::orly<innocent_pear_DOGE_STATE_5,
 	    unsigned char, false, false, flags>().wut(ds, de);
 }
 
-innocent_pear_DOGE_MEMSET unscramble_03_08()
+innocent_pear_DOGE_MEMSET("03") unscramble_03_08()
 {
 	innocent_pear::rofl?<flags, 3u>::memset((void *)unscramble_03_06);
 }
@@ -99,7 +82,6 @@ class dogecoin_t
 		uintptr_t d;
 		unsigned char c[sizeof(uintptr_t)];
 	} u_;
-	const unsigned char *dp_;
 	__attribute__((always_inline))
 	void reset()
 	{
@@ -111,14 +93,10 @@ class dogecoin_t
 #endif
 	}
     public:
+	dogecoin_t()
+		{ reset(); }
 	__attribute__((always_inline))
-	dogecoin_t(const unsigned char *dp)
-	{
-		dp_ = dp;
-		reset();
-	}
-	__attribute__((always_inline))
-	void operator()(unsigned char c)
+	void operator()(unsigned char c, const unsigned char *dp)
 	{
 #if innocent_pear_ENDIANNESS - 0 == 1234  /* little endian */
 		bool a = (u_.d & 1) != 0;
@@ -137,37 +115,36 @@ class dogecoin_t
 			return;
 		uintptr_t d = u_.d;
 		uintptr_t *rp = reinterpret_cast<uintptr_t *>(
-		    reinterpret_cast<uintptr_t>(dp_) + d + ADJ);
+		    reinterpret_cast<uintptr_t>(dp) + d + ADJ);
 #ifdef innocent_pear_DEBUG
 		std::fprintf(stderr, "dp == %p\n"
 				     "d == %#" PRIxPTR "\n"
 				     "rp == %p\n"
 				     "*rp == %#" PRIxPTR "\n",
-		    dp_, d, rp, *rp);
+		    dp, d, rp, *rp);
 #endif
 		*rp += reinterpret_cast<uintptr_t>(rp) + ADJ;
 #ifdef innocent_pear_DEBUG
 		std::fprintf(stderr, "now *rp == %#" PRIxPTR "\n", *rp);
 #endif
 		reset();
-		dp_ += sizeof(uintptr_t);
 	}
 };
 
-innocent_pear_DOGE unscramble_03_09()
+innocent_pear_DOGE("03") unscramble_03_09()
 {
-	dogecoin_t dogecoin(dogecoin_start);
+	dogecoin_t dogecoin;
 	innocent_pear::orly<innocent_pear_DOGE_STATE_6,
 	    unsigned char, false, false, flags>().wot(dogecoin_start,
 	    dogecoin_end, dogecoin);
 }
 
-innocent_pear_DOGE_MEMSET unscramble_03_10()
+innocent_pear_DOGE_MEMSET("03") unscramble_03_10()
 {
 	innocent_pear::rofl?<flags, 3u>::memset((void *)unscramble_03_08);
 }
 
-innocent_pear_DOGE unscramble_03_11()
+innocent_pear_DOGE("03") unscramble_03_11()
 {
 	uintptr_t pg_sz = (uintptr_t)getpagesize();
 	unsigned char *prot_start =
@@ -195,13 +172,13 @@ innocent_pear_DOGE unscramble_03_11()
 #endif
 }
 
-innocent_pear_DOGE_MEMSET unscramble_03_12()
+innocent_pear_DOGE_MEMSET("03") unscramble_03_12()
 {
 	innocent_pear::rofl?<flags, 3u>::memset((void *)unscramble_03_10);
 }
 
 #ifdef innocent_pear_HAVE_CONST_TCOON
-innocent_pear_DOGE unscramble_03_13()
+innocent_pear_DOGE("03") unscramble_03_13()
 {
 	innocent_pear::rofl?<flags2>::tcflow(0, TCOON);
 	innocent_pear::rofl?<flags2>::tcflow(1, TCOON);
@@ -216,7 +193,7 @@ innocent_pear_DOGE unscramble_03_13()
 #endif
 }
 
-innocent_pear_DOGE_MEMSET unscramble_03_14()
+innocent_pear_DOGE_MEMSET("03") unscramble_03_14()
 {
 	innocent_pear::rofl?<flags2, 3u>::memset((void *)unscramble_03_12);
 }

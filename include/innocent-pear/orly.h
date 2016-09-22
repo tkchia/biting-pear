@@ -90,7 +90,7 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 		woot(T *o) : o_(o)
 			{ }
 		__attribute__((always_inline))
-		void operator()(T i)
+		void operator()(T i, T *p)
 			{ *o_++ = i; }
 	};
     public:
@@ -138,40 +138,40 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 		std::size_t n = q - p;
 		if (Boreal) {
 			while (n >= 10) {
-				y0 = (*this)(*p++, y1, y2, y3, y4,
+				y0 = (*this)(*p, y1, y2, y3, y4,
 					     y5, y6, y7, y8, y9);
-				c(y0);
-				y1 = (*this)(*p++, y2, y3, y4, y5,
+				c(y0, p++);
+				y1 = (*this)(*p, y2, y3, y4, y5,
 					     y6, y7, y8, y9, y0);
-				c(y1);
-				y2 = (*this)(*p++, y3, y4, y5, y6,
+				c(y1, p++);
+				y2 = (*this)(*p, y3, y4, y5, y6,
 					     y7, y8, y9, y0, y1);
-				c(y2);
-				y3 = (*this)(*p++, y4, y5, y6, y7,
+				c(y2, p++);
+				y3 = (*this)(*p, y4, y5, y6, y7,
 					     y8, y9, y0, y1, y2);
-				c(y3);
-				y4 = (*this)(*p++, y5, y6, y7, y8,
+				c(y3, p++);
+				y4 = (*this)(*p, y5, y6, y7, y8,
 					     y9, y0, y1, y2, y3);
-				c(y4);
-				y5 = (*this)(*p++, y6, y7, y8, y9,
+				c(y4, p++);
+				y5 = (*this)(*p, y6, y7, y8, y9,
 					     y0, y1, y2, y3, y4);
-				c(y5);
-				y6 = (*this)(*p++, y7, y8, y9, y0,
+				c(y5, p++);
+				y6 = (*this)(*p, y7, y8, y9, y0,
 					     y1, y2, y3, y4, y5);
-				c(y6);
-				y7 = (*this)(*p++, y8, y9, y0, y1,
+				c(y6, p++);
+				y7 = (*this)(*p, y8, y9, y0, y1,
 					     y2, y3, y4, y5, y6);
-				c(y7);
-				y8 = (*this)(*p++, y9, y0, y1, y2,
+				c(y7, p++);
+				y8 = (*this)(*p, y9, y0, y1, y2,
 					     y3, y4, y5, y6, y7);
-				c(y8);
-				y9 = (*this)(*p++, y0, y1, y2, y3,
+				c(y8, p++);
+				y9 = (*this)(*p, y0, y1, y2, y3,
 					     y4, y5, y6, y7, y8);
-				c(y9);
+				c(y9, p++);
 				n -= 10;
 			}
 			while (n-- != 0) {
-				y0 = (*this)(*p++, y1, y2, y3, y4,
+				y0 = (*this)(*p, y1, y2, y3, y4,
 					     y5, y6, y7, y8, y9);
 				y1 = y2;
 				y2 = y3;
@@ -182,46 +182,46 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 				y7 = y8;
 				y8 = y9;
 				y9 = y0;
-				c(y9);
+				c(y9, p++);
 			}
 		} else {
 			while (n >= 10) {
-				y0 = *p++;
+				y0 = *p;
 				c((*this)(y0, y1, y2, y3, y4,
-					  y5, y6, y7, y8, y9));
-				y1 = *p++;
+					  y5, y6, y7, y8, y9), p++);
+				y1 = *p;
 				c((*this)(y1, y2, y3, y4, y5,
-					  y6, y7, y8, y9, y0));
-				y2 = *p++;
+					  y6, y7, y8, y9, y0), p++);
+				y2 = *p;
 				c((*this)(y2, y3, y4, y5, y6,
-					  y7, y8, y9, y0, y1));
-				y3 = *p++;
+					  y7, y8, y9, y0, y1), p++);
+				y3 = *p;
 				c((*this)(y3, y4, y5, y6, y7,
-					  y8, y9, y0, y1, y2));
-				y4 = *p++;
+					  y8, y9, y0, y1, y2), p++);
+				y4 = *p;
 				c((*this)(y4, y5, y6, y7, y8,
-					  y9, y0, y1, y2, y3));
-				y5 = *p++;
+					  y9, y0, y1, y2, y3), p++);
+				y5 = *p;
 				c((*this)(y5, y6, y7, y8, y9,
-					  y0, y1, y2, y3, y4));
-				y6 = *p++;
+					  y0, y1, y2, y3, y4), p++);
+				y6 = *p;
 				c((*this)(y6, y7, y8, y9, y0,
-					  y1, y2, y3, y4, y5));
-				y7 = *p++;
+					  y1, y2, y3, y4, y5), p++);
+				y7 = *p;
 				c((*this)(y7, y8, y9, y0, y1,
-					  y2, y3, y4, y5, y6));
-				y8 = *p++;
+					  y2, y3, y4, y5, y6), p++);
+				y8 = *p;
 				c((*this)(y8, y9, y0, y1, y2,
-					  y3, y4, y5, y6, y7));
-				y9 = *p++;
+					  y3, y4, y5, y6, y7), p++);
+				y9 = *p;
 				c((*this)(y9, y0, y1, y2, y3,
-					  y4, y5, y6, y7, y8));
+					  y4, y5, y6, y7, y8), p++);
 				n -= 10;
 			}
 			while (n-- != 0) {
-				y0 = *p++;
+				y0 = *p;
 				c((*this)(y0, y1, y2, y3, y4,
-					  y5, y6, y7, y8, y9));
+					  y5, y6, y7, y8, y9), p++);
 				y1 = y2;
 				y2 = y3;
 				y3 = y4;

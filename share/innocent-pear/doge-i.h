@@ -6,11 +6,13 @@
 #else
 #   define innocent_pear_CTOR  constructor
 #endif
-#define innocent_pear_DOGE \
-       __attribute__((innocent_pear_CTOR, section(".text.unlikely"))) \
+#define innocent_pear_DOGE(tag) \
+       __attribute__((innocent_pear_CTOR, \
+	    section(".text.unlikely." tag ".t"))) \
        static void
-#define innocent_pear_DOGE_MEMSET \
-       __attribute__((innocent_pear_CTOR, section(".text.unlikely"), \
+#define innocent_pear_DOGE_MEMSET(tag) \
+       __attribute__((innocent_pear_CTOR, \
+	    section(".text.unlikely." tag ".t"), \
            optimize("no-reorder-blocks"))) \
        static void
 

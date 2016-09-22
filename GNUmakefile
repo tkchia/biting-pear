@@ -87,7 +87,7 @@ modules.host = \
     infra/keccak/KeccakP-1600-reference.o
 installables.host = \
     $(utils.host) \
-    share/innocent-pear/doge.h \
+    share/innocent-pear/doge-i.h \
     share/innocent-pear/doge-01.cc \
     share/innocent-pear/doge-02.cc \
     share/innocent-pear/doge-03.cc \

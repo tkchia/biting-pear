@@ -16,7 +16,7 @@
 #ifdef __unix__
 #   include <fcntl.h>
 #endif
-#include "doge.h"
+#include "doge-i.h"
 
 extern unsigned char unlikely_text_start[]
     __asm("_.innocent_pear.text.unlikely.start");
@@ -25,7 +25,7 @@ extern unsigned char hot_text_end[]
 extern unsigned char our_rodata_end[]
     __asm("_.innocent_pear.rodata.end");
 
-innocent_pear_DOGE unscramble_01_1()
+innocent_pear_DOGE("01") unscramble_01_1()
 {
 	static constexpr innocent_pear::impl::ops_flags_t flags =
 	    innocent_pear::ops::allow_all |

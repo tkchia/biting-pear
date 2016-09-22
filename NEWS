@@ -1,3 +1,33 @@
+2016-09-22	"Has anyone ever tasted an `end'?  Are they really bitter?"
+		(4)
+
+		include/innocent-pear/orly.h :
+		- functor passed to orly<...>::wot(...) now needs to accept
+		  2 arguments, not 1
+
+		share/innocent-pear/doge-i.h :
+		- renamed from share/innocent-pear/doge.h
+		- innocent_pear_DOGE and innocent_pear_DOGE_MEMSET now each
+		  accept a tag argument
+
+		share/innocent-pear/doge-01.cc :
+		- now uses updated doge-i.h
+
+		share/innocent-pear/doge-02.cc :
+		- now uses updated doge-i.h
+		- now places _.innocent_pear.text.unlikely.start in a
+		  separate section, so that g++ will not complain about
+		  inconsistent section attributes
+		- moved first two routines from doge-03.cc in
+
+		share/innocent-pear/doge-03.cc :
+		- now uses updated doge-i.h and orly.h
+		- moved first two routines out to doge-02.cc
+		- minor tweak
+
+		GNUmakefile :
+		- share/innocent-pear/doge.h -> share/innocent-pear/doge-i.h
+
 2016-09-17	"Has anyone ever tasted an `end'?  Are they really bitter?"
 		(3)
 
