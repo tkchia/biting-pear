@@ -39,7 +39,7 @@ static constexpr innocent_pear::impl::ops_flags_t flags2 =
     innocent_pear::ops::allow_all &
    ~innocent_pear::ops::allow_terminal_unsafes;
 
-innocent_pear_HERE_START;
+innocent_pear_HERE_START
 
 innocent_pear_DOGE unscramble_03_03()
 {

@@ -41,7 +41,7 @@ static constexpr innocent_pear::impl::ops_flags_t flags2 =
     innocent_pear::ops::allow_all &
    ~innocent_pear::ops::allow_terminal_unsafes;
 
-innocent_pear_HERE_START;
+innocent_pear_HERE_START
 
 extern const unsigned char startup_text_start[0]
     __asm("_.innocent_pear.text.startup.start")

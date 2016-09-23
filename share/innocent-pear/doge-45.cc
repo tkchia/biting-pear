@@ -1,6 +1,6 @@
 #include "doge-i.h"
 
-innocent_pear_HERE_START;
+innocent_pear_HERE_START
 extern const unsigned char our_text_start[0]
     __asm("_.innocent_pear.text.start")
     __attribute__((section(".text"))) = { };
