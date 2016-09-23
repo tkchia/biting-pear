@@ -1,3 +1,56 @@
+2016-09-23	Fixed bugs in (1) relocation handling (2) building away from
+		source tree.  Minor internal enhancements.
+
+		bin/innocent-pear-c++.cc :
+		- added `-Xinnocent-pear -exec-prefix=...' and
+		  `-Xinnocent-pear -target-exec-prefix=...' options, to
+		  facilitate building away from source tree
+		- now adds one new seed and one new round of scrambling
+		- now defines innocent_pear_DOGE_TAG macro when compiling
+		  share/innocent-pear/doge-??.cc files
+		- doge-04 -> doge-45
+
+		GNUmakefile :
+		- fixed to _really_ allow builds away from source tree
+		- doge-04 -> doge-45
+
+		infra/travis-build-and-check.sh :
+		- now tries to do build in a separate build-*/ directory
+
+		share/innocent-pear/calm.cc :
+		- fixed to _really_ allow builds away from source tree
+
+		share/innocent-pear/doge-i.h :
+		- innocent_pear_DOGE and innocent_pear_DOGE_MEMSET no longer
+		  require an argument (again!), since now there is
+		  innocent_pear_DOGE_TAG
+		- added innocent_pear_HERE_START
+
+		share/innocent-pear/doge-01.cc :
+		- updated doge-i.h macro calls
+		- now unscrambles only doge-02.cc portion
+
+		share/innocent-pear/doge-02.cc :
+		- updated doge-i.h macro calls
+		- now unscrambles doge-03.cc portion
+
+		share/innocent-pear/doge-03.cc :
+		- updated doge-i.h macro calls
+		- fixed bug in applying of relocations :-\
+
+		share/innocent-pear/doge-45.cc :
+		- renamed from doge-04.cc to doge-45.cc
+		- now uses doge-i.h
+
+		share/innocent-pear/doge-98.cc :
+		- updated symbol reference for start of scrambled text
+
+		README.md :
+		- now mentions non-support of `-###'
+
+		lolwutconf/ :
+		- bumped to e9fababcac
+
 2016-09-22	"Has anyone ever tasted an `end'?  Are they really bitter?"
 		(4)
 

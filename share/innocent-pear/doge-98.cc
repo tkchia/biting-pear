@@ -6,8 +6,8 @@
 #include <innocent-pear/kthxbai.h>
 #include <innocent-pear/rofl.h>
 
-extern unsigned char unlikely_text_start[]
-    __asm("_.innocent_pear.text.unlikely.start");
+extern unsigned char doge_text_start[]
+    __asm("_.innocent_pear.text.doge.02.start");
 extern unsigned char startup_text_start[]
     __asm("_.innocent_pear.text.startup.start");
 extern unsigned char our_rodata_start[] __asm("_.innocent_pear.rodata.start");
@@ -39,7 +39,7 @@ innocent_pear_DOGE_L scramble_98_2()
 	using innocent_pear::ops::allow_debugger_unsafes;
 	uintptr_t pg_sz = (uintptr_t)getpagesize();
 	unsigned char *prot_start =
-	    (unsigned char *)((uintptr_t)unlikely_text_start & -pg_sz);
+	    (unsigned char *)((uintptr_t)doge_text_start & -pg_sz);
 	unsigned char *prot_end =
 	    (unsigned char *)(((uintptr_t)our_rodata_start+pg_sz-1) & -pg_sz);
 	innocent_pear::rofl?<allow_debugger_unsafes>::mprotect

@@ -34,7 +34,9 @@ There is also a rather undocumented C++ API for various code obfuscation subtask
 
 **(2)** The C++ API should really be documented.
 
-**(3)** Compiling for an x86-32 target, or the `armv4-linux-gnueabi` (non-Thumb) target, using `g++` 4.8.4, may cause the compiler to crash:
+**(3)** The `innocent-pear-c++` wrapper does not understand the `-###` command line option, even though it itself may call the underlying compiler with `-###` internally.
+
+**(4)** Compiling for an x86-32 target, or the `armv4-linux-gnueabi` (non-Thumb) target, using `g++` 4.8.4, may cause the compiler to crash:
 
 ```
 ./share/innocent-pear/doge-01.cc: In function ‘void unscramble_01_1()’:
@@ -48,7 +50,7 @@ See <file:///usr/share/doc/gcc-4.8/README.Bugs> for instructions.
 
 I do not know what exactly is causing this.  For now, consider using either `g++` 5 or above, or `clang++`, to compile x86-32 or ARMv4 code.
 
-**(4)** If `innocent-pear` is explicitly set up to compile target-side programs
+**(5)** If `innocent-pear` is explicitly set up to compile target-side programs
 
   * using `clang++`
   * with `libstdc++` linked in dynamically (i.e. no `-static` or `-static-libstdc++`)

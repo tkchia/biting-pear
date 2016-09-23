@@ -20,7 +20,10 @@ CPPFLAGS += -Iinfra/keccak -DKeccakP200_excluded -DKeccakP400_excluded \
 
 wrap_cxx = bin/innocent-pear-c++
 wrap_cxx.staged = $(wrap_cxx) \
-    -Xinnocent-pear -prefix=. -Xinnocent-pear -target-prefix=.
+    -Xinnocent-pear -prefix='$(conf_Srcdir)' \
+    -Xinnocent-pear -exec-prefix=. \
+    -Xinnocent-pear -target-prefix='$(conf_Srcdir)' \
+    -Xinnocent-pear -target-exec-prefix=.
 CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET)
 config.h.host = include/innocent-pear/host/derp.h
 headers.keccak.host = \
@@ -91,7 +94,7 @@ installables.host = \
     share/innocent-pear/doge-01.cc \
     share/innocent-pear/doge-02.cc \
     share/innocent-pear/doge-03.cc \
-    share/innocent-pear/doge-04.cc \
+    share/innocent-pear/doge-45.cc \
     share/innocent-pear/doge-98.cc \
     share/innocent-pear/doge-99.cc \
     share/innocent-pear/doge-i.ld \
@@ -153,13 +156,13 @@ clean:
 		lex.backup share/innocent-pear/omnomnom.cc \
 		$(tests.target) $(utils.host) infra/keccak lolwutconf.*
 ifeq "$(conf_Separate_build_dir)" "yes"
-	-rmdir helper test util
+	-$(RM) -r test
 endif
 
 distclean: clean
 	$(RM) config.cache
 ifeq "$(conf_Separate_build_dir)" "yes"
-	$(RM) GNUmakefile
+	-$(RM) GNUmakefile
 endif
 
 config.cache:
@@ -405,7 +408,7 @@ test/test-%.debug.passed: test/test-%.debug test/test-%.good
 	    (echo "* $< exited with error: $$?" >&2 && \
 	     $(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
 	     exit 1)
-	@LANG=en_US.UTF-8 diff -U2 $(<:.debug=.good) $(@:.passed=.1.tmp) || \
+	@LANG=en_US.UTF-8 diff -U2 $(word 2,$+) $(@:.passed=.1.tmp) || \
 	    (echo "* $<'s expected output and actual output differ" >&2 && \
 	     $(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
 	     exit 1)
@@ -430,7 +433,7 @@ test/test-%.passed: test/test-% test/test-%.good
 	    (echo "* $< produced output on stderr" >&2 && \
 	     $(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
 	     exit 1)
-	@LANG=en_US.UTF-8 diff -U2 $<.good $(@:.passed=.1.tmp) || \
+	@LANG=en_US.UTF-8 diff -U2 $(word 2,$+) $(@:.passed=.1.tmp) || \
 	    (echo "* $<'s expected output and actual output differ" >&2 && \
 	     $(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
 	     exit 1)

@@ -14,7 +14,8 @@ using innocent_pear::impl::uint64_t;
 
 static int main_(int argc, char **argv)
 {
-	const char *lulz = innocent_pear::impl::getenv("INNOCENT_PEAR_PREFIX");
+	const char *lulz =
+	    innocent_pear::impl::getenv("INNOCENT_PEAR_EXEC_PREFIX");
 	enum { UNKNOWN, CLANG, AS, CC1, CC1PLUS, LD } wut = UNKNOWN;
 	struct {
 		unsigned pass : 1, e : 1, v : 1, x : 1, pass_all : 1,
