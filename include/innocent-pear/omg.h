@@ -206,10 +206,10 @@ class omg
 	    State10 = update_inner(State9),
 	    State11 = update_inner(State10),
 	    NewState = update_outer(State, Levels),
-	    NewState2 = update_outer(State, Levels),
-	    NewState3 = update_outer(State, Levels),
-	    NewState4 = update_outer(State, Levels),
-	    NewState5 = update_outer(State, Levels);
+	    NewState2 = update_outer(NewState, Levels),
+	    NewState3 = update_outer(NewState2, Levels),
+	    NewState4 = update_outer(NewState3, Levels),
+	    NewState5 = update_outer(NewState4, Levels);
 	static constexpr unsigned char
 	    Frob0 = pick_hi<unsigned char>(State2  ^ State3),
 	    Frob1 = pick_hi<unsigned char>(State3  ^ State4),

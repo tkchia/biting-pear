@@ -46,6 +46,9 @@
 		share/innocent-pear/doge-98.cc :
 		- updated symbol reference for start of scrambled text
 
+		include/innocent-pear/omg.h :
+		- fixed bug in pseudorandomness generation
+
 		README.md :
 		- now mentions non-support of `-###'
 
