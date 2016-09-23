@@ -37,9 +37,6 @@ extern unsigned char dogecoin_end[] __asm("_.innocent_pear.dogecoin.end");
 static constexpr innocent_pear::impl::ops_flags_t flags =
     innocent_pear::ops::allow_all |
     innocent_pear::ops::under_munged_terminal;
-static constexpr innocent_pear::impl::ops_flags_t flags2 =
-    innocent_pear::ops::allow_all &
-   ~innocent_pear::ops::allow_terminal_unsafes;
 
 innocent_pear_HERE_START
 

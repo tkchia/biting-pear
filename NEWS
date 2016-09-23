@@ -33,6 +33,7 @@
 		share/innocent-pear/doge-02.cc :
 		- updated doge-i.h macro calls
 		- now unscrambles doge-03.cc portion
+		- removed unneeded definition of flags2
 
 		share/innocent-pear/doge-03.cc :
 		- updated doge-i.h macro calls
