@@ -41,7 +41,7 @@
 	extern void here_start() __asm("_.innocent_pear.text.doge." \
 	    innocent_pear_DOGE_TAG ".start"); \
 	__attribute__((section(".text.unlikely." innocent_pear_DOGE_TAG \
-	    ".d", naked))) \
+	    ".d"), naked)) \
 	void here_start() { }
 #   else
 #	define innocent_pear_HERE_START \
