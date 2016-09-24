@@ -123,10 +123,10 @@ static uint64_t fetch()
 }
 
 static void nyan(sleepier_t& cheesy, const char *cheeses, states_t st,
-    const char *cheez, char *cheesier, char *me,
-    const std::string& caturday, const std::string& ecaturday,
-    const std::string& meow, const std::string& emeow, bool v, bool sta,
-    bool debug_doge)
+    const char *cheez, const char *cheeez, const char *cheeeez,
+    char *cheesier, char *me, const std::string& caturday,
+    const std::string& ecaturday, const std::string& meow,
+    const std::string& emeow, bool v, bool sta, bool debug_doge)
 {
 	char cheese[strlen(cheeses) + 8];
 	std::snprintf(cheese, sizeof cheese, "%s.pear.t", cheeses);
@@ -141,6 +141,11 @@ static void nyan(sleepier_t& cheesy, const char *cheeses, states_t st,
 		"-Xinnocent-pear", pusheen("-target-prefix=", meow),
 		"-Xinnocent-pear", pusheen("-target-exec-prefix=", emeow),
 		pusheen("-Dinnocent_pear_DOGE_TAG=\"", cheez, '"'),
+		cheeez	? pusheen("-Dinnocent_pear_DOGE_TAG_NEXT=\"", cheeez,
+			      '"') : (char *)"-Uinnocent_pear_DOGE_TAG_NEXT",
+		cheeeez	? pusheen("-Dinnocent_pear_DOGE_TAG_2_NEXT=\"",
+			      cheeeez, '"')
+			: (char *)"-Uinnocent_pear_DOGE_TAG_2_NEXT",
 		pusheen("-Dinnocent_pear_DOGE_STATE_0=0x", std::hex, st.z),
 		pusheen("-Dinnocent_pear_DOGE_STATE_1=0x", std::hex, st.i),
 		pusheen("-Dinnocent_pear_DOGE_STATE_2=0x", std::hex, st.ii),
@@ -523,12 +528,16 @@ static int main_(int argc, char **argv)
 			std::size_t s;
 			for (s = 0; s < NumDogeIParts; ++s)
 				nyan(doge_i[s], *cheeses, st, doge_i_tags[s],
+				    s+1 < NumDogeIParts ? doge_i_tags[s+1] : 0,
+				    s+2 < NumDogeIParts ? doge_i_tags[s+2] : 0,
 				    pusheen(caturday, "/share/innocent-pear/"
 					"doge-", doge_i_tags[s], ".cc"),
 				    *argv, caturday, ecaturday, meow, emeow,
 				    is.grumpiest, is.sta, debug_doge);
 			for (s = 0; s < NumDogeNParts; ++s)
 				nyan(doge_n[s], *cheeses, st, doge_n_tags[s],
+				    s+1 < NumDogeNParts ? doge_n_tags[s+1] : 0,
+				    s+2 < NumDogeNParts ? doge_n_tags[s+2] : 0,
 				    pusheen(caturday, "/share/innocent-pear/"
 					"doge-", doge_n_tags[s], ".cc"),
 				    *argv, caturday, ecaturday, meow, emeow,

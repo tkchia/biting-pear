@@ -1,3 +1,14 @@
+2016-09-24	"Has anyone ever tasted an `end'?  Are they really bitter?"
+		(5)
+
+		GNUmakefile :
+		- `make check' now builds test/test-doge.eh.debug
+
+		bin/innocent-pear-c++.cc :
+		- now defines macros innocent_pear_DOGE_TAG_NEXT and
+		  innocent_pear_DOGE_TAG_2_NEXT when compiling share/
+		  innocent-pear/doge-??.cc files
+
 2016-09-23	Fixed bugs in (1) relocation handling (2) building away from
 		source tree.  Minor internal enhancements.
 
