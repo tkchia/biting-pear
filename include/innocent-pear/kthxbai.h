@@ -27,7 +27,7 @@ class lolwut;  // forward
 template<class T>
 bool hi_bit(T x)
 {
-	return (x & 1 << (sizeof(T) * CHAR_BIT - 1)) != 0;
+	return (x & ((T)1 << (sizeof(T) * CHAR_BIT - 1))) != 0;
 }
 
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>

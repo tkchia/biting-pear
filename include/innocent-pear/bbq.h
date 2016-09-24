@@ -114,7 +114,7 @@ inline constexpr T pick_hi(rand_state_t x)
 
 namespace ops {
 
-static const innocent_pear::impl::ops_flags_t
+static constexpr innocent_pear::impl::ops_flags_t
     allow_signal_safes		= 0x00000001u,
     allow_signal_unsafes	= 0x00000002u,
     allow_debugger_unsafes	= 0x00000004u,

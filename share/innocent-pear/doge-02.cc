@@ -17,28 +17,16 @@
 
 using innocent_pear::impl::uintptr_t;
 
-extern unsigned char next_start[]
-    __asm("_.innocent_pear.text.doge.03.start");
-extern unsigned char next_end[]
-    __asm("_.innocent_pear.text.doge.45.start");
 extern unsigned char our_text_start[]
     __asm("_.innocent_pear.text.start");
 extern unsigned char our_text_end[] __asm("_.innocent_pear.text.end");
-extern unsigned char our_rodata_start[] __asm("_.innocent_pear.rodata.start");
-extern unsigned char our_rodata_end[] __asm("_.innocent_pear.rodata.end");
-extern unsigned char our_relro_start[] __asm("_.innocent_pear.relro.start");
-extern unsigned char our_relro_end[] __asm("_.innocent_pear.relro.end");
-extern unsigned char our_data_start[] __asm("_.innocent_pear.data.start");
-extern unsigned char our_data_end[] __asm("_.innocent_pear.data.end");
-extern unsigned char our_bss_end[] __asm("_end");
-extern unsigned char dogecoin_start[] __asm("_.innocent_pear.dogecoin.start");
-extern unsigned char dogecoin_end[] __asm("_.innocent_pear.dogecoin.end");
 
 static constexpr innocent_pear::impl::ops_flags_t flags =
     innocent_pear::ops::allow_all |
     innocent_pear::ops::under_munged_terminal;
 
 innocent_pear_HERE_START
+innocent_pear_NEXT
 
 extern const unsigned char startup_text_start[0]
     __asm("_.innocent_pear.text.startup.start")
@@ -52,16 +40,13 @@ innocent_pear_DOGE unscramble_02_1()
 	innocent_pear::orly<innocent_pear_DOGE_STATE_1,
 	    unsigned char, false, true, flags>().wut(nxs, nxe);
 	innocent_pear_CHAFF(flags);
-	innocent_pear::rofl?<flags, 3u>::clear_cache(nxs, nxe);
-	innocent_pear_CHAFF(flags);
 	innocent_pear::orly<innocent_pear_DOGE_STATE_2,
 	    unsigned char, false, false, flags>().wut(ts, te);
 	innocent_pear_CHAFF(flags);
-	innocent_pear::rofl?<flags, 3u>::clear_cache(ts, te);
-	innocent_pear_CHAFF(flags);
+	innocent_pear::rofl?<flags>::clear_cache(nxs, te);
 }
 
 innocent_pear_DOGE_MEMSET unscramble_02_2()
 {
-	innocent_pear::rofl?<flags, 3u>::memset((void *)here_start);
+	innocent_pear::rofl?<flags>::memset((void *)here_start);
 }

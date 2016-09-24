@@ -52,15 +52,20 @@
 	void here_start() { }
 #   endif
 #endif
+#define innocent_pear_NEXT \
+	extern unsigned char next_start[] \
+	    __asm("_.innocent_pear.text.doge." innocent_pear_DOGE_TAG_NEXT \
+		  ".start"); \
+	extern unsigned char next_end[] \
+	    __asm("_.innocent_pear.text.doge." innocent_pear_DOGE_TAG_2_NEXT \
+		  ".start");
 /*
  * This needs to be a macro so that the `?' will be expanded to a different
  * seed each time.
  */
 #define innocent_pear_CHAFF(flags) \
-	(innocent_pear::omg?<unsigned, (flags), 3u>::unsafe(), \
-	 innocent_pear::omg?<unsigned, (flags), 3u>::unsafe(), \
-	 innocent_pear::omg?<unsigned, (flags), 3u>::unsafe(), \
-	 innocent_pear::omg?<unsigned, (flags), 3u>::unsafe(), \
-	 innocent_pear::omg?<unsigned, (flags), 3u>::unsafe())
+	(innocent_pear::omg?<unsigned, (flags)>::unsafe(), \
+	 innocent_pear::omg?<unsigned, (flags)>::unsafe(), \
+	 innocent_pear::omg?<unsigned, (flags)>::unsafe())
 
 #endif

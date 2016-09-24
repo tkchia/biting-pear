@@ -27,10 +27,12 @@
 using innocent_pear::impl::uint64_t;
 
 typedef struct {
-	innocent_pear::impl::rand_state_t z, i, ii, iii, iv, v, vi;
+	innocent_pear::impl::rand_state_t z, i, ii, iii, iv, v,
+	    vi, vii, viii, ix, x;
 } states_t;
 
-static const char * const doge_i_tags[] = { "01", "02", "03", "45" };
+static const char * const doge_i_tags[] =
+    { "01", "02", "03", "04", "05", "06", "07", "45" };
 static const char * const doge_n_tags[] = { "98", "99" };
 static constexpr std::size_t
     NumDogeIParts = sizeof(doge_i_tags) / sizeof(*doge_i_tags),
@@ -153,6 +155,10 @@ static void nyan(sleepier_t& cheesy, const char *cheeses, states_t st,
 		pusheen("-Dinnocent_pear_DOGE_STATE_4=0x", std::hex, st.iv),
 		pusheen("-Dinnocent_pear_DOGE_STATE_5=0x", std::hex, st.v),
 		pusheen("-Dinnocent_pear_DOGE_STATE_6=0x", std::hex, st.vi),
+		pusheen("-Dinnocent_pear_DOGE_STATE_7=0x", std::hex, st.vii),
+		pusheen("-Dinnocent_pear_DOGE_STATE_8=0x", std::hex, st.viii),
+		pusheen("-Dinnocent_pear_DOGE_STATE_9=0x", std::hex, st.ix),
+		pusheen("-Dinnocent_pear_DOGE_STATE_10=0x", std::hex, st.x),
 		sta ? (char *)"-Uinnocent_pear_DYN_LD_CXX_TARGET" :
 		      (char *)"-Dinnocent_pear_DYN_LD_CXX_TARGET",
 		debug_doge ? (char *)"-Dinnocent_pear_DEBUG=1" :
@@ -515,6 +521,10 @@ static int main_(int argc, char **argv)
 		st.iv = fetch();
 		st.v = fetch();
 		st.vi = fetch();
+		st.vii = fetch();
+		st.viii = fetch();
+		st.ix = fetch();
+		st.x = fetch();
 		if (is.dogecoin)
 			*cheese++ = pusheen("-Wa,--Xinnocent-pear=dogecoin=0x",
 			    std::hex, fetch());
@@ -582,30 +592,51 @@ static int main_(int argc, char **argv)
 		nyanyan(ecaturday, doge_a(), doge_b(),
 		    (char *)"_.innocent_pear.dogecoin.start",
 		    (char *)"_.innocent_pear.dogecoin.end",
-		    st.vi, is.grumpiest);
+		    st.x, is.grumpiest);
 		doge_a.cheshire();
 		nyanyan(ecaturday, doge_b(), doge_a(),
+		    (char *)"_.innocent_pear.text.doge.07.start",
+		    (char *)"_.innocent_pear.text.doge.45.start",
+		    st.ix, is.grumpiest);
+		doge_b.cheshire();
+		nyanyan(ecaturday, doge_a(), doge_b(),
 		    (char *)"_.innocent_pear.data.start",
 		    (char *)"_.innocent_pear.data.end",
-		    st.v, is.grumpiest);
+		    st.viii, is.grumpiest);
+		doge_a.cheshire();
+		nyanyan(ecaturday, doge_b(), doge_a(),
+		    (char *)"_.innocent_pear.text.doge.06.start",
+		    (char *)"_.innocent_pear.text.doge.07.start",
+		    st.vii, is.grumpiest);
 		doge_b.cheshire();
 		nyanyan(ecaturday, doge_a(), doge_b(),
 		    (char *)"_.innocent_pear.relro.start",
 		    (char *)"_.innocent_pear.relro.end",
+		    st.vi, is.grumpiest);
+		doge_a.cheshire();
+		nyanyan(ecaturday, doge_b(), doge_a(),
+		    (char *)"_.innocent_pear.text.doge.05.start",
+		    (char *)"_.innocent_pear.text.doge.06.start",
+		    st.v, is.grumpiest);
+		doge_b.cheshire();
+		nyanyan(ecaturday, doge_a(), doge_b(),
+		    (char *)"_.innocent_pear.rodata.start",
+		    (char *)"_.innocent_pear.rodata.end",
 		    st.iv, is.grumpiest);
 		doge_a.cheshire();
 		nyanyan(ecaturday, doge_b(), doge_a(),
-		    (char *)"_.innocent_pear.rodata.start",
-		    (char *)"_.innocent_pear.rodata.end",
+		    (char *)"_.innocent_pear.text.doge.04.start",
+		    (char *)"_.innocent_pear.text.doge.05.start",
 		    st.iii, is.grumpiest);
 		doge_b.cheshire();
 		nyanyan(ecaturday, doge_a(), doge_b(),
 		    (char *)"_.innocent_pear.text.start",
 		    (char *)"_.innocent_pear.text.end",
 		    st.ii, is.grumpiest);
+		doge_a.cheshire();
 		nyanyan(ecaturday, doge_b(), doge_a(),
 		    (char *)"_.innocent_pear.text.doge.03.start",
-		    (char *)"_.innocent_pear.text.doge.45.start",
+		    (char *)"_.innocent_pear.text.doge.04.start",
 		    st.i, is.grumpiest);
 		nyanyan(ecaturday, doge_a(), real_a,
 		    (char *)"_.innocent_pear.text.doge.02.start",

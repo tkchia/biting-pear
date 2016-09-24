@@ -1,3 +1,41 @@
+2016-09-25	Further split unscrambling.  Fixed x86-64 red zone clobbering.
+
+		share/innocent-pear/doge-i.h :
+		- reduced confusion layers
+		- added innocent_pear_NEXT
+
+		share/innocent-pear/doge-01.cc ,
+		share/innocent-pear/doge-02.cc :
+		- reduced confusion layers
+
+		share/innocent-pear/doge-03.cc ,
+		share/innocent-pear/doge-04.cc ,
+		share/innocent-pear/doge-05.cc ,
+		share/innocent-pear/doge-06.cc ,
+		share/innocent-pear/doge-07.cc :
+		- split from share/innocent-pear/doge-03.cc
+		- reduced confusion layers, but increased the number of
+		  parts to unscramble
+		- now defines dogecoin_t::l_ with `constexpr', not `const'
+
+		share/innocent-pear/doge-45.cc :
+		- tweaked code formatting
+
+		bin/innocent-pear-c++.cc :
+		- updated per split of doge-03.cc
+
+		include/innocent-pear/kthxbai.h :
+		- fixed hi_bit(.) logic
+
+		include/innocent-pear/bbq.h :
+		- now defines innocent_pear::impl::ops_flags_t constants with
+		  `constexpr', not `const'
+
+		include/innocent-pear/omg.h :
+		- fixed (lack of) scrambling of "/dev/tty" file name
+		- fixed x86-64 %rsp-twiddling code to take into account the
+		  red zone
+
 2016-09-24	"Has anyone ever tasted an `end'?  Are they really bitter?"
 		(5)
 
