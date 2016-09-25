@@ -1,4 +1,5 @@
 2016-09-25	Further split unscrambling.  Fixed x86-64 red zone clobbering.
+		Abstracted out pseudorandomness generation.
 
 		share/innocent-pear/doge-i.h :
 		- reduced confusion layers
@@ -21,8 +22,14 @@
 		share/innocent-pear/doge-45.cc :
 		- tweaked code formatting
 
+		share/innocent-pear/omnomnom.lxx :
+		- updated to use moar.h rather than directly calling Keccak
+		  routines
+
 		bin/innocent-pear-c++.cc :
 		- updated per split of doge-03.cc
+		- updated to use moar.h rather than directly calling Keccak
+		  routines
 
 		include/innocent-pear/kthxbai.h :
 		- reduced default number of confusion layers
@@ -37,6 +44,19 @@
 		- fixed (lack of) scrambling of "/dev/tty" file name
 		- fixed x86-64 %rsp-twiddling code to take into account the
 		  red zone
+
+		include/innocent-pear/host/moar.h ,
+		share/innocent-pear/moar.cc :
+		- new
+
+		GNUmakefile :
+		- now has moar.h and moar.cc as dependencies; and builds
+		  moar.o specially, for use by omnomnom.lxx
+		- moved `-DKeccakP200_excluded ...' to moar.h and to
+		  compilation rules for Keccak source files
+		- now creates target directories if needed, for %.ii rules
+		  (et al.) -- so that building away from source tree will
+		  work
 
 		test/test-orly.cc :
 		- reduced confusion layers

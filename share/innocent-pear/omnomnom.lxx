@@ -34,7 +34,7 @@ u8tl		[\x80-\xbf]
 #include <unistd.h>
 #define innocent_pear_HOST_SIDE
 #include <innocent-pear/bbq.h>
-#include "KeccakPRG.h"
+#include <innocent-pear/host/moar.h>
 
 #if defined innocent_pear_TARGET_WCHAR_IS_CHAR16
 #   if defined innocent_pear_HOST_WCHAR_IS_CHAR16
@@ -61,7 +61,7 @@ using innocent_pear::impl::uint64_t;
 
 static std::string curr_fn, curr_str_enc;
 static long curr_ln_off = 0;
-static KeccakWidth1600_SpongePRG_Instance prg;
+static moar_t moar;
 static std::vector<std::string> curr_str_chars;
 
 static void warn(const char *fmt, ...)
@@ -90,18 +90,6 @@ static void die(const char *fmt, ...)
 	std::putc('\n', stderr);
 	std::fflush(stderr);
 	throw std::exception();
-}
-
-static uint64_t fetch()
-{
-	unsigned char buf[sizeof(uint64_t)];
-	uint64_t x = 0;
-	KeccakWidth1600_SpongePRG_Fetch(&prg, buf, sizeof buf);
-	for (unsigned i = 0; i < sizeof buf; ++i) {
-		x <<= CHAR_BIT;
-		x |= buf[i];
-	}
-	return x;
 }
 
 static void blurt(const char *s, size_t n)
@@ -202,13 +190,13 @@ static void flush_str()
 
 "?"{ws}"<"{ws}">"	{
 				blurt(yytext + 1, yyleng - 2);
-				blurfl("0x%" PRIx64 ">", fetch());
+				blurfl("0x%" PRIx64 ">", moar.fetch());
 			}
 "?"{ws}"<"{ws}		{
 				char *p = strchr(yytext + 1, '<'),
 				     *q = yytext + yyleng;
 				blurt(yytext + 1, p - yytext);
-				blurfl("0x%" PRIx64 ",", fetch());
+				blurfl("0x%" PRIx64 ",", moar.fetch());
 				blurt(p + 1, q - p - 1);
 			}
 "["{ws}"]"{ws}\"	{
@@ -222,7 +210,7 @@ static void flush_str()
 "$"{ws}\"		{
 				blurt(yytext + 1, yyleng - 2);
 				blurfl("::innocent_pear::dawg<0x%" PRIx64
-				    ",0,", fetch());
+				    ",0,", moar.fetch());
 				curr_str_enc = "";
 				BEGIN(Such);
 			}
@@ -242,7 +230,7 @@ static void flush_str()
 				blurt(yytext + 1, p - yytext - 1);
 				blurt(p + 1, q - p - 1);
 				blurfl("::innocent_pear::yodawg<0x%" PRIx64
-				    ",0,", fetch());
+				    ",0,", moar.fetch());
 				curr_str_enc = "L";
 				BEGIN(Such);
 			}
@@ -403,16 +391,14 @@ int main(int argc, char **argv)
 			    std::strerror(errno));
 		switch (argc) {
 		    case 1:
-			KeccakWidth1600_SpongePRG_Initialize(&prg, 254u);
 			break;
 		    case 2:
-			KeccakWidth1600_SpongePRG_Initialize(&prg, 254u);
 			if ((fd = open(argv[1], O_RDONLY))== -1)
 				break;
 			unsigned char buf[4096];
 			ssize_t n;
 			while ((n = read(fd, buf, sizeof buf)) > 0)
-				KeccakWidth1600_SpongePRG_Feed(&prg, buf, n);
+				moar.feed(buf, n);
 			close(fd);
 			break;
 		    default:
@@ -421,6 +407,5 @@ int main(int argc, char **argv)
 		rv = yylex();
 	} catch (std::exception& ex)
 		{ rv = 1; }
-	KeccakWidth1600_SpongePRG_Forget(&prg);
 	return rv;
 }

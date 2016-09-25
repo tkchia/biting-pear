@@ -21,8 +21,8 @@
 #include <string>
 #define innocent_pear_HOST_SIDE
 #include <innocent-pear/host/lolcat.h>
+#include <innocent-pear/host/moar.h>
 #include <innocent-pear/dawg.h>
-#include "KeccakPRG.h"
 
 using innocent_pear::impl::uint64_t;
 
@@ -37,8 +37,6 @@ static const char * const doge_n_tags[] = { "98", "99" };
 static constexpr std::size_t
     NumDogeIParts = sizeof(doge_i_tags) / sizeof(*doge_i_tags),
     NumDogeNParts = sizeof(doge_n_tags) / sizeof(*doge_n_tags);
-
-static KeccakWidth1600_SpongePRG_Instance prg;
 
 static void grumpy(std::ostringstream& oss, std::ostringstream& info_oss,
     const std::string& eprefix)
@@ -110,18 +108,6 @@ inline char *pusheen(Ts... msg)
 	push(oss, msg...);
 	std::string *s = new std::string(oss.str());
 	return (char *)s->c_str();
-}
-
-static uint64_t fetch()
-{
-	unsigned char buf[sizeof(uint64_t)];
-	uint64_t x = 0;
-	KeccakWidth1600_SpongePRG_Fetch(&prg, buf, sizeof buf);
-	for (unsigned i = 0; i < sizeof buf; ++i) {
-		x <<= CHAR_BIT;
-		x |= buf[i];
-	}
-	return x;
 }
 
 static void nyan(sleepier_t& cheesy, const char *cheeses, states_t st,
@@ -502,33 +488,35 @@ static int main_(int argc, char **argv)
 	sleepier_t doge_i[NumDogeIParts], doge_n[NumDogeNParts],
 	    doge_a, doge_b;
 	if (doge) {
-		KeccakWidth1600_SpongePRG_Initialize(&prg, 254u);
-		while (cheesy != burgery) {
-			--cheesy;
-			int fd = open(*cheesy, O_RDONLY);
-			if (fd == -1)
-				continue;
-			ssize_t n;
-			unsigned char buf[4096];
-			while ((n = read(fd, buf, sizeof buf)) > 0)
-				KeccakWidth1600_SpongePRG_Feed(&prg, buf, n);
-			close(fd);
+		{
+			moar_t mor;
+			while (cheesy != burgery) {
+				--cheesy;
+				int fd = open(*cheesy, O_RDONLY);
+				if (fd == -1)
+					continue;
+				ssize_t n;
+				unsigned char buf[4096];
+				while ((n = read(fd, buf, sizeof buf)) > 0)
+					mor.feed(buf, n);
+				close(fd);
+			}
+			st.z = mor.fetch();
+			st.i = mor.fetch();
+			st.ii = mor.fetch();
+			st.iii = mor.fetch();
+			st.iv = mor.fetch();
+			st.v = mor.fetch();
+			st.vi = mor.fetch();
+			st.vii = mor.fetch();
+			st.viii = mor.fetch();
+			st.ix = mor.fetch();
+			st.x = mor.fetch();
+			if (is.dogecoin)
+				*cheese++ = pusheen("-Wa,"
+				    "--Xinnocent-pear=dogecoin=0x",
+				    std::hex, mor.fetch());
 		}
-		st.z = fetch();
-		st.i = fetch();
-		st.ii = fetch();
-		st.iii = fetch();
-		st.iv = fetch();
-		st.v = fetch();
-		st.vi = fetch();
-		st.vii = fetch();
-		st.viii = fetch();
-		st.ix = fetch();
-		st.x = fetch();
-		if (is.dogecoin)
-			*cheese++ = pusheen("-Wa,--Xinnocent-pear=dogecoin=0x",
-			    std::hex, fetch());
-		KeccakWidth1600_SpongePRG_Forget(&prg);
 		if (is.link && !cheeses) {
 			*cheese++ = (char *)"-o";
 			cheeses = cheese;

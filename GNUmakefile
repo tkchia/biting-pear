@@ -15,8 +15,7 @@ includedir.target = $(conf_Target_prefix)/include
 # for the `infra/keccak/' files below.  Also note that we compile the .c
 # source files for Keccak as C++.
 #
-CPPFLAGS += -Iinfra/keccak -DKeccakP200_excluded -DKeccakP400_excluded \
-    -DKeccakP800_excluded
+CPPFLAGS += -Iinfra/keccak
 
 wrap_cxx = bin/innocent-pear-c++
 wrap_cxx.staged = $(wrap_cxx) \
@@ -38,6 +37,7 @@ headers.host = \
     include/innocent-pear/bbq.h \
     include/innocent-pear/nowai.h \
     include/innocent-pear/host/lolcat.h \
+    include/innocent-pear/host/moar.h \
     include/innocent-pear/host/rly.h \
     include/innocent-pear/host/srsly.h \
     $(headers.keccak.host) \
@@ -84,6 +84,7 @@ modules.host = \
     share/innocent-pear/epic.o \
     share/innocent-pear/keyboard.o \
     share/innocent-pear/lolrus.o \
+    share/innocent-pear/moar.o \
     share/innocent-pear/omnomnom.o \
     share/innocent-pear/sleepier.o \
     infra/keccak/KeccakPRG.o \
@@ -513,9 +514,9 @@ define keccak_cp
 endef
 
 bin/innocent-pear-c++: bin/innocent-pear-c++.o share/innocent-pear/epic.o \
-    share/innocent-pear/keyboard.o share/innocent-pear/sleepier.o \
-    infra/keccak/KeccakPRG.o infra/keccak/KeccakDuplex.o \
-    infra/keccak/KeccakP-1600-reference.o
+    share/innocent-pear/keyboard.o share/innocent-pear/moar.o \
+    share/innocent-pear/sleepier.o infra/keccak/KeccakPRG.o \
+    infra/keccak/KeccakDuplex.o infra/keccak/KeccakP-1600-reference.o
 
 bin/innocent-pear-doge: bin/innocent-pear-doge.o \
     share/innocent-pear/epic.o share/innocent-pear/lolrus.o \
@@ -573,16 +574,27 @@ share/innocent-pear/%.s: share/innocent-pear/%.ii
 infra/keccak/%.o: infra/keccak/%.ii $(headers.keccak.host)
 	$(CXX) $(CXXFLAGS) -c -o$@ $<
 
+share/innocent-pear/moar.ii: share/innocent-pear/moar.cc $(headers.host)
+	mkdir -p $(@D)
+	$(CXX) -E -x c++ $(CPPFLAGS) $(CXXFLAGS) -o$@ $<
+
 share/innocent-pear/%.ii: share/innocent-pear/%.cc $(headers.host) \
     $(headers.target) share/innocent-pear/omnomnom
 	$(preproc_for_host)
 
+infra/keccak/%.ii : CPPFLAGS += -DKeccakP200_excluded \
+				-DKeccakP400_excluded \
+				-DKeccakP800_excluded
+
 infra/keccak/%.ii: infra/keccak/%.cc $(headers.keccak.host)
+	mkdir -p $(@D)
 	$(CXX) -E -x c++ $(CPPFLAGS) $(CXXFLAGS) -o$@ $<
 
 share/innocent-pear/omnomnom: share/innocent-pear/omnomnom.cc \
-    infra/keccak/KeccakPRG.o infra/keccak/KeccakDuplex.o \
-    infra/keccak/KeccakP-1600-reference.o $(config.h.host)
+    share/innocent-pear/moar.o infra/keccak/KeccakPRG.o \
+    infra/keccak/KeccakDuplex.o infra/keccak/KeccakP-1600-reference.o \
+    $(config.h.host)
+	mkdir -p $(@D)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o$@ $(filter-out %.h,$^)
 
 %.o: %.cc $(headers.target) $(installables.host)
