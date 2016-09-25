@@ -88,6 +88,8 @@ innocent_pear_DOGE unscramble_06_1()
 	innocent_pear::orly<innocent_pear_DOGE_STATE_9,
 	    unsigned char, false, true, flags>().wut(nxs, nxe);
 	innocent_pear_CHAFF(flags);
+	innocent_pear::rofl?<flags>::clear_cache(nxs, nxe);
+	innocent_pear_CHAFF(flags);
 	dogecoin_t dogecoin;
 	innocent_pear::orly<innocent_pear_DOGE_STATE_10,
 	    unsigned char, false, false, flags>().wot(dogecoin_start,

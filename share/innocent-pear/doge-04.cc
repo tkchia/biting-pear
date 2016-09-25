@@ -32,6 +32,7 @@ innocent_pear_DOGE unscramble_04_1()
 	innocent_pear::orly<innocent_pear_DOGE_STATE_6,
 	    unsigned char, false, false, flags>().wut(rrs, rre);
 	innocent_pear_CHAFF(flags);
+	innocent_pear::rofl?<flags>::clear_cache(nxs, nxe);
 }
 
 innocent_pear_DOGE_MEMSET unscramble_04_2()

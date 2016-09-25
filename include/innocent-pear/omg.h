@@ -120,7 +120,7 @@ struct omg_impl_0
 #endif
 
 template<rand_state_t State, class T, ops_flags_t Flags = 0,
-    unsigned Levels = 3u>
+    unsigned Levels = 2u>
 class omg;
 
 template<rand_state_t State, class T, ops_flags_t Flags>

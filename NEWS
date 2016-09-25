@@ -25,6 +25,7 @@
 		- updated per split of doge-03.cc
 
 		include/innocent-pear/kthxbai.h :
+		- reduced default number of confusion layers
 		- fixed hi_bit(.) logic
 
 		include/innocent-pear/bbq.h :
@@ -32,9 +33,15 @@
 		  `constexpr', not `const'
 
 		include/innocent-pear/omg.h :
+		- reduced default number of confusion layers
 		- fixed (lack of) scrambling of "/dev/tty" file name
 		- fixed x86-64 %rsp-twiddling code to take into account the
 		  red zone
+
+		test/test-orly.cc :
+		- reduced confusion layers
+		- added some test functions with Boreal == false and BigBad
+		  == false
 
 2016-09-24	"Has anyone ever tasted an `end'?  Are they really bitter?"
 		(5)
