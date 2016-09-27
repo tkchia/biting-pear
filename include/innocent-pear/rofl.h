@@ -697,11 +697,24 @@ class rofl_impl_tcflow :
 	static typename super::syscall_ret tcflow(int fd, int action)
 	{
 #if defined innocent_pear_DEBUG && \
-    defined innocent_pear_HAVE_CONST_TCOOFF && \
     defined innocent_pear_HAVE_CONST_TCOON
-		if (action == innocent_pear_VAL_CONST_TCOOFF ||
-		    action == innocent_pear_VAL_CONST_TCOON) {
+		if (action == innocent_pear_VAL_CONST_TCOON) {
 			std::fprintf(stderr, "tcflow(%d, %d)\n", fd, action);
+			return typename super::syscall_ret(0, 0);
+		}
+#endif
+#if defined innocent_pear_DEBUG && \
+    defined innocent_pear_HAVE_CONST_TCOOFF
+		if (action == innocent_pear_VAL_CONST_TCOOFF) {
+			static volatile unsigned long k_ = 0;
+			unsigned k = __atomic_fetch_add(&k_, 1,
+			    __ATOMIC_SEQ_CST);
+			if (k < 200)
+				std::fprintf(stderr, "tcflow(%d, %d)\n", fd,
+				    action);
+			else if (k == 200)
+				std::fprintf(stderr, "tcflow(%d, %d) ...\n",
+				    fd, action);
 			return typename super::syscall_ret(0, 0);
 		}
 #endif

@@ -1,10 +1,15 @@
 2016-09-27	allow_all -> allow_for_startup, and a bit more.
 
-		share/innocent-pear/bbq.h :
+		include/innocent-pear/bbq.h :
 		- renamed innocent_pear::impl::allow_all -> innocent_pear::
 		  impl::allow_for_startup, to better reflect its true
 		  semantics
 		- removed innocent_pear::impl::allow_terminal_unsafes
+
+		include/innocent-pear/rofl.h :
+		- in debug mode, rofl<...>::tcflow(, TCOOFF) for each seed
+		  will stop logging after being called a few hundred times
+		  (unless there is an `unsigned long' overflow...)
 
 		include/innocent-pear/omg.h ,
 		share/innocent-pear/doge-01.cc ,
