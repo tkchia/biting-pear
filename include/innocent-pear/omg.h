@@ -103,7 +103,8 @@ struct omg_impl_0
 		    case 0:
 			{
 				omg<NewState, unsigned,
-				    innocent_pear::ops::allow_all, Levels-1>();
+				    innocent_pear::ops::allow_for_startup,
+				    Levels - 1>();
 			}
 			break;
 		    case 1:

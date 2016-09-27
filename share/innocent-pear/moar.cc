@@ -7,11 +7,18 @@ using innocent_pear::impl::uint64_t;
 
 void moar_t::feed(const unsigned char *b, std::size_t n)
 {
-	static constexpr unsigned UIM = std::numeric_limits<unsigned>::max();
-	while (n >= UIM) {		/* unlikely but possible case... */
-		KeccakWidth1600_SpongePRG_Feed(&g_, b, UIM);
-		b += UIM;
-		n -= UIM;
+	/*
+	 * It is unlikely, though not exactly impossible, for the buffer
+	 * size to be this big.  We also subtract the size of the PRG
+	 * structure to take into account a possible overflow in the Keccak
+	 * code's internal calculations.
+	 */
+	static constexpr unsigned M =
+	    std::numeric_limits<int>::max() - sizeof(g_);
+	while (n >= M) {
+		KeccakWidth1600_SpongePRG_Feed(&g_, b, M);
+		b += M;
+		n -= M;
 	}
 	KeccakWidth1600_SpongePRG_Feed(&g_, b, (unsigned)n);
 }

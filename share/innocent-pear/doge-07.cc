@@ -19,11 +19,10 @@ extern unsigned char our_relro_end[] __asm("_.innocent_pear.relro.end");
 extern unsigned char our_bss_end[] __asm("_end");
 
 static constexpr innocent_pear::impl::ops_flags_t flags =
-    innocent_pear::ops::allow_all |
+    innocent_pear::ops::allow_for_startup |
     innocent_pear::ops::under_munged_terminal;
 static constexpr innocent_pear::impl::ops_flags_t flags2 =
-    innocent_pear::ops::allow_all &
-   ~innocent_pear::ops::allow_terminal_unsafes;
+    innocent_pear::ops::allow_for_startup;
 
 innocent_pear_HERE_START
 

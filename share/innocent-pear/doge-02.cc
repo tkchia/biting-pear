@@ -22,7 +22,7 @@ extern unsigned char our_text_start[]
 extern unsigned char our_text_end[] __asm("_.innocent_pear.text.end");
 
 static constexpr innocent_pear::impl::ops_flags_t flags =
-    innocent_pear::ops::allow_all |
+    innocent_pear::ops::allow_for_startup |
     innocent_pear::ops::under_munged_terminal;
 
 innocent_pear_HERE_START

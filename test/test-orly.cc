@@ -4,14 +4,17 @@
 
 int main(void)
 {
-	using innocent_pear::ops::allow_all;
-	typedef innocent_pear::orly?<uint32_t, true, true, allow_all> f0_t;
-	typedef innocent_pear::orly?<uint32_t, false, true, allow_all> f1_t;
-	typedef innocent_pear::orly?<uint32_t, true, true, allow_all, 1u> f2_t;
-	typedef innocent_pear::orly?<uint32_t, false, false, allow_all, 1u>
-	    f3_t;
-	typedef innocent_pear::orly?<uint32_t, true, false, allow_all, 1u>
-	    f4_t;
+	using innocent_pear::ops::allow_for_startup;
+	typedef innocent_pear::orly?<uint32_t, true, true,
+	    allow_for_startup> f0_t;
+	typedef innocent_pear::orly?<uint32_t, false, true,
+	    allow_for_startup> f1_t;
+	typedef innocent_pear::orly?<uint32_t, true, true,
+	    allow_for_startup, 1u> f2_t;
+	typedef innocent_pear::orly?<uint32_t, false, false,
+	    allow_for_startup, 1u> f3_t;
+	typedef innocent_pear::orly?<uint32_t, true, false,
+	    allow_for_startup, 1u> f4_t;
 	typedef f0_t::inv::unbad g0_t;
 	typedef f1_t::inv::unbad g1_t;
 	typedef f2_t::inv::unbad g2_t;

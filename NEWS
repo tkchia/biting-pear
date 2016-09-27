@@ -1,3 +1,28 @@
+2016-09-27	allow_all -> allow_for_startup, and a bit more.
+
+		share/innocent-pear/bbq.h :
+		- renamed innocent_pear::impl::allow_all -> innocent_pear::
+		  impl::allow_for_startup, to better reflect its true
+		  semantics
+		- removed innocent_pear::impl::allow_terminal_unsafes
+
+		include/innocent-pear/omg.h ,
+		share/innocent-pear/doge-01.cc ,
+		share/innocent-pear/doge-02.cc ,
+		share/innocent-pear/doge-03.cc ,
+		share/innocent-pear/doge-04.cc ,
+		share/innocent-pear/doge-05.cc ,
+		share/innocent-pear/doge-06.cc ,
+		share/innocent-pear/doge-07.cc ,
+		test/test-kthxbai.cc ,
+		test/test-kthxbai-p.cc ,
+		test/test-orly.cc ,
+		- updated per bbq.h
+
+		share/innocent-pear/moar.cc :
+		- tweaked handling of large buffer sizes for calls to
+		  KeccakWidth1600_SpongePRG_Feed(...)
+
 2016-09-25	Further split unscrambling.  Fixed x86-64 red zone clobbering.
 		Abstracted out pseudorandomness generation.
 

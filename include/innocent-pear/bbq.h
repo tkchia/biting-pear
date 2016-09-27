@@ -120,9 +120,12 @@ static constexpr innocent_pear::impl::ops_flags_t
     allow_debugger_unsafes	= 0x00000004u,
     allow_emulator_unsafes	= 0x00000008u,
     allow_resource_unsafes	= 0x00000010u,
-    allow_terminal_unsafes	= 0x00000020u,
-    allow_all			= 0x0000ffffu,
-    under_munged_terminal	= 0x00010000u;
+    allow_for_startup		= allow_signal_safes |
+				  allow_signal_unsafes |
+				  allow_debugger_unsafes |
+				  allow_emulator_unsafes |
+				  allow_resource_unsafes,
+    under_munged_terminal	= 0x00000020u;
 
 } // innocent_pear::ops
 

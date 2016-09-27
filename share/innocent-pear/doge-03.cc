@@ -15,7 +15,7 @@ extern unsigned char our_rodata_start[] __asm("_.innocent_pear.rodata.start");
 extern unsigned char our_rodata_end[] __asm("_.innocent_pear.rodata.end");
 
 static constexpr innocent_pear::impl::ops_flags_t flags =
-    innocent_pear::ops::allow_all |
+    innocent_pear::ops::allow_for_startup |
     innocent_pear::ops::under_munged_terminal;
 
 innocent_pear_HERE_START
