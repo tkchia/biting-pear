@@ -1,3 +1,11 @@
+2016-09-28	Link in `-latomic'.
+
+		configure :
+		- now probes for `-latomic' library for both host and target
+
+		lolwutconf/ :
+		- bumped to 0afa88f95d
+
 2016-09-27	allow_all -> allow_for_startup, and a bit more.
 
 		include/innocent-pear/bbq.h :
