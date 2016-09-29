@@ -539,7 +539,10 @@ bin/%.ii share/innocent-pear/%.ii infra/keccak/%.ii: \
 		-Dinnocent_pear_CXX_FOR_TARGET=\"$(CXX_FOR_TARGET)\" \
 		$(if $(filter yes,$(conf_Dyn_ld_cxxt)), \
 		    -Dinnocent_pear_DYN_LD_CXX_TARGET, \
-		    -Uinnocent_pear_DYN_LD_CXX_TARGET)
+		    -Uinnocent_pear_DYN_LD_CXX_TARGET) \
+		$(if $(filter yes,$(conf_Have_cxxt_lib_atomic)), \
+		    -Dinnocent_pear_CXX_FOR_TARGET_HAVE_LIB_ATOMIC, \
+		    -Uinnocent_pear_CXX_FOR_TARGET_HAVE_LIB_ATOMIC)
 
 bin/%: bin/%.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)

@@ -1,3 +1,16 @@
+2016-09-29	Link in `-latomic'.  (2)
+
+		GNUmakefile :
+		- now propagates results of target-side `-latomic' test to
+		  compilation of host-side tools
+
+		bin/innocent-pear-c++.cc :
+		- ugly hack: now inserts `-latomic' option right before the
+		  final doge_i[] module, if applicable -- since the
+		  unscrambler may call `-latomic' routines (for i386), we
+		  want to place the used routines outside the scrambled part
+		  of .text
+
 2016-09-28	Link in `-latomic'.
 
 		configure :

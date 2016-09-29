@@ -37,6 +37,7 @@ static const char * const doge_n_tags[] = { "98", "99" };
 static constexpr std::size_t
     NumDogeIParts = sizeof(doge_i_tags) / sizeof(*doge_i_tags),
     NumDogeNParts = sizeof(doge_n_tags) / sizeof(*doge_n_tags);
+static_assert(NumDogeIParts >= 2, "NumDogeIParts < 2 !");
 
 static void grumpy(std::ostringstream& oss, std::ostringstream& info_oss,
     const std::string& eprefix)
@@ -298,7 +299,7 @@ static int main_(int argc, char **argv)
 #endif
 		 };
 	/*
-	 * Why 15 + NumDogeIParts + NumDogeNParts?  We need
+	 * Why 16 + NumDogeIParts + NumDogeNParts?  We need
 	 *
 	 *   * 2 for `-wrapper' `...'
 	 *   * 3 for `-no-integrated-cpp' `-fno-integrated-as'
@@ -306,6 +307,7 @@ static int main_(int argc, char **argv)
 	 *   * 4 for `-idirafter' `...' `-idirafter' `...'
 	 *   * 3 for `-include', `.../doge.h', `-Wl,-T,(doge-i.ld),...'
 	 *   * NumDogeIParts for (doge-01.o), (doge-02.o), ...
+	 *   * 1 for `-latomic'
 	 *   * 0 (== 2 - 2) for `-x' `-none' minus `-Xinnocent-pear' `-doge'
 	 *   * NumDogeNParts for ..., (doge-99.o)
 	 *   * and 3 for (doge-n.ld), and `-o' (doge-a).
@@ -313,7 +315,7 @@ static int main_(int argc, char **argv)
 	 * We also need a terminating null pointer, but since we do not pass
 	 * our own *argv to execvp...
 	 */
-	char *burger[argc + 15 + NumDogeIParts + NumDogeNParts],
+	char *burger[argc + 16 + NumDogeIParts + NumDogeNParts],
 	    **cheese = burger, **cheeses = 0, *burgery[argc],
 	    **cheesy = burgery, *ceiling, *real_a = 0;
 #ifdef innocent_pear_CXX_FOR_TARGET_HAVE_OPT_WRAPPER
@@ -545,16 +547,32 @@ static int main_(int argc, char **argv)
 			doge_b(*cheeses);
 			real_a = *cheeses;
 			*cheeses = (char *)doge_a();
-			std::memmove(burger + 4 + NumDogeIParts, burger + 1,
+			std::memmove(
+#ifdef innocent_pear_CXX_FOR_TARGET_HAVE_LIB_ATOMIC
+			    burger + 5 + NumDogeIParts,
+#else
+			    burger + 4 + NumDogeIParts,
+#endif
+			    burger + 1,
 			    (cheese - burger - 1) * sizeof(char *));
+#ifdef innocent_pear_CXX_FOR_TARGET_HAVE_LIB_ATOMIC
+			cheese += 4 + NumDogeIParts;
+#else
 			cheese += 3 + NumDogeIParts;
+#endif
 			burger[1] = (char *)"-include";
 			burger[2] = pusheen(meowmeow,
 			    "/innocent-pear/doge.h");
 			burger[3] = pusheen("-Wl,-T,", caturday,
 			    "/share/innocent-pear/doge-i.ld,-z,norelro");
-			for (s = 0; s < NumDogeIParts; ++s)
+			for (s = 0; s < NumDogeIParts - 1; ++s)
 				burger[4 + s] = (char *)doge_i[s]();
+#ifdef innocent_pear_CXX_FOR_TARGET_HAVE_LIB_ATOMIC
+			burger[4 + NumDogeIParts - 1] = (char *)"-latomic";
+			burger[4 + NumDogeIParts] = (char *)doge_i[s]();
+#else
+			burger[4 + s] = (char *)doge_i[s]();
+#endif
 			*cheese++ = (char *)"-x";
 			*cheese++ = (char *)"none";
 			for (s = 0; s < NumDogeNParts; ++s)
