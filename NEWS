@@ -1,3 +1,12 @@
+2016-09-30	"May the forces of evil become confused on the way to your
+		 house."
+
+		include/innocent-pear/omg.h :
+		- now adds more random instruction prefixes when compiling
+		  for x86-32 or x86-64
+		- now tries to use `iretl' instruction, when compiling using
+		  g++ for x86-32
+
 2016-09-29	Link in `-latomic'.  (2)
 
 		GNUmakefile :
