@@ -5,6 +5,21 @@
 		- now tries to use `ldr pc, ...' instruction when compiling
 		  for ARM-32 in ARM or Thumb-32 mode
 
+		test/test-orly-1.cc ,
+		test/test-orly-1.good ,
+		test/test-orly-2.cc ,
+		test/test-orly-2.good :
+		- split test case test-orly into two test cases, test-orly-1
+		  and test-orly-2
+
+		test/test-doge-eh.cc ,
+		test/test-doge-eh.sub.cc :
+		- split test-doge-eh test case into two modules (but still
+		  one test case)
+
+		GNUmakefile :
+		- updated per test case changes
+
 2016-09-30	"May the forces of evil become confused on the way to your
 		 house."
 

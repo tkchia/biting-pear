@@ -1,12 +1,7 @@
-#include <cerrno>
 #include <iomanip>
 #include <iostream>
 
-void foo()
-{
-	std::cout << "throw\n";
-	throw 2;
-}
+extern void foo();
 
 int main()
 {

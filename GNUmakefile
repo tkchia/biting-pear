@@ -59,7 +59,8 @@ headers.target = \
 tests.target = \
     test/test-kthxbai \
     test/test-kthxbai-p \
-    test/test-orly \
+    test/test-orly-1 \
+    test/test-orly-2 \
     test/test-dawg \
     test/test-dawg-syn \
     test/test-yodawg \
@@ -68,7 +69,6 @@ tests.target = \
     test/test-doge.debug \
     test/test-doge \
     test/test-doge-abs-reloc \
-    test/test-doge-eh.debug \
     test/test-doge-eh
 utils.host = \
     bin/innocent-pear-c++ \
@@ -498,6 +498,11 @@ test/test-doge-eh.debug \
 test/test-doge-eh.debug.o \
 test/test-doge-eh.debug.s : \
     CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge
+
+test/test-doge-eh: test/test-doge-eh.o test/test-doge-eh.sub.o
+
+test/test-doge-eh.debug: test/test-doge-eh.debug.o \
+    test/test-doge-eh.sub.debug.o
 
 define preproc_for_host
 	mkdir -p $(@D)
