@@ -375,7 +375,7 @@ class omg
 #	endif
 #   endif
 #elif defined __arm__ || defined __thumb__
-		constexpr unsigned Which2 = (State2 >> 56) % 3;
+		constexpr unsigned Which2 = (State2 >> 56) % 4;
 #endif
 		switch (Which) {
 		    case 0:
@@ -576,8 +576,16 @@ class omg
 						    : "r" (q)
 						    : /* no clobbers */
 						    : foo);  break;
-#   ifdef __THUMB_INTERWORK__
+#   if defined __thumb2__ || !defined __thumb__
 					    case 1:
+						__asm goto("ldr pc, %0"
+						    : /* no outputs */
+						    : "m" (q)
+						    : /* no clobbers */
+						    : foo);  break;
+#   endif
+#   ifdef __THUMB_INTERWORK__
+					    case 2:
 						__asm goto("bx %0"
 						    : /* no outputs */
 						    : "r" (q)
@@ -585,7 +593,7 @@ class omg
 						    : foo);  break;
 	// blx is supported only from ARMv5T onwards
 #	if !defined __ARM_ARCH_4__ && !defined __ARM_ARCH_4T__
-					    case 2:
+					    case 3:
 						__asm goto("blx %0"
 						    : /* no outputs */
 						    : "r" (q)
