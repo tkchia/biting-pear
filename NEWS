@@ -1,3 +1,13 @@
+2016-10-02	omg<...>::unsafe() -> omg<...>::special().
+
+		include/innocent-pear/omg.h ,
+		share/innocent-pear/doge-i.h :
+		- renamed omg<...>::unsafe() to omg<...>::special() to more
+		  accurately reflect its semantics
+
+		lolwutconf/ :
+		- bumped to d050bc4d84
+
 2016-10-01	"May the forces of evil become confused on the way to your
 		 house."  (2)
 

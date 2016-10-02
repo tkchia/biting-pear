@@ -64,8 +64,8 @@
  * seed each time.
  */
 #define innocent_pear_CHAFF(flags) \
-	(innocent_pear::omg?<unsigned, (flags)>::unsafe(), \
-	 innocent_pear::omg?<unsigned, (flags)>::unsafe(), \
-	 innocent_pear::omg?<unsigned, (flags)>::unsafe())
+	(innocent_pear::omg?<unsigned, (flags)>::special(), \
+	 innocent_pear::omg?<unsigned, (flags)>::special(), \
+	 innocent_pear::omg?<unsigned, (flags)>::special())
 
 #endif

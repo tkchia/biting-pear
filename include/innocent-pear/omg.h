@@ -265,7 +265,7 @@ class omg
 	typedef rofl<NewState4, Flags, Levels - 1> rofl4;
     public:
 	__attribute__((always_inline))
-	static bool unsafe()
+	static bool special()
 	{
 		using namespace innocent_pear::ops;
 		constexpr unsigned Which2 = (State2 >> 56) % 6;
@@ -392,7 +392,7 @@ class omg
 		    case 2:
 		    case 3:
 		    case 4:
-			if (unsafe())
+			if (special())
 				return;
 			// fall through
 #if (defined __amd64__ || defined __i386__) && \
