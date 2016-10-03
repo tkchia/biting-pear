@@ -15,7 +15,7 @@ namespace impl
 {
 
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
-struct kthxbai_impl;  // forward
+class kthxbai_impl;  // forward
 
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
 class lolwut_impl

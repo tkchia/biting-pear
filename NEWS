@@ -1,3 +1,24 @@
+2016-10-03	"May the forces of evil become confused on the way to your
+		 house."  (3)
+
+		include/innocent-pear/kthxbai.h :
+		- kthxbai_impl<...> is now a class, not a struct...
+		- added kthxbai_impl<...>::special(...), which does nothing
+		  at the moment
+
+		include/innocent-pear/lolwut.h :
+		- `struct kthxbai_impl' -> `class kthxbai_impl'
+
+		include/innocent-pear/omg.h :
+		- omg<...>::omg(.):
+		  - now tries to use `rdtsc', on x86-32 and x86-64
+		  - now tries to use a (garbage) value in a register without
+		    loading anything into it
+		  - now tries to do arithmetic on (possibly garbage) values
+		  - now gives less probability mass to going straight to
+		    kthxbai_impl<...>
+		- `struct kthxbai_impl' -> `class kthxbai_impl'
+
 2016-10-02	omg<...>::unsafe() -> omg<...>::special().
 
 		include/innocent-pear/omg.h ,

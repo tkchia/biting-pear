@@ -31,7 +31,7 @@ bool hi_bit(T x)
 }
 
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
-struct kthxbai_impl;
+class kthxbai_impl;
 
 template<rand_state_t State, class T, class IntoT, ops_flags_t Flags,
     unsigned Levels,
@@ -40,12 +40,13 @@ template<rand_state_t State, class T, class IntoT, ops_flags_t Flags,
 struct kthxbai_impl_split;
 
 template<rand_state_t State, class T, ops_flags_t Flags>
-struct kthxbai_impl<State, T, Flags, ~0u> : public nowai
+class kthxbai_impl<State, T, Flags, ~0u> : public nowai
 	{ };
 
 template<rand_state_t State, class T, ops_flags_t Flags>
-struct kthxbai_impl<State, T, Flags, 0u>
+class kthxbai_impl<State, T, Flags, 0u>
 {
+    public:
 	__attribute__((always_inline))
 	kthxbai_impl(T& x, T v)
 	{
@@ -54,14 +55,20 @@ struct kthxbai_impl<State, T, Flags, 0u>
 };
 
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
-struct kthxbai_impl
+class kthxbai_impl
 {
+	static constexpr rand_state_t State2 = update_inner(State);
+	static constexpr rand_state_t State3 = update_inner(State2);
+	static constexpr rand_state_t NewState = update_outer(State, Levels);
+    public:
+	__attribute__((always_inline))
+	static bool special(T& x, T v)
+	{
+		return false;
+	}
 	__attribute__((always_inline))
 	kthxbai_impl(T& x, T v)
 	{
-		constexpr rand_state_t State2 = update_inner(State);
-		constexpr rand_state_t State3 = update_inner(State2);
-		constexpr rand_state_t NewState = update_outer(State, Levels);
 		switch ((State2 >> 32) % 16) {
 		    case 0:
 			{
@@ -237,6 +244,10 @@ struct kthxbai_impl
 					break;
 				} // else fall through
 			}
+		    case 12:
+			if (special(x, v))
+				return;
+			// else fall through
 		    default:
 			{
 				T x1;

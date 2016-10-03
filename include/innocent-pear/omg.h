@@ -10,6 +10,7 @@
 #include <innocent-pear/nowai.h>
 #include <innocent-pear/ohai.h>
 #include <innocent-pear/rofl.h>
+#include <innocent-pear/yarly.h>
 #ifdef __unix__
 #   include <fcntl.h>
 #endif
@@ -25,7 +26,7 @@ template<impl::rand_state_t State, class T, ops_flags_t Flags,
 class kthxbai;  // forward
 
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
-struct kthxbai_impl;  // forward
+class kthxbai_impl;  // forward
 
 template<impl::rand_state_t State, ops_flags_t Flags, unsigned Levels>
 class rofl;  // forward
@@ -33,6 +34,10 @@ class rofl;  // forward
 template<rand_state_t State, class CT, ops_flags_t Flags, unsigned Levels,
     CT... Chs>
 class dawg_impl;  // forward
+
+template<rand_state_t State, class T, bool BigBad, ops_flags_t Flags,
+    unsigned Levels>
+class yarly;  // forward
 
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
 class omg;
@@ -215,12 +220,26 @@ class omg<State, T, Flags, 0u>
 	{
 		constexpr rand_state_t State2 = update_inner(State);
 		constexpr rand_state_t State3 = update_inner(State2);
-		switch ((State2 >> 32) % 2) {
+		switch (State2 % 5) {
 		    case 0:
+		    case 1:
 			{
 				omg<State3, T, Flags, 0>();
+				__asm __volatile("" : "=g" (x));
 			}
 			break;
+#if defined __i386__ || defined __amd64__
+		    case 2:
+			{
+				unsigned y;
+				__asm(innocent_pear_PREFIX(1) "rdtsc"
+				    : "=a" (y)
+				    : "n" ((State3 >> 32) % 6)
+				    : "edx");
+				x = (T)y;
+			}
+			break;
+#endif
 		    default:
 			{
 				constexpr T v = pick_hi<T>(State3);
@@ -622,15 +641,26 @@ class omg
 	__attribute__((always_inline))
 	omg(T& x)
 	{
-		switch ((State2 >> 32) % 3) {
+		switch ((State2 >> 32) % 7) {
 		    case 0:
+		    case 1:
+		    case 2:
 			{
+				T y;
 				omg<NewState, T, Flags, Levels - 1> zomg(x);
+				omg<NewState2, T, Flags, Levels - 1> zomg2(y);
+				__asm __volatile(""
+				    : "=g" (x)
+				    : "0" (do_op<pick_hi<unsigned>(NewState3)>
+					   (x, y)));
 			}
 			break;
-		    case 1:
+		    case 3:
+		    case 4:
+		    case 5:
 			{
 				omg<NewState, T, Flags, Levels>();
+				__asm __volatile("" : "=g" (x));
 			}
 			break;
 		    default:
