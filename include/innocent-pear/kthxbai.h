@@ -201,8 +201,26 @@ class kthxbai_impl
 				x = do_inv_op<WhichOp>(x1, *p);
 			}
 			break;
-#ifdef __i386__
 		    case 10:
+			{
+				T x1, x2;
+				omg<NewState, T, Flags, Levels - 1> zomg(x1);
+				kthxbai_impl<NewState2, T, Flags, Levels - 1>
+				    (x2, v);
+				__asm __volatile(""
+				    : "=g" (x2)
+				    : "0" (orly<NewState3, T, Boreal1, false,
+					       Flags, Levels ? 1u : 0u>()
+					       (x2, x1)));
+				__asm __volatile(""
+				    : "=g" (x)
+				    : "0" (orly<NewState3, T, !Boreal1, false,
+					       Flags, Levels ? 1u : 0u>()
+					       (x2, x1)));
+			}
+			break;
+#ifdef __i386__
+		    case 11:
 			if (sizeof(T) <= sizeof(unsigned)) {
 				unsigned x1, x2;
 				constexpr unsigned t =
@@ -224,7 +242,7 @@ class kthxbai_impl
 			}
 			// else fall through
 #endif
-		    case 11:
+		    case 12:
 			switch ((State2 >> 48) % 4) {
 			    case 3:
 				if (sizeof(T) > sizeof(unsigned long)) {
@@ -253,31 +271,11 @@ class kthxbai_impl
 					    (x, v);
 					break;
 				}
-			}
-			goto ugh;
-		    case 12:
-			{
-				T x1, x2;
-				omg<NewState, T, Flags, Levels - 1> zomg(x1);
-				kthxbai_impl<NewState2, T, Flags, Levels - 1>
-				    (x2, v);
-				__asm __volatile(""
-				    : "=g" (x2)
-				    : "0" (orly<NewState3, T, Boreal1, false,
-					       Flags, Levels ? 1u : 0u>()
-					       (x2, x1)));
-				__asm __volatile(""
-				    : "=g" (x)
-				    : "0" (orly<NewState3, T, !Boreal1, false,
-					       Flags, Levels ? 1u : 0u>()
-					       (x2, x1)));
-			}
-			break;
+			} // fall through
 		    case 13:
 			if (special(x, v))
 				return;
 			// else fall through
-		    ugh:
 		    default:
 			{
 				T x1;
