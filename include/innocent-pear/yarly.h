@@ -79,8 +79,15 @@ class yarly<State, T, BigBad, Flags, 0u> :
 		    case 9:	return x9;
 		    default:	if (BigBad) {
 					T y;
+					/*
+					 * Say `BigBad ? 3u : 0u' instead
+					 * of just `3u' to prevent possible
+					 * infinite recursion in the
+					 * _compiler_ if BigBad == false...
+					 */
 					kthxbai_impl<super::State12, T,
-					    Flags, 3u>(y, super::DefRetVal);
+					    Flags, BigBad ? 3u : 0u>(y,
+					    super::DefRetVal);
 					return y;
 				} else
 					return super::DefRetVal;

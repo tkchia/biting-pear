@@ -1,3 +1,17 @@
+2016-10-04	More, more, more mixing.
+
+		include/innocent-pear/kthxbai.h :
+		- now further mixes (garbage) values from omg<...> into
+		  computations, via orly<...>
+
+		include/innocent-pear/omg.h :
+		- omg<...>::omg(.) now tries to do getpid() or getppid()
+		  syscalls if permitted
+
+		include/innocent-pear/yarly.h :
+		- _mea culpa_: "redundant condition check" (2016-04-19)
+		  turns out to be not so redundant
+
 2016-10-03	"May the forces of evil become confused on the way to your
 		 house."  (3)
 

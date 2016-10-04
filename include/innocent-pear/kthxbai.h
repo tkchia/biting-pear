@@ -9,6 +9,7 @@
 #include <innocent-pear/lolwut.h>
 #include <innocent-pear/nowai.h>
 #include <innocent-pear/omg.h>
+#include <innocent-pear/orly.h>
 
 namespace innocent_pear
 {
@@ -16,13 +17,16 @@ namespace innocent_pear
 namespace impl
 {
 
-template<impl::rand_state_t State, class T, impl::ops_flags_t Flags,
+template<impl::rand_state_t State, class T, ops_flags_t Flags,
     unsigned Levels>
 class omg;  // forward
 
-template<impl::rand_state_t State, class T, impl::ops_flags_t Flags,
-    unsigned Levels>
+template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
 class lolwut;  // forward
+
+template<rand_state_t State, class T, bool Boreal, bool BigBad,
+    ops_flags_t Flags, unsigned Levels>
+class orly;  // forward
 
 template<class T>
 bool hi_bit(T x)
@@ -57,9 +61,15 @@ class kthxbai_impl<State, T, Flags, 0u>
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
 class kthxbai_impl
 {
-	static constexpr rand_state_t State2 = update_inner(State);
-	static constexpr rand_state_t State3 = update_inner(State2);
-	static constexpr rand_state_t NewState = update_outer(State, Levels);
+	static constexpr rand_state_t
+	    State2 = update_inner(State),
+	    State3 = update_inner(State2),
+	    State4 = update_inner(State3),
+	    State5 = update_inner(State4),
+	    NewState = update_outer(State, Levels),
+	    NewState2 = update_outer(NewState, Levels),
+	    NewState3 = update_outer(NewState2, Levels);
+	static constexpr bool Boreal1 = (State2 >> 20) % 2 != 0;
     public:
 	__attribute__((always_inline))
 	static bool special(T& x, T v)
@@ -82,9 +92,9 @@ class kthxbai_impl
 				T x1, x2;
 				constexpr T v2 = pick_hi<T>(State2^NewState);
 				T v1 = static_cast<T>(do_op<WhichOp>(v, v2));
-				kthxbai_impl<State3, T, Flags, Levels - 1>
-				    (x1, v1);
 				kthxbai_impl<NewState, T, Flags, Levels - 1>
+				    (x1, v1);
+				kthxbai_impl<NewState2, T, Flags, Levels - 1>
 				    (x2, v2);
 				kthxbai_impl<0, T, Flags, 0>(x,
 				    do_inv_op<WhichOp>(x1, x2));
@@ -95,8 +105,8 @@ class kthxbai_impl
 				T x1, x2;
 				constexpr T v1 = pick_hi<T>(State2 ^ State3);
 				constexpr T v2 = pick_hi<T>(State2^NewState);
-				kthxbai_impl<State3, T, Flags, Levels - 1>(x1,
-				    v1 & v);
+				kthxbai_impl<NewState, T, Flags, Levels - 1>
+				    (x1, v1 & v);
 				kthxbai_impl<NewState, T, Flags, Levels - 1>
 				    (x2, (~v1 & v) | (v2 & v));
 				kthxbai_impl<0, T, Flags, 0>(x, x1 | x2);
@@ -107,20 +117,20 @@ class kthxbai_impl
 				T x1, x2;
 				constexpr T v1 = pick_hi<T>(State2 ^ State3);
 				constexpr T v2 = pick_hi<T>(State2^NewState);
-				kthxbai_impl<State3, T, Flags, Levels - 1>
-				    (x1, v1 | v);
 				kthxbai_impl<NewState, T, Flags, Levels - 1>
+				    (x1, v1 | v);
+				kthxbai_impl<NewState2, T, Flags, Levels - 1>
 				    (x2, (~v1 | v) & (v2 | v));
 				kthxbai_impl<0, T, Flags, 0>(x, x1 & x2);
 			}
 			break;
 		    case 4:
 			{
-				kthxbai_impl<State3, T, Flags, Levels - 1>
+				kthxbai_impl<NewState, T, Flags, Levels - 1>
 				    (x, v);
 				// always false
 				if (hi_bit(v) ? !hi_bit(x) : hi_bit(x)) {
-					omg<NewState, T, Flags, Levels - 1>
+					omg<NewState2, T, Flags, Levels - 1>
 					    zomg(x);
 					__asm __volatile("" : : "g" (&zomg));
 				}
@@ -129,20 +139,20 @@ class kthxbai_impl
 		    case 5:
 			{
 				constexpr T v1 = pick_hi<T>(NewState);
-				kthxbai_impl<State3, T, Flags, Levels - 1>
+				kthxbai_impl<NewState, T, Flags, Levels - 1>
 				    (x, v1);
 				// always true
 				if (hi_bit(v1) ? hi_bit(x) : !hi_bit(x))
-					kthxbai_impl<NewState, T, Flags,
+					kthxbai_impl<NewState2, T, Flags,
 					    Levels - 1>(x, v);
 			}
 			break;
 		    case 6:
 			{
 				T x1, x2;
-				kthxbai_impl<State3, T, Flags, Levels - 1>
+				kthxbai_impl<NewState, T, Flags, Levels - 1>
 				    (x1, v);
-				omg<NewState, T, Flags, Levels - 1> zomg(x2);
+				omg<NewState2, T, Flags, Levels - 1> zomg(x2);
 				__asm __volatile("" : : "g" (&zomg));
 				kthxbai_impl<0, T, Flags, 0>(x, x1);
 			}
@@ -154,9 +164,9 @@ class kthxbai_impl
 				    pick_hi<T>(State2 ^ NewState) | 1;
 				T v2i = pow(v2);
 				T v1 = v * v2i;
-				kthxbai_impl<State3, T, Flags, Levels - 1>
-				    (x1, v1);
 				kthxbai_impl<NewState, T, Flags, Levels - 1>
+				    (x1, v1);
+				kthxbai_impl<NewState2, T, Flags, Levels - 1>
 				    (x2, v2);
 				kthxbai_impl<0, T, Flags, 0>(x, x1 * x2);
 			}
@@ -169,9 +179,9 @@ class kthxbai_impl
 				    ^ State3 ^ NewState);
 				T x1;
 				static T x2 = v2;
-				lolwut<State3, T, Flags, Levels - 1>
+				lolwut<NewState, T, Flags, Levels - 1>
 				    p(&x2, 3);
-				kthxbai_impl<NewState, T, Flags, Levels - 1>
+				kthxbai_impl<NewState2, T, Flags, Levels - 1>
 				    (x1, do_op<WhichOp>(v, v2));
 				x = do_inv_op<WhichOp>(x1, *p);
 			}
@@ -184,9 +194,9 @@ class kthxbai_impl
 				    ^ State3 ^ NewState);
 				T x1;
 				static const T x2 = v2;
-				lolwut<State3, T, Flags, Levels - 1>
+				lolwut<NewState, T, Flags, Levels - 1>
 				    p((T *)&x2, 3);
-				kthxbai_impl<NewState, T, Flags, Levels - 1>
+				kthxbai_impl<NewState2, T, Flags, Levels - 1>
 				    (x1, do_op<WhichOp>(v, v2));
 				x = do_inv_op<WhichOp>(x1, *p);
 			}
@@ -203,9 +213,9 @@ class kthxbai_impl
 				unsigned v1 = (v & ~3u) |
 				    (t & ~(unsigned)(T)~(T)0u) |
 				    (t % ((v & 3u) + 1u));
-				kthxbai_impl<State3, unsigned, Flags,
-				    Levels - 1>(x1, v1);
 				kthxbai_impl<NewState, unsigned, Flags,
+				    Levels - 1>(x1, v1);
+				kthxbai_impl<NewState2, unsigned, Flags,
 				    Levels - 1>(x2, v2);
 				__asm("arpl %w2, %w0" : "=r,m" (x1)
 				    : "0,0" (x1), "r,r" (x2) : "cc");
@@ -242,12 +252,32 @@ class kthxbai_impl
 					    unsigned char, Flags, Levels - 1>
 					    (x, v);
 					break;
-				} // else fall through
+				}
 			}
+			goto ugh;
 		    case 12:
+			{
+				T x1, x2;
+				omg<NewState, T, Flags, Levels - 1> zomg(x1);
+				kthxbai_impl<NewState2, T, Flags, Levels - 1>
+				    (x2, v);
+				__asm __volatile(""
+				    : "=g" (x2)
+				    : "0" (orly<NewState3, T, Boreal1, false,
+					       Flags, Levels ? 1u : 0u>()
+					       (x2, x1)));
+				__asm __volatile(""
+				    : "=g" (x)
+				    : "0" (orly<NewState3, T, !Boreal1, false,
+					       Flags, Levels ? 1u : 0u>()
+					       (x2, x1)));
+			}
+			break;
+		    case 13:
 			if (special(x, v))
 				return;
 			// else fall through
+		    ugh:
 		    default:
 			{
 				T x1;

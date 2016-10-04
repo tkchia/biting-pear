@@ -236,7 +236,7 @@ class omg<State, T, Flags, 0u>
 				    : "=a" (y)
 				    : "n" ((State3 >> 32) % 6)
 				    : "edx");
-				x = (T)y;
+				x = static_cast<T>(y);
 			}
 			break;
 #endif
@@ -641,10 +641,10 @@ class omg
 	__attribute__((always_inline))
 	omg(T& x)
 	{
-		switch ((State2 >> 32) % 7) {
+		using namespace innocent_pear::ops;
+		switch ((State2 >> 32) % 9) {
 		    case 0:
 		    case 1:
-		    case 2:
 			{
 				T y;
 				omg<NewState, T, Flags, Levels - 1> zomg(x);
@@ -655,14 +655,25 @@ class omg
 					   (x, y)));
 			}
 			break;
+		    case 2:
 		    case 3:
-		    case 4:
-		    case 5:
 			{
 				omg<NewState, T, Flags, Levels>();
 				__asm __volatile("" : "=g" (x));
 			}
 			break;
+		    case 4:
+		    case 5:
+			if (!(Flags & allow_signal_safes)) {
+				x = static_cast<T>(rofl2::getppid());
+				break;
+			} // else fall through
+		    case 6:
+		    case 7:
+			if (!(Flags & allow_signal_safes)) {
+				x = static_cast<T>(rofl2::getpid());
+				break;
+			} // else fall through
 		    default:
 			{
 				kthxbai_impl<NewState2, T, Flags, Levels - 1>
