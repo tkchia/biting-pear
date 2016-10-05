@@ -14,6 +14,12 @@
 		GNUmakefile :
 		- changed to build (and install) C compiler front-end
 
+		.travis.yml :
+		- now sets $CC_FOR_TARGET appropriately
+
+		infra/travis-install-deps.sh :
+		- now also installs target-side C compiler for tests
+
 		include/innocent-pear/kthxbai.h :
 		- removed really (!) redundant condition check
 
@@ -26,6 +32,9 @@
 		test/test-dawg-syn.cc ,
 		test/test-dawg-syn.good :
 		- reduced the number of randomizations
+
+		.gitignore :
+		- added innocent-pear-cc
 
 		lolwutconf/ :
 		- bumped to 7c7d904647
