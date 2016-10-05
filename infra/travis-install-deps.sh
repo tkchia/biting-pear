@@ -20,7 +20,7 @@ case "$TARGET" in
 		set -- ${1+"$@"} g++-5-multilib gcc-5-multilib
 	else
 		set -- ${1+"$@"} g++-multilib gcc-multilib
-	fi
+	fi;;
     armv[45678]*hf | arm-*hf)
 	set -- ${1+"$@"} g++-arm-linux-gnueabihf gcc-arm-linux-gnueabihf \
 	    qemu-user;;
