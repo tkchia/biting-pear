@@ -1,5 +1,18 @@
-2016-10-05	"May the forces of evil become confused on the way to your
-		 house."  (4)
+2016-10-05	Now with a C (i.e. non-C++) compiler front-end; untested.
+
+		bin/innocent-pear-front-end.tcc :
+		- renamed from bin/innocent-pear-c++.cc, and made more generic
+
+		bin/innocent-pear-c++.cc ,
+		bin/innocent-pear-cc.cc :
+		- new
+
+		configure :
+		- now looks for target-side C compiler and probes for its
+		  properties
+
+		GNUmakefile :
+		- changed to build (and install) C compiler front-end
 
 		include/innocent-pear/kthxbai.h :
 		- removed really (!) redundant condition check
@@ -13,6 +26,9 @@
 		test/test-dawg-syn.cc ,
 		test/test-dawg-syn.good :
 		- reduced the number of randomizations
+
+		lolwutconf/ :
+		- bumped to 7c7d904647
 
 2016-10-04	More, more, more mixing.
 

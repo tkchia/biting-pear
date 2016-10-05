@@ -34,6 +34,7 @@ headers.keccak.host = \
     infra/keccak/KeccakDuplex.inc \
     infra/keccak/KeccakP-1600-SnP.h
 headers.host = \
+    bin/innocent-pear-front-end.tcc \
     include/innocent-pear/bbq.h \
     include/innocent-pear/nowai.h \
     include/innocent-pear/host/lolcat.h \
@@ -72,12 +73,14 @@ tests.target = \
     test/test-doge-eh
 utils.host = \
     bin/innocent-pear-c++ \
+    bin/innocent-pear-cc \
     bin/innocent-pear-doge \
     bin/innocent-pear-dogecoin \
     share/innocent-pear/calm \
     share/innocent-pear/omnomnom
 modules.host = \
     bin/innocent-pear-c++.o \
+    bin/innocent-pear-cc.o \
     bin/innocent-pear-doge.o \
     bin/innocent-pear-dogecoin.o \
     share/innocent-pear/calm.o \
@@ -379,11 +382,23 @@ endif
 		else	echo '#undef' \
 			  'innocent_pear_CXX_FOR_TARGET_DECOUPLE_AS'; \
 		fi; \
+		if test '$(conf_Have_ct_opt_fno_integrated_as)' = yes; then \
+			echo '#define' \
+			  'innocent_pear_CC_FOR_TARGET_DECOUPLE_AS 1'; \
+		else	echo '#undef' \
+			  'innocent_pear_CC_FOR_TARGET_DECOUPLE_AS'; \
+		fi; \
 		if test '$(conf_Have_cxxt_opt_wrapper)' = yes; then \
 			echo '#define' \
 			  'innocent_pear_CXX_FOR_TARGET_HAVE_OPT_WRAPPER 1'; \
 		else	echo '#undef' \
 			  'innocent_pear_CXX_FOR_TARGET_HAVE_OPT_WRAPPER'; \
+		fi; \
+		if test '$(conf_Have_ct_opt_wrapper)' = yes; then \
+			echo '#define' \
+			  'innocent_pear_CC_FOR_TARGET_HAVE_OPT_WRAPPER 1'; \
+		else	echo '#undef' \
+			  'innocent_pear_CC_FOR_TARGET_HAVE_OPT_WRAPPER'; \
 		fi; \
 		echo "#define innocent_pear_CXXFLAGS_FOR_TARGET \\" >>$@.tmp; \
 		set -- $(CXXFLAGS_FOR_TARGET); \
@@ -523,6 +538,11 @@ bin/innocent-pear-c++: bin/innocent-pear-c++.o share/innocent-pear/epic.o \
     share/innocent-pear/sleepier.o infra/keccak/KeccakPRG.o \
     infra/keccak/KeccakDuplex.o infra/keccak/KeccakP-1600-reference.o
 
+bin/innocent-pear-cc: bin/innocent-pear-cc.o share/innocent-pear/epic.o \
+    share/innocent-pear/keyboard.o share/innocent-pear/moar.o \
+    share/innocent-pear/sleepier.o infra/keccak/KeccakPRG.o \
+    infra/keccak/KeccakDuplex.o infra/keccak/KeccakP-1600-reference.o
+
 bin/innocent-pear-doge: bin/innocent-pear-doge.o \
     share/innocent-pear/epic.o share/innocent-pear/lolrus.o \
     share/innocent-pear/sleepier.o
@@ -541,13 +561,20 @@ $(foreach m,$(modules.host), \
 bin/%.ii share/innocent-pear/%.ii infra/keccak/%.ii: \
     CPPFLAGS += -Dinnocent_pear_HOST_PREFIX=\"$(conf_Prefix)\" \
 		-Dinnocent_pear_TARGET_PREFIX=\"$(conf_Target_prefix)\" \
+		-Dinnocent_pear_CC_FOR_TARGET=\"$(CC_FOR_TARGET)\" \
 		-Dinnocent_pear_CXX_FOR_TARGET=\"$(CXX_FOR_TARGET)\" \
 		$(if $(filter yes,$(conf_Dyn_ld_cxxt)), \
 		    -Dinnocent_pear_DYN_LD_CXX_TARGET, \
 		    -Uinnocent_pear_DYN_LD_CXX_TARGET) \
+		$(if $(filter yes,$(conf_Dyn_ld_ct)), \
+		    -Dinnocent_pear_DYN_LD_CC_TARGET, \
+		    -Uinnocent_pear_DYN_LD_CC_TARGET) \
 		$(if $(filter yes,$(conf_Have_cxxt_lib_atomic)), \
 		    -Dinnocent_pear_CXX_FOR_TARGET_HAVE_LIB_ATOMIC, \
-		    -Uinnocent_pear_CXX_FOR_TARGET_HAVE_LIB_ATOMIC)
+		    -Uinnocent_pear_CXX_FOR_TARGET_HAVE_LIB_ATOMIC) \
+		$(if $(filter yes,$(conf_Have_ct_lib_atomic)), \
+		    -Dinnocent_pear_CC_FOR_TARGET_HAVE_LIB_ATOMIC, \
+		    -Uinnocent_pear_CC_FOR_TARGET_HAVE_LIB_ATOMIC)
 
 bin/%: bin/%.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)
