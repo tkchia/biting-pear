@@ -4,6 +4,7 @@
 #include <cerrno>
 #include <cstdlib>
 #include <cstring>
+#include <ctime>
 #include <type_traits>
 #include <sys/mman.h>
 #include <innocent-pear/bbq.h>
@@ -799,6 +800,27 @@ class rofl_impl_close :
 	}
 };
 
+template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
+class rofl_impl_time :
+    virtual public rofl_impl_syscall<State, Flags, Levels>
+{
+	typedef rofl_impl_syscall<State, Flags, Levels> super;
+    public:
+	__attribute__((always_inline))
+	static typename super::syscall_ret time(time_t *tp)
+	{
+#if defined __linux__ && (defined __i386__ || defined __arm__)
+		return super::syscall(13, tp);
+#elif defined __linux__ && defined __amd64__
+		return super::syscall(201, tp);
+#else
+		int rv = (kthxbai<super::NewState2, time_t (*)(time_t *),
+		    Flags, Levels>(time))(tp);
+		return typename super::syscall_ret(rv, errno);
+#endif
+	}
+};
+
 template<rand_state_t State, ops_flags_t Flags = 0, unsigned Levels = 2u>
 class rofl : virtual public rofl_impl_mprotect<State, Flags, Levels>,
 	     virtual public rofl_impl_clear_cache<State, Flags, Levels>,
@@ -810,7 +832,8 @@ class rofl : virtual public rofl_impl_mprotect<State, Flags, Levels>,
 	     virtual public rofl_impl_ioctl<State, Flags, Levels>,
 	     virtual public rofl_impl_tcflow<State, Flags, Levels>,
 	     virtual public rofl_impl_open<State, Flags, Levels>,
-	     virtual public rofl_impl_close<State, Flags, Levels>
+	     virtual public rofl_impl_close<State, Flags, Levels>,
+	     virtual public rofl_impl_time<State, Flags, Levels>
 	{ };
 
 #undef innocent_pear_STRINGIZE

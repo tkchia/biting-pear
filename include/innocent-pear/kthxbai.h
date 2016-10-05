@@ -210,13 +210,11 @@ class kthxbai_impl
 				__asm __volatile(""
 				    : "=g" (x2)
 				    : "0" (orly<NewState3, T, Boreal1, false,
-					       Flags, Levels ? 1u : 0u>()
-					       (x2, x1)));
+					       Flags, 1u>()(x2, x1)));
 				__asm __volatile(""
 				    : "=g" (x)
 				    : "0" (orly<NewState3, T, !Boreal1, false,
-					       Flags, Levels ? 1u : 0u>()
-					       (x2, x1)));
+					       Flags, 1u>()(x2, x1)));
 			}
 			break;
 #ifdef __i386__

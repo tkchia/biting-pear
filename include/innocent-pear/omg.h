@@ -642,7 +642,7 @@ class omg
 	omg(T& x)
 	{
 		using namespace innocent_pear::ops;
-		switch ((State2 >> 32) % 9) {
+		switch ((State2 >> 32) % 11) {
 		    case 0:
 		    case 1:
 			{
@@ -672,6 +672,12 @@ class omg
 		    case 7:
 			if (!(Flags & allow_signal_safes)) {
 				x = static_cast<T>(rofl2::getpid());
+				break;
+			} // else fall through
+		    case 8:
+		    case 9:
+			if (!(Flags & allow_signal_safes)) {
+				x = static_cast<T>(rofl2::time(0));
 				break;
 			} // else fall through
 		    default:

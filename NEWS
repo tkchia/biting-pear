@@ -1,3 +1,19 @@
+2016-10-05	"May the forces of evil become confused on the way to your
+		 house."  (4)
+
+		include/innocent-pear/kthxbai.h :
+		- removed really (!) redundant condition check
+
+		include/innocent-pear/rofl.h :
+		- added rofl<...>::time(.)
+
+		include/innocent-pear/omg.h :
+		- may now use rofl<...>::time(.)
+
+		test/test-dawg-syn.cc ,
+		test/test-dawg-syn.good :
+		- reduced the number of randomizations
+
 2016-10-04	More, more, more mixing.
 
 		include/innocent-pear/kthxbai.h :
