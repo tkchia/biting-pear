@@ -17,13 +17,17 @@ includedir.target = $(conf_Target_prefix)/include
 #
 CPPFLAGS += -Iinfra/keccak
 
-wrap_cxx = bin/innocent-pear-c++
-wrap_cxx.staged = $(wrap_cxx) \
+prefix_opts = \
     -Xinnocent-pear -prefix='$(conf_Srcdir)' \
     -Xinnocent-pear -exec-prefix=. \
     -Xinnocent-pear -target-prefix='$(conf_Srcdir)' \
     -Xinnocent-pear -target-exec-prefix=.
+wrap_cxx = bin/innocent-pear-c++
+wrap_cxx.staged = $(wrap_cxx) $(prefix_opts)
+wrap_cc = bin/innocent-pear-cc
+wrap_cc.staged = $(wrap_cc) $(prefix_opts)
 CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET)
+CFLAGS_FOR_TARGET.test = $(CFLAGS_FOR_TARGET)
 config.h.host = include/innocent-pear/host/derp.h
 headers.keccak.host = \
     infra/keccak/KeccakPRG.h \
@@ -70,7 +74,8 @@ tests.target = \
     test/test-doge.debug \
     test/test-doge \
     test/test-doge-abs-reloc \
-    test/test-doge-eh
+    test/test-doge-eh \
+    test/test-doge-with-c
 utils.host = \
     bin/innocent-pear-c++ \
     bin/innocent-pear-cc \
@@ -473,6 +478,8 @@ test/test-%: test/test-%.o
 
 test/test-%.o: test/test-%.cc
 
+test/test-%.o: test/test-%.c
+
 # for debugging
 test/test-%.debug.o: test/test-%.cc
 
@@ -511,7 +518,9 @@ test/test-doge-eh.o \
 test/test-doge-eh.s \
 test/test-doge-eh.debug \
 test/test-doge-eh.debug.o \
-test/test-doge-eh.debug.s : \
+test/test-doge-eh.debug.s \
+test/test-doge-with-c \
+test/test-doge-with-c.o : \
     CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge
 
 test/test-doge-eh: test/test-doge-eh.o test/test-doge-eh.sub.o
@@ -636,6 +645,11 @@ share/innocent-pear/omnomnom: share/innocent-pear/omnomnom.cc \
 	mkdir -p $(@D)
 	$(conf_Host_exec) $(wrap_cxx.staged) $(CPPFLAGS_FOR_TARGET) \
 	    $(CXXFLAGS_FOR_TARGET.test) -c -o$@ $<
+
+%.o: %.c $(headers.target) $(installables.host)
+	mkdir -p $(@D)
+	$(conf_Host_exec) $(wrap_cc.staged) $(CPPFLAGS_FOR_TARGET) \
+	    $(CFLAGS_FOR_TARGET.test) -c -o$@ $<
 
 # for debugging
 %.debug.o: %.cc $(headers.target) $(installables.host)

@@ -1,3 +1,13 @@
+2016-10-06	Added test for interfacing with C code.
+
+		GNUmakefile :
+		- added test-doge-with-c test case, and associated rules and
+		  variable definitions
+
+		test/test-doge-with-c.c ,
+		test/test-doge-with-c.good :
+		- new
+
 2016-10-05	Now with a C (i.e. non-C++) compiler front-end; untested.
 
 		bin/innocent-pear-front-end.tcc :
