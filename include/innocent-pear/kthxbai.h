@@ -217,8 +217,10 @@ class kthxbai_impl
 				unsigned v1 = (v & ~3u) |
 				    (t & ~(unsigned)(T)~(T)0u) |
 				    (t % ((v & 3u) + 1u));
-				impl_n(x1, v1);
-				impl_n2(x2, v2);
+				kthxbai_impl<NewState, unsigned, Flags,
+				    Levels - 1>(x1, v1);
+				kthxbai_impl<NewState2, unsigned, Flags,
+				    Levels - 1>(x2, v2);
 				__asm("arpl %w2, %w0" : "=r,m" (x1)
 				    : "0,0" (x1), "r,r" (x2) : "cc");
 				x = (T)x1;
