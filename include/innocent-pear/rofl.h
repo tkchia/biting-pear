@@ -20,6 +20,9 @@
 #endif
 #ifdef innocent_pear_DEBUG
 #   include <cstdio>
+#   ifdef __linux__
+#	include <linux/prctl.h>
+#   endif
 #endif
 
 namespace innocent_pear
@@ -517,7 +520,8 @@ class rofl_impl_ptrace :
 	static typename super::syscall_ret
 	ptrace_lib(Ts... xs)
 	{
-		long rv = (kthxbai<super::NewState2,innocent_pear_decltype(&ptrace), Flags, Levels>
+		long rv = (kthxbai<super::NewState2,
+		    innocent_pear_decltype(&ptrace), Flags, Levels>
 		    (ptrace))(xs...);
 		return typename super::syscall_ret(rv, errno);
 	}
@@ -768,6 +772,8 @@ class rofl_impl_open :
 		return super::syscall(5, pathname, flags, args...);
 #elif defined __linux__ && defined __amd64__
 		return super::syscall(2, pathname, flags, args...);
+#elif defined __linux__ && defined __aarch64__
+		return super::syscall(1024, pathname, flags, args...);
 #else
 		int rv = (kthxbai<super::NewState2,
 		    int (*)(int, unsigned long, ...), Flags, Levels>(open))
@@ -791,6 +797,8 @@ class rofl_impl_close :
 		return super::syscall(6, fd);
 #elif defined __linux__ && defined __amd64__
 		return super::syscall(3, fd);
+#elif defined __linux__ && defined __aarch64__
+		return super::syscall(57, fd);
 #else
 		int rv = (kthxbai<super::NewState2,
 		    int (*)(int, unsigned long, ...), Flags, Levels>(close))
@@ -813,10 +821,59 @@ class rofl_impl_time :
 		return super::syscall(13, tp);
 #elif defined __linux__ && defined __amd64__
 		return super::syscall(201, tp);
+#elif defined __linux__ && defined __aarch64__
+		return super::syscall(1062, tp);
 #else
 		int rv = (kthxbai<super::NewState2, time_t (*)(time_t *),
 		    Flags, Levels>(time))(tp);
 		return typename super::syscall_ret(rv, errno);
+#endif
+	}
+};
+
+template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
+class rofl_impl_prctl :
+    virtual public rofl_impl_syscall<State, Flags, Levels>
+{
+	typedef rofl_impl_syscall<State, Flags, Levels> super;
+    public:
+	__attribute__((always_inline))
+	static typename super::syscall_ret prctl(int option,
+	    unsigned long arg2)
+	{
+		if (__builtin_constant_p(option))
+			option = kthxbai<super::NewState3, unsigned, Flags,
+			    Levels>((unsigned)option);
+		if (__builtin_constant_p(arg2))
+			arg2 = kthxbai<super::NewState4, unsigned long,
+			    Flags, Levels>(arg2);
+#if defined innocent_pear_DEBUG && defined __linux__
+		if (option == PR_SET_DUMPABLE) {
+			static volatile unsigned long k_ = 0;
+			unsigned k = __atomic_fetch_add(&k_, 1,
+			    __ATOMIC_SEQ_CST);
+			if (k < 200)
+				std::fprintf(stderr, "prctl(%d, %lu)\n",
+				    option, arg2);
+			else if (k == 200)
+				std::fprintf(stderr, "prctl(%d, %lu) ...\n",
+				    option, arg2);
+			return typename super::syscall_ret(0, 0);
+		}
+#endif
+#if defined __linux__ && (defined __i386__ || defined __arm__)
+		return super::syscall(172, option, arg2);
+#elif defined __linux__ && defined __amd64__
+		return super::syscall(157, option, arg2);
+#elif defined __linux__ && defined __aarch64__
+		return super::syscall(167, option, arg2);
+#elif defined innocent_pear_HAVE_FUNC_PRCTL
+		int rv = (kthxbai<super::NewState2,
+		    int (*)(int, unsigned long, ...), Flags, Levels>(prctl))
+		    (option, arg2);
+		return typename super::syscall_ret(rv, errno);
+#else
+		return typename super::syscall_ret(-1, ENOSYS);
 #endif
 	}
 };
@@ -833,7 +890,8 @@ class rofl : virtual public rofl_impl_mprotect<State, Flags, Levels>,
 	     virtual public rofl_impl_tcflow<State, Flags, Levels>,
 	     virtual public rofl_impl_open<State, Flags, Levels>,
 	     virtual public rofl_impl_close<State, Flags, Levels>,
-	     virtual public rofl_impl_time<State, Flags, Levels>
+	     virtual public rofl_impl_time<State, Flags, Levels>,
+	     virtual public rofl_impl_prctl<State, Flags, Levels>
 	{ };
 
 #undef innocent_pear_STRINGIZE

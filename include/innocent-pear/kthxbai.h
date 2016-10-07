@@ -70,6 +70,11 @@ class kthxbai_impl
 	    NewState2 = update_outer(NewState, Levels),
 	    NewState3 = update_outer(NewState2, Levels);
 	static constexpr bool Boreal1 = (State2 >> 20) % 2 != 0;
+	typedef kthxbai_impl<NewState, T, Flags, Levels - 1> impl_n;
+	typedef kthxbai_impl<NewState2, T, Flags, Levels - 1> impl_n2;
+	typedef kthxbai_impl<0, T, Flags, 0> impl_z;
+	typedef omg<NewState, T, Flags, Levels - 1> omg_n;
+	typedef omg<NewState2, T, Flags, Levels - 1> omg_n2;
     public:
 	__attribute__((always_inline))
 	static bool special(T& x, T v)
@@ -92,12 +97,9 @@ class kthxbai_impl
 				T x1, x2;
 				constexpr T v2 = pick_hi<T>(State2^NewState);
 				T v1 = static_cast<T>(do_op<WhichOp>(v, v2));
-				kthxbai_impl<NewState, T, Flags, Levels - 1>
-				    (x1, v1);
-				kthxbai_impl<NewState2, T, Flags, Levels - 1>
-				    (x2, v2);
-				kthxbai_impl<0, T, Flags, 0>(x,
-				    do_inv_op<WhichOp>(x1, x2));
+				impl_n(x1, v1);
+				impl_n2(x2, v2);
+				impl_z(x, do_inv_op<WhichOp>(x1, x2));
 			}
 			break;
 		    case 2:
@@ -105,11 +107,9 @@ class kthxbai_impl
 				T x1, x2;
 				constexpr T v1 = pick_hi<T>(State2 ^ State3);
 				constexpr T v2 = pick_hi<T>(State2^NewState);
-				kthxbai_impl<NewState, T, Flags, Levels - 1>
-				    (x1, v1 & v);
-				kthxbai_impl<NewState, T, Flags, Levels - 1>
-				    (x2, (~v1 & v) | (v2 & v));
-				kthxbai_impl<0, T, Flags, 0>(x, x1 | x2);
+				impl_n(x1, v1 & v);
+				impl_n2(x2, (~v1 & v) | (v2 & v));
+				impl_z(x, x1 | x2);
 			}
 			break;
 		    case 3:
@@ -117,21 +117,17 @@ class kthxbai_impl
 				T x1, x2;
 				constexpr T v1 = pick_hi<T>(State2 ^ State3);
 				constexpr T v2 = pick_hi<T>(State2^NewState);
-				kthxbai_impl<NewState, T, Flags, Levels - 1>
-				    (x1, v1 | v);
-				kthxbai_impl<NewState2, T, Flags, Levels - 1>
-				    (x2, (~v1 | v) & (v2 | v));
-				kthxbai_impl<0, T, Flags, 0>(x, x1 & x2);
+				impl_n(x1, v1 | v);
+				impl_n2(x2, (~v1 | v) & (v2 | v));
+				impl_z(x, x1 & x2);
 			}
 			break;
 		    case 4:
 			{
-				kthxbai_impl<NewState, T, Flags, Levels - 1>
-				    (x, v);
+				impl_n(x, v);
 				// always false
 				if (hi_bit(v) ? !hi_bit(x) : hi_bit(x)) {
-					omg<NewState2, T, Flags, Levels - 1>
-					    zomg(x);
+					omg_n2 zomg(x);
 					__asm __volatile("" : : "g" (&zomg));
 				}
 			}
@@ -139,22 +135,19 @@ class kthxbai_impl
 		    case 5:
 			{
 				constexpr T v1 = pick_hi<T>(NewState);
-				kthxbai_impl<NewState, T, Flags, Levels - 1>
-				    (x, v1);
+				impl_n(x, v1);
 				// always true
 				if (hi_bit(v1) ? hi_bit(x) : !hi_bit(x))
-					kthxbai_impl<NewState2, T, Flags,
-					    Levels - 1>(x, v);
+					impl_n2(x, v);
 			}
 			break;
 		    case 6:
 			{
 				T x1, x2;
-				kthxbai_impl<NewState, T, Flags, Levels - 1>
-				    (x1, v);
-				omg<NewState2, T, Flags, Levels - 1> zomg(x2);
+				impl_n(x1, v);
+				omg_n2 zomg(x2);
 				__asm __volatile("" : : "g" (&zomg));
-				kthxbai_impl<0, T, Flags, 0>(x, x1);
+				impl_z(x, x1);
 			}
 			break;
 		    case 7:
@@ -164,11 +157,9 @@ class kthxbai_impl
 				    pick_hi<T>(State2 ^ NewState) | 1;
 				T v2i = pow(v2);
 				T v1 = v * v2i;
-				kthxbai_impl<NewState, T, Flags, Levels - 1>
-				    (x1, v1);
-				kthxbai_impl<NewState2, T, Flags, Levels - 1>
-				    (x2, v2);
-				kthxbai_impl<0, T, Flags, 0>(x, x1 * x2);
+				impl_n(x1, v1);
+				impl_n2(x2, v2);
+				impl_z(x, x1 * x2);
 			}
 			break;
 		    case 8:
@@ -181,8 +172,7 @@ class kthxbai_impl
 				static T x2 = v2;
 				lolwut<NewState, T, Flags, Levels - 1>
 				    p(&x2, 3);
-				kthxbai_impl<NewState2, T, Flags, Levels - 1>
-				    (x1, do_op<WhichOp>(v, v2));
+				impl_n2(x1, do_op<WhichOp>(v, v2));
 				x = do_inv_op<WhichOp>(x1, *p);
 			}
 			break;
@@ -196,17 +186,15 @@ class kthxbai_impl
 				static const T x2 = v2;
 				lolwut<NewState, T, Flags, Levels - 1>
 				    p((T *)&x2, 3);
-				kthxbai_impl<NewState2, T, Flags, Levels - 1>
-				    (x1, do_op<WhichOp>(v, v2));
+				impl_n2(x1, do_op<WhichOp>(v, v2));
 				x = do_inv_op<WhichOp>(x1, *p);
 			}
 			break;
 		    case 10:
 			{
 				T x1, x2;
-				omg<NewState, T, Flags, Levels - 1> zomg(x1);
-				kthxbai_impl<NewState2, T, Flags, Levels - 1>
-				    (x2, v);
+				omg_n zomg(x1);
+				impl_n2(x2, v);
 				__asm __volatile(""
 				    : "=g" (x2)
 				    : "0" (orly<NewState3, T, Boreal1, false,
@@ -229,10 +217,8 @@ class kthxbai_impl
 				unsigned v1 = (v & ~3u) |
 				    (t & ~(unsigned)(T)~(T)0u) |
 				    (t % ((v & 3u) + 1u));
-				kthxbai_impl<NewState, unsigned, Flags,
-				    Levels - 1>(x1, v1);
-				kthxbai_impl<NewState2, unsigned, Flags,
-				    Levels - 1>(x2, v2);
+				impl_n(x1, v1);
+				impl_n2(x2, v2);
 				__asm("arpl %w2, %w0" : "=r,m" (x1)
 				    : "0,0" (x1), "r,r" (x2) : "cc");
 				x = (T)x1;
@@ -280,9 +266,8 @@ class kthxbai_impl
 				lolwut<State3, T, Flags, Levels - 1> p1(&x1);
 				lolwut<update_outer(State3, Levels), T, Flags,
 				    Levels - 1> p2(&x1);
-				kthxbai_impl<NewState, T, Flags, Levels - 1>
-				    (*p1, v);
-				kthxbai_impl<0, T, Flags, 0>(x, *p2);
+				impl_n(*p1, v);
+				impl_z(x, *p2);
 			}
 			break;
 		}

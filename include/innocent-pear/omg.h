@@ -287,10 +287,14 @@ class omg
 	static bool special()
 	{
 		using namespace innocent_pear::ops;
-		constexpr unsigned Which2 = (State2 >> 56) % 6;
+		constexpr unsigned Which2 = (State2 >> 56) % 8;
 		pid_t pid;
 #ifdef innocent_pear_HAVE_CONST_TCOOFF
 		int fd;
+#endif
+#if defined innocent_pear_HAVE_FUNC_PRCTL && \
+    defined innocent_pear_HAVE_CONST_PR_SET_DUMPABLE
+		unsigned long zero;
 #endif
 		switch (Which2) {
 		    default:
@@ -350,6 +354,12 @@ class omg
 			}
 #   endif
 #endif
+#if defined innocent_pear_HAVE_FUNC_PRCTL && \
+    defined innocent_pear_HAVE_CONST_PR_SET_DUMPABLE
+		    case 6:
+		    case 7:
+			zero = (unsigned long)kthxbai1(0);
+#endif
 		}
 		omg<NewState5, T, Flags, Levels - 1>();
 		switch (Which2) {
@@ -369,6 +379,13 @@ class omg
 			rofl4::close(fd);
 			break;
 #   endif
+#endif
+#if defined innocent_pear_HAVE_FUNC_PRCTL && \
+    defined innocent_pear_HAVE_CONST_PR_SET_DUMPABLE
+		    case 6:
+		    case 7:
+			rofl2::prctl(innocent_pear_VAL_CONST_PR_SET_DUMPABLE,
+			    zero);
 #endif
 		}
 		return true;

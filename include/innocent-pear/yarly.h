@@ -80,13 +80,13 @@ class yarly<State, T, BigBad, Flags, 0u> :
 		    default:	if (BigBad) {
 					T y;
 					/*
-					 * Say `BigBad ? 3u : 0u' instead
-					 * of just `3u' to prevent possible
+					 * Say `BigBad ? 2u : 0u' instead
+					 * of just `2u' to prevent possible
 					 * infinite recursion in the
 					 * _compiler_ if BigBad == false...
 					 */
 					kthxbai_impl<super::State12, T,
-					    Flags, BigBad ? 3u : 0u>(y,
+					    Flags, BigBad ? 2u : 0u>(y,
 					    super::DefRetVal);
 					return y;
 				} else

@@ -354,6 +354,11 @@ endif
 		else \
 			echo '#undef innocent_pear_HAVE_FUNC_TCFLOW'; \
 		fi; \
+		if test '$(conf_Have_cxxt_func__0prctl)' = yes; then \
+			echo '#define innocent_pear_HAVE_FUNC_PRCTL 1'; \
+		else \
+			echo '#undef innocent_pear_HAVE_FUNC_PRCTL'; \
+		fi; \
 		$(foreach c,PT_TRACE_ME PT_READ_I PT_READ_D PT_READ_U, \
 			if test '$(conf_Have_cxxt_const_$(subst _,_1,$c))' = \
 			    yes; then \
@@ -362,7 +367,8 @@ endif
 			else	echo \
 				 '#undef innocent_pear_HAVE_CONST_$c'; \
 			fi; ) \
-		$(foreach c,TCOOFF TCOON TCXONC TIOCSTOP TIOCSTART, \
+		$(foreach c,TCOOFF TCOON TCXONC TIOCSTOP TIOCSTART \
+		    PR_GET_DUMPABLE PR_SET_DUMPABLE, \
 			if test '$(conf_Have_cxxt_const_$(subst _,_1,$c))' = \
 			    yes; then \
 				echo \
@@ -468,12 +474,12 @@ test/test-%.passed: test/test-% test/test-%.good
 
 # for debugging
 test/test-%.debug: test/test-%.debug.o
-	$(conf_Host_exec) $(wrap_cxx.staged) -Xinnocent-pear -debug-doge \
+	time $(conf_Host_exec) $(wrap_cxx.staged) -Xinnocent-pear -debug-doge \
 	    $(CXXFLAGS_FOR_TARGET.test) $(LDFLAGS_FOR_TARGET) -o$@ \
 	    $^ $(LDLIBS_FOR_TARGET)
 
 test/test-%: test/test-%.o
-	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET.test) \
+	time $(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET.test) \
 	    $(LDFLAGS_FOR_TARGET) -o$@ $^ $(LDLIBS_FOR_TARGET)
 
 test/test-%.o: test/test-%.cc
@@ -493,7 +499,7 @@ test/test-orly-wut.s : \
 
 test/test-orly-wut: test/test-orly-wut.o test/test-orly-wut.ld \
     bin/innocent-pear-doge
-	$(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
+	time $(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
 	    $(LDFLAGS_FOR_TARGET) -o$@.tmp $(filter %.o %.ld,$^) \
 	    $(LDLIBS_FOR_TARGET)
 	bin/innocent-pear-doge $@.tmp $@ __doge_start __doge_end $(state)
@@ -520,7 +526,7 @@ test/test-doge-eh.o \
 test/test-doge-eh.s \
 test/test-doge-eh.debug \
 test/test-doge-eh.debug.o \
-test/test-doge-eh.debug.s \
+test/test-doge-eh.debug.s : \
     CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge
 
 test/test-doge-with-c \
@@ -534,8 +540,8 @@ test/test-doge-eh.debug: test/test-doge-eh.debug.o \
 
 define preproc_for_host
 	mkdir -p $(@D)
-	$(CXX) -E -x c++ $(CPPFLAGS) $(CXXFLAGS) -o$@.tmp $<
-	$(conf_Host_exec) share/innocent-pear/omnomnom <$@.tmp >$@.2.tmp
+	time $(CXX) -E -x c++ $(CPPFLAGS) $(CXXFLAGS) -o$@.tmp $<
+	time $(conf_Host_exec) share/innocent-pear/omnomnom <$@.tmp >$@.2.tmp
 	mv $@.2.tmp $@
 	$(RM) $@.tmp
 endef
@@ -590,41 +596,41 @@ bin/%.ii share/innocent-pear/%.ii infra/keccak/%.ii: \
 		    -Uinnocent_pear_CC_FOR_TARGET_HAVE_LIB_ATOMIC)
 
 bin/%: bin/%.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)
+	time $(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)
 
 # for debugging
 ifeq "$(conf_Have_cxx_opt_fno_integrated_as)" "yes"
 bin/%.s : CXXFLAGS += -fno-integrated-as
 endif
 bin/%.s: bin/%.ii
-	$(CXX) $(CXXFLAGS) -S -o$@ $<
+	time $(CXX) $(CXXFLAGS) -S -o$@ $<
 
 bin/%.o: bin/%.ii
-	$(CXX) $(CXXFLAGS) -c -o$@ $<
+	time $(CXX) $(CXXFLAGS) -c -o$@ $<
 
 bin/%.ii: bin/%.cc $(headers.host) $(headers.target) \
     share/innocent-pear/calm share/innocent-pear/omnomnom
 	$(preproc_for_host)
 
 share/innocent-pear/%: share/innocent-pear/%.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)
+	time $(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)
 
 share/innocent-pear/%.o: share/innocent-pear/%.ii
-	$(CXX) $(CXXFLAGS) -c -o$@ $<
+	time $(CXX) $(CXXFLAGS) -c -o$@ $<
 
 # for debugging
 ifeq "$(conf_Have_cxx_opt_fno_integrated_as)" "yes"
 share/innocent-pear/%.s : CXXFLAGS += -fno-integrated-as
 endif
 share/innocent-pear/%.s: share/innocent-pear/%.ii
-	$(CXX) $(CXXFLAGS) -S -o$@ $<
+	time $(CXX) $(CXXFLAGS) -S -o$@ $<
 
 infra/keccak/%.o: infra/keccak/%.ii $(headers.keccak.host)
-	$(CXX) $(CXXFLAGS) -c -o$@ $<
+	time $(CXX) $(CXXFLAGS) -c -o$@ $<
 
 share/innocent-pear/moar.ii: share/innocent-pear/moar.cc $(headers.host)
 	mkdir -p $(@D)
-	$(CXX) -E -x c++ $(CPPFLAGS) $(CXXFLAGS) -o$@ $<
+	time $(CXX) -E -x c++ $(CPPFLAGS) $(CXXFLAGS) -o$@ $<
 
 share/innocent-pear/%.ii: share/innocent-pear/%.cc $(headers.host) \
     $(headers.target) share/innocent-pear/omnomnom
@@ -636,40 +642,40 @@ infra/keccak/%.ii : CPPFLAGS += -DKeccakP200_excluded \
 
 infra/keccak/%.ii: infra/keccak/%.cc $(headers.keccak.host)
 	mkdir -p $(@D)
-	$(CXX) -E -x c++ $(CPPFLAGS) $(CXXFLAGS) -o$@ $<
+	time $(CXX) -E -x c++ $(CPPFLAGS) $(CXXFLAGS) -o$@ $<
 
 share/innocent-pear/omnomnom: share/innocent-pear/omnomnom.cc \
     share/innocent-pear/moar.o infra/keccak/KeccakPRG.o \
     infra/keccak/KeccakDuplex.o infra/keccak/KeccakP-1600-reference.o \
     $(config.h.host)
 	mkdir -p $(@D)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o$@ $(filter-out %.h,$^)
+	time $(CXX) $(CPPFLAGS) $(CXXFLAGS) -o$@ $(filter-out %.h,$^)
 
 %.o: %.cc $(headers.target) $(installables.host)
 	mkdir -p $(@D)
-	$(conf_Host_exec) $(wrap_cxx.staged) $(CPPFLAGS_FOR_TARGET) \
+	time $(conf_Host_exec) $(wrap_cxx.staged) $(CPPFLAGS_FOR_TARGET) \
 	    $(CXXFLAGS_FOR_TARGET.test) -c -o$@ $<
 
 %.o: %.c $(headers.target) $(installables.host)
 	mkdir -p $(@D)
-	$(conf_Host_exec) $(wrap_cc.staged) $(CPPFLAGS_FOR_TARGET) \
+	time $(conf_Host_exec) $(wrap_cc.staged) $(CPPFLAGS_FOR_TARGET) \
 	    $(CFLAGS_FOR_TARGET.test) -c -o$@ $<
 
 # for debugging
 %.debug.o: %.cc $(headers.target) $(installables.host)
 	mkdir -p $(@D)
-	$(conf_Host_exec) $(wrap_cxx.staged) $(CPPFLAGS_FOR_TARGET) \
+	time $(conf_Host_exec) $(wrap_cxx.staged) $(CPPFLAGS_FOR_TARGET) \
 	    -Dinnocent_pear_DEBUG=1 $(CXXFLAGS_FOR_TARGET.test) -c -o$@ $<
 
 # for debugging
 %.s: %.cc $(headers.target) $(installables.host)
 	mkdir -p $(@D)
-	$(conf_Host_exec) $(wrap_cxx.staged) $(CPPFLAGS_FOR_TARGET) \
+	time $(conf_Host_exec) $(wrap_cxx.staged) $(CPPFLAGS_FOR_TARGET) \
 	    $(CXXFLAGS_FOR_TARGET.test) -S -o$@ $<
 
 share/innocent-pear/%: share/innocent-pear/%.cc
 	mkdir -p $(@D)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) -o$@ $< $(LDLIBS)
+	time $(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) -o$@ $< $(LDLIBS)
 
 share/innocent-pear/omnomnom.cc: share/innocent-pear/omnomnom.lxx
 	mkdir -p $(@D)

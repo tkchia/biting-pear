@@ -1,3 +1,29 @@
+2016-10-07	"When all else fails, read the instructions."
+
+		configure :
+		- now tests for prctl(...), PR_GET_DUMPABLE (unused for now),
+		  and PR_SET_DUMPABLE
+
+		GNUmakefile :
+		- now writes results of tests for prctl(...) et al. to
+		  $(config.h.target)
+
+		include/innocent-pear/rofl.h :
+		- added rofl<...>::prctl(...)
+		- (untested) added some syscall numbers for AArch64
+
+		include/innocent-pear/omg.h :
+		- now tries to call rofl<...>::prctl(...)
+
+		include/innocent-pear/kthxbai.h :
+		- simplified recursion notation; fixed a bug in the process
+
+		include/innocent-pear/yarly.h :
+		- reduced number of recursion levels for terminal constants
+
+		.travis.yml :
+		- now sets $CFLAGS_FOR_TARGET appropriately
+
 2016-10-06	Added test for interfacing with C code.
 
 		GNUmakefile :

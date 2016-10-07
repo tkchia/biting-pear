@@ -81,4 +81,8 @@ conf_cxxt_probe_const_val TCOON '#include <termios.h>'
 conf_cxxt_probe_const_val TCXONC '#include <sys/ioctl.h>'
 conf_cxxt_probe_const_val TIOCSTOP '#include <sys/ioctl.h>'
 conf_cxxt_probe_const_val TIOCSTART '#include <sys/ioctl.h>'
+#
+conf_cxxt_probe_func ::prctl 2 '#include <sys/prctl.h>'
+conf_cxxt_probe_const_val PR_GET_DUMPABLE '#include <linux/prctl.h>'
+conf_cxxt_probe_const_val PR_SET_DUMPABLE '#include <linux/prctl.h>'
 conf_end
