@@ -1,6 +1,8 @@
 #ifndef innocent_pear_H_DOGE_I
 #define innocent_pear_H_DOGE_I
 
+#include <innocent-pear/bbq.h>
+
 #ifdef innocent_pear_HAVE_CTOR_PRIORITY
 #   define innocent_pear_CTOR  constructor(101)
 #else
