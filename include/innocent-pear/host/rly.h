@@ -13,7 +13,7 @@ namespace innocent_pear
 namespace impl
 {
 
-template<class T = unsigned, unsigned Levels = 2u>
+template<class T = unsigned, unsigned Levels = 3u>
 class rly;  // forward
 
 template<class T, unsigned Levels>

@@ -1,9 +1,19 @@
 2016-10-08	"When all else fails, read the instructions."  (2)
 
-		share/innocent-pear/yarly.h :
+		include/innocent-pear/yarly.h :
 		- upped the default function complexity
 		- split munging of DefRetVal, to avoid unneeded recursion in
 		  the compiler
+		- added comment on matching up with include/innocent-pear/
+		  host/rly.h
+
+		include/innocent-pear/orly.h :
+		- added comment on matching up with include/innocent-pear/
+		  host/srsly.h
+
+		include/innocent-pear/host/rly.h :
+		- upped the default function complexity, to tally with
+		  include/innocent-pear/yarly.h
 
 		share/innocent-pear/doge-i.h :
 		- added dummy inline function to get random seeds from

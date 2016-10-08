@@ -1,6 +1,8 @@
 #ifndef innocent_pear_H_YARLY
 #define innocent_pear_H_YARLY
 
+/* This _must_ match up with host/rly.h. */
+
 #include <climits>
 #include <innocent-pear/bbq.h>
 #include <innocent-pear/kthxbai.h>

@@ -1,6 +1,8 @@
 #ifndef innocent_pear_H_ORLY
 #define innocent_pear_H_ORLY
 
+/* This _must_ match up with host/srsly.h. */
+
 #include <innocent-pear/bbq.h>
 #include <innocent-pear/nowai.h>
 #include <innocent-pear/yarly.h>
