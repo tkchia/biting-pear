@@ -4,15 +4,11 @@
 
 #define BLARGH		std::cout << $"Hello, world!\n" \
 				  << $"Hello, world!\n" \
-				  << $"Hello, world!\n" \
-				  << $"Hello, world!\n" \
 				  << $"Hello, world!\n"
 
 int main()
 {
 	std::locale::global(std::locale(""));
-	BLARGH;
-	BLARGH;
 	BLARGH;
 	BLARGH;
 	BLARGH;

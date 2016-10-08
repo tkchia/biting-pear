@@ -6,7 +6,12 @@ set -e
 : "${CFLAGS_FOR_TARGET=-O3 -Wall -static}"
 . "`dirname "$0"`"/lolwutconf/configure.inc
 conf_begin ${1+"$@"}
-conf_mod c++ c++.target c.target bfd
+conf_mod app.build c++ c++.target c.target bfd
+#
+conf_appb_chk_exists find mkdir time
+if test -z "$LEX"
+	then conf_appb_chk_exists lex; fi
+conf_appb_probe_exists base64 head sed readelf xz
 #
 # In some cases, g++'s builtin __atomic_...(...) functions are transformed
 # into calls to routines in an `-latomic' library, and this library is _not_

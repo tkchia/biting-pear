@@ -428,13 +428,26 @@ endif
 
 # for debugging
 test/test-%.debug.passed: test/test-%.debug test/test-%.good
+ifeq "yes" "$(conf_Have_appb_sed)"
+ifeq "yes" "$(conf_Have_appb_base64)"
+ifeq "yes" "$(conf_Have_appb_head)"
+ifeq "yes" "$(conf_Have_appb_xz)"
 	@case "$*" in \
 	    doge*) \
 		echo "* base64 dump of xz'd head of $< :"; \
-		xz -9c <'$<' | base64 | head -n 32 | sed 's,^,*  ,'; \
+		xz -9c <'$<' | base64 | head -n 32 | sed 's,^,*  ,';; \
+	esac >&2
+endif
+endif
+endif
+ifeq "yes" "$(conf_Have_appb_readelf)"
+	@case "$*" in \
+	    doge*)
 		echo "* readelf -e of $< :"; \
 		readelf -e '$<' | sed 's,^,*  ,';; \
 	esac >&2
+endif
+endif
 	@echo "* running test $<" >&2
 	@LANG=en_US.UTF-8 $(conf_Target_exec) ./$< >$(@:.passed=.1.tmp) || \
 	    (echo "* $< exited with error: $$?" >&2 && \
@@ -448,13 +461,26 @@ test/test-%.debug.passed: test/test-%.debug test/test-%.good
 	@$(RM) $(@:.passed=.1.tmp)
 
 test/test-%.passed: test/test-% test/test-%.good
+ifeq "yes" "$(conf_Have_appb_sed)"
+ifeq "yes" "$(conf_Have_appb_base64)"
+ifeq "yes" "$(conf_Have_appb_head)"
+ifeq "yes" "$(conf_Have_appb_xz)"
 	@case "$*" in \
 	    doge*) \
 		echo "* base64 dump of xz'd head of $< :"; \
-		xz -9c <'$<' | base64 | head -n 32 | sed 's,^,*  ,'; \
+		xz -9c <'$<' | base64 | head -n 32 | sed 's,^,*  ,';; \
+	esac >&2
+endif
+endif
+endif
+ifeq "yes" "$(conf_Have_appb_readelf)"
+	@case "$*" in \
+	    doge*) \
 		echo "* readelf -e of $< :"; \
 		readelf -e '$<' | sed 's,^,*  ,';; \
 	esac >&2
+endif
+endif
 	@echo "* running test $<" >&2
 	@LANG=en_US.UTF-8 $(conf_Target_exec) ./$< >$(@:.passed=.1.tmp) \
 	    2>$(@:.passed=.2.tmp) ||\

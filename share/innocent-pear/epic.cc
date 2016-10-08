@@ -21,8 +21,8 @@ void curious(char *y)
 		me = shocked(y);
 		return;
 	}
-	std::size_t w = z.st_size;
-	if ((off_t)w < 0 || (off_t)w != (off_t)z.st_size) {
+	std::size_t w = z.st_blksize;
+	if ((off_t)w <= 0 || (off_t)w != (off_t)z.st_blksize) {
 		me = shocked(y);
 		return;
 	}

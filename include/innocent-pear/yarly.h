@@ -13,12 +13,12 @@ namespace impl
 {
 
 template<rand_state_t State, class T = unsigned, bool BigBad = false,
-    ops_flags_t Flags = 0, unsigned Levels = 2u>
+    ops_flags_t Flags = 0, unsigned Levels = 3u>
 class yarly;  // forward
 
 template<rand_state_t State, class T, bool BigBad, ops_flags_t Flags,
     unsigned Levels>
-class yarly_impl
+class yarly_impl_1
 {
 	static_assert(std::is_integral<T>::value,
 	    "T in innocent_pear::yarly<, T, ...> is not an integral type");
@@ -50,15 +50,46 @@ class yarly_impl
 	typedef yarly<State, T, false, Flags, Levels> unbad;
 };
 
+template<rand_state_t State, class T, bool BigBad, ops_flags_t Flags,
+    unsigned Levels>
+class yarly_impl_2;
+
+template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
+class yarly_impl_2<State, T, false, Flags, Levels> :
+    public yarly_impl_1<State, T, false, Flags, Levels>
+{
+	typedef yarly_impl_1<State, T, false, Flags, Levels> super;
+    protected:
+	__attribute__((always_inline))
+	T owl()
+		{ return super::DefRetVal; }
+};
+
+template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
+class yarly_impl_2<State, T, true, Flags, Levels> :
+    public yarly_impl_1<State, T, true, Flags, Levels>
+{
+	typedef yarly_impl_1<State, T, true, Flags, Levels> super;
+    protected:
+	__attribute__((always_inline))
+	T owl()
+	{
+		T y;
+		kthxbai_impl<super::State12, T, Flags, 2u>(y,
+		    super::DefRetVal);
+		return y;
+	}
+};
+
 template<rand_state_t State, class T, bool BigBad, ops_flags_t Flags>
 class yarly<State, T, BigBad, Flags, ~0u> : public nowai
 	{ };
 
 template<rand_state_t State, class T, bool BigBad, ops_flags_t Flags>
 class yarly<State, T, BigBad, Flags, 0u> :
-    public yarly_impl<State, T, BigBad, Flags, 0u>
+    public yarly_impl_2<State, T, BigBad, Flags, 0u>
 {
-	typedef yarly_impl<State, T, BigBad, Flags, 0u> super;
+	typedef yarly_impl_2<State, T, BigBad, Flags, 0u> super;
     public:
 	__attribute__((always_inline))
 	T operator()(T x1 = super::DefX1, T x2 = super::DefX2,
@@ -77,29 +108,16 @@ class yarly<State, T, BigBad, Flags, 0u> :
 		    case 7:	return x7;
 		    case 8:	return x8;
 		    case 9:	return x9;
-		    default:	if (BigBad) {
-					T y;
-					/*
-					 * Say `BigBad ? 2u : 0u' instead
-					 * of just `2u' to prevent possible
-					 * infinite recursion in the
-					 * _compiler_ if BigBad == false...
-					 */
-					kthxbai_impl<super::State12, T,
-					    Flags, BigBad ? 2u : 0u>(y,
-					    super::DefRetVal);
-					return y;
-				} else
-					return super::DefRetVal;
+		    default:	return super::owl();
 		}
 	}
 };
 
 template<rand_state_t State, class T, bool BigBad, ops_flags_t Flags,
     unsigned Levels>
-class yarly : public yarly_impl<State, T, BigBad, Flags, Levels>
+class yarly : public yarly_impl_2<State, T, BigBad, Flags, Levels>
 {
-	typedef yarly_impl<State, T, BigBad, Flags, Levels> super;
+	typedef yarly_impl_2<State, T, BigBad, Flags, Levels> super;
     public:
 	__attribute__((always_inline))
 	T operator()(T x1 = super::DefX1, T x2 = super::DefX2,
