@@ -442,7 +442,7 @@ endif
 endif
 ifeq "yes" "$(conf_Have_appb_readelf)"
 	@case "$*" in \
-	    doge*)
+	    doge*) \
 		echo "* readelf -e of $< :"; \
 		readelf -e '$<' | sed 's,^,*  ,';; \
 	esac >&2
