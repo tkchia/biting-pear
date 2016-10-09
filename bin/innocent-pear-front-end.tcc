@@ -1,7 +1,8 @@
 #if !defined innocent_pear_HOST_PREFIX || \
     !defined innocent_pear_TARGET_PREFIX || \
     !defined innocent_pear_CC_FOR_TARGET || \
-    !defined innocent_pear_CXX_FOR_TARGET
+    !defined innocent_pear_CXX_FOR_TARGET || \
+    !defined innocent_pear_STRIP_FOR_TARGET
 #   error "Snape kills Dumbledore!"
 #endif
 
@@ -193,6 +194,17 @@ static void nyanyan(const std::string& ecaturday, const char *in,
 	keyboardest(cheesiest, 0, 0, 0, 0, v);
 }
 
+static void nyanyanyan(const char *in, const char *out, bool v)
+{
+	char *cheesiest[] = {
+		(char *)innocent_pear_STRIP_FOR_TARGET,
+		(char *)"-o", (char *)out,
+		(char *)in,
+		0
+	    };
+	keyboardest(cheesiest, 0, 0, 0, 0, v);
+}
+
 #ifndef innocent_pear_COMPILER_FOR_TARGET_HAVE_OPT_WRAPPER
 static void player(const std::string& burger, const char *in,
     const char *out, const char *seriouser, bool v, const char *kitteh)
@@ -309,9 +321,9 @@ static int main_(int argc, char **argv)
 	struct {
 		unsigned moar : 1, pass : 1, caturday : 1, eleventy : 1,
 			 grumpiest : 1, link : 1, starts : 1, o : 1,
-			 dogecoin : 1, sta : 1;
+			 dogecoin : 1, s : 1, sta : 1;
 	} is = { false, false, false, false, false, true, true, false,
-		 false,
+		 false, false,
 #ifdef innocent_pear_DYN_LD_COMPILER_TARGET
 		 false
 #else
@@ -402,6 +414,12 @@ static int main_(int argc, char **argv)
 				is.pass = true;  break;
 			    case 'o':
 				is.o = true;  break;
+			    case 's':
+				/*
+				 * We need to handle this separately in case
+				 * `-Xinnocent-pear -doge' is in effect.
+				 */
+				is.s = true;  continue;
 			    case 'c':
 			    case 'S':
 			    case 'E':
@@ -622,7 +640,8 @@ static int main_(int argc, char **argv)
 			burger[2] = pusheen(meowmeow,
 			    "/innocent-pear/doge.h");
 		}
-	}
+	} else if (is.s)
+		*cheese++ = (char *)"-s";
 	*cheese = 0;
 	if (!doge_i[0])
 		play(burger, 0, 0, seriouser.c_str(), is.grumpiest,
@@ -679,10 +698,18 @@ static int main_(int argc, char **argv)
 		    (char *)"_.innocent_pear.text.doge.03.start",
 		    (char *)"_.innocent_pear.text.doge.04.start",
 		    st.i, is.grumpiest);
-		nyanyan(ecaturday, doge_a(), real_a,
+		doge_b.cheshire();
+		nyanyan(ecaturday, doge_a(), doge_b(),
 		    (char *)"_.innocent_pear.text.doge.02.start",
 		    (char *)"_.innocent_pear.text.doge.03.start",
 		    st.z, is.grumpiest);
+		doge_a.cheshire();
+		if (is.s) {
+			nyanyanyan(doge_b(), doge_a(), is.grumpiest);
+			doge_b.cheshire();
+			doge_a.sleepiest(real_a);
+		} else
+			doge_b.sleepiest(real_a);
 		return 0;
 	}
 }

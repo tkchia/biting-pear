@@ -444,7 +444,9 @@ ifeq "yes" "$(conf_Have_appb_readelf)"
 	@case "$*" in \
 	    doge*) \
 		echo "* readelf -e of $< :"; \
-		readelf -e '$<' | sed 's,^,*  ,';; \
+		readelf -e '$<' | sed 's,^,*  ,'; \
+		echo "* readelf -s of $< :"; \
+		readelf -s '$<' | sed 's,^,*  ,';; \
 	esac >&2
 endif
 endif
@@ -477,7 +479,9 @@ ifeq "yes" "$(conf_Have_appb_readelf)"
 	@case "$*" in \
 	    doge*) \
 		echo "* readelf -e of $< :"; \
-		readelf -e '$<' | sed 's,^,*  ,';; \
+		readelf -e '$<' | sed 's,^,*  ,'; \
+		echo "* readelf -s of $< :"; \
+		readelf -s '$<' | sed 's,^,*  ,';; \
 	esac >&2
 endif
 endif
@@ -531,33 +535,38 @@ test/test-orly-wut: test/test-orly-wut.o test/test-orly-wut.ld \
 	bin/innocent-pear-doge $@.tmp $@ __doge_start __doge_end $(state)
 	$(RM) $@.tmp
 
+test/test-doge.debug \
+test/test-doge.debug.o \
+test/test-doge.debug.s : \
+    CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge -v
+
 test/test-doge \
 test/test-doge.o \
 test/test-doge.s \
-test/test-doge.debug \
-test/test-doge.debug.o \
-test/test-doge.debug.s \
 test/test-doge-with-c \
 test/test-doge-with-c.o : \
-    CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge -v
+    CXXFLAGS_FOR_TARGET.test = \
+	$(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge -s -v
 
-test/test-doge-abs-reloc \
-test/test-doge-abs-reloc.o \
-test/test-doge-abs-reloc.s \
 test/test-doge-abs-reloc.debug \
 test/test-doge-abs-reloc.debug.o \
 test/test-doge-abs-reloc.debug.s \
-test/test-doge-eh \
-test/test-doge-eh.o \
-test/test-doge-eh.s \
 test/test-doge-eh.debug \
 test/test-doge-eh.debug.o \
 test/test-doge-eh.debug.s : \
     CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge
 
+test/test-doge-abs-reloc \
+test/test-doge-abs-reloc.o \
+test/test-doge-abs-reloc.s \
+test/test-doge-eh \
+test/test-doge-eh.o \
+test/test-doge-eh.s : \
+    CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge -s
+
 test/test-doge-with-c \
 test/test-doge-with-c.o : \
-    CFLAGS_FOR_TARGET.test = $(CFLAGS_FOR_TARGET) -Xinnocent-pear -doge -v
+    CFLAGS_FOR_TARGET.test = $(CFLAGS_FOR_TARGET) -Xinnocent-pear -doge -s -v
 
 test/test-doge-eh: test/test-doge-eh.o test/test-doge-eh.sub.o
 
@@ -608,6 +617,7 @@ bin/%.ii share/innocent-pear/%.ii infra/keccak/%.ii: \
 		-Dinnocent_pear_TARGET_PREFIX=\"$(conf_Target_prefix)\" \
 		-Dinnocent_pear_CC_FOR_TARGET=\"$(CC_FOR_TARGET)\" \
 		-Dinnocent_pear_CXX_FOR_TARGET=\"$(CXX_FOR_TARGET)\" \
+		-Dinnocent_pear_STRIP_FOR_TARGET=\"$(STRIP_FOR_TARGET)\" \
 		$(if $(filter yes,$(conf_Dyn_ld_cxxt)), \
 		    -Dinnocent_pear_DYN_LD_CXX_TARGET, \
 		    -Uinnocent_pear_DYN_LD_CXX_TARGET) \
