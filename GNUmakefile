@@ -445,8 +445,8 @@ ifeq "yes" "$(conf_Have_appb_readelf)"
 	    doge*) \
 		echo "* readelf -e of $< :"; \
 		readelf -e '$<' | sed 's,^,*  ,'; \
-		echo "* readelf -s of $< :"; \
-		readelf -s '$<' | sed 's,^,*  ,';; \
+		echo "* readelf -s head of $< :"; \
+		readelf -s '$<' | head -n 100 | sed 's,^,*  ,';; \
 	esac >&2
 endif
 endif
@@ -480,8 +480,8 @@ ifeq "yes" "$(conf_Have_appb_readelf)"
 	    doge*) \
 		echo "* readelf -e of $< :"; \
 		readelf -e '$<' | sed 's,^,*  ,'; \
-		echo "* readelf -s of $< :"; \
-		readelf -s '$<' | sed 's,^,*  ,';; \
+		echo "* readelf -s head of $< :"; \
+		readelf -s '$<' | head -n 100 | sed 's,^,*  ,';; \
 	esac >&2
 endif
 endif
@@ -618,6 +618,9 @@ bin/%.ii share/innocent-pear/%.ii infra/keccak/%.ii: \
 		-Dinnocent_pear_CC_FOR_TARGET=\"$(CC_FOR_TARGET)\" \
 		-Dinnocent_pear_CXX_FOR_TARGET=\"$(CXX_FOR_TARGET)\" \
 		-Dinnocent_pear_STRIP_FOR_TARGET=\"$(STRIP_FOR_TARGET)\" \
+		$(if $(filter yes,$(conf_Have_bfd_strip_opt_strip_unneeded)), \
+		    -Dinnocent_pear_STRIP_FOR_TARGET_HAVE_OPT_STRIP_UNNEEDED, \
+		    -Uinnocent_pear_STRIP_FOR_TARGET_HAVE_OPT_STRIP_UNNEEDED) \
 		$(if $(filter yes,$(conf_Dyn_ld_cxxt)), \
 		    -Dinnocent_pear_DYN_LD_CXX_TARGET, \
 		    -Uinnocent_pear_DYN_LD_CXX_TARGET) \
