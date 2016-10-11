@@ -618,9 +618,9 @@ bin/%.ii share/innocent-pear/%.ii infra/keccak/%.ii: \
 		-Dinnocent_pear_CC_FOR_TARGET=\"$(CC_FOR_TARGET)\" \
 		-Dinnocent_pear_CXX_FOR_TARGET=\"$(CXX_FOR_TARGET)\" \
 		-Dinnocent_pear_STRIP_FOR_TARGET=\"$(STRIP_FOR_TARGET)\" \
-		$(if $(filter yes,$(conf_Have_bfd_strip_opt_strip_unneeded)), \
-		    -Dinnocent_pear_STRIP_FOR_TARGET_HAVE_OPT_STRIP_UNNEEDED, \
-		    -Uinnocent_pear_STRIP_FOR_TARGET_HAVE_OPT_STRIP_UNNEEDED) \
+		$(if $(filter yes,$(conf_Have_bfd_strip_opt_strip_all)), \
+		    -Dinnocent_pear_STRIP_FOR_TARGET_HAVE_OPT_STRIP_ALL, \
+		    -Uinnocent_pear_STRIP_FOR_TARGET_HAVE_OPT_STRIP_ALL) \
 		$(if $(filter yes,$(conf_Dyn_ld_cxxt)), \
 		    -Dinnocent_pear_DYN_LD_CXX_TARGET, \
 		    -Uinnocent_pear_DYN_LD_CXX_TARGET) \

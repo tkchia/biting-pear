@@ -198,8 +198,8 @@ static void nyanyanyan(const char *in, const char *out, bool v)
 {
 	char *cheesiest[] = {
 		(char *)innocent_pear_STRIP_FOR_TARGET,
-#ifdef innocent_pear_STRIP_FOR_TARGET_HAVE_OPT_STRIP_UNNEEDED
-		(char *)"--strip-unneeded",
+#ifdef innocent_pear_STRIP_FOR_TARGET_HAVE_OPT_STRIP_ALL
+		(char *)"--strip-all",
 #endif
 		(char *)"-o", (char *)out,
 		(char *)in,

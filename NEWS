@@ -1,3 +1,13 @@
+2016-10-11	Strip symbols simply by saying `-s'.  (2)
+
+		GNUmakefile ,
+		bin/innocent-pear-front-end.tcc ,
+		configure :
+		- use `--strip-all' rather than `--strip-unneeded'
+
+		lolwutconf/ :
+		- bumped to 6aaf0e0fa7
+
 2016-10-09	Strip symbols simply by saying `-s'.
 
 		configure :
