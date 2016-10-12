@@ -81,7 +81,11 @@ class kthxbai_impl
 	{
 		return false;
 	}
-	__attribute__((always_inline, visibility("hidden")))
+	__attribute__((
+#ifdef __ELF_
+	    visibility("hidden"),
+#endif
+	    always_inline))
 	kthxbai_impl(T& x, T v)
 	{
 		switch ((State2 >> 32) % 16) {

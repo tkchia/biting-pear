@@ -1,6 +1,7 @@
 2016-10-12	Strip symbols simply by saying `-s'.  (3)
 
 		share/innocent-pear/doge-01.cc ,
+		share/innocent-pear/doge-45.cc ,
 		share/innocent-pear/doge-99.cc ,
 		share/innocent-pear/doge-i.h ,
 		share/innocent-pear/doge-n.ld :
