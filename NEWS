@@ -1,3 +1,34 @@
+2016-10-12	Strip symbols simply by saying `-s'.  (3)
+
+		share/innocent-pear/doge-01.cc ,
+		share/innocent-pear/doge-99.cc ,
+		share/innocent-pear/doge-i.h ,
+		share/innocent-pear/doge-n.ld :
+		- made "exported" internal symbols have hidden visibility,
+		  especially under ELF
+
+		share/innocent-pear/sleepier.cc :
+		- removed needless string obfuscation...
+
+		include/innocent-pear/rofl.h :
+		- rofl_impl_syscall<...>::syscall_raw for ARM:
+		  - gave it hidden visibility under ELF
+		  - removed special-case code for g++ >= 5, since it still
+		    makes the compiler error out anyway...
+
+		include/innocent-pear/kthxbai.h :
+		- added optimize("no-gnu-unique") attribute to kthxbai_impl
+		  <...> constructor, to try to prevent it from adding extra
+		  symbol table entries for static `x2' variables
+
+		include/innocent-pear/omg.h :
+		- now invokes rofl<...>::time(.) with a (scrambled) non-null
+		  pointer, since a syscall with a null pointer stands out
+		  like a sore thumb in the binary output
+
+		lolwutconf/ :
+		- bumped to 4ad70fa697
+
 2016-10-11	Strip symbols simply by saying `-s'.  (2)
 
 		GNUmakefile ,

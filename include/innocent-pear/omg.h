@@ -694,7 +694,13 @@ class omg
 		    case 8:
 		    case 9:
 			if (!(Flags & allow_signal_safes)) {
-				x = static_cast<T>(rofl2::time(0));
+				union {
+					time_t t;
+					uint64_t i;
+				} u;
+				kthxbai<NewState, time_t *, Flags,
+				    Levels - 1> p(&u.t);
+				x = static_cast<T>(rofl2::time((time_t *)p));
 				break;
 			} // else fall through
 		    default:

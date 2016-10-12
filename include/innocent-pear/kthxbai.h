@@ -81,7 +81,7 @@ class kthxbai_impl
 	{
 		return false;
 	}
-	__attribute__((always_inline))
+	__attribute__((always_inline, optimize("no-gnu-unique")))
 	kthxbai_impl(T& x, T v)
 	{
 		switch ((State2 >> 32) % 16) {

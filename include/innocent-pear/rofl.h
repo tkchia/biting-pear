@@ -278,42 +278,11 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 	}
 #   elif defined __arm__ && defined __thumb__
     private:
-#	if defined __clang__ || __GNUC__ >= 5
-		/*
-		 * It will be good if I can use the __asm("r0") style of
-		 * register variables to specify exactly which values go
-		 * where.  Alas, PR 15089 (https://gcc.gnu.org/bugzilla/
-		 * show_bug.cgi?id=15089), which was _supposedly_ fixed in
-		 * gcc 4, for some reason still crops up under g++ 5.3.1, so
-		 * an __asm("r0") does not actually guarantee that a value
-		 * will go into r0 (!).
-		 *
-		 * To work around this, I use operand constraints, combined
-		 * with clobber lists, to force the compiler to assign
-		 * values to registers the way I want.
-		 *
-		 * g++ 5 has a semi-documented "Cs" (caller saves)
-		 * constraint which we can use to distinguish between r0--r3
-		 * and r4--r7.  g++ 4 does not have "Cs" though. :-(
-		 *
-		 * A side effect of using clobber lists, is that many
-		 * registers which are not touched at all by the syscall are
-		 * considered by the compiler to be clobbered.
-		 */
-	__attribute__((always_inline))
-	static long syscall_raw(uintptr_t x1, uintptr_t x2, uintptr_t x3,
-	    long scno)
-	{
-		typedef unsigned long long RP;
-		RP x1x2 = (RP)x1 | (RP)x2 << 32, rv;
-		__asm __volatile("mov r2, %2; svc #0"
-		    : "=Cs" (rv)
-		    : "0" (x1x2), "h" (x3), "l" (scno)
-		    : "r2", "r3", "r4", "r5", "r6", "memory", "cc");
-		return (long)rv;
-	}
-#	else	/* !defined __clang__ && __GNUC__ < 5 */
-	__attribute__((noinline, naked))
+	__attribute__((
+#	ifdef __ELF__
+	    visibility("hidden"),
+#	endif
+	    noinline, naked))
 	static long syscall_raw(uintptr_t x1, uintptr_t x2, uintptr_t x3,
 	    long scno)
 	{
@@ -324,7 +293,6 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		      "mov r7, ip; "
 		      "bx lr");
 	}
-#	endif
     public:
 	__attribute__((always_inline))
 	static syscall_ret syscall(long scno)

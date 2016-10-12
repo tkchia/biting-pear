@@ -4,19 +4,25 @@
 #include <innocent-pear/bbq.h>
 
 #ifdef innocent_pear_HAVE_CTOR_PRIORITY
-#   define innocent_pear_CTOR  constructor(101)
+#   define innocent_pear_CTOR	constructor(101)
 #else
-#   define innocent_pear_CTOR  constructor
+#   define innocent_pear_CTOR	constructor
 #endif
+#ifdef __ELF__
+#   define innocent_pear_HIDDEN	visibility("hidden")
+#else
+#   define innocent_pear_HIDDEN	visibility("default")
+#endif
+#define innocent_pear_DOGE_HIDDEN __attribute__((innocent_pear_HIDDEN))
 #define innocent_pear_DOGE \
-       __attribute__((innocent_pear_CTOR, \
+	__attribute__((innocent_pear_CTOR, \
 	    section(".text.unlikely." innocent_pear_DOGE_TAG ".t"))) \
-       static void
+	static void
 #define innocent_pear_DOGE_MEMSET \
-       __attribute__((innocent_pear_CTOR, \
+	__attribute__((innocent_pear_CTOR, \
 	    section(".text.unlikely." innocent_pear_DOGE_TAG ".t"), \
-           optimize("no-reorder-blocks"))) \
-       static void
+	    optimize("no-reorder-blocks"))) \
+	static void
 #ifndef __clang__
 /*
  * Use a different section name so that g++ will not complain about
@@ -27,7 +33,7 @@
 	    __asm("_.innocent_pear.text.doge." innocent_pear_DOGE_TAG \
 		".start") \
 	    __attribute__((section(".text.unlikely." innocent_pear_DOGE_TAG \
-		".d"))) = { };
+		".d"), innocent_pear_HIDDEN)) = { };
 #else
 /*
  * A rather messy hack.  clang++ does not honour `-fno-toplevel-reorder'
@@ -43,21 +49,23 @@
 	extern void here_start() __asm("_.innocent_pear.text.doge." \
 	    innocent_pear_DOGE_TAG ".start"); \
 	__attribute__((section(".text.unlikely." innocent_pear_DOGE_TAG \
-	    ".d"), naked)) \
+	    ".d"), innocent_pear_HIDDEN, naked)) \
 	void here_start() { }
 #   else
 #	define innocent_pear_HERE_START \
 	extern void here_start() __asm("_.innocent_pear.text.doge." \
 	    innocent_pear_DOGE_TAG ".start"); \
 	__attribute__((section(".text.unlikely." innocent_pear_DOGE_TAG \
-	    ".d"))) \
+	    ".d"), innocent_pear_HIDDEN)) \
 	void here_start() { }
 #   endif
 #endif
 #define innocent_pear_NEXT \
+	innocent_pear_DOGE_HIDDEN \
 	extern unsigned char next_start[] \
 	    __asm("_.innocent_pear.text.doge." innocent_pear_DOGE_TAG_NEXT \
 		  ".start"); \
+	__attribute__((innocent_pear_HIDDEN)) \
 	extern unsigned char next_end[] \
 	    __asm("_.innocent_pear.text.doge." innocent_pear_DOGE_TAG_2_NEXT \
 		  ".start");

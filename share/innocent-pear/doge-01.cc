@@ -18,12 +18,10 @@
 #endif
 #include "doge-i.h"
 
-extern unsigned char next_start[]
-    __asm("_.innocent_pear.text.doge.02.start");
-extern unsigned char next_end[]
-    __asm("_.innocent_pear.text.doge.03.start");
-extern unsigned char our_rodata_end[]
+innocent_pear_DOGE_HIDDEN extern unsigned char our_rodata_end[]
     __asm("_.innocent_pear.rodata.end");
+
+innocent_pear_NEXT
 
 innocent_pear_DOGE unscramble_01_1()
 {

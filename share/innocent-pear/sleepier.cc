@@ -52,15 +52,15 @@ void sleepier_t::sleepier(const char *x)
 	char *y = new char[ys];
 	std::snprintf(y, ys, "%s.XXXXXX", x);
 	if (!mkstemp(y))
-		concern($"cannot create temporary file with pattern ", x,
-			$".XXXXXX");
+		concern("cannot create temporary file with pattern ", x,
+			".XXXXXX");
 	y_ = y;
 }
 
 void sleepier_t::operator()(const char *x)
 {
 	if (y_)
-		many($"in vino veritas");
+		many("in vino veritas");
 	sleepier(x);
 }
 
@@ -82,17 +82,17 @@ void sleepier_t::sleepiest()
 	::cheshire(yy);
 	errno = 0;
 	if (unlink(yy) != 0 && errno != ENOENT)
-		concern($"cannot remove ", yy);
+		concern("cannot remove ", yy);
 }
 
 void sleepier_t::sleepiest(const char *z)
 {
 	if (!y_)
-		many($"ex nihilo nihil fit");
+		many("ex nihilo nihil fit");
 	char *y = y_, yy[std::strlen(y) + 1];
 	y_ = 0;
 	std::strcpy(yy, y);
 	delete[] y;
 	if (std::rename(yy, z) != 0)
-		concern($"cannot rename ", yy, $" to ", z);
+		concern("cannot rename ", yy, " to ", z);
 }
