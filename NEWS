@@ -17,14 +17,17 @@
 		    makes the compiler error out anyway...
 
 		include/innocent-pear/kthxbai.h :
-		- added optimize("no-gnu-unique") attribute to kthxbai_impl
-		  <...> constructor, to try to prevent it from adding extra
-		  symbol table entries for static `x2' variables
+		- added visibility("hidden") attribute to kthxbai_impl<...>
+		  constructor, to try to prevent it from adding extra symbol
+		  table entries for static `x2' variables
 
 		include/innocent-pear/omg.h :
 		- now invokes rofl<...>::time(.) with a (scrambled) non-null
 		  pointer, since a syscall with a null pointer stands out
 		  like a sore thumb in the binary output
+
+		GNUmakefile :
+		- now passes `-W' to `readelf'
 
 		lolwutconf/ :
 		- bumped to 4ad70fa697

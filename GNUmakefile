@@ -445,8 +445,8 @@ ifeq "yes" "$(conf_Have_appb_readelf)"
 	    doge*) \
 		echo "* readelf -e of $< :"; \
 		readelf -e '$<' | sed 's,^,*  ,'; \
-		echo "* readelf -s head of $< :"; \
-		readelf -s '$<' | head -n 100 | sed 's,^,*  ,';; \
+		echo "* readelf -s -W head of $< :"; \
+		readelf -s -W '$<' | head -n 100 | sed 's,^,*  ,';; \
 	esac >&2
 endif
 endif
@@ -480,8 +480,8 @@ ifeq "yes" "$(conf_Have_appb_readelf)"
 	    doge*) \
 		echo "* readelf -e of $< :"; \
 		readelf -e '$<' | sed 's,^,*  ,'; \
-		echo "* readelf -s head of $< :"; \
-		readelf -s '$<' | head -n 100 | sed 's,^,*  ,';; \
+		echo "* readelf -s -W head of $< :"; \
+		readelf -s -W '$<' | head -n 100 | sed 's,^,*  ,';; \
 	esac >&2
 endif
 endif

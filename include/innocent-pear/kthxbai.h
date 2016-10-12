@@ -81,7 +81,7 @@ class kthxbai_impl
 	{
 		return false;
 	}
-	__attribute__((always_inline, optimize("no-gnu-unique")))
+	__attribute__((always_inline, visibility("hidden")))
 	kthxbai_impl(T& x, T v)
 	{
 		switch ((State2 >> 32) % 16) {
