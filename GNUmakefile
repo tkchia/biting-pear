@@ -58,6 +58,7 @@ headers.target = \
     include/innocent-pear/omg.h \
     include/innocent-pear/orly.h \
     include/innocent-pear/rofl.h \
+    include/innocent-pear/teh.h \
     include/innocent-pear/yarly.h \
     include/innocent-pear/yodawg.h \
     $(config.h.target)
@@ -443,8 +444,8 @@ endif
 ifeq "yes" "$(conf_Have_appb_readelf)"
 	@case "$*" in \
 	    doge*) \
-		echo "* readelf -e of $< :"; \
-		readelf -e '$<' | sed 's,^,*  ,'; \
+		echo "* readelf -e -W of $< :"; \
+		readelf -e -W '$<' | sed 's,^,*  ,'; \
 		echo "* readelf -s -W head of $< :"; \
 		readelf -s -W '$<' | head -n 100 | sed 's,^,*  ,';; \
 	esac >&2
@@ -478,8 +479,8 @@ endif
 ifeq "yes" "$(conf_Have_appb_readelf)"
 	@case "$*" in \
 	    doge*) \
-		echo "* readelf -e of $< :"; \
-		readelf -e '$<' | sed 's,^,*  ,'; \
+		echo "* readelf -e -W of $< :"; \
+		readelf -e -W '$<' | sed 's,^,*  ,'; \
 		echo "* readelf -s -W head of $< :"; \
 		readelf -s -W '$<' | head -n 100 | sed 's,^,*  ,';; \
 	esac >&2

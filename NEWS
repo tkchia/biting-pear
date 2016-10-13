@@ -1,3 +1,19 @@
+2016-10-13	Strip symbols simply by saying `-s'.  (4)
+
+		include/innocent-pear/teh.h :
+		- new
+
+		include/innocent-pear/kthxbai.h ,
+		include/innocent-pear/omg.h :
+		- now uses teh.h for template-instantiated static data items
+
+		share/innocent-pear/doge-02.cc :
+		- _.innocent_pear.text.startup.start now has hidden visibility
+
+		GNUmakefile :
+		- added teh.h as a dependency
+		- now passes `-W' to `readelf -e'
+
 2016-10-12	Strip symbols simply by saying `-s'.  (3)
 
 		share/innocent-pear/doge-01.cc ,

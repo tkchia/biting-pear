@@ -10,6 +10,7 @@
 #include <innocent-pear/nowai.h>
 #include <innocent-pear/ohai.h>
 #include <innocent-pear/rofl.h>
+#include <innocent-pear/teh.h>
 #include <innocent-pear/yarly.h>
 #ifdef __unix__
 #   include <fcntl.h>
@@ -336,20 +337,25 @@ class omg
 #   ifdef __unix__
 		    case 5:
 			{
-				static volatile char cfn[9] = {
-				    '/' ^ Frob0, 'd' ^ Frob1, 'e' ^ Frob2,
-				    'v' ^ Frob3, '/' ^ Frob4, 't' ^ Frob5,
-				    't' ^ Frob6, 'y' ^ Frob7, Frob8 };
+				char& cfn0 = teh<char, '/' ^ Frob0>::x;
+				char& cfn1 = teh<char, 'd' ^ Frob1>::x;
+				char& cfn2 = teh<char, 'e' ^ Frob2>::x;
+				char& cfn3 = teh<char, 'v' ^ Frob3>::x;
+				char& cfn4 = teh<char, '/' ^ Frob4>::x;
+				char& cfn5 = teh<char, 't' ^ Frob5>::x;
+				char& cfn6 = teh<char, 't' ^ Frob6>::x;
+				char& cfn7 = teh<char, 'y' ^ Frob7>::x;
+				char& cfn8 = teh<char,	     Frob8>::x;
 				ohai<char, 9> fn;
-				fn[0] = cfn[0] ^ Frob0;
-				fn[1] = cfn[1] ^ Frob1;
-				fn[2] = cfn[2] ^ Frob2;
-				fn[3] = cfn[3] ^ Frob3;
-				fn[4] = cfn[4] ^ Frob4;
-				fn[5] = cfn[5] ^ Frob5;
-				fn[6] = cfn[6] ^ Frob6;
-				fn[7] = cfn[7] ^ Frob7;
-				fn[8] = cfn[8] ^ Frob8;
+				fn[0] = cfn0 ^ Frob0;
+				fn[1] = cfn1 ^ Frob1;
+				fn[2] = cfn2 ^ Frob2;
+				fn[3] = cfn3 ^ Frob3;
+				fn[4] = cfn4 ^ Frob4;
+				fn[5] = cfn5 ^ Frob5;
+				fn[6] = cfn6 ^ Frob6;
+				fn[7] = cfn7 ^ Frob7;
+				fn[8] = cfn8 ^ Frob8;
 				fd = rofl2::open(fn, O_RDONLY);
 			}
 #   endif
