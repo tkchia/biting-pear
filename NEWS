@@ -1,3 +1,12 @@
+2016-10-15	First release, sort of.
+
+		doc/20161015-test-doge.png :
+		- new; part of IDA disassembly of an output x86-32 program
+
+		README.md :
+		- slightly rewritten
+		- added doc/20161015-test-doge.png
+
 2016-10-13	Strip symbols simply by saying `-s'.  (4)
 
 		include/innocent-pear/teh.h :

@@ -26,11 +26,13 @@
 
 `innocent-pear-c++` is a wrapper around the GNU C++ compiler (`g++`(1)) or `clang++` compiler which tries to obscure the code of compiled programs.  If the switches `-Xinnocent-pear -doge` are specified, `innocent-pear-c++` scrambles parts of the text and data sections of a program and adds constructor routines to unscramble them.
 
-`innocent-pear-cc` is a C compiler (`gcc` or `clang`) wrapper which can be used to link up C modules with a `innocent-pear-c++` program.
+`innocent-pear-cc` is a wrapper for `gcc` or `clang`, for compiling C or assembly language modules to be linked into an `innocent-pear-c++` program.
 
 `innocent-pear-c++` and `innocent-pear-cc` are being tested with x86-64, x86-32, and 32-bit ARM target platforms, and *may* partially work with other targets.
 
 There is also a rather undocumented C++ API for various code obfuscation subtasks.
+
+![](doc/20161015-test-doge.png)
 
 ## Bugs
 
