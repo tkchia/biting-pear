@@ -27,6 +27,23 @@ inline constexpr T pow(T x)
 			 pow<T, P / 2>(x * x) * x;
 }
 
+template<class T>
+__attribute__((always_inline))
+inline constexpr T creal(T x, T y)
+{
+	/* Consider the mapping w -> 2w + 1. */
+	return (T)2 * x * y + x + y;
+}
+
+template<class T, T P = ~(T)0>
+__attribute__((always_inline))
+inline constexpr T cpow(T x)
+{
+	return P == 0 ? (T)0 :
+	    P % 2 == 0 ? cpow<T, P / 2>(creal(x, x)) :
+			 creal(cpow<T, P / 2>(creal(x, x)), x);
+}
+
 // .. arxiv.org/abs/1402.6246
 // :
 inline constexpr rand_state_t xorshr(rand_state_t s, unsigned i)
@@ -77,27 +94,35 @@ inline constexpr rand_state_t update_inner(rand_state_t s)
 	return s * 6364136223846793005ull + 1ull;
 }
 
+/* This _must_ match up with host/srsly.h. */
 template<unsigned WhichOp, class T>
+__attribute__((always_inline))
 inline T do_op(T x, T y)
 {
-	switch (WhichOp % 3) {
+	switch (WhichOp % 4) {
 	    case 0:
 		return x + y;
 	    case 1:
 		return x - y;
+	    case 2:
+		return creal(x, y);
 	    default:
 		return x ^ y;
 	}
 }
 
+/* This _must_ match up with host/srsly.h. */
 template<unsigned WhichOp, class T>
+__attribute__((always_inline))
 inline T do_inv_op(T x, T y)
 {
-	switch (WhichOp % 3) {
+	switch (WhichOp % 4) {
 	    case 0:
 		return x - y;
 	    case 1:
 		return x + y;
+	    case 2:
+		return creal(x, cpow(y));
 	    default:
 		return x ^ y;
 	}

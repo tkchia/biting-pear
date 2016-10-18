@@ -1,3 +1,20 @@
+2016-10-18	"Nothing is impossible for the man who doesn't have to do it
+		 himself."
+
+		include/innocent-pear/kthxbai.h :
+		- rewrote value splitting, using std::conditional<...>
+
+		include/innocent-pear/bbq.h :
+		- added a new possibility for do_op<...>(...) and
+		  do_inv_op<...>(...)
+
+		include/innocent-pear/host/srsly.h :
+		- updated to match include/innocent-pear/bbq.h
+
+		test/test-dawg-syn.cc ,
+		test/test-dawg-syn.good :
+		- really pared down...
+
 2016-10-15	First release, sort of.
 
 		doc/20161015-test-doge.png :

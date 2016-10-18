@@ -1,7 +1,7 @@
 #ifndef innocent_pear_H_SRSLY
 #define innocent_pear_H_SRSLY
 
-/* This _must_ match up with orly.h. */
+/* This _must_ match up with orly.h and bbq.h. */
 
 #include <cstdio>
 #include <cstdlib>
@@ -27,22 +27,26 @@ class srsly_impl
 	T xd0_, xd1_, xd2_, xd3_, xd4_, xd5_, xd6_, xd7_, xd8_, xd9_;
 	T do_op(T x, T y)
 	{
-		switch (which_op_ % 3) {
+		switch (which_op_ % 4) {
 		    case 0:
 			return x + y;
 		    case 1:
 			return x - y;
+		    case 2:
+			return creal(x, y);
 		    default:
 			return x ^ y;
 		}
 	}
 	T do_inv_op(T x, T y)
 	{
-		switch (which_op_ % 3) {
+		switch (which_op_ % 4) {
 		    case 0:
 			return x - y;
 		    case 1:
 			return x + y;
+		    case 2:
+			return creal(x, cpow(y));
 		    default:
 			return x ^ y;
 		}

@@ -234,35 +234,27 @@ class kthxbai_impl
 			// else fall through
 #endif
 		    case 12:
-			switch ((State2 >> 48) % 4) {
-			    case 3:
-				if (sizeof(T) > sizeof(unsigned long)) {
-					kthxbai_impl_split<NewState, T,
-					    unsigned long, Flags, Levels - 1>
-					    (x, v);
-					break;
-				} // else fall through
-			    case 2:
-				if (sizeof(T) > sizeof(unsigned)) {
-					kthxbai_impl_split<NewState, T,
-					    unsigned, Flags, Levels - 1>(x, v);
-					break;
-				} // else fall through
-			    case 1:
-				if (sizeof(T) > sizeof(unsigned short)) {
-					kthxbai_impl_split<NewState, T,
-					    unsigned short, Flags, Levels - 1>
-					    (x, v);
-					break;
-				} // else fall through
-			    default:
-				if (sizeof(T) > sizeof(unsigned char)) {
-					kthxbai_impl_split<NewState, T,
-					    unsigned char, Flags, Levels - 1>
-					    (x, v);
-					break;
-				}
-			} // fall through
+			if (sizeof(T) > sizeof(unsigned char)) {
+				constexpr unsigned WhichTyp =
+				    (State2 >> 48) % 4;
+				typedef
+				    typename std::conditional<
+					(WhichTyp >= 3 &&
+					 sizeof(T) > sizeof(unsigned long)),
+					unsigned long,
+				    typename std::conditional<
+					(WhichTyp >= 2 &&
+					 sizeof(T) > sizeof(unsigned)),
+					unsigned,
+				    typename std::conditional<
+					(WhichTyp >= 1 &&
+					 sizeof(T) > sizeof(unsigned short)),
+					unsigned short, unsigned char>::type
+					>::type >::type IntoT;
+				kthxbai_impl_split<NewState, T, IntoT, Flags,
+				    Levels - 1>(x, v);
+				break;
+			} // else fall through
 		    case 13:
 			if (special(x, v))
 				return;
