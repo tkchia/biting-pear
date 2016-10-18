@@ -33,7 +33,7 @@ __attribute__((always_inline))
 inline constexpr T creal(T x, T y)
 {
 	/* Consider the mapping w -> 2w + 1. */
-	return (T)2 * x * y + x + y;
+	return ((T)2 * y + (T)1) * x + y;
 }
 
 template<class T, T P = std::numeric_limits<T>::max()>
@@ -41,8 +41,8 @@ __attribute__((always_inline))
 inline constexpr T cpow(T x)
 {
 	return P == 0 ? (T)0 :
-	    P % 2 == 0 ? cpow<T, P / 2>(creal(x, x)) :
-			 creal(cpow<T, P / 2>(creal(x, x)), x);
+	    P % 2 == 0 ? cpow<T, P / 2>((T)2 * (x + (T)1) * x) :
+			 creal(cpow<T, P / 2>((T)2 * (x + (T)1) * x), x);
 }
 
 // .. arxiv.org/abs/1402.6246
@@ -106,7 +106,7 @@ inline T do_op(T x, T y)
 	    case 1:
 		return x - y;
 	    case 2:
-		return creal(x, y);
+		return creal(x, cpow(y));
 	    default:
 		return x ^ y;
 	}
@@ -123,7 +123,7 @@ inline T do_inv_op(T x, T y)
 	    case 1:
 		return x + y;
 	    case 2:
-		return creal(x, cpow(y));
+		return creal(x, y);
 	    default:
 		return x ^ y;
 	}
