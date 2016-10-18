@@ -33,7 +33,7 @@ class srsly_impl
 		    case 1:
 			return x - y;
 		    case 2:
-			return creal(x, y);
+			return creal(x, cpow(y));
 		    default:
 			return x ^ y;
 		}
@@ -46,7 +46,7 @@ class srsly_impl
 		    case 1:
 			return x + y;
 		    case 2:
-			return creal(x, cpow(y));
+			return creal(x, y);
 		    default:
 			return x ^ y;
 		}
