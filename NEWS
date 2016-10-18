@@ -7,6 +7,8 @@
 		include/innocent-pear/bbq.h :
 		- added a new possibility for do_op<...>(...) and
 		  do_inv_op<...>(...)
+		- rewrote pow(.) template instantiation to use std::
+		  numeric_limits<.>
 
 		include/innocent-pear/host/srsly.h :
 		- updated to match include/innocent-pear/bbq.h

@@ -3,6 +3,7 @@
 
 #include <cinttypes>
 #include <climits>
+#include <limits>
 #ifdef innocent_pear_HOST_SIDE
 #   include <innocent-pear/host/derp.h>
 #else
@@ -18,7 +19,7 @@ namespace impl
 typedef uint_least32_t ops_flags_t;
 typedef uint64_t rand_state_t;
 
-template<class T, T P = ((T)1 << (sizeof(T) * CHAR_BIT - 1)) - 1>
+template<class T, T P = std::numeric_limits<T>::max() / 2>
 __attribute__((always_inline))
 inline constexpr T pow(T x)
 {
@@ -35,7 +36,7 @@ inline constexpr T creal(T x, T y)
 	return (T)2 * x * y + x + y;
 }
 
-template<class T, T P = ~(T)0>
+template<class T, T P = std::numeric_limits<T>::max()>
 __attribute__((always_inline))
 inline constexpr T cpow(T x)
 {
