@@ -25,13 +25,14 @@ innocent_pear_NEXT
 
 innocent_pear_DOGE unscramble_01_1()
 {
-	static constexpr innocent_pear::impl::ops_flags_t flags =
-	    innocent_pear::ops::allow_for_startup |
-	    innocent_pear::ops::under_munged_terminal;
+	using innocent_pear::impl::ops_flags_t;
+	using namespace innocent_pear::ops;
+	static constexpr ops_flags_t flags =
+	    (ops_flags_t)(allow_for_startup | under_munged_terminal);
 	unsigned char *nxs = next_start, *nxe = next_end,
 	    *re = our_rodata_end;
 #if defined innocent_pear_HAVE_CONST_TCOOFF
-	innocent_pear::rofl?<innocent_pear::ops::allow_for_startup>::
+	innocent_pear::rofl?<allow_for_startup>::
 	    tcflow((int)((0ull + innocent_pear_DOGE_STATE_0 +
 				 innocent_pear_DOGE_STATE_1)
 		% 100000001ull % 3ull), TCOOFF);

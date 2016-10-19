@@ -41,11 +41,21 @@ template<class T, T P = (std::numeric_limits<T>::max() > 3 ?
 __attribute__((always_inline))
 inline constexpr T cpow(T x)
 {
+	/*
+	 * The seemingly redundant conditionals, e.g. `P > 17 ? 17 : 0', are
+	 * to prevent clang++ from giving a
+	 *
+	 *	"fatal error: recursive template instantiation exceeded
+	 *	 maximum depth of 256"
+	 */
 	return P == 0 ? (T)0 :
-	    P % 17 == 0 && P > 17 ? cpow<T, P / 17>(cpow<T, 17>(x)) :
-	    P % 15 == 0 && P > 15 ? cpow<T, P / 15>(cpow<T, 15>(x)) :
-	    P % 2 == 0 ? cpow<T, P / 2>((T)2 * (x + (T)1) * x) :
-			 creal(cpow<T, P / 2>((T)2 * (x + (T)1) * x), x);
+	    P % 17 == 0 && P > 17 ?
+		cpow<T, (P > 17 ? P / 17 : 0)>(cpow<T, (P > 17 ? 17 : 0)>(x)) :
+	    P % 15 == 0 && P > 15 ?
+		cpow<T, (P > 15 ? P / 15 : 0)>(cpow<T, (P > 15 ? 15 : 0)>(x)) :
+	    P % 2 == 0 ?
+		cpow<T, P / 2>((T)2 * (x + (T)1) * x) :
+		creal(cpow<T, P / 2>((T)2 * (x + (T)1) * x), x);
 }
 
 template<class T>
@@ -61,10 +71,13 @@ __attribute__((always_inline))
 inline constexpr T cpowf(T x)
 {
 	return P == 0 ? (T)0 :
-	    P % 17 == 0 && P > 17 ? cpowf<T, P / 17>(cpowf<T, 17>(x)) :
-	    P % 15 == 0 && P > 15 ? cpowf<T, P / 15>(cpowf<T, 15>(x)) :
-	    P % 2 == 0 ? cpowf<T, P / 2>((T)2 * (x + x + (T)1) * x) :
-			 crealf(cpowf<T, P / 2>((T)2 * (x + x + (T)1) * x), x);
+	    P % 17 == 0 && P > 17 ?
+		cpowf<T, (P>17 ? P / 17 : 0)>(cpowf<T, (P>17 ? 17 : 0)>(x)) :
+	    P % 15 == 0 && P > 15 ?
+		cpowf<T, (P>15 ? P / 15 : 0)>(cpowf<T, (P>15 ? 15 : 0)>(x)) :
+	    P % 2 == 0 ?
+		cpowf<T, P / 2>((T)2 * (x + x + (T)1) * x) :
+		crealf(cpowf<T, P / 2>((T)2 * (x + x + (T)1) * x), x);
 }
 
 // .. arxiv.org/abs/1402.6246

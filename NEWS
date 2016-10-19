@@ -23,6 +23,15 @@
 		include/innocent-pear/host/srsly.h :
 		- updated to match include/innocent-pear/bbq.h
 
+		share/innocent-pear/doge-01.cc ,
+		share/innocent-pear/doge-02.cc ,
+		share/innocent-pear/doge-03.cc ,
+		share/innocent-pear/doge-04.cc ,
+		share/innocent-pear/doge-05.cc ,
+		share/innocent-pear/doge-06.cc :
+		- updated to agree with new `enum'-style definition of
+		  innocent_pear::impl::ops_flags_t
+
 2016-10-18	"Nothing is impossible for the man who doesn't have to do it
 		 himself."
 
