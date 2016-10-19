@@ -371,7 +371,8 @@ class lolwut_impl
 	}
 };
 
-template<rand_state_t State, class T, ops_flags_t Flags = 0,
+template<rand_state_t State, class T,
+    ops_flags_t Flags = innocent_pear::ops::allow_minimal,
     unsigned Levels = 3u>
 class lolwut;
 

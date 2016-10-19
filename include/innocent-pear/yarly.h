@@ -15,7 +15,8 @@ namespace impl
 {
 
 template<rand_state_t State, class T = unsigned, bool BigBad = false,
-    ops_flags_t Flags = 0, unsigned Levels = 3u>
+    ops_flags_t Flags = innocent_pear::ops::allow_minimal,
+    unsigned Levels = 3u>
 class yarly;  // forward
 
 template<rand_state_t State, class T, bool BigBad, ops_flags_t Flags,

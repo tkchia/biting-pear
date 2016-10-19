@@ -154,7 +154,8 @@ struct omg_impl_0
 };
 #endif
 
-template<rand_state_t State, class T, ops_flags_t Flags = 0,
+template<rand_state_t State, class T,
+    ops_flags_t Flags = innocent_pear::ops::allow_minimal,
     unsigned Levels = 2u>
 class omg;
 

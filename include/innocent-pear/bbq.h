@@ -16,7 +16,6 @@ namespace innocent_pear
 namespace impl
 {
 
-typedef uint_least32_t ops_flags_t;
 typedef uint64_t rand_state_t;
 
 template<class T, T P = std::numeric_limits<T>::max() / 2>
@@ -168,10 +167,9 @@ inline constexpr T pick_hi(rand_state_t x)
 namespace ops
 {
 
-#pragma GCC push_options
-#pragma GCC optimize("toplevel-reorder")
-
-static constexpr innocent_pear::impl::ops_flags_t
+enum ops_flags_t
+{
+    allow_minimal		= 0x00000000u,
     allow_signal_safes		= 0x00000001u,
     allow_signal_unsafes	= 0x00000002u,
     allow_debugger_unsafes	= 0x00000004u,
@@ -182,11 +180,15 @@ static constexpr innocent_pear::impl::ops_flags_t
 				  allow_debugger_unsafes |
 				  allow_emulator_unsafes |
 				  allow_resource_unsafes,
-    under_munged_terminal	= 0x00000020u;
-
-#pragma GCC pop_options
+    under_munged_terminal	= 0x00000020u
+};
 
 } // innocent_pear::ops
+
+namespace impl
+{
+	using innocent_pear::ops::ops_flags_t;
+} // innocent_pear::impl
 
 } // innocent_pear
 

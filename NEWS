@@ -4,9 +4,21 @@
 		- added yet another possibility for do_op<...>(...) and
 		  do_inv_op<...>(...)
 		- trying to streamline the implementation of cpow<...>(.)...
-		- now uses `#pragma GCC optimize' to try to prevent the
-		  innocent_pear::ops:: constants from being emitted as data
-		  under `-fno-toplevel-reorder'
+		- now redefining innocent_pear::impl::ops_flags_t as an
+		  enum, to try to prevent the innocent_pear::ops:: constants
+		  from being emitted as data under `-fno-toplevel-reorder'
+		- added ops_flags_t value innocent_pear::ops::allow_minimal
+
+		include/innocent-pear/kthxbai.h ,
+		include/innocent-pear/lolwut.h ,
+		include/innocent-pear/omg.h ,
+		include/innocent-pear/orly.h ,
+		include/innocent-pear/rofl.h ,
+		include/innocent-pear/yarly.h ,
+		share/innocent-pear/omnomnom.lxx ,
+		test/test-dawg.cc ,
+		test/test-yodawg.cc :
+		- now using innocent_pear::ops::allow_minimal
 
 		include/innocent-pear/host/srsly.h :
 		- updated to match include/innocent-pear/bbq.h

@@ -210,7 +210,8 @@ static void flush_str()
 "$"{ws}\"		{
 				blurt(yytext + 1, yyleng - 2);
 				blurfl("::innocent_pear::dawg<0x%" PRIx64
-				    ",0,", moar.fetch());
+				    ",::innocent_pear::ops::allow_minimal,",
+				    moar.fetch());
 				curr_str_enc = "";
 				BEGIN(Such);
 			}
@@ -230,7 +231,8 @@ static void flush_str()
 				blurt(yytext + 1, p - yytext - 1);
 				blurt(p + 1, q - p - 1);
 				blurfl("::innocent_pear::yodawg<0x%" PRIx64
-				    ",0,", moar.fetch());
+				    ",::innocent_pear::ops::allow_minimal,",
+				    moar.fetch());
 				curr_str_enc = "L";
 				BEGIN(Such);
 			}
