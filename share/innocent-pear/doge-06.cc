@@ -14,7 +14,7 @@
 
 using innocent_pear::impl::uintptr_t;
 using innocent_pear::impl::ops_flags_t;
-using innocent_pear::ops;
+using namespace innocent_pear::ops;
 
 extern unsigned char dogecoin_start[] __asm("_.innocent_pear.dogecoin.start");
 extern unsigned char dogecoin_end[] __asm("_.innocent_pear.dogecoin.end");

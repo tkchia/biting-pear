@@ -13,21 +13,20 @@
 #include "doge-i.h"
 
 using innocent_pear::impl::uintptr_t;
+using innocent_pear::impl::ops_flags_t;
+using namespace innocent_pear::ops;
 
 extern unsigned char our_rodata_start[] __asm("_.innocent_pear.rodata.start");
 extern unsigned char our_relro_end[] __asm("_.innocent_pear.relro.end");
 extern unsigned char our_bss_end[] __asm("_end");
 
-static constexpr innocent_pear::impl::ops_flags_t flags =
-    innocent_pear::ops::allow_for_startup |
-    innocent_pear::ops::under_munged_terminal;
-static constexpr innocent_pear::impl::ops_flags_t flags2 =
-    innocent_pear::ops::allow_for_startup;
-
 innocent_pear_HERE_START
 
 innocent_pear_DOGE unscramble_07_1()
 {
+	static constexpr ops_flags_t flags =
+	    (ops_flags_t)(allow_for_startup | under_munged_terminal);
+	static constexpr ops_flags_t flags2 = allow_for_startup;
 	uintptr_t pg_sz = (uintptr_t)getpagesize();
 	unsigned char *prot_start =
 	    (unsigned char *)(((uintptr_t)our_rodata_start+pg_sz-1) & -pg_sz);
@@ -69,5 +68,6 @@ innocent_pear_DOGE unscramble_07_1()
 
 innocent_pear_DOGE_MEMSET unscramble_07_2()
 {
-	innocent_pear::rofl?<flags>::memset((void *)here_start);
+	static constexpr ops_flags_t flags2 = allow_for_startup;
+	innocent_pear::rofl?<flags2>::memset((void *)here_start);
 }

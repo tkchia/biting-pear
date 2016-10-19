@@ -32,6 +32,11 @@
 		- updated to agree with new `enum'-style definition of
 		  innocent_pear::impl::ops_flags_t
 
+		share/innocent-pear/doge-07.cc :
+		- updated to agree with new `enum'-style definition of
+		  innocent_pear::impl::ops_flags_t
+		- fixed a bug in the flags passed to rofl<...>::memset(.)
+
 2016-10-18	"Nothing is impossible for the man who doesn't have to do it
 		 himself."
 
