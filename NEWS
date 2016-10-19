@@ -1,3 +1,16 @@
+2016-10-19	Math, it works.
+
+		include/innocent-pear/bbq.h :
+		- added yet another possibility for do_op<...>(...) and
+		  do_inv_op<...>(...)
+		- trying to streamline the implementation of cpow<...>(.)...
+		- now uses `#pragma GCC optimize' to try to prevent the
+		  innocent_pear::ops:: constants from being emitted as data
+		  under `-fno-toplevel-reorder'
+
+		include/innocent-pear/host/srsly.h :
+		- updated to match include/innocent-pear/bbq.h
+
 2016-10-18	"Nothing is impossible for the man who doesn't have to do it
 		 himself."
 

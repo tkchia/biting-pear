@@ -33,16 +33,39 @@ __attribute__((always_inline))
 inline constexpr T creal(T x, T y)
 {
 	/* Consider the mapping w -> 2w + 1. */
-	return ((T)2 * y + (T)1) * x + y;
+	return (y + y + (T)1) * x + y;
 }
 
-template<class T, T P = std::numeric_limits<T>::max()>
+template<class T, T P = (std::numeric_limits<T>::max() > 3 ?
+			 std::numeric_limits<T>::max() / 2 :
+			 std::numeric_limits<T>::max())>
 __attribute__((always_inline))
 inline constexpr T cpow(T x)
 {
 	return P == 0 ? (T)0 :
+	    P % 17 == 0 && P > 17 ? cpow<T, P / 17>(cpow<T, 17>(x)) :
+	    P % 15 == 0 && P > 15 ? cpow<T, P / 15>(cpow<T, 15>(x)) :
 	    P % 2 == 0 ? cpow<T, P / 2>((T)2 * (x + (T)1) * x) :
 			 creal(cpow<T, P / 2>((T)2 * (x + (T)1) * x), x);
+}
+
+template<class T>
+__attribute__((always_inline))
+inline constexpr T crealf(T x, T y)
+{
+	/* Consider the mapping w -> 4w + 1. */
+	return ((T)4 * y + (T)1) * x + y;
+}
+
+template<class T, T P = std::numeric_limits<T>::max()>
+__attribute__((always_inline))
+inline constexpr T cpowf(T x)
+{
+	return P == 0 ? (T)0 :
+	    P % 17 == 0 && P > 17 ? cpowf<T, P / 17>(cpowf<T, 17>(x)) :
+	    P % 15 == 0 && P > 15 ? cpowf<T, P / 15>(cpowf<T, 15>(x)) :
+	    P % 2 == 0 ? cpowf<T, P / 2>((T)2 * (x + x + (T)1) * x) :
+			 crealf(cpowf<T, P / 2>((T)2 * (x + x + (T)1) * x), x);
 }
 
 // .. arxiv.org/abs/1402.6246
@@ -100,13 +123,15 @@ template<unsigned WhichOp, class T>
 __attribute__((always_inline))
 inline T do_op(T x, T y)
 {
-	switch (WhichOp % 4) {
+	switch (WhichOp % 5) {
 	    case 0:
 		return x + y;
 	    case 1:
 		return x - y;
 	    case 2:
 		return creal(x, cpow(y));
+	    case 3:
+		return crealf(x, cpowf(y));
 	    default:
 		return x ^ y;
 	}
@@ -117,13 +142,15 @@ template<unsigned WhichOp, class T>
 __attribute__((always_inline))
 inline T do_inv_op(T x, T y)
 {
-	switch (WhichOp % 4) {
+	switch (WhichOp % 5) {
 	    case 0:
 		return x - y;
 	    case 1:
 		return x + y;
 	    case 2:
 		return creal(x, y);
+	    case 3:
+		return crealf(x, y);
 	    default:
 		return x ^ y;
 	}
@@ -138,7 +165,11 @@ inline constexpr T pick_hi(rand_state_t x)
 
 } // innocent_pear::impl
 
-namespace ops {
+namespace ops
+{
+
+#pragma GCC push_options
+#pragma GCC optimize("toplevel-reorder")
 
 static constexpr innocent_pear::impl::ops_flags_t
     allow_signal_safes		= 0x00000001u,
@@ -152,6 +183,8 @@ static constexpr innocent_pear::impl::ops_flags_t
 				  allow_emulator_unsafes |
 				  allow_resource_unsafes,
     under_munged_terminal	= 0x00000020u;
+
+#pragma GCC pop_options
 
 } // innocent_pear::ops
 
