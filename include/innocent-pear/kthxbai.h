@@ -83,7 +83,7 @@ class kthxbai_impl
 		return false;
 	}
 	__attribute__((
-#ifdef __ELF_
+#ifdef __ELF__
 	    visibility("hidden"),
 #endif
 	    always_inline))
