@@ -18,7 +18,7 @@ extern void keyboardest(char **, const char *, const char *, const char *,
     const char *, bool);
 extern char *sleepier(const char *);
 extern int sleepiest(const char *);
-extern innocent_pear::impl::uint64_t lolrus(const char *, const char *);
+extern innocent_pear::impl::uint_least64_t lolrus(const char *, const char *);
 
 template<class... Ts>
 __attribute__((always_inline))

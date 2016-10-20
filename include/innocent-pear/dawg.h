@@ -109,7 +109,7 @@ class dawg_impl<State, CT, Flags, Levels, Ch, Chs...>
 };
 
 template<class CT, innocent_pear::impl::rand_state_t State,
-    innocent_pear::impl::ops_flags_t Flags, unsigned Levels>
+    innocent_pear::ops_flags_t Flags, unsigned Levels>
 __attribute__((always_inline))
 inline std::basic_ostream<CT>& operator<<(std::basic_ostream<CT>& os,
     const innocent_pear::impl::dawg_impl<State, CT, Flags, Levels>& s)
@@ -118,7 +118,7 @@ inline std::basic_ostream<CT>& operator<<(std::basic_ostream<CT>& os,
 }
 
 template<class CT, innocent_pear::impl::rand_state_t State,
-    innocent_pear::impl::ops_flags_t Flags, unsigned Levels,
+    innocent_pear::ops_flags_t Flags, unsigned Levels,
     CT Ch, CT... Chs>
 __attribute__((always_inline))
 inline std::basic_ostream<CT>& operator<<(std::basic_ostream<CT>& os,

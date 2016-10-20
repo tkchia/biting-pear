@@ -17,7 +17,7 @@ class moar_t
 	~moar_t()
 		{ KeccakWidth1600_SpongePRG_Forget(&g_); }
 	void feed(const unsigned char *, std::size_t);
-	innocent_pear::impl::uint64_t fetch();
+	innocent_pear::impl::uint_least64_t fetch();
 };
 
 #endif

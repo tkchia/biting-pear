@@ -92,7 +92,15 @@ class kthxbai_impl
 		switch ((State2 >> 32) % 16) {
 		    case 0:
 			{
-				kthxbai_impl<State3,T,Flags,Levels-1>(x, v);
+				constexpr unsigned NB = sizeof(T) * CHAR_BIT;
+				constexpr unsigned S = (State3 >> 16) % NB,
+						   RS = (NB - S) % NB;
+				if (S) {
+					T x1, v1 = v << S | v >> RS;
+					impl_n(x1, v1);
+					impl_z(x, x1 >> S | x1 << RS);
+				} else
+					impl_n(x, v);
 			}
 			break;
 		    case 1:

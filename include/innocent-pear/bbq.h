@@ -16,7 +16,7 @@ namespace innocent_pear
 namespace impl
 {
 
-typedef uint64_t rand_state_t;
+typedef uint_least64_t rand_state_t;
 
 template<class T, T P = std::numeric_limits<T>::max() / 2>
 __attribute__((always_inline))
@@ -80,11 +80,17 @@ inline constexpr T cpowf(T x)
 		crealf(cpowf<T, P / 2>((T)2 * (x + x + (T)1) * x), x);
 }
 
+inline constexpr rand_state_t clip(rand_state_t s)
+{
+	/* In case rand_state_t is not _exactly_ 64 bits wide. */
+	return s & (((rand_state_t)1 << 63 << 1) - 1);
+}
+
 // .. arxiv.org/abs/1402.6246
 // :
 inline constexpr rand_state_t xorshr(rand_state_t s, unsigned i)
 {
-	return s ^ s >> i;
+	return s ^ clip(s) >> i;
 }
 
 inline constexpr rand_state_t xorshl(rand_state_t s, unsigned i)
@@ -92,25 +98,28 @@ inline constexpr rand_state_t xorshl(rand_state_t s, unsigned i)
 	return s ^ s << i;
 }
 
-inline constexpr uint64_t i_vigna(uint64_t m)
-	{ return pow<uint64_t>(m); }
+inline constexpr uint_least64_t i_vigna(uint_least64_t m)
+	{ return pow<uint_least64_t>(m); }
 
 inline constexpr rand_state_t vigna_1(rand_state_t s, unsigned a,
-    unsigned b, unsigned c, uint64_t m)
+    unsigned b, unsigned c, uint_least64_t m)
 {
-	return xorshl(xorshl(xorshr(i_vigna(m) * (s ? s : 1), a), b), c) * m;
+	return clip(xorshl(xorshl(xorshr(i_vigna(m) * (s ? s : 1), a), b), c)
+	    * m);
 }
 
 inline constexpr rand_state_t vigna_5(rand_state_t s, unsigned a,
-    unsigned b, unsigned c, uint64_t m)
+    unsigned b, unsigned c, uint_least64_t m)
 {
-	return xorshl(xorshr(xorshr(i_vigna(m) * (s ? s : 1), a), c), b) * m;
+	return clip(xorshl(xorshr(xorshr(i_vigna(m) * (s ? s : 1), a), c), b)
+	    * m);
 }
 
 inline constexpr rand_state_t vigna_7(rand_state_t s, unsigned a,
-    unsigned b, unsigned c, uint64_t m)
+    unsigned b, unsigned c, uint_least64_t m)
 {
-	return xorshr(xorshr(xorshl(i_vigna(m) * (s ? s : 1), b), a), c) * m;
+	return clip(xorshr(xorshr(xorshl(i_vigna(m) * (s ? s : 1), b), a), c)
+	    * m);
 }
 
 inline constexpr rand_state_t update_outer(rand_state_t s, unsigned w)
@@ -171,8 +180,8 @@ inline T do_inv_op(T x, T y)
 template<class T>
 inline constexpr T pick_hi(rand_state_t x)
 {
-	return sizeof(T) >= sizeof(x) ? x :
-	    static_cast<T>(x >> ((sizeof(x) - sizeof(T)) * CHAR_BIT));
+	return sizeof(T) * CHAR_BIT >= 64u ? clip(x) :
+	    static_cast<T>(x >> (sizeof(x) * CHAR_BIT - 64u));
 }
 
 } // innocent_pear::impl
@@ -198,10 +207,7 @@ enum ops_flags_t
 
 } // innocent_pear::ops
 
-namespace impl
-{
-	using innocent_pear::ops::ops_flags_t;
-} // innocent_pear::impl
+using ops::ops_flags_t;
 
 } // innocent_pear
 

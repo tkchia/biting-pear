@@ -103,17 +103,18 @@ struct omg_impl_0<State, 0u>
 #   if defined __arm__ && defined __thumb__
 			__asm __volatile(".inst.n %c0"
 			    : /* no outputs */
-			    : "n" ((uint32_t)pick_hi<uint16_t>(State^State2))
+			    : "n" ((uint_least32_t)pick_hi<uint_least16_t>
+				(State ^ State2))
 			    : "memory");
 #   elif defined __arm__
 			__asm __volatile(".inst %c0"
 			    : /* no outputs */
-			    : "n" (pick_hi<uint32_t>(State ^ State2))
+			    : "n" (pick_hi<uint_least32_t>(State ^ State2))
 			    : "memory");
 #   elif defined __i386__ || defined __amd64__
 			__asm __volatile(".byte %c0"
 			    : /* no outputs */
-			    : "n" (pick_hi<uint8_t>(State ^ State2))
+			    : "n" (pick_hi<uint_least8_t>(State ^ State2))
 			    : "memory");
 #   else
 			;
@@ -448,10 +449,10 @@ class omg
 				kthxbai<NewState, void *, Flags, Levels>
 				    p(&&foo, 1);
 #   ifdef __amd64__
-				uint64_t rzsz = 128 + 8 * Which7;
+				uintptr_t rzsz = 128 + 8 * Which7;
 #   endif
-				uint8_t x = static_cast<uint8_t>(State2 >> 24)
-				    / 2;
+				uint_least8_t x = static_cast<uint_least8_t>
+				    (State2 >> 24) / 2;
 				q = static_cast<void *>(p);
 				if (!q)
 					goto bar;
@@ -502,7 +503,7 @@ class omg
 					    innocent_pear_BR_PREFIX(5)
 					    "retq %3"
 					    : /* no outputs */
-					    : "r" (q), "g" ((uint64_t)x),
+					    : "r" (q), "g" ((uintptr_t)x),
 					      "r" (rzsz), "n" (rzsz),
 					      "n" (Which3), "n" (Which4)
 					    : /* no clobbers */
@@ -519,7 +520,7 @@ class omg
 					    "lretq %4"
 					    : /* no outputs */
 					    : "r" (q), "r" (r),
-					      "g" ((uint64_t)x), "r" (rzsz),
+					      "g" ((uintptr_t)x), "r" (rzsz),
 					      "n" (rzsz), "n" (Which3),
 					      "n" (Which4), "n" (Which5)
 					    : /* no clobbers */
@@ -554,7 +555,7 @@ class omg
 					    innocent_pear_BR_PREFIX(2)
 					    "retl"
 					    : /* no outputs */
-					    : "r" (q), "g" ((uint32_t)x),
+					    : "r" (q), "g" ((uint_least32_t)x),
 					      "n" (Which3)
 					    : /* no clobbers */
 					    : foo);  break;
@@ -568,8 +569,8 @@ class omg
 					    "lretl"
 					    : /* no outputs */
 					    : "r" (q), "r" (r),
-					      "g" ((uint32_t)x), "n" (Which3),
-					      "n" (Which4)
+					      "g" ((uint_least32_t)x),
+					      "n" (Which3), "n" (Which4)
 					    : /* no clobbers */
 					    : foo);  break;
 				    case 5:
@@ -703,7 +704,7 @@ class omg
 			if (!(Flags & allow_signal_safes)) {
 				union {
 					time_t t;
-					uint64_t i;
+					uint_least64_t i;
 				} u;
 				kthxbai<NewState, time_t *, Flags,
 				    Levels - 1> p(&u.t);

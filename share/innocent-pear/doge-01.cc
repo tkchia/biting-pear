@@ -25,9 +25,9 @@ innocent_pear_NEXT
 
 innocent_pear_DOGE unscramble_01_1()
 {
-	using innocent_pear::impl::ops_flags_t;
+	using innocent_pear::ops_flags_t;
 	using namespace innocent_pear::ops;
-	static constexpr ops_flags_t flags =
+	constexpr ops_flags_t flags =
 	    (ops_flags_t)(allow_for_startup | under_munged_terminal);
 	unsigned char *nxs = next_start, *nxe = next_end,
 	    *re = our_rodata_end;

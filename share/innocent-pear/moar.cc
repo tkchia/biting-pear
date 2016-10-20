@@ -1,9 +1,10 @@
+#include <climits>
 #include <cstdlib>
 #include <limits>
 #define innocent_pear_HOST_SIDE
 #include <innocent-pear/host/moar.h>
 
-using innocent_pear::impl::uint64_t;
+using innocent_pear::impl::uint_least64_t;
 
 void moar_t::feed(const unsigned char *b, std::size_t n)
 {
@@ -23,17 +24,17 @@ void moar_t::feed(const unsigned char *b, std::size_t n)
 	KeccakWidth1600_SpongePRG_Feed(&g_, b, (unsigned)n);
 }
 
-uint64_t moar_t::fetch()
+uint_least64_t moar_t::fetch()
 {
-	static constexpr std::size_t NB = sizeof(uint64_t);
-	static constexpr uint64_t UCM =
-	    (uint64_t)std::numeric_limits<unsigned char>::max();
+	static constexpr std::size_t NB = (64 + CHAR_BIT - 1) / CHAR_BIT;
+	static constexpr uint_least64_t UCM =
+	    (uint_least64_t)std::numeric_limits<unsigned char>::max();
 	unsigned char o[NB];
-	uint64_t x = 0;
+	uint_least64_t x = 0;
 	KeccakWidth1600_SpongePRG_Fetch(&g_, o, NB);
 	for (std::size_t i = 0; i < NB; ++i) {
 		x *= UCM + 1;
 		x += o[i];
 	}
-	return x;
+	return innocent_pear::impl::clip(x);
 }

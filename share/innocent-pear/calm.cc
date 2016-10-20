@@ -10,8 +10,6 @@
 #include <innocent-pear/host/lolcat.h>
 #include <innocent-pear/dawg.h>
 
-using innocent_pear::impl::uint64_t;
-
 static int main_(int argc, char **argv)
 {
 	const char *lulz =

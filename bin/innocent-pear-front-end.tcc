@@ -45,8 +45,6 @@
 #    define innocent_pear_DYN_LD_COMPILER_TARGET
 #endif
 
-using innocent_pear::impl::uint64_t;
-
 typedef struct {
 	innocent_pear::impl::rand_state_t z, i, ii, iii, iv, v,
 	    vi, vii, viii, ix, x;
@@ -320,7 +318,6 @@ static void play(char **argv, const char *in, const char *out,
 
 static int main_(int argc, char **argv)
 {
-	using innocent_pear::impl::uint64_t;
 	struct {
 		unsigned moar : 1, pass : 1, caturday : 1, eleventy : 1,
 			 grumpiest : 1, link : 1, starts : 1, o : 1,

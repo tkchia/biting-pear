@@ -13,7 +13,7 @@
 #include "doge-i.h"
 
 using innocent_pear::impl::uintptr_t;
-using innocent_pear::impl::ops_flags_t;
+using innocent_pear::ops_flags_t;
 using namespace innocent_pear::ops;
 
 extern unsigned char dogecoin_start[] __asm("_.innocent_pear.dogecoin.start");
@@ -81,7 +81,7 @@ class dogecoin_t
 
 innocent_pear_DOGE unscramble_06_1()
 {
-	static constexpr ops_flags_t flags =
+	constexpr ops_flags_t flags =
 	    (ops_flags_t)(allow_for_startup | under_munged_terminal);
 	unsigned char *nxs = next_start, *nxe = next_end;
 	innocent_pear_CHAFF(flags);
@@ -99,7 +99,7 @@ innocent_pear_DOGE unscramble_06_1()
 
 innocent_pear_DOGE_MEMSET unscramble_06_2()
 {
-	static constexpr ops_flags_t flags =
+	constexpr ops_flags_t flags =
 	    (ops_flags_t)(allow_for_startup | under_munged_terminal);
 	innocent_pear::rofl?<flags>::memset((void *)here_start);
 }

@@ -192,15 +192,17 @@ $(config.h.host) $(config.h.target): config.cache
 	echo "/****** AUTOMATICALLY GENERATED `date` ******/" >$@.tmp
 	if test '$(config.h.host)' = '$@'; \
 		then echo '#include <cstdlib>' >>$@.tmp; fi
-	if test '$(conf_Have_cxx_typ_std_0uint64_1t),$@' = \
-	    'yes,$(config.h.host)'; then \
-		echo '#include <cinttypes>' >>$@.tmp; \
-	elif test '$(conf_Have_cxxt_typ_std_0uint64_1t),$@' = \
-	    'yes,$(config.h.target)'; then \
-		echo '#include <cinttypes>' >>$@.tmp; \
-	elif test '$(config.h.target)' = '$@'; then \
-		echo '#include <inttypes.h>' >>$@.tmp; \
-	fi
+	set -e; \
+	$(foreach sz, 64 32 16 8, \
+		if test '$(conf_Have_cxx_typ_std_0uint_1least$(sz)_1t),$@' = \
+		    'yes,$(config.h.host)'; then \
+			echo '#include <cinttypes>' >>$@.tmp; \
+		elif test '$(conf_Have_cxxt_typ_std_0uint_1least$(sz)_1t),$@' \
+		    = 'yes,$(config.h.target)'; then \
+			echo '#include <cinttypes>' >>$@.tmp; \
+		elif test '$(config.h.target)' = '$@'; then \
+			echo '#include <inttypes.h>' >>$@.tmp; \
+		fi; ) true
 	if test '$(conf_Have_cxxt_typ_std_0uintptr_1t),$@' = \
 	    'yes,$(config.h.target)'; then \
 		echo '#include <cinttypes>' >>$@.tmp; \
@@ -228,15 +230,17 @@ $(config.h.host) $(config.h.target): config.cache
 		echo '#include <wchar.h>' >>$@.tmp; \
 	fi
 	echo 'namespace innocent_pear { namespace impl {' >>$@.tmp
-	if test '$(conf_Have_cxx_typ_std_0uint64_1t),$@' = \
-	    'yes,$(config.h.host)'; then \
-		echo 'using std::uint64_t;' >>$@.tmp; \
-	elif test '$(conf_Have_cxxt_typ_std_0uint64_1t),$@' = \
-	    'yes,$(config.h.target)'; then \
-		echo 'using std::uint64_t;' >>$@.tmp; \
-	else \
-		echo 'using ::uint64_t;' >>$@.tmp; \
-	fi
+	set -e; \
+	$(foreach sz, 64 32 16 8, \
+		if test '$(conf_Have_cxx_typ_std_0uint_1least$(sz)_1t),$@' = \
+		    'yes,$(config.h.host)'; then \
+			echo 'using std::uint_least$(sz)_t;' >>$@.tmp; \
+		elif test '$(conf_Have_cxxt_typ_std_0uint_1least$(sz)_1t),$@' \
+		    = 'yes,$(config.h.target)'; then \
+			echo 'using std::uint_least$(sz)_t;' >>$@.tmp; \
+		else \
+			echo 'using ::uint_least$(sz)_t;' >>$@.tmp; \
+		fi; ) true
 	if test '$(conf_Have_cxxt_typ_std_0uintptr_1t),$@' = \
 	    'yes,$(config.h.target)'; then \
 		echo 'using std::uintptr_t;' >>$@.tmp; \

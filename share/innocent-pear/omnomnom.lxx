@@ -57,7 +57,7 @@ u8tl		[\x80-\xbf]
 #   undef target_mbrtowc
 #endif
 
-using innocent_pear::impl::uint64_t;
+using innocent_pear::impl::uint_least64_t;
 
 static std::string curr_fn, curr_str_enc;
 static long curr_ln_off = 0;
@@ -190,13 +190,13 @@ static void flush_str()
 
 "?"{ws}"<"{ws}">"	{
 				blurt(yytext + 1, yyleng - 2);
-				blurfl("0x%" PRIx64 ">", moar.fetch());
+				blurfl("0x%" PRIxLEAST64 ">", moar.fetch());
 			}
 "?"{ws}"<"{ws}		{
 				char *p = strchr(yytext + 1, '<'),
 				     *q = yytext + yyleng;
 				blurt(yytext + 1, p - yytext);
-				blurfl("0x%" PRIx64 ",", moar.fetch());
+				blurfl("0x%" PRIxLEAST64 ",", moar.fetch());
 				blurt(p + 1, q - p - 1);
 			}
 "["{ws}"]"{ws}\"	{
@@ -209,7 +209,7 @@ static void flush_str()
 			}
 "$"{ws}\"		{
 				blurt(yytext + 1, yyleng - 2);
-				blurfl("::innocent_pear::dawg<0x%" PRIx64
+				blurfl("::innocent_pear::dawg<0x%" PRIxLEAST64
 				    ",::innocent_pear::ops::allow_minimal,",
 				    moar.fetch());
 				curr_str_enc = "";
@@ -230,8 +230,9 @@ static void flush_str()
 				     *q = yytext + yyleng - 1;
 				blurt(yytext + 1, p - yytext - 1);
 				blurt(p + 1, q - p - 1);
-				blurfl("::innocent_pear::yodawg<0x%" PRIx64
-				    ",::innocent_pear::ops::allow_minimal,",
+				blurfl("::innocent_pear::yodawg<0x%"
+				    PRIxLEAST64 ","
+				    "::innocent_pear::ops::allow_minimal,",
 				    moar.fetch());
 				curr_str_enc = "L";
 				BEGIN(Such);

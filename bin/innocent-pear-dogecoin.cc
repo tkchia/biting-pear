@@ -18,8 +18,6 @@
 
 #define NEW_SXN_NAME_TPL ".innocent_pear.dogecoin"
 
-using innocent_pear::impl::uint64_t;
-
 typedef std::map<asection *, long> sxn_to_reloc_count_map_t;
 typedef std::map<asection *, arelent **> sxn_to_relocs_map_t;
 typedef std::list<asection *> sxn_list_t;
@@ -333,7 +331,7 @@ static void do_frob_8(bfd *ibfd, bfd *obfd, fortune_t *fortune)
 		std::size_t nm_sz = sizeof(NEW_SXN_NAME_TPL) + 17;
 		char *nm = new char[nm_sz];
 		prg = innocent_pear::impl::update_outer(prg, 5);
-		snprintf(nm, nm_sz, NEW_SXN_NAME_TPL ".%016" PRIx64, prg);
+		snprintf(nm, nm_sz, NEW_SXN_NAME_TPL ".%016" PRIxLEAST64, prg);
 		if (i == 16)
 			wow("  ...");
 		else if (i < 16)

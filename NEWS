@@ -1,3 +1,57 @@
+2016-10-20	Round and round.
+
+		include/innocent-pear/kthxbai.h :
+		- kthxbai_impl<...> can now try to scramble constants by
+		  rotating them a constant number of bits
+
+		include/innocent-pear/bbq.h :
+		- switched back from uint64_t to uint_least64_t
+		- added code to clip uint_least64_t values to 64 bits -- in
+		  case it can hold more
+		- pick_hi<.>(.) now only looks at lowest 64 bits of its
+		  argument
+		- moved ops_flags_t from innocent_pear::impl:: to
+		  innocent_pear::
+
+		include/innocent-pear/omg.h :
+		- now uses uint_least{64, 32, 16, 8}_t and uintptr_t instead
+		  of uint{64, 32, 16, 8}_t, even for machine specific code
+
+		include/innocent-pear/dawg.h ,
+		include/innocent-pear/yodawg.h ,
+		include/innocent-pear/host/lolcat.h ,
+		include/innocent-pear/host/moar.h ,
+		share/innocent-pear/lolrus.cc ,
+		share/innocent-pear/moar.cc :
+		- updated to match bbq.h
+
+		share/innocent-pear/doge-01.cc ,
+		share/innocent-pear/doge-02.cc ,
+		share/innocent-pear/doge-03.cc ,
+		share/innocent-pear/doge-04.cc ,
+		share/innocent-pear/doge-05.cc ,
+		share/innocent-pear/doge-06.cc ,
+		share/innocent-pear/doge-07.cc :
+		- updated to match bbq.h
+		- now uses `constexpr' instead of `static constexpr' for
+		  `flags' (and `flags2'), to prevent the flags from being
+		  emitted as data
+
+		bin/innocent-pear-dogecoin.cc ,
+		share/innocent-pear/omnomnom.lxx :
+		- uint64_t -> uint_least64_t; PRIx64 -> PRIxLEAST64
+
+		bin/innocent-pear-front-end.tcc ,
+		share/innocent-pear/calm.cc :
+		- removed unneeded explicit references to uint64_t
+
+		configure :
+		- instead of uint64_t, now tests for uint_least{64, 32, 16,
+		  8}_t, for host and target
+
+		GNUmakefile :
+		- updated to match ./configure
+
 2016-10-19	Math, it works.
 
 		include/innocent-pear/bbq.h :
