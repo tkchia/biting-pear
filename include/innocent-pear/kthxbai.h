@@ -30,9 +30,9 @@ template<rand_state_t State, class T, bool Boreal, bool BigBad,
 class orly;  // forward
 
 template<class T>
-bool hi_bit(T x)
+bool bit_set(T x, unsigned i)
 {
-	return (x & ((T)1 << (sizeof(T) * CHAR_BIT - 1))) != 0;
+	return (x & ((T)1 << i)) != 0;
 }
 
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
@@ -70,7 +70,7 @@ class kthxbai_impl
 	    NewState = update_outer(State, Levels),
 	    NewState2 = update_outer(NewState, Levels),
 	    NewState3 = update_outer(NewState2, Levels);
-	static constexpr bool Boreal1 = (State2 >> 20) % 2 != 0;
+	static constexpr bool Boreal1 = (State2 >> 30) % 2 != 0;
 	typedef kthxbai_impl<NewState, T, Flags, Levels - 1> impl_n;
 	typedef kthxbai_impl<NewState2, T, Flags, Levels - 1> impl_n2;
 	typedef kthxbai_impl<0, T, Flags, 0> impl_z;
@@ -89,7 +89,9 @@ class kthxbai_impl
 	    always_inline))
 	kthxbai_impl(T& x, T v)
 	{
-		switch ((State2 >> 32) % 16) {
+		constexpr unsigned BitP =
+		    (State2 >> 20) % (sizeof(T) * CHAR_BIT);
+		switch ((State2 >> 32) % 25) {
 		    case 0:
 			{
 				constexpr unsigned NB = sizeof(T) * CHAR_BIT;
@@ -108,7 +110,7 @@ class kthxbai_impl
 				constexpr unsigned WhichOp =
 				    (unsigned)(State3 >> 16);
 				T x1, x2;
-				constexpr T v2 = pick_hi<T>(State2^NewState);
+				constexpr T v2 = pick_hi<T>(State2 ^ NewState);
 				T v1 = static_cast<T>(do_op<WhichOp>(v, v2));
 				impl_n(x1, v1);
 				impl_n2(x2, v2);
@@ -119,7 +121,7 @@ class kthxbai_impl
 			{
 				T x1, x2;
 				constexpr T v1 = pick_hi<T>(State2 ^ State3);
-				constexpr T v2 = pick_hi<T>(State2^NewState);
+				constexpr T v2 = pick_hi<T>(State2 ^ NewState);
 				impl_n(x1, v1 & v);
 				impl_n2(x2, (~v1 & v) | (v2 & v));
 				impl_z(x, x1 | x2);
@@ -129,7 +131,7 @@ class kthxbai_impl
 			{
 				T x1, x2;
 				constexpr T v1 = pick_hi<T>(State2 ^ State3);
-				constexpr T v2 = pick_hi<T>(State2^NewState);
+				constexpr T v2 = pick_hi<T>(State2 ^ NewState);
 				impl_n(x1, v1 | v);
 				impl_n2(x2, (~v1 | v) & (v2 | v));
 				impl_z(x, x1 & x2);
@@ -139,7 +141,8 @@ class kthxbai_impl
 			{
 				impl_n(x, v);
 				// always false
-				if (hi_bit(v) ? !hi_bit(x) : hi_bit(x)) {
+				if (bit_set(v, BitP) ? !bit_set(x, BitP) :
+				    bit_set(x, BitP)) {
 					omg_n2 zomg(x);
 					__asm __volatile("" : : "g" (&zomg));
 				}
@@ -147,14 +150,39 @@ class kthxbai_impl
 			break;
 		    case 5:
 			{
-				constexpr T v1 = pick_hi<T>(NewState);
+				constexpr T v1 = pick_hi<T>(State2 ^ NewState);
 				impl_n(x, v1);
 				// always true
-				if (hi_bit(v1) ? hi_bit(x) : !hi_bit(x))
+				if (bit_set(v1, BitP) ? bit_set(x, BitP) :
+				    !bit_set(x, BitP))
 					impl_n2(x, v);
 			}
 			break;
 		    case 6:
+		    case 7:
+			{
+				T v1 = (~v) ^ (pick_hi<T>(State2 ^ NewState) &
+				    (T)~((T)1 << BitP));
+				impl_n(x, v1);
+				// first true, then false
+				while (bit_set(v, BitP) ? !bit_set(x, BitP) :
+				       bit_set(x, BitP))
+					impl_n2(x, v);
+			}
+			break;
+		    case 8:
+		    case 9:
+			{
+				T v1 = v ^ (pick_hi<T>(State2 ^ NewState) &
+				    (T)~((T)1 << BitP));
+				impl_n(x, v);
+				// always false
+				while (bit_set(v, BitP) ? !bit_set(x, BitP) :
+				       bit_set(x, BitP))
+					impl_n2(x, v1);
+			}
+			break;
+		    case 10:
 			{
 				T x1, x2;
 				impl_n(x1, v);
@@ -163,7 +191,7 @@ class kthxbai_impl
 				impl_z(x, x1);
 			}
 			break;
-		    case 7:
+		    case 11:
 			{
 				T x1, x2;
 				constexpr T v2 =
@@ -175,7 +203,7 @@ class kthxbai_impl
 				impl_z(x, x1 * x2);
 			}
 			break;
-		    case 8:
+		    case 12:
 			{
 				constexpr unsigned WhichOp =
 				    (unsigned)(State3 >> 16);
@@ -189,7 +217,7 @@ class kthxbai_impl
 				x = do_inv_op<WhichOp>(x1, *p);
 			}
 			break;
-		    case 9:
+		    case 13:
 			{
 				constexpr unsigned WhichOp =
 				    (unsigned)(State3 >> 16);
@@ -203,7 +231,7 @@ class kthxbai_impl
 				x = do_inv_op<WhichOp>(x1, *p);
 			}
 			break;
-		    case 10:
+		    case 14:
 			{
 				T x1, x2;
 				omg_n zomg(x1);
@@ -219,7 +247,7 @@ class kthxbai_impl
 			}
 			break;
 #ifdef __i386__
-		    case 11:
+		    case 15:
 			if (sizeof(T) <= sizeof(unsigned)) {
 				unsigned x1, x2;
 				constexpr unsigned t =
@@ -241,7 +269,7 @@ class kthxbai_impl
 			}
 			// else fall through
 #endif
-		    case 12:
+		    case 16:
 			if (sizeof(T) > sizeof(unsigned char)) {
 				constexpr unsigned WhichTyp =
 				    (State2 >> 48) % 4;
@@ -263,7 +291,7 @@ class kthxbai_impl
 				    Levels - 1>(x, v);
 				break;
 			} // else fall through
-		    case 13:
+		    case 17:
 			if (special(x, v))
 				return;
 			// else fall through

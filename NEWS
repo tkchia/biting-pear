@@ -1,3 +1,14 @@
+2016-10-21	Round and round and round.
+
+		include/innocent-pear/kthxbai.h :
+		- added a dummy `do ... while', and a not-so-dummy one, to
+		  produce spurious loops in function control flow graphs;
+		  these are given extra probability mass
+		- also giving more probability to use of pointer aliasing
+		- opaque predicates can now test bits of operands other than
+		  the top bit, which should make them even more opaque
+		- slightly improved mixing of pseudorandom states
+
 2016-10-20	Round and round.
 
 		include/innocent-pear/kthxbai.h :
