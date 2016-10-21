@@ -75,7 +75,7 @@ class kthxbai_impl
 	typedef kthxbai_impl<NewState2, T, Flags, Levels - 1> impl_n2;
 	typedef kthxbai_impl<0, T, Flags, 0> impl_z;
 	typedef omg<NewState, T, Flags, Levels - 1> omg_n;
-	typedef omg<NewState2, T, Flags, Levels - 1> omg_n2;
+	typedef omg<NewState3, T, Flags, Levels - 1> omg_n3;
     public:
 	__attribute__((always_inline))
 	static bool special(T& x, T v)
@@ -139,12 +139,15 @@ class kthxbai_impl
 			break;
 		    case 4:
 			{
+				constexpr T v1 = pick_hi<T>(State2 ^ NewState);
 				impl_n(x, v);
 				// always false
 				if (bit_set(v, BitP) ? !bit_set(x, BitP) :
 				    bit_set(x, BitP)) {
-					omg_n2 zomg(x);
+					omg_n3 zomg(x);
 					__asm __volatile("" : : "g" (&zomg));
+					if (Boreal1)
+						impl_n2(x, v1);
 				}
 			}
 			break;
@@ -154,8 +157,11 @@ class kthxbai_impl
 				impl_n(x, v1);
 				// always true
 				if (bit_set(v1, BitP) ? bit_set(x, BitP) :
-				    !bit_set(x, BitP))
+				    !bit_set(x, BitP)) {
+					omg_n3 zomg(x);
+					__asm __volatile("" : : "g" (&zomg));
 					impl_n2(x, v);
+				}
 			}
 			break;
 		    case 6:
@@ -166,8 +172,11 @@ class kthxbai_impl
 				impl_n(x, v1);
 				// first true, then false
 				while (bit_set(v, BitP) ? !bit_set(x, BitP) :
-				       bit_set(x, BitP))
+				       bit_set(x, BitP)) {
+					omg_n3 zomg(x);
+					__asm __volatile("" : : "g" (&zomg));
 					impl_n2(x, v);
+				}
 			}
 			break;
 		    case 8:
@@ -178,15 +187,19 @@ class kthxbai_impl
 				impl_n(x, v);
 				// always false
 				while (bit_set(v, BitP) ? !bit_set(x, BitP) :
-				       bit_set(x, BitP))
-					impl_n2(x, v1);
+				       bit_set(x, BitP)) {
+					omg_n3 zomg(x);
+					__asm __volatile("" : : "g" (&zomg));
+					if (Boreal1)
+						impl_n2(x, v1);
+				}
 			}
 			break;
 		    case 10:
 			{
 				T x1, x2;
 				impl_n(x1, v);
-				omg_n2 zomg(x2);
+				omg_n3 zomg(x2);
 				__asm __volatile("" : : "g" (&zomg));
 				impl_z(x, x1);
 			}
