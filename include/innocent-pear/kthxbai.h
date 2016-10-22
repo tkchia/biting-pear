@@ -29,12 +29,6 @@ template<rand_state_t State, class T, bool Boreal, bool BigBad,
     ops_flags_t Flags, unsigned Levels>
 class orly;  // forward
 
-template<class T>
-bool bit_set(T x, unsigned i)
-{
-	return (x & ((T)1 << i)) != 0;
-}
-
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
 class kthxbai_impl;
 
@@ -91,7 +85,7 @@ class kthxbai_impl
 	{
 		constexpr unsigned BitP =
 		    (State2 >> 20) % (sizeof(T) * CHAR_BIT);
-		switch ((State2 >> 32) % 25) {
+		switch ((State2 >> 32) % 27) {
 		    case 0:
 			{
 				constexpr unsigned NB = sizeof(T) * CHAR_BIT;
@@ -139,16 +133,11 @@ class kthxbai_impl
 			break;
 		    case 4:
 			{
-				constexpr T v1 = pick_hi<T>(State2 ^ NewState);
 				impl_n(x, v);
 				// always false
 				if (bit_set(v, BitP) ? !bit_set(x, BitP) :
-				    bit_set(x, BitP)) {
-					omg_n3 zomg(x);
-					__asm __volatile("" : : "g" (&zomg));
-					if (Boreal1)
-						impl_n2(x, v1);
-				}
+				    bit_set(x, BitP))
+					omg_n3 zomg(x, true);
 			}
 			break;
 		    case 5:
@@ -157,11 +146,8 @@ class kthxbai_impl
 				impl_n(x, v1);
 				// always true
 				if (bit_set(v1, BitP) ? bit_set(x, BitP) :
-				    !bit_set(x, BitP)) {
-					omg_n3 zomg(x);
-					__asm __volatile("" : : "g" (&zomg));
+				    !bit_set(x, BitP))
 					impl_n2(x, v);
-				}
 			}
 			break;
 		    case 6:
@@ -172,11 +158,8 @@ class kthxbai_impl
 				impl_n(x, v1);
 				// first true, then false
 				while (bit_set(v, BitP) ? !bit_set(x, BitP) :
-				       bit_set(x, BitP)) {
-					omg_n3 zomg(x);
-					__asm __volatile("" : : "g" (&zomg));
+				       bit_set(x, BitP))
 					impl_n2(x, v);
-				}
 			}
 			break;
 		    case 8:
@@ -188,23 +171,52 @@ class kthxbai_impl
 				// always false
 				while (bit_set(v, BitP) ? !bit_set(x, BitP) :
 				       bit_set(x, BitP)) {
-					omg_n3 zomg(x);
-					__asm __volatile("" : : "g" (&zomg));
+					omg_n3 zomg(x, true);
 					if (Boreal1)
 						impl_n2(x, v1);
 				}
 			}
 			break;
 		    case 10:
+		    case 11:
+			{
+				T x1, v1 = pick_hi<T>(State2 ^ NewState);
+				impl_n(x1, v1);
+				// always true
+				if (bit_set(v1, BitP) ? bit_set(x1, BitP) :
+				    !bit_set(x1, BitP))
+					impl_n2(x, v);
+				else
+					omg_n3 zomg(x, true);
+			}
+			break;
+		    case 12:
+		    case 13:
+			{
+				T x1;
+				omg_n3 zomg(x1);
+				// may be true or false
+				if (bit_set(x1, BitP))
+					impl_n(x, v);
+				else
+					impl_n2(x, v);
+			}
+			break;
+		    case 14:
 			{
 				T x1, x2;
 				impl_n(x1, v);
 				omg_n3 zomg(x2);
-				__asm __volatile("" : : "g" (&zomg));
 				impl_z(x, x1);
 			}
 			break;
-		    case 11:
+		    case 15:
+			{
+				omg_n3 zomg(x);
+				impl_n(x, v);
+			}
+			break;
+		    case 16:
 			{
 				T x1, x2;
 				constexpr T v2 =
@@ -216,7 +228,7 @@ class kthxbai_impl
 				impl_z(x, x1 * x2);
 			}
 			break;
-		    case 12:
+		    case 17:
 			{
 				constexpr unsigned WhichOp =
 				    (unsigned)(State3 >> 16);
@@ -230,7 +242,7 @@ class kthxbai_impl
 				x = do_inv_op<WhichOp>(x1, *p);
 			}
 			break;
-		    case 13:
+		    case 18:
 			{
 				constexpr unsigned WhichOp =
 				    (unsigned)(State3 >> 16);
@@ -244,7 +256,7 @@ class kthxbai_impl
 				x = do_inv_op<WhichOp>(x1, *p);
 			}
 			break;
-		    case 14:
+		    case 19:
 			{
 				T x1, x2;
 				omg_n zomg(x1);
@@ -260,7 +272,7 @@ class kthxbai_impl
 			}
 			break;
 #ifdef __i386__
-		    case 15:
+		    case 20:
 			if (sizeof(T) <= sizeof(unsigned)) {
 				unsigned x1, x2;
 				constexpr unsigned t =
@@ -282,7 +294,7 @@ class kthxbai_impl
 			}
 			// else fall through
 #endif
-		    case 16:
+		    case 21:
 			if (sizeof(T) > sizeof(unsigned char)) {
 				constexpr unsigned WhichTyp =
 				    (State2 >> 48) % 4;
@@ -304,7 +316,7 @@ class kthxbai_impl
 				    Levels - 1>(x, v);
 				break;
 			} // else fall through
-		    case 17:
+		    case 22:
 			if (special(x, v))
 				return;
 			// else fall through

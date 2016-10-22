@@ -11,6 +11,7 @@
 #include <innocent-pear/ohai.h>
 #include <innocent-pear/rofl.h>
 #include <innocent-pear/teh.h>
+#include <innocent-pear/unpossible.h>
 #include <innocent-pear/yarly.h>
 #ifdef __unix__
 #   include <fcntl.h>
@@ -40,16 +41,8 @@ template<rand_state_t State, class T, bool BigBad, ops_flags_t Flags,
     unsigned Levels>
 class yarly;  // forward
 
-template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
-class omg;
-
-#if defined __amd64__ || defined __i386__ || defined __arm__
 template<rand_state_t State, unsigned Levels>
-struct omg_impl_0;
-
-template<rand_state_t State>
-struct omg_impl_0<State, ~0u> : public nowai
-	{ };
+struct unpossible;  // forward
 
 #if defined __amd64__ || defined __i386__
 #   ifdef __OPTIMIZE__
@@ -77,82 +70,6 @@ struct omg_impl_0<State, ~0u> : public nowai
 #	define innocent_pear_PREFIX(o)	""
 #	define innocent_pear_BR_PREFIX(o) ""
 #   endif
-#endif
-
-template<rand_state_t State>
-struct omg_impl_0<State, 0u>
-{
-	__attribute__((always_inline))
-	omg_impl_0()
-	{
-		constexpr rand_state_t State2 = update_inner(State);
-		switch ((State2 >> 32) % 4) {
-		    case 0:
-#if defined __amd64__
-			__asm __volatile("syscall" : : : "rax", "cc",
-			    "memory");
-#elif defined __i386__
-			__asm __volatile("int $0x80" : : : "eax",
-			    "cc", "memory");
-#elif defined __arm__
-			__asm __volatile("svc #0" : : : "r0", "cc", "memory");
-#endif
-			break;
-#ifdef __OPTIMIZE__
-		    default:
-#   if defined __arm__ && defined __thumb__
-			__asm __volatile(".inst.n %c0"
-			    : /* no outputs */
-			    : "n" ((uint_least32_t)pick_hi<uint_least16_t>
-				(State ^ State2))
-			    : "memory");
-#   elif defined __arm__
-			__asm __volatile(".inst %c0"
-			    : /* no outputs */
-			    : "n" (pick_hi<uint_least32_t>(State ^ State2))
-			    : "memory");
-#   elif defined __i386__ || defined __amd64__
-			__asm __volatile(".byte %c0"
-			    : /* no outputs */
-			    : "n" (pick_hi<uint_least8_t>(State ^ State2))
-			    : "memory");
-#   else
-			;
-#   endif
-#endif
-		}
-	}
-};
-
-template<rand_state_t State, unsigned Levels>
-struct omg_impl_0
-{
-	__attribute__((always_inline))
-	omg_impl_0()
-	{
-		constexpr rand_state_t
-		    State2 = update_inner(State),
-		    NewState = update_outer(State, Levels),
-		    NewState2 = update_outer(NewState, Levels);
-		switch ((State2 >> 32) % 3) {
-		    case 0:
-			{
-				omg<NewState, unsigned,
-				    innocent_pear::ops::allow_for_startup,
-				    Levels - 1>();
-			}
-			break;
-		    case 1:
-			{
-				omg_impl_0<NewState, Levels - 1>();
-			} // fall through
-		    default:
-			{
-				omg_impl_0<NewState2, Levels - 1>();
-			}
-		}
-	}
-};
 #endif
 
 template<rand_state_t State, class T,
@@ -216,14 +133,15 @@ class omg<State, T, Flags, 0u>
 		    default:
 			;
 		}
+		__asm __volatile("" : : "g" (this));
 	}
 
 	__attribute__((always_inline))
-	omg(T& x)
+	omg(T& x, bool bogo = false)
 	{
 		constexpr rand_state_t State2 = update_inner(State);
 		constexpr rand_state_t State3 = update_inner(State2);
-		switch (State2 % 5) {
+		switch (State2 % 6) {
 		    case 0:
 		    case 1:
 			{
@@ -243,12 +161,16 @@ class omg<State, T, Flags, 0u>
 			}
 			break;
 #endif
+		    case 3:
+			if (bogo)
+				unpossible<State3, 0>();
 		    default:
 			{
 				constexpr T v = pick_hi<T>(State3);
 				kthxbai_impl<State3, T, Flags, 0>(x, v);
 			}
 		}
+		__asm __volatile("" : : "g" (this));
 	}
 };
 
@@ -593,7 +515,7 @@ class omg
 				}
 			    bar:
 				{
-					omg_impl_0<NewState2, Levels - 1>();
+					unpossible<NewState2, Levels - 1>();
 				}
 			    foo:
 				;
@@ -648,7 +570,7 @@ class omg
 					}
 				}
 				{
-					omg_impl_0<NewState2, Levels - 1>();
+					unpossible<NewState2, Levels - 1>();
 					__asm __volatile(".ltorg");
 				}
 			    foo:
@@ -662,18 +584,21 @@ class omg
 				omg<NewState2, T, Flags, Levels - 1>();
 			}
 		}
+		__asm __volatile("" : : "g" (this));
 	}
 	__attribute__((always_inline))
-	omg(T& x)
+	omg(T& x, bool bogo = false)
 	{
 		using namespace innocent_pear::ops;
-		switch ((State2 >> 32) % 11) {
+		switch ((State2 >> 32) % 13) {
 		    case 0:
 		    case 1:
 			{
 				T y;
-				omg<NewState, T, Flags, Levels - 1> zomg(x);
-				omg<NewState2, T, Flags, Levels - 1> zomg2(y);
+				omg<NewState, T, Flags, Levels - 1>
+				    zomg(x, bogo);
+				omg<NewState2, T, Flags, Levels - 1>
+				    zomg2(y, bogo);
 				__asm __volatile(""
 				    : "=g" (x)
 				    : "0" (do_op<pick_hi<unsigned>(NewState3)>
@@ -711,12 +636,18 @@ class omg
 				x = static_cast<T>(rofl2::time((time_t *)p));
 				break;
 			} // else fall through
+		    case 10:
+		    case 11:
+			if (bogo)
+				unpossible<NewState3, Levels - 1>();
+			// fall through
 		    default:
 			{
 				kthxbai_impl<NewState2, T, Flags, Levels - 1>
 				    (x, pick_hi<T>(NewState));
 			}
 		}
+		__asm __volatile("" : : "g" (this));
 	}
 };
 

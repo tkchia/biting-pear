@@ -59,6 +59,7 @@ headers.target = \
     include/innocent-pear/orly.h \
     include/innocent-pear/rofl.h \
     include/innocent-pear/teh.h \
+    include/innocent-pear/unpossible.h \
     include/innocent-pear/yarly.h \
     include/innocent-pear/yodawg.h \
     $(config.h.target)

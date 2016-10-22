@@ -184,6 +184,12 @@ inline constexpr T pick_hi(rand_state_t x)
 	    static_cast<T>(x >> (sizeof(x) * CHAR_BIT - 64u));
 }
 
+template<class T>
+bool bit_set(T x, unsigned i)
+{
+	return (x & ((T)1 << i)) != 0;
+}
+
 } // innocent_pear::impl
 
 namespace ops
