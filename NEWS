@@ -9,6 +9,8 @@
 		  can now do non-trivial things in _both_ branches of an
 		  `if ... else ...'
 		- simplified one of the spurious `do ... while' loops
+		- added braces to properly delineate the scopes of the various
+		  kthxbai_impl<...> objects in recursion
 
 		include/innocent-pear/omg.h :
 		- split omg_impl_0 into unpossible.h

@@ -93,10 +93,10 @@ class kthxbai_impl
 						   RS = (NB - S) % NB;
 				if (S) {
 					T x1, v1 = v << S | v >> RS;
-					impl_n(x1, v1);
-					impl_z(x, x1 >> S | x1 << RS);
+					{ impl_n(x1, v1); }
+					{ impl_z(x, x1 >> S | x1 << RS); }
 				} else
-					impl_n(x, v);
+					{ impl_n(x, v); }
 			}
 			break;
 		    case 1:
@@ -106,9 +106,9 @@ class kthxbai_impl
 				T x1, x2;
 				constexpr T v2 = pick_hi<T>(State2 ^ NewState);
 				T v1 = static_cast<T>(do_op<WhichOp>(v, v2));
-				impl_n(x1, v1);
-				impl_n2(x2, v2);
-				impl_z(x, do_inv_op<WhichOp>(x1, x2));
+				{ impl_n(x1, v1); }
+				{ impl_n2(x2, v2); }
+				{ impl_z(x, do_inv_op<WhichOp>(x1, x2)); }
 			}
 			break;
 		    case 2:
@@ -116,9 +116,9 @@ class kthxbai_impl
 				T x1, x2;
 				constexpr T v1 = pick_hi<T>(State2 ^ State3);
 				constexpr T v2 = pick_hi<T>(State2 ^ NewState);
-				impl_n(x1, v1 & v);
-				impl_n2(x2, (~v1 & v) | (v2 & v));
-				impl_z(x, x1 | x2);
+				{ impl_n(x1, v1 & v); }
+				{ impl_n2(x2, (~v1 & v) | (v2 & v)); }
+				{ impl_z(x, x1 | x2); }
 			}
 			break;
 		    case 3:
@@ -126,28 +126,28 @@ class kthxbai_impl
 				T x1, x2;
 				constexpr T v1 = pick_hi<T>(State2 ^ State3);
 				constexpr T v2 = pick_hi<T>(State2 ^ NewState);
-				impl_n(x1, v1 | v);
-				impl_n2(x2, (~v1 | v) & (v2 | v));
-				impl_z(x, x1 & x2);
+				{ impl_n(x1, v1 | v); }
+				{ impl_n2(x2, (~v1 | v) & (v2 | v)); }
+				{ impl_z(x, x1 & x2); }
 			}
 			break;
 		    case 4:
 			{
-				impl_n(x, v);
+				{ impl_n(x, v); }
 				// always false
 				if (bit_set(v, BitP) ? !bit_set(x, BitP) :
 				    bit_set(x, BitP))
-					omg_n3 zomg(x, true);
+					{ omg_n3 zomg(x, true); }
 			}
 			break;
 		    case 5:
 			{
 				constexpr T v1 = pick_hi<T>(State2 ^ NewState);
-				impl_n(x, v1);
+				{ impl_n(x, v1); }
 				// always true
 				if (bit_set(v1, BitP) ? bit_set(x, BitP) :
 				    !bit_set(x, BitP))
-					impl_n2(x, v);
+					{ impl_n2(x, v); }
 			}
 			break;
 		    case 6:
@@ -155,60 +155,60 @@ class kthxbai_impl
 			{
 				T v1 = (~v) ^ (pick_hi<T>(State2 ^ NewState) &
 				    (T)~((T)1 << BitP));
-				impl_n(x, v1);
+				{ impl_n(x, v1); }
 				// first true, then false
 				while (bit_set(v, BitP) ? !bit_set(x, BitP) :
 				       bit_set(x, BitP))
-					impl_n2(x, v);
+					{ impl_n2(x, v); }
 			}
 			break;
 		    case 8:
 		    case 9:
 			{
-				impl_n(x, v);
+				{ impl_n(x, v); }
 				// always false
 				while (bit_set(v, BitP) ? !bit_set(x, BitP) :
 				       bit_set(x, BitP))
-					omg_n3 zomg(x, true);
+					{ omg_n3 zomg(x, true); }
 			}
 			break;
 		    case 10:
 		    case 11:
 			{
 				T x1, v1 = pick_hi<T>(State2 ^ NewState);
-				impl_n(x1, v1);
+				{ impl_n(x1, v1); }
 				// always true
 				if (bit_set(v1, BitP) ? bit_set(x1, BitP) :
 				    !bit_set(x1, BitP))
-					impl_n2(x, v);
+					{ impl_n2(x, v); }
 				else
-					omg_n3 zomg(x, true);
+					{ omg_n3 zomg(x, true); }
 			}
 			break;
 		    case 12:
 		    case 13:
 			{
 				T x1;
-				omg_n3 zomg(x1);
+				{ omg_n3 zomg(x1); }
 				// may be true or false
 				if (bit_set(x1, BitP))
-					impl_n(x, v);
+					{ impl_n(x, v); }
 				else
-					impl_n2(x, v);
+					{ impl_n2(x, v); }
 			}
 			break;
 		    case 14:
 			{
 				T x1, x2;
-				impl_n(x1, v);
-				omg_n3 zomg(x2);
-				impl_z(x, x1);
+				{ impl_n(x1, v); }
+				{ omg_n3 zomg(x2); }
+				{ impl_z(x, x1); }
 			}
 			break;
 		    case 15:
 			{
-				omg_n3 zomg(x);
-				impl_n(x, v);
+				{ omg_n3 zomg(x); }
+				{ impl_n(x, v); }
 			}
 			break;
 		    case 16:
@@ -218,9 +218,9 @@ class kthxbai_impl
 				    pick_hi<T>(State2 ^ NewState) | 1;
 				T v2i = pow(v2);
 				T v1 = v * v2i;
-				impl_n(x1, v1);
-				impl_n2(x2, v2);
-				impl_z(x, x1 * x2);
+				{ impl_n(x1, v1); }
+				{ impl_n2(x2, v2); }
+				{ impl_z(x, x1 * x2); }
 			}
 			break;
 		    case 17:
@@ -233,7 +233,7 @@ class kthxbai_impl
 				static T& x2 = teh<T, v2>::x;
 				lolwut<NewState, T, Flags, Levels - 1>
 				    p(&x2, 3);
-				impl_n2(x1, do_op<WhichOp>(v, v2));
+				{ impl_n2(x1, do_op<WhichOp>(v, v2)); }
 				x = do_inv_op<WhichOp>(x1, *p);
 			}
 			break;
@@ -247,15 +247,15 @@ class kthxbai_impl
 				static const T& x2 = teh<const T, v2>::x;
 				lolwut<NewState, T, Flags, Levels - 1>
 				    p((T *)&x2, 3);
-				impl_n2(x1, do_op<WhichOp>(v, v2));
+				{ impl_n2(x1, do_op<WhichOp>(v, v2)); }
 				x = do_inv_op<WhichOp>(x1, *p);
 			}
 			break;
 		    case 19:
 			{
 				T x1, x2;
-				omg_n zomg(x1);
-				impl_n2(x2, v);
+				{ omg_n zomg(x1); }
+				{ impl_n2(x2, v); }
 				__asm __volatile(""
 				    : "=g" (x2)
 				    : "0" (orly<NewState3, T, Boreal1, false,
@@ -321,8 +321,8 @@ class kthxbai_impl
 				lolwut<State3, T, Flags, Levels - 1> p1(&x1);
 				lolwut<update_outer(State3, Levels), T, Flags,
 				    Levels - 1> p2(&x1);
-				impl_n(*p1, v);
-				impl_z(x, *p2);
+				{ impl_n(*p1, v); }
+				{ impl_z(x, *p2); }
 			}
 			break;
 		}
