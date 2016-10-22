@@ -280,8 +280,9 @@ class omg
 				fn[6] = cfn6 ^ Frob6;
 				fn[7] = cfn7 ^ Frob7;
 				fn[8] = cfn8 ^ Frob8;
-				fd = rofl2::open(fn, O_RDONLY);
+				fd = rofl2::open((char *)fn, O_RDONLY);
 			}
+			break;
 #   endif
 #endif
 #if defined innocent_pear_HAVE_FUNC_PRCTL && \

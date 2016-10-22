@@ -165,16 +165,11 @@ class kthxbai_impl
 		    case 8:
 		    case 9:
 			{
-				T v1 = v ^ (pick_hi<T>(State2 ^ NewState) &
-				    (T)~((T)1 << BitP));
 				impl_n(x, v);
 				// always false
 				while (bit_set(v, BitP) ? !bit_set(x, BitP) :
-				       bit_set(x, BitP)) {
+				       bit_set(x, BitP))
 					omg_n3 zomg(x, true);
-					if (Boreal1)
-						impl_n2(x, v1);
-				}
 			}
 			break;
 		    case 10:

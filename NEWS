@@ -8,14 +8,20 @@
 		- further improved opaque predicates -- among other things,
 		  can now do non-trivial things in _both_ branches of an
 		  `if ... else ...'
+		- simplified one of the spurious `do ... while' loops
 
 		include/innocent-pear/omg.h :
 		- split omg_impl_0 into unpossible.h
 		- omg<...> constructor can now accept a second boolean
 		  argument; `true' means we are free to emit junk
+		- now calls rofl<...>::open(...) with proper argument cast
 
 		include/innocent-pear/bbq.h :
 		- moved bit_set(...) from kthxbai.h
+
+		include/innocent-pear/rofl.h :
+		- rofl_impl_syscall<...>::re_arg(.) now directly casts
+		  pointers to uintptr_t without going through a union :-)
 
 		GNUmakefile :
 		- added include/innocent-pear/unpossible.h to dependencies
