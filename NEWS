@@ -19,6 +19,7 @@
 
 		GNUmakefile :
 		- added include/innocent-pear/unpossible.h to dependencies
+		- now dumps larger portions of compiled test binaries (again)
 
 2016-10-21	Round and round and round.
 
