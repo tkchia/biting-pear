@@ -67,7 +67,6 @@ struct unpossible<State, 0u>
 #   endif
 #endif
 		}
-		__asm __volatile("" : : "g" (this));
 	}
 };
 
@@ -118,7 +117,6 @@ struct unpossible
 				unpossible<NewState2, Levels - 1>();
 			}
 		}
-		__asm __volatile("" : : "g" (this));
 	}
 };
 

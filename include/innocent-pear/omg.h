@@ -133,7 +133,6 @@ class omg<State, T, Flags, 0u>
 		    default:
 			;
 		}
-		__asm __volatile("" : : "g" (this));
 	}
 
 	__attribute__((always_inline))
@@ -170,7 +169,6 @@ class omg<State, T, Flags, 0u>
 				kthxbai_impl<State3, T, Flags, 0>(x, v);
 			}
 		}
-		__asm __volatile("" : : "g" (this));
 	}
 };
 
@@ -585,7 +583,6 @@ class omg
 				omg<NewState2, T, Flags, Levels - 1>();
 			}
 		}
-		__asm __volatile("" : : "g" (this));
 	}
 	__attribute__((always_inline))
 	omg(T& x, bool bogo = false)
@@ -648,7 +645,6 @@ class omg
 				    (x, pick_hi<T>(NewState));
 			}
 		}
-		__asm __volatile("" : : "g" (this));
 	}
 };
 

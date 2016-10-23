@@ -1,3 +1,15 @@
+2016-10-23	Round and round and round and round.
+
+		include/innocent-pear/kthxbai.h :
+		- alternatives involving opaque predicates:
+		  - kthxbai_impl<...>(x, ) now always assigns to a temporary
+		    variable before finally assigning to x
+		  - removed one alternative
+
+		include/innocent-pear/omg.h ,
+		include/innocent-pear/unpossible.h :
+		- removed dummy uses of `this'
+
 2016-10-22	"Unpossible!"
 
 		include/innocent-pear/unpossible.h :

@@ -133,68 +133,78 @@ class kthxbai_impl
 			break;
 		    case 4:
 			{
-				{ impl_n(x, v); }
+				T x1;
+				{ impl_n(x1, v); }
 				// always false
-				if (bit_set(v, BitP) ? !bit_set(x, BitP) :
-				    bit_set(x, BitP))
-					{ omg_n3 zomg(x, true); }
+				if (bit_set(v, BitP) ? !bit_set(x1, BitP) :
+				    bit_set(x1, BitP))
+					{ omg_n3 zomg(x1, true); }
+				impl_z(x, x1);
 			}
 			break;
 		    case 5:
 			{
+				T x1;
 				constexpr T v1 = pick_hi<T>(State2 ^ NewState);
-				{ impl_n(x, v1); }
+				{ impl_n(x1, v1); }
 				// always true
-				if (bit_set(v1, BitP) ? bit_set(x, BitP) :
-				    !bit_set(x, BitP))
-					{ impl_n2(x, v); }
+				if (bit_set(v1, BitP) ? bit_set(x1, BitP) :
+				    !bit_set(x1, BitP))
+					{ impl_n2(x1, v); }
+				impl_z(x, x1);
 			}
 			break;
 		    case 6:
 		    case 7:
 			{
-				T v1 = (~v) ^ (pick_hi<T>(State2 ^ NewState) &
-				    (T)~((T)1 << BitP));
-				{ impl_n(x, v1); }
+				T x1, v1 = v ^
+				    (pick_hi<T>(State2 ^ NewState) |
+				     (T)1 << BitP);
+				{ impl_n(x1, v1); }
 				// first true, then false
-				while (bit_set(v, BitP) ? !bit_set(x, BitP) :
-				       bit_set(x, BitP))
-					{ impl_n2(x, v); }
+				while (bit_set(v, BitP) ? !bit_set(x1, BitP) :
+				       bit_set(x1, BitP))
+					{ impl_n2(x1, v); }
+				impl_z(x, x1);
 			}
 			break;
 		    case 8:
 		    case 9:
 			{
-				{ impl_n(x, v); }
+				T x1;
+				{ impl_n(x1, v); }
 				// always false
-				while (bit_set(v, BitP) ? !bit_set(x, BitP) :
-				       bit_set(x, BitP))
-					{ omg_n3 zomg(x, true); }
+				while (bit_set(v, BitP) ? !bit_set(x1, BitP) :
+				       bit_set(x1, BitP))
+					{ omg_n3 zomg(x1, true); }
+				impl_z(x, x1);
 			}
 			break;
 		    case 10:
 		    case 11:
 			{
-				T x1, v1 = pick_hi<T>(State2 ^ NewState);
+				T x1, x2, v1 = pick_hi<T>(State2 ^ NewState);
 				{ impl_n(x1, v1); }
 				// always true
 				if (bit_set(v1, BitP) ? bit_set(x1, BitP) :
 				    !bit_set(x1, BitP))
-					{ impl_n2(x, v); }
+					{ impl_n2(x2, v); }
 				else
-					{ omg_n3 zomg(x, true); }
+					{ omg_n3 zomg(x2, true); }
+				impl_z(x, x2);
 			}
 			break;
 		    case 12:
 		    case 13:
 			{
-				T x1;
+				T x1, x2;;
 				{ omg_n3 zomg(x1); }
 				// may be true or false
 				if (bit_set(x1, BitP))
-					{ impl_n(x, v); }
+					{ impl_n(x2, v); }
 				else
-					{ impl_n2(x, v); }
+					{ impl_n2(x2, v); }
+				impl_z(x, x2);
 			}
 			break;
 		    case 14:
@@ -207,12 +217,6 @@ class kthxbai_impl
 			break;
 		    case 15:
 			{
-				{ omg_n3 zomg(x); }
-				{ impl_n(x, v); }
-			}
-			break;
-		    case 16:
-			{
 				T x1, x2;
 				constexpr T v2 =
 				    pick_hi<T>(State2 ^ NewState) | 1;
@@ -223,7 +227,7 @@ class kthxbai_impl
 				{ impl_z(x, x1 * x2); }
 			}
 			break;
-		    case 17:
+		    case 16:
 			{
 				constexpr unsigned WhichOp =
 				    (unsigned)(State3 >> 16);
@@ -237,7 +241,7 @@ class kthxbai_impl
 				x = do_inv_op<WhichOp>(x1, *p);
 			}
 			break;
-		    case 18:
+		    case 17:
 			{
 				constexpr unsigned WhichOp =
 				    (unsigned)(State3 >> 16);
@@ -251,7 +255,7 @@ class kthxbai_impl
 				x = do_inv_op<WhichOp>(x1, *p);
 			}
 			break;
-		    case 19:
+		    case 18:
 			{
 				T x1, x2;
 				{ omg_n zomg(x1); }
@@ -267,7 +271,7 @@ class kthxbai_impl
 			}
 			break;
 #ifdef __i386__
-		    case 20:
+		    case 19:
 			if (sizeof(T) <= sizeof(unsigned)) {
 				unsigned x1, x2;
 				constexpr unsigned t =
@@ -289,7 +293,7 @@ class kthxbai_impl
 			}
 			// else fall through
 #endif
-		    case 21:
+		    case 20:
 			if (sizeof(T) > sizeof(unsigned char)) {
 				constexpr unsigned WhichTyp =
 				    (State2 >> 48) % 4;
@@ -311,7 +315,7 @@ class kthxbai_impl
 				    Levels - 1>(x, v);
 				break;
 			} // else fall through
-		    case 22:
+		    case 21:
 			if (special(x, v))
 				return;
 			// else fall through
