@@ -1,3 +1,16 @@
+2016-10-26	"A list is only as strong as its weakest link."
+
+		include/innocent-pear/omg.h :
+		- x86-32 and x86-64 hacks:
+		  - omg<...>::omg() no longer generates `rdtsc'
+		  - omg<...>::omg(.) now only produces `rdtsc' if compiling
+		    for i486 or above, or for x86-64
+		  - now tries to produce `smsw' instructions
+
+		.travis.yml :
+		- now tries to use g++ to dynamically link i686 code _without_
+		  `-static-libstdc++'
+
 2016-10-23	Round and round and round and round.
 
 		include/innocent-pear/kthxbai.h :

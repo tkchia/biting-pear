@@ -43,8 +43,8 @@ env:
   - TARGET=i686-linux-gnu
     CXX_FOR_TARGET=g++-5
     CC_FOR_TARGET=gcc-5
-    CXXFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -fPIC -pie -Wall -static-libstdc++"
-    CFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -fPIC -pie -Wall -static-libstdc++"
+    CXXFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -fPIC -pie -Wall"
+    CFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -fPIC -pie -Wall"
   - TARGET=armv7-a-linux-gnueabi
   - TARGET=armv7-a-linux-gnueabi
     CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"

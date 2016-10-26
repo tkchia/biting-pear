@@ -125,22 +125,18 @@ class omg<State, T, Flags, 0u>
 		    case 8:
 			innocent_pear_PREFIXED_INSN("cqto", "rdx");  break;
 #   endif
-		    case 9:
-			innocent_pear_PREFIXED_INSN("rdtsc", "eax", "edx");
-			break;
 #   undef innocent_pear_PREFIXED_INSN
 #endif
 		    default:
 			;
 		}
 	}
-
 	__attribute__((always_inline))
 	omg(T& x, bool bogo = false)
 	{
 		constexpr rand_state_t State2 = update_inner(State);
 		constexpr rand_state_t State3 = update_inner(State2);
-		switch (State2 % 6) {
+		switch (State2 % 7) {
 		    case 0:
 		    case 1:
 			{
@@ -148,7 +144,19 @@ class omg<State, T, Flags, 0u>
 				__asm __volatile("" : "=g" (x));
 			}
 			break;
-#if defined __i386__ || defined __amd64__
+#if defined __amd64__ || defined __i386__
+#   if defined __amd64__
+		    case 2:
+			{
+				uint_least64_t y;
+				__asm(innocent_pear_PREFIX(1) "rdtsc"
+				    : "=a" (y)
+				    : "n" ((State3 >> 32) % 6)
+				    : "rdx");
+				x = static_cast<T>(y);
+			}
+			break;
+#   elif defined __i486__ || defined __i586__ || defined __i686__
 		    case 2:
 			{
 				unsigned y;
@@ -159,8 +167,17 @@ class omg<State, T, Flags, 0u>
 				x = static_cast<T>(y);
 			}
 			break;
-#endif
+#   endif
 		    case 3:
+			{
+				unsigned y;
+				__asm(innocent_pear_PREFIX(1) "smsw %0"
+				    : "=r" (y) : "n" ((State3 >> 32) % 6));
+				x = static_cast<T>(y);
+			}
+			break;
+#endif
+		    case 4:
 			if (bogo)
 				unpossible<State3, 0>();
 		    default:
