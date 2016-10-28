@@ -1,3 +1,11 @@
+2016-10-28	"A list is only as strong as its weakest link."  (2)
+
+		include/innocent-pear/omg.h :
+		- factored out branch scrambling code into a separate method
+		- x86-32 and x86-64:  factored out different ways of pushing
+		  onto stack
+		- x86-32:  added use of `ljmpl'
+
 2016-10-26	"A list is only as strong as its weakest link."
 
 		include/innocent-pear/omg.h :

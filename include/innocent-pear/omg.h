@@ -66,9 +66,39 @@ struct unpossible;  // forward
 					".elseif 7 == %c" #o "; " \
 						"repnz; " \
 					".endif; "
+#	ifdef __amd64__
+#	    define innocent_pear_PREFIXED_PUSH(o, p, q) \
+					innocent_pear_PREFIX(o) \
+					".if (%c" #p ")&256; " \
+						"pushq $((%c"#p")&255)-128; "\
+						"movq %" #q ", (%%rsp); " \
+					".elseif ((%c" #p ")&224)==0; " \
+						"pushfq; " \
+						"movq %" #q ", (%%rsp); " \
+					".else; " \
+						"pushq %" #q "; " \
+					".endif; "
+#	else
+#	    define innocent_pear_PREFIXED_PUSH(o, p, q) \
+					innocent_pear_PREFIX(o) \
+					".if (%c" #p ")&256; " \
+						"pushl $((%c"#p")&255)-128; "\
+						"movl %" #q ", (%%esp); " \
+					".elseif ((%c" #p ")&224)==0; " \
+						"pushfl; " \
+						"movl %" #q ", (%%esp); " \
+					".else; " \
+						"pushl %" #q "; " \
+					".endif; "
+#	endif
 #   else
 #	define innocent_pear_PREFIX(o)	""
 #	define innocent_pear_BR_PREFIX(o) ""
+#	ifdef __amd64__
+#	    define innocent_pear_PREFIXED_PUSH(o, p, q) "pushq %" #q
+#	else
+#	    define innocent_pear_PREFIXED_PUSH(o, p, q) "pushl %" #q
+#	endif
 #   endif
 #endif
 
@@ -222,6 +252,148 @@ class omg
 	typedef rofl<NewState2, Flags, Levels - 1> rofl2;
 	typedef rofl<NewState3, Flags, Levels - 1> rofl3;
 	typedef rofl<NewState4, Flags, Levels - 1> rofl4;
+	__attribute__((always_inline))
+	static bool wheee()
+	{
+#if (defined __amd64__ || defined __i386__ ) && \
+    defined innocent_pear_HAVE_ASM_GOTO
+#   ifdef __amd64__
+		constexpr unsigned Which2 = (State2 >> 40) % 3;
+#   else
+		constexpr unsigned Which2 = (State2 >> 40) % 5;
+#   endif
+		constexpr unsigned Which3 = (State3 >> 40) % 15;
+		constexpr unsigned Which4 = (State4 >> 40) % 15;
+		constexpr unsigned Which5 = (State5 >> 40) % 15;
+		constexpr unsigned Which6 = (State6 >> 40) % 15;
+		constexpr unsigned Push4 = (State4 >> 48) % 255;
+		constexpr unsigned Push5 = (State5 >> 48) % 255;
+#   ifdef __amd64__
+		constexpr unsigned Which7 = (State7 >> 40) % 15;
+#   endif
+		void *q, *r = 0;
+		__asm("movw %%cs, %w0" : "=g" (r));
+		kthxbai<NewState, void *, Flags, Levels> p(&&foo, 1);
+#   ifdef __amd64__
+		uintptr_t rzsz = 128 + 8 * Which7;
+#   endif
+		q = static_cast<void *>(p);
+		if (!q)
+			goto bar;
+		switch (Which2) {
+		    default:
+			__asm goto(innocent_pear_BR_PREFIX(1) "jmp%z0 *%0"
+			    : /* no outputs */
+			    : "r" (q), "n" (Which3)
+			    : /* no clobbers */
+			    : foo);  break;
+#   ifdef __amd64__
+		    case 1:
+			__asm goto(innocent_pear_PREFIX(3) "subq %1, %%rsp; "
+				   innocent_pear_PREFIXED_PUSH(4, 5, 0)
+				   innocent_pear_BR_PREFIX(6) "retq %2"
+			    : /* no outputs */
+			    : "r" (q), "r" (rzsz), "n" (rzsz), "n" (Which3),
+			      "n" (Which4), "n" (Push4), "n" (Which5)
+			    : /* no clobbers */
+			    : foo);  break;
+		    case 2:
+			__asm goto(innocent_pear_PREFIX(4) "subq %2, %%rsp; "
+				   innocent_pear_PREFIXED_PUSH(5, 6, 1)
+				   innocent_pear_PREFIXED_PUSH(7, 8, 0)
+				   innocent_pear_BR_PREFIX(9) "lretq %3"
+			    : /* no outputs */
+			    : "r" (q), "r" (r), "r" (rzsz), "n" (rzsz),
+			      "n" (Which3), "n" (Which4), "n" (Push4),
+			      "n" (Which5), "n" (Push5), "n" (Which6)
+			    : /* no clobbers */
+			    : foo);  break;
+#   else
+		    case 1:
+			__asm goto(innocent_pear_PREFIXED_PUSH(2, 3, 0)
+				   innocent_pear_BR_PREFIX(1) "retl"
+			    : /* no outputs */
+			    : "r" (q), "n" (Which3), "n" (Which4), "n" (Push4)
+			    : /* no clobbers */
+			    : foo);  break;
+		    case 2:
+			__asm goto(innocent_pear_PREFIXED_PUSH(3, 4, 1)
+				   innocent_pear_PREFIXED_PUSH(5, 6, 0)
+				   innocent_pear_BR_PREFIX(2) "lretl"
+			    : /* no outputs */
+			    : "r" (q), "r" (r), "n" (Which3), "n" (Which4),
+			      "n" (Push4), "n" (Which5), "n" (Push5)
+			    : /* no clobbers */
+			    : foo);  break;
+		    case 3:
+			__asm goto(innocent_pear_PREFIX(2) "pushfl; "
+				   innocent_pear_PREFIXED_PUSH(3, 4, 1)
+				   innocent_pear_PREFIXED_PUSH(5, 6, 0)
+				   innocent_pear_BR_PREFIX(7) "iretl"
+			    : /* no outputs */
+			    : "r" (q), "r" (r), "n" (Which3), "n" (Which4),
+			      "n" (Push4), "n" (Which5), "n" (Push5),
+			      "n" (Which6)
+			    : /* no clobbers */
+			    : foo);  break;
+		    case 4:
+			{
+				struct { void *qq, *rr; } qr = { q, r };
+				__asm goto("ljmpl *%0"
+				    : /* no outputs */
+				    : "m" (qr)
+				    : /* no clobbers */
+				    : foo);
+			}
+			break;
+#   endif
+		}
+	    bar:
+		{
+			unpossible<NewState2, Levels - 1>();
+		}
+	    foo:
+		return true;
+#elif (defined __arm__ || defined __thumb__) && \
+    defined innocent_pear_HAVE_ASM_GOTO
+		constexpr unsigned Which2 = (State2 >> 56) % 4;
+#   if defined __thumb__
+		kthxbai<NewState, void *, Flags, Levels - 1>
+		    p((char *)&&foo + 1, 1);
+#   else
+		kthxbai<NewState, void *, Flags, Levels - 1> p(&&foo, 1);
+#   endif
+		void *q = static_cast<void *>(p);
+		if (!q)
+			goto bar;
+		switch (Which2) {
+		    default:
+			__asm goto("mov pc, %0" : : "r" (q) : : foo);  break;
+#   if defined __thumb2__ || !defined __thumb__
+		    case 1:
+			__asm goto("ldr pc, %0" : : "m" (q) : : foo);  break;
+#   endif
+#   ifdef __THUMB_INTERWORK__
+		    case 2:
+			__asm goto("bx %0" : : "r" (q) : : foo);  break;
+	// blx is supported only from ARMv5T onwards
+#	if !defined __ARM_ARCH_4__ && !defined __ARM_ARCH_4T__
+		    case 3:
+			__asm goto("blx %0" : : "r" (q) : "lr" : foo);  break;
+#	endif
+#   endif
+		}
+	    bar:
+		{
+			unpossible<NewState2, Levels - 1>();
+			__asm __volatile(".ltorg");
+		}
+	    foo:
+		return true;
+#else
+		return false;
+#endif
+	}
     public:
 	__attribute__((always_inline))
 	static bool special()
@@ -341,24 +513,6 @@ class omg
 	omg()
 	{
 		constexpr unsigned Which = (State2 >> 48) % 8;
-#if defined __amd64__ || defined __i386__
-#   ifdef innocent_pear_HAVE_ASM_GOTO
-#	ifdef __amd64__
-		constexpr unsigned Which2 = (State2 >> 40) % 5;
-#	else
-		constexpr unsigned Which2 = (State2 >> 40) % 6;
-#	endif
-		constexpr unsigned Which3 = (State3 >> 40) % 15;
-		constexpr unsigned Which4 = (State4 >> 40) % 15;
-		constexpr unsigned Which5 = (State5 >> 40) % 15;
-		constexpr unsigned Which6 = (State6 >> 40) % 15;
-#	ifdef __amd64__
-		constexpr unsigned Which7 = (State7 >> 40) % 15;
-#	endif
-#   endif
-#elif defined __arm__ || defined __thumb__
-		constexpr unsigned Which2 = (State2 >> 56) % 4;
-#endif
 		switch (Which) {
 		    case 0:
 			{
@@ -377,223 +531,11 @@ class omg
 			if (special())
 				return;
 			// fall through
-#if (defined __amd64__ || defined __i386__) && \
-    defined innocent_pear_HAVE_ASM_GOTO
 		    case 5:
 		    case 6:
-			{
-				void *q, *r;
-				__asm("movw %%cs, %w0" : "=g" (r));
-				kthxbai<NewState, void *, Flags, Levels>
-				    p(&&foo, 1);
-#   ifdef __amd64__
-				uintptr_t rzsz = 128 + 8 * Which7;
-#   endif
-				uint_least8_t x = static_cast<uint_least8_t>
-				    (State2 >> 24) / 2;
-				q = static_cast<void *>(p);
-				if (!q)
-					goto bar;
-				switch (Which2) {
-				    default:
-					__asm goto(innocent_pear_BR_PREFIX(1)
-						   "jmp%z0 *%0"
-					    : /* no outputs */
-					    : "r" (q), "n" (Which3)
-					    : /* no clobbers */
-					    : foo);  break;
-#   ifdef __amd64__
-				    case 1:
-					__asm goto(innocent_pear_PREFIX(3)
-						   "subq %1, %%rsp; "
-						   innocent_pear_PREFIX(4)
-						   "pushq %0; "
-						   innocent_pear_BR_PREFIX(5)
-						   "retq %2"
-					    : /* no outputs */
-					    : "r" (q), "r" (rzsz),
-					      "n" (rzsz), "n" (Which3),
-					      "n" (Which4), "n" (Which5)
-					    : /* no clobbers */
-					    : foo);  break;
-				    case 2:
-					__asm goto(innocent_pear_PREFIX(4)
-						   "subq %2, %%rsp; "
-						   innocent_pear_PREFIX(5)
-						   "pushq %1; "
-						   innocent_pear_PREFIX(6)
-						   "pushq %0; "
-						   innocent_pear_BR_PREFIX(7)
-						   "lretq %3"
-					    : /* no outputs */
-					    : "r" (q), "r" (r), "r" (rzsz),
-					      "n" (rzsz), "n" (Which3),
-					      "n" (Which4), "n" (Which5),
-					      "n" (Which6)
-					    : /* no clobbers */
-					    : foo);  break;
-				    case 3:
-					__asm goto(
-					    innocent_pear_PREFIX(4)
-					    "subq %2, %%rsp; "
-					    "pushq %1; "
-					    "movq %0, (%%rsp); "
-					    innocent_pear_BR_PREFIX(5)
-					    "retq %3"
-					    : /* no outputs */
-					    : "r" (q), "g" ((uintptr_t)x),
-					      "r" (rzsz), "n" (rzsz),
-					      "n" (Which3), "n" (Which4)
-					    : /* no clobbers */
-					    : foo);  break;
-				    case 4:
-					__asm goto(
-					    innocent_pear_PREFIX(5)
-					    "subq %3, %%rsp; "
-					    innocent_pear_PREFIX(6)
-					    "pushq %1; "
-					    "pushq %2; "
-					    "movq %0, (%%rsp); "
-					    innocent_pear_BR_PREFIX(7)
-					    "lretq %4"
-					    : /* no outputs */
-					    : "r" (q), "r" (r),
-					      "g" ((uintptr_t)x), "r" (rzsz),
-					      "n" (rzsz), "n" (Which3),
-					      "n" (Which4), "n" (Which5)
-					    : /* no clobbers */
-					    : foo);  break;
-#   else
-				    case 1:
-					__asm goto(innocent_pear_PREFIX(1)
-						   "pushl %0; "
-						   innocent_pear_BR_PREFIX(2)
-						   "retl"
-					    : /* no outputs */
-					    : "r" (q), "n" (Which3),
-					      "n" (Which4)
-					    : /* no clobbers */
-					    : foo);  break;
-				    case 2:
-					__asm goto(innocent_pear_PREFIX(2)
-						   "pushl %1; "
-						   innocent_pear_PREFIX(3)
-						   "pushl %0; "
-						   innocent_pear_BR_PREFIX(4)
-						   "lretl"
-					    : /* no outputs */
-					    : "r" (q), "r" (r), "n" (Which3),
-					      "n" (Which4), "n" (Which5)
-					    : /* no clobbers */
-					    : foo);  break;
-				    case 3:
-					__asm goto(
-					    "pushl %1; "
-					    "movl %0, (%%esp); "
-					    innocent_pear_BR_PREFIX(2)
-					    "retl"
-					    : /* no outputs */
-					    : "r" (q), "g" ((uint_least32_t)x),
-					      "n" (Which3)
-					    : /* no clobbers */
-					    : foo);  break;
-				    case 4:
-					__asm goto(
-					    innocent_pear_PREFIX(3)
-					    "pushl %1; "
-					    "pushl %2; "
-					    "movl %0, (%%esp); "
-					    innocent_pear_BR_PREFIX(4)
-					    "lretl"
-					    : /* no outputs */
-					    : "r" (q), "r" (r),
-					      "g" ((uint_least32_t)x),
-					      "n" (Which3), "n" (Which4)
-					    : /* no clobbers */
-					    : foo);  break;
-				    case 5:
-					__asm goto(
-					    innocent_pear_PREFIX(2)
-					    "pushfl; "
-					    innocent_pear_PREFIX(3)
-					    "pushl %1; "
-					    innocent_pear_PREFIX(4)
-					    "pushl %0; "
-					    innocent_pear_BR_PREFIX(5)
-					    "iretl"
-					    : /* no outputs */
-					    : "r" (q), "r" (r), "n" (Which3),
-					      "n" (Which4), "n" (Which5),
-					      "n" (Which6)
-					    : /* no clobbers */
-					    : foo);  break;
-#   endif
-				}
-			    bar:
-				{
-					unpossible<NewState2, Levels - 1>();
-				}
-			    foo:
-				;
-			}
-			break;
-#elif (defined __arm__ || defined __thumb__) && \
-    defined innocent_pear_HAVE_ASM_GOTO
-		    case 5:
-		    case 6:
-			{
-#   if defined __thumb__
-				kthxbai<NewState, void *, Flags, Levels - 1>
-				    p((char *)&&foo + 1, 1);
-#   else
-				kthxbai<NewState, void *, Flags, Levels - 1>
-				    p(&&foo, 1);
-#   endif
-				void *q = static_cast<void *>(p);
-				if (q) {
-					switch (Which2) {
-					    default:
-						__asm goto("mov pc, %0"
-						    : /* no outputs */
-						    : "r" (q)
-						    : /* no clobbers */
-						    : foo);  break;
-#   if defined __thumb2__ || !defined __thumb__
-					    case 1:
-						__asm goto("ldr pc, %0"
-						    : /* no outputs */
-						    : "m" (q)
-						    : /* no clobbers */
-						    : foo);  break;
-#   endif
-#   ifdef __THUMB_INTERWORK__
-					    case 2:
-						__asm goto("bx %0"
-						    : /* no outputs */
-						    : "r" (q)
-						    : /* no clobbers */
-						    : foo);  break;
-	// blx is supported only from ARMv5T onwards
-#	if !defined __ARM_ARCH_4__ && !defined __ARM_ARCH_4T__
-					    case 3:
-						__asm goto("blx %0"
-						    : /* no outputs */
-						    : "r" (q)
-						    : "lr"
-						    : foo);  break;
-#	endif
-#   endif
-					}
-				}
-				{
-					unpossible<NewState2, Levels - 1>();
-					__asm __volatile(".ltorg");
-				}
-			    foo:
-				;
-			}
+			if (wheee())
+				return;
 			// fall through
-#endif
 		    default:
 			{
 				omg<NewState, T, Flags, Levels - 1>();
@@ -668,6 +610,7 @@ class omg
 #if defined __amd64__ || defined __i386__
 #   undef innocent_pear_PREFIX
 #   undef innocent_pear_BR_PREFIX
+#   undef innocent_pear_PREFIXED_PUSH
 #endif
 
 } // innocent_pear::impl
