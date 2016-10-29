@@ -252,6 +252,20 @@ class omg
 	typedef rofl<NewState2, Flags, Levels - 1> rofl2;
 	typedef rofl<NewState3, Flags, Levels - 1> rofl3;
 	typedef rofl<NewState4, Flags, Levels - 1> rofl4;
+#ifdef __amd64__
+	__attribute__((always_inline))
+	static void force_nonleaf()
+	{
+		unpossible<NewState4, Levels - 1>();
+		/*
+		 * Coax the compiler into not setting up a "red zone" above
+		 * the stack pointer, by making it compile a function call.
+		 */
+		void (*p)();
+		__asm __volatile("" : "=g" (p));
+		p();
+	}
+#endif
 	__attribute__((always_inline))
 	static bool wheee()
 	{
@@ -268,15 +282,9 @@ class omg
 		constexpr unsigned Which6 = (State6 >> 40) % 15;
 		constexpr unsigned Push4 = (State4 >> 48) % 255;
 		constexpr unsigned Push5 = (State5 >> 48) % 255;
-#   ifdef __amd64__
-		constexpr unsigned Which7 = (State7 >> 40) % 15;
-#   endif
 		void *q, *r = 0;
 		__asm("movw %%cs, %w0" : "=g" (r));
 		kthxbai<NewState, void *, Flags, Levels> p(&&foo, 1);
-#   ifdef __amd64__
-		uintptr_t rzsz = 128 + 8 * Which7;
-#   endif
 		q = static_cast<void *>(p);
 		if (!q)
 			goto bar;
@@ -289,25 +297,25 @@ class omg
 			    : foo);  break;
 #   ifdef __amd64__
 		    case 1:
-			__asm goto(innocent_pear_PREFIX(3) "subq %1, %%rsp; "
-				   innocent_pear_PREFIXED_PUSH(4, 5, 0)
-				   innocent_pear_BR_PREFIX(6) "retq %2"
+			__asm goto(innocent_pear_PREFIXED_PUSH(1, 2, 0)
+				   innocent_pear_BR_PREFIX(3) "retq"
 			    : /* no outputs */
-			    : "r" (q), "r" (rzsz), "n" (rzsz), "n" (Which3),
-			      "n" (Which4), "n" (Push4), "n" (Which5)
+			    : "r" (q), "n" (Which4), "n" (Push4), "n" (Which5)
 			    : /* no clobbers */
-			    : foo);  break;
+			    : foo);
+			force_nonleaf();
+			break;
 		    case 2:
-			__asm goto(innocent_pear_PREFIX(4) "subq %2, %%rsp; "
-				   innocent_pear_PREFIXED_PUSH(5, 6, 1)
-				   innocent_pear_PREFIXED_PUSH(7, 8, 0)
-				   innocent_pear_BR_PREFIX(9) "lretq %3"
+			__asm goto(innocent_pear_PREFIXED_PUSH(2, 3, 1)
+				   innocent_pear_PREFIXED_PUSH(4, 5, 0)
+				   innocent_pear_BR_PREFIX(6) "lretq"
 			    : /* no outputs */
-			    : "r" (q), "r" (r), "r" (rzsz), "n" (rzsz),
-			      "n" (Which3), "n" (Which4), "n" (Push4),
+			    : "r" (q), "r" (r), "n" (Which4), "n" (Push4),
 			      "n" (Which5), "n" (Push5), "n" (Which6)
 			    : /* no clobbers */
-			    : foo);  break;
+			    : foo);
+			force_nonleaf();
+			break;
 #   else
 		    case 1:
 			__asm goto(innocent_pear_PREFIXED_PUSH(2, 3, 0)

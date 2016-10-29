@@ -34,6 +34,13 @@ struct unpossible<State, 0u>
 		constexpr rand_state_t State2 = update_inner(State);
 		switch ((State2 >> 32) % 4) {
 		    case 0:
+			{
+				void (*p)();
+				__asm __volatile("" : "=g" (p));
+				p();
+			}
+			break;
+		    case 1:
 #if defined __amd64__
 			__asm __volatile("syscall" : : : "rax", "cc",
 			    "memory");
@@ -101,7 +108,7 @@ struct unpossible
 				T x;
 				omg<NewState, T,
 				    innocent_pear::ops::allow_for_startup,
-				    Levels - 1>();
+				    Levels - 1> zomg(x);
 				if (bit_set(x, BitP))
 					unpossible<NewState, Levels - 1>();
 				else
