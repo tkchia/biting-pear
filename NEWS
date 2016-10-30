@@ -1,3 +1,19 @@
+2016-10-30	"A list is only as strong as its weakest link."  (4)
+
+		include/innocent-pear/kthxbai.h :
+		- more surprise in the basis case
+
+		include/innocent-pear/bbq.h :
+		- moved x86 macros in from omg.h, renamed, and fixed bugs
+
+		include/innocent-pear/omg.h :
+		- moved x86 macros out to bbq.h
+		- innocent_pear_PREFIXED_INSN(...) -> innocent_pear_X86_
+		  PREFIXED_INSN(...)
+		- omg<...>:
+		  - force_nonleaf() -> coax_nonleaf()
+		  - fixed bug in masking for Push4 and Push5
+
 2016-10-29	"A list is only as strong as its weakest link."  (3)
 
 		include/innocent-pear/omg.h :

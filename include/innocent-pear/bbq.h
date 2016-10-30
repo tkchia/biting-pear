@@ -217,4 +217,63 @@ using ops::ops_flags_t;
 
 } // innocent_pear
 
+#if defined __amd64__ || defined __i386__
+#   ifdef __OPTIMIZE__
+#	define innocent_pear_X86_PREFIX(o) \
+		".if 0 == %c" #o "; " \
+			".byte 0x26; "	/* %es: */ \
+		".elseif 1 == %c" #o "; " \
+			".byte 0x2e; "	/* %cs: */ \
+		".elseif 2 == %c" #o "; " \
+			".byte 0x36; "	/* %ss: */ \
+		".elseif 3 == %c" #o "; " \
+			".byte 0x3e; "	/* %ds: */ \
+		".elseif 4 == %c" #o "; " \
+			".byte 0x64; "	/* %fs: */ \
+		".elseif 5 == %c" #o "; " \
+			".byte 0x65; "	/* %gs: */ \
+		".endif; "
+#	define innocent_pear_X86_BR_PREFIX(o) \
+		innocent_pear_X86_PREFIX(o) \
+		".if 6 == %c" #o "; " \
+			"repz; " \
+		".elseif 7 == %c" #o "; " \
+			"repnz; " \
+		".endif; "
+#	ifdef __amd64__
+#	    define innocent_pear_X86_PREFIXED_PUSH(o, p, q) \
+		innocent_pear_X86_PREFIX(o) \
+		".if (%c" #p ")&0x100; " \
+			"pushq $((%c" #p ")&0xff)-0x80;" \
+			"movq %" #q ", (%%rsp); " \
+		".elseif ((%c" #p ")&0xe0)==0; " \
+			"pushfq; " \
+			"movq %" #q ", (%%rsp); " \
+		".else; " \
+			"pushq %" #q "; " \
+		".endif; "
+#	else
+#	    define innocent_pear_X86_PREFIXED_PUSH(o, p, q) \
+		innocent_pear_X86_PREFIX(o) \
+		".if (%c" #p ")&0x100; " \
+			"pushl $((%c" #p ")&0xff)-0x80;" \
+			"movl %" #q ", (%%esp); " \
+		".elseif ((%c" #p ")&0xe0)==0; " \
+			"pushfl; " \
+			"movl %" #q ", (%%esp); " \
+		".else; " \
+			"pushl %" #q "; " \
+		".endif; "
+#	endif
+#   else
+#	define innocent_pear_X86_PREFIX(o) ""
+#	define innocent_pear_X86_BR_PREFIX(o) ""
+#	ifdef __amd64__
+#	    define innocent_pear_X86_PREFIXED_PUSH(o, p, q) "pushq %" #q "; "
+#	else
+#	    define innocent_pear_X86_PREFIXED_PUSH(o, p, q) "pushl %" #q "; "
+#	endif
+#   endif
+#endif
+
 #endif

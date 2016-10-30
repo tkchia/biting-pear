@@ -45,11 +45,53 @@ class kthxbai_impl<State, T, Flags, ~0u> : public nowai
 template<rand_state_t State, class T, ops_flags_t Flags>
 class kthxbai_impl<State, T, Flags, 0u>
 {
+	static constexpr rand_state_t State2 = update_inner(State),
+				      State3 = update_inner(State2);
     public:
 	__attribute__((always_inline))
 	kthxbai_impl(T& x, T v)
 	{
-		__asm __volatile("" : "=g" (x) : "0" (v));
+		switch ((State2 >> 32) % 8) {
+#ifdef __i386__
+		    case 0:
+			if (sizeof(T) <= sizeof(uintptr_t)) {
+				uintptr_t y;
+				__asm __volatile(
+				    ".ifnc \"%0\", \"%1\"; "
+				    innocent_pear_X86_PREFIXED_PUSH(2, 3, 1)
+				    innocent_pear_X86_PREFIX(4) "popl %0; "
+				    ".endif"
+				    : "=r" (y)
+				    : "nr" ((uintptr_t)v),
+				      "n" ((unsigned)((State3 >> 32) & 0xf)),
+				      "n" ((unsigned)((State2 >> 48) & 0x1ff)),
+				      "n" ((unsigned)((State3 >> 48) & 0xf))
+				    : "memory");
+				x = (T)y;
+				break;
+			} // else fall through
+		    case 1:
+			if (sizeof(T) <= sizeof(uintptr_t)) {
+				uintptr_t y, z;
+				__asm __volatile(
+				    ".ifnc \"%0\", \"%2\"; "
+				    innocent_pear_X86_PREFIXED_PUSH(3, 4, 2)
+				    "movl (%%esp), %0; "
+				    innocent_pear_X86_PREFIX(5) "popl %1; "
+				    ".endif"
+				    : "=&r" (y), "=r" (z)
+				    : "nr" ((uintptr_t)v),
+				      "n" ((unsigned)((State3 >> 32) & 0xf)),
+				      "n" ((unsigned)((State2 >> 48) & 0x1ff)),
+				      "n" ((unsigned)((State3 >> 48) & 0xf))
+				    : "memory");
+				x = (T)y;
+				break;
+			} // else fall through
+#endif
+		    default:
+			__asm __volatile("" : "=g" (x) : "0" (v));
+		}
 	}
 };
 
@@ -63,11 +105,12 @@ class kthxbai_impl
 	    State5 = update_inner(State4),
 	    NewState = update_outer(State, Levels),
 	    NewState2 = update_outer(NewState, Levels),
-	    NewState3 = update_outer(NewState2, Levels);
+	    NewState3 = update_outer(NewState2, Levels),
+	    NewState4 = update_outer(NewState3, Levels);
 	static constexpr bool Boreal1 = (State2 >> 30) % 2 != 0;
 	typedef kthxbai_impl<NewState, T, Flags, Levels - 1> impl_n;
 	typedef kthxbai_impl<NewState2, T, Flags, Levels - 1> impl_n2;
-	typedef kthxbai_impl<0, T, Flags, 0> impl_z;
+	typedef kthxbai_impl<NewState4, T, Flags, 0> impl_z;
 	typedef omg<NewState, T, Flags, Levels - 1> omg_n;
 	typedef omg<NewState3, T, Flags, Levels - 1> omg_n3;
     public:

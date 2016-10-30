@@ -44,64 +44,6 @@ class yarly;  // forward
 template<rand_state_t State, unsigned Levels>
 struct unpossible;  // forward
 
-#if defined __amd64__ || defined __i386__
-#   ifdef __OPTIMIZE__
-#	define innocent_pear_PREFIX(o)	".if 0 == %c" #o "; " \
-						".byte 0x26; "	/* %es: */ \
-					".elseif 1 == %c" #o "; " \
-						".byte 0x2e; "	/* %cs: */ \
-					".elseif 2 == %c" #o "; " \
-						".byte 0x36; "	/* %ss: */ \
-					".elseif 3 == %c" #o "; " \
-						".byte 0x3e; "	/* %ds: */ \
-					".elseif 4 == %c" #o "; " \
-						".byte 0x64; "	/* %fs: */ \
-					".elseif 5 == %c" #o "; " \
-						".byte 0x65; "	/* %gs: */ \
-					".endif; "
-#	define innocent_pear_BR_PREFIX(o) \
-					innocent_pear_PREFIX(o) \
-					".if 6 == %c" #o "; " \
-						"repz; " \
-					".elseif 7 == %c" #o "; " \
-						"repnz; " \
-					".endif; "
-#	ifdef __amd64__
-#	    define innocent_pear_PREFIXED_PUSH(o, p, q) \
-					innocent_pear_PREFIX(o) \
-					".if (%c" #p ")&256; " \
-						"pushq $((%c"#p")&255)-128; "\
-						"movq %" #q ", (%%rsp); " \
-					".elseif ((%c" #p ")&224)==0; " \
-						"pushfq; " \
-						"movq %" #q ", (%%rsp); " \
-					".else; " \
-						"pushq %" #q "; " \
-					".endif; "
-#	else
-#	    define innocent_pear_PREFIXED_PUSH(o, p, q) \
-					innocent_pear_PREFIX(o) \
-					".if (%c" #p ")&256; " \
-						"pushl $((%c"#p")&255)-128; "\
-						"movl %" #q ", (%%esp); " \
-					".elseif ((%c" #p ")&224)==0; " \
-						"pushfl; " \
-						"movl %" #q ", (%%esp); " \
-					".else; " \
-						"pushl %" #q "; " \
-					".endif; "
-#	endif
-#   else
-#	define innocent_pear_PREFIX(o)	""
-#	define innocent_pear_BR_PREFIX(o) ""
-#	ifdef __amd64__
-#	    define innocent_pear_PREFIXED_PUSH(o, p, q) "pushq %" #q
-#	else
-#	    define innocent_pear_PREFIXED_PUSH(o, p, q) "pushl %" #q
-#	endif
-#   endif
-#endif
-
 template<rand_state_t State, class T,
     ops_flags_t Flags = innocent_pear::ops::allow_minimal,
     unsigned Levels = 2u>
@@ -124,19 +66,19 @@ class omg<State, T, Flags, 0u>
 		constexpr unsigned Which3 = (State3 >> 32) % 15;
 		switch (Which2) {
 #if defined __amd64__ || defined __i386__
-#   define innocent_pear_PREFIXED_INSN(insn, ...) \
-			__asm __volatile(innocent_pear_PREFIX(0) insn \
+#   define innocent_pear_X86_PREFIXED_INSN(insn, ...) \
+			__asm __volatile(innocent_pear_X86_PREFIX(0) insn \
 			    : /* no outputs */ \
 			    : "n" (Which3) \
 			    : __VA_ARGS__)
 		    case 0:
-			innocent_pear_PREFIXED_INSN("clc", "cc");  break;
+			innocent_pear_X86_PREFIXED_INSN("clc", "cc");  break;
 		    case 1:
-			innocent_pear_PREFIXED_INSN("stc", "cc");  break;
+			innocent_pear_X86_PREFIXED_INSN("stc", "cc");  break;
 		    case 2:
-			innocent_pear_PREFIXED_INSN("cmc", "cc");  break;
+			innocent_pear_X86_PREFIXED_INSN("cmc", "cc");  break;
 		    case 3:
-			innocent_pear_PREFIXED_INSN("cld", "cc");  break;
+			innocent_pear_X86_PREFIXED_INSN("cld", "cc");  break;
 			/*
 			 * Nope, do _not_ try to use `std' here.  The glibc
 			 * runtime depends on the direction flag being clear.
@@ -144,18 +86,18 @@ class omg<State, T, Flags, 0u>
 			 * -- 20150608
 			 */
 		    case 4:
-			innocent_pear_PREFIXED_INSN("cbtw", "ax");  break;
+			innocent_pear_X86_PREFIXED_INSN("cbtw", "ax");  break;
 		    case 5:
-			innocent_pear_PREFIXED_INSN("cwtl", "eax");  break;
+			innocent_pear_X86_PREFIXED_INSN("cwtl", "eax");  break;
 		    case 6:
-			innocent_pear_PREFIXED_INSN("cltd", "edx");  break;
+			innocent_pear_X86_PREFIXED_INSN("cltd", "edx");  break;
 #   ifdef __amd64__
 		    case 7:
-			innocent_pear_PREFIXED_INSN("cltq", "rax");  break;
+			innocent_pear_X86_PREFIXED_INSN("cltq", "rax");  break;
 		    case 8:
-			innocent_pear_PREFIXED_INSN("cqto", "rdx");  break;
+			innocent_pear_X86_PREFIXED_INSN("cqto", "rdx");  break;
 #   endif
-#   undef innocent_pear_PREFIXED_INSN
+#   undef innocent_pear_X86_PREFIXED_INSN
 #endif
 		    default:
 			;
@@ -179,7 +121,7 @@ class omg<State, T, Flags, 0u>
 		    case 2:
 			{
 				uint_least64_t y;
-				__asm(innocent_pear_PREFIX(1) "rdtsc"
+				__asm(innocent_pear_X86_PREFIX(1) "rdtsc"
 				    : "=a" (y)
 				    : "n" ((State3 >> 32) % 6)
 				    : "rdx");
@@ -190,7 +132,7 @@ class omg<State, T, Flags, 0u>
 		    case 2:
 			{
 				unsigned y;
-				__asm(innocent_pear_PREFIX(1) "rdtsc"
+				__asm(innocent_pear_X86_PREFIX(1) "rdtsc"
 				    : "=a" (y)
 				    : "n" ((State3 >> 32) % 6)
 				    : "edx");
@@ -201,7 +143,7 @@ class omg<State, T, Flags, 0u>
 		    case 3:
 			{
 				unsigned y;
-				__asm(innocent_pear_PREFIX(1) "smsw %0"
+				__asm(innocent_pear_X86_PREFIX(1) "smsw %0"
 				    : "=r" (y) : "n" ((State3 >> 32) % 6));
 				x = static_cast<T>(y);
 			}
@@ -254,7 +196,7 @@ class omg
 	typedef rofl<NewState4, Flags, Levels - 1> rofl4;
 #ifdef __amd64__
 	__attribute__((always_inline))
-	static void force_nonleaf()
+	static void coax_nonleaf()
 	{
 		unpossible<NewState4, Levels - 1>();
 		/*
@@ -280,8 +222,8 @@ class omg
 		constexpr unsigned Which4 = (State4 >> 40) % 15;
 		constexpr unsigned Which5 = (State5 >> 40) % 15;
 		constexpr unsigned Which6 = (State6 >> 40) % 15;
-		constexpr unsigned Push4 = (State4 >> 48) % 255;
-		constexpr unsigned Push5 = (State5 >> 48) % 255;
+		constexpr unsigned Push4 = (State4 >> 48) % 0x1ff;
+		constexpr unsigned Push5 = (State5 >> 48) % 0x1ff;
 		void *q, *r = 0;
 		__asm("movw %%cs, %w0" : "=g" (r));
 		kthxbai<NewState, void *, Flags, Levels> p(&&foo, 1);
@@ -290,54 +232,54 @@ class omg
 			goto bar;
 		switch (Which2) {
 		    default:
-			__asm goto(innocent_pear_BR_PREFIX(1) "jmp%z0 *%0"
+			__asm goto(innocent_pear_X86_BR_PREFIX(1) "jmp%z0 *%0"
 			    : /* no outputs */
 			    : "r" (q), "n" (Which3)
 			    : /* no clobbers */
 			    : foo);  break;
 #   ifdef __amd64__
 		    case 1:
-			__asm goto(innocent_pear_PREFIXED_PUSH(1, 2, 0)
-				   innocent_pear_BR_PREFIX(3) "retq"
+			__asm goto(innocent_pear_X86_PREFIXED_PUSH(1, 2, 0)
+				   innocent_pear_X86_BR_PREFIX(3) "retq"
 			    : /* no outputs */
 			    : "r" (q), "n" (Which4), "n" (Push4), "n" (Which5)
 			    : /* no clobbers */
 			    : foo);
-			force_nonleaf();
+			coax_nonleaf();
 			break;
 		    case 2:
-			__asm goto(innocent_pear_PREFIXED_PUSH(2, 3, 1)
-				   innocent_pear_PREFIXED_PUSH(4, 5, 0)
-				   innocent_pear_BR_PREFIX(6) "lretq"
+			__asm goto(innocent_pear_X86_PREFIXED_PUSH(2, 3, 1)
+				   innocent_pear_X86_PREFIXED_PUSH(4, 5, 0)
+				   innocent_pear_X86_BR_PREFIX(6) "lretq"
 			    : /* no outputs */
 			    : "r" (q), "r" (r), "n" (Which4), "n" (Push4),
 			      "n" (Which5), "n" (Push5), "n" (Which6)
 			    : /* no clobbers */
 			    : foo);
-			force_nonleaf();
+			coax_nonleaf();
 			break;
 #   else
 		    case 1:
-			__asm goto(innocent_pear_PREFIXED_PUSH(2, 3, 0)
-				   innocent_pear_BR_PREFIX(1) "retl"
+			__asm goto(innocent_pear_X86_PREFIXED_PUSH(2, 3, 0)
+				   innocent_pear_X86_BR_PREFIX(1) "retl"
 			    : /* no outputs */
 			    : "r" (q), "n" (Which3), "n" (Which4), "n" (Push4)
 			    : /* no clobbers */
 			    : foo);  break;
 		    case 2:
-			__asm goto(innocent_pear_PREFIXED_PUSH(3, 4, 1)
-				   innocent_pear_PREFIXED_PUSH(5, 6, 0)
-				   innocent_pear_BR_PREFIX(2) "lretl"
+			__asm goto(innocent_pear_X86_PREFIXED_PUSH(3, 4, 1)
+				   innocent_pear_X86_PREFIXED_PUSH(5, 6, 0)
+				   innocent_pear_X86_BR_PREFIX(2) "lretl"
 			    : /* no outputs */
 			    : "r" (q), "r" (r), "n" (Which3), "n" (Which4),
 			      "n" (Push4), "n" (Which5), "n" (Push5)
 			    : /* no clobbers */
 			    : foo);  break;
 		    case 3:
-			__asm goto(innocent_pear_PREFIX(2) "pushfl; "
-				   innocent_pear_PREFIXED_PUSH(3, 4, 1)
-				   innocent_pear_PREFIXED_PUSH(5, 6, 0)
-				   innocent_pear_BR_PREFIX(7) "iretl"
+			__asm goto(innocent_pear_X86_PREFIX(2) "pushfl; "
+				   innocent_pear_X86_PREFIXED_PUSH(3, 4, 1)
+				   innocent_pear_X86_PREFIXED_PUSH(5, 6, 0)
+				   innocent_pear_X86_BR_PREFIX(7) "iretl"
 			    : /* no outputs */
 			    : "r" (q), "r" (r), "n" (Which3), "n" (Which4),
 			      "n" (Push4), "n" (Which5), "n" (Push5),
@@ -614,12 +556,6 @@ class omg
 		}
 	}
 };
-
-#if defined __amd64__ || defined __i386__
-#   undef innocent_pear_PREFIX
-#   undef innocent_pear_BR_PREFIX
-#   undef innocent_pear_PREFIXED_PUSH
-#endif
 
 } // innocent_pear::impl
 
