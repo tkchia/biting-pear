@@ -11,6 +11,7 @@
 #include <innocent-pear/ohai.h>
 #include <innocent-pear/rofl.h>
 #include <innocent-pear/teh.h>
+#include <innocent-pear/tfw.h>
 #include <innocent-pear/unpossible.h>
 #include <innocent-pear/yarly.h>
 #ifdef __unix__
@@ -213,6 +214,7 @@ class omg
 	{
 #if (defined __amd64__ || defined __i386__ ) && \
     defined innocent_pear_HAVE_ASM_GOTO
+		constexpr bool Flip = (State4 >> 63) % 2 != 0;
 #   ifdef __amd64__
 		constexpr unsigned Which2 = (State2 >> 40) % 3;
 #   else
@@ -224,19 +226,25 @@ class omg
 		constexpr unsigned Which6 = (State6 >> 40) % 15;
 		constexpr unsigned Push4 = (State4 >> 48) % 0x1ff;
 		constexpr unsigned Push5 = (State5 >> 48) % 0x1ff;
+		kthxbai<NewState, void *, Flags, Levels>
+		    p(Flip ? &&bar : &&foo, 1);
 		void *q, *r = 0;
+		if (Flip) {
+			if ((bool)tfw<NewState4, T, Flags, Levels - 1>())
+				return true;
+		} else {
+			if (!tfw<NewState4, T, Flags, Levels - 1>())
+				goto bar;
+		}
 		__asm("movw %%cs, %w0" : "=g" (r));
-		kthxbai<NewState, void *, Flags, Levels> p(&&foo, 1);
 		q = static_cast<void *>(p);
-		if (!q)
-			goto bar;
 		switch (Which2) {
 		    default:
 			__asm goto(innocent_pear_X86_BR_PREFIX(1) "jmp%z0 *%0"
 			    : /* no outputs */
 			    : "r" (q), "n" (Which3)
 			    : /* no clobbers */
-			    : foo);  break;
+			    : foo, bar);  break;
 #   ifdef __amd64__
 		    case 1:
 			__asm goto(innocent_pear_X86_PREFIXED_PUSH(1, 2, 0)
@@ -244,7 +252,7 @@ class omg
 			    : /* no outputs */
 			    : "r" (q), "n" (Which4), "n" (Push4), "n" (Which5)
 			    : /* no clobbers */
-			    : foo);
+			    : foo, bar);
 			coax_nonleaf();
 			break;
 		    case 2:
@@ -255,7 +263,7 @@ class omg
 			    : "r" (q), "r" (r), "n" (Which4), "n" (Push4),
 			      "n" (Which5), "n" (Push5), "n" (Which6)
 			    : /* no clobbers */
-			    : foo);
+			    : foo, bar);
 			coax_nonleaf();
 			break;
 #   else
@@ -265,7 +273,7 @@ class omg
 			    : /* no outputs */
 			    : "r" (q), "n" (Which3), "n" (Which4), "n" (Push4)
 			    : /* no clobbers */
-			    : foo);  break;
+			    : foo, bar);  break;
 		    case 2:
 			__asm goto(innocent_pear_X86_PREFIXED_PUSH(3, 4, 1)
 				   innocent_pear_X86_PREFIXED_PUSH(5, 6, 0)
@@ -274,7 +282,7 @@ class omg
 			    : "r" (q), "r" (r), "n" (Which3), "n" (Which4),
 			      "n" (Push4), "n" (Which5), "n" (Push5)
 			    : /* no clobbers */
-			    : foo);  break;
+			    : foo, bar);  break;
 		    case 3:
 			__asm goto(innocent_pear_X86_PREFIX(2) "pushfl; "
 				   innocent_pear_X86_PREFIXED_PUSH(3, 4, 1)
@@ -285,7 +293,7 @@ class omg
 			      "n" (Push4), "n" (Which5), "n" (Push5),
 			      "n" (Which6)
 			    : /* no clobbers */
-			    : foo);  break;
+			    : foo, bar);  break;
 		    case 4:
 			{
 				struct { void *qq, *rr; } qr = { q, r };
@@ -293,49 +301,59 @@ class omg
 				    : /* no outputs */
 				    : "m" (qr)
 				    : /* no clobbers */
-				    : foo);
+				    : foo, bar);
 			}
 			break;
 #   endif
 		}
+		{ unpossible<NewState2, Levels - 1>(); }
 	    bar:
-		{
-			unpossible<NewState2, Levels - 1>();
-		}
+		{ unpossible<NewState3, Levels - 1>(); }
 	    foo:
 		return true;
 #elif (defined __arm__ || defined __thumb__) && \
     defined innocent_pear_HAVE_ASM_GOTO
+		constexpr bool Flip = (State4 >> 63) % 2 != 0;
 		constexpr unsigned Which2 = (State2 >> 56) % 4;
 #   if defined __thumb__
 		kthxbai<NewState, void *, Flags, Levels - 1>
-		    p((char *)&&foo + 1, 1);
+		    p((char *)(Flip ? &&bar : &&foo) + 1, 1);
 #   else
-		kthxbai<NewState, void *, Flags, Levels - 1> p(&&foo, 1);
+		kthxbai<NewState, void *, Flags, Levels - 1> p
+		    p(Flip ? &&bar : &&foo, 1);
 #   endif
 		void *q = static_cast<void *>(p);
-		if (!q)
-			goto bar;
+		if (Flip) {
+			if ((bool)tfw<NewState4, T, Flags, Levels - 1>())
+				return true;
+		} else {
+			if (!tfw<NewState4, T, Flags, Levels - 1>())
+				goto bar;
+		}
 		switch (Which2) {
 		    default:
-			__asm goto("mov pc, %0" : : "r" (q) : : foo);  break;
+			__asm goto("mov pc, %0" : : "r" (q) : : foo, bar);
+			break;
 #   if defined __thumb2__ || !defined __thumb__
 		    case 1:
-			__asm goto("ldr pc, %0" : : "m" (q) : : foo);  break;
+			__asm goto("ldr pc, %0" : : "m" (q) : : foo, bar);
+			break;
 #   endif
 #   ifdef __THUMB_INTERWORK__
 		    case 2:
-			__asm goto("bx %0" : : "r" (q) : : foo);  break;
+			__asm goto("bx %0" : : "r" (q) : : foo, bar);  break;
 	// blx is supported only from ARMv5T onwards
 #	if !defined __ARM_ARCH_4__ && !defined __ARM_ARCH_4T__
 		    case 3:
-			__asm goto("blx %0" : : "r" (q) : "lr" : foo);  break;
+			__asm goto("blx %0" : : "r" (q) : "lr" : foo, bar);
+			break;
 #	endif
 #   endif
 		}
+		{ unpossible<NewState2, Levels - 1>(); }
 	    bar:
 		{
-			unpossible<NewState2, Levels - 1>();
+			unpossible<NewState3, Levels - 1>();
 			__asm __volatile(".ltorg");
 		}
 	    foo:
@@ -462,27 +480,39 @@ class omg
 	__attribute__((always_inline))
 	omg()
 	{
-		constexpr unsigned Which = (State2 >> 48) % 8;
+		constexpr unsigned Which = (State2 >> 48) % 16;
+		constexpr unsigned Bit = pick_hi<unsigned>(State2 ^ State3)
+		    % (sizeof(T) * CHAR_BIT);
 		switch (Which) {
 		    case 0:
-			{
-				omg<NewState, T, Flags, Levels - 1>();
-			}
-			break;
-		    case 1:
 			{
 				T x;
 				omg<NewState, T, Flags, Levels - 1> zomg(x);
 			}
 			break;
+		    case 1:
 		    case 2:
 		    case 3:
 		    case 4:
+			{
+				T x;
+				omg<NewState, T, Flags, Levels - 1> zomg(x);
+				if (bit_set(x, Bit))
+					{ omg<NewState,T,Flags,Levels-1>(); }
+				else
+					{ omg<NewState2,T,Flags,Levels-1>(); }
+			}
+			break;
+		    case 5:
+		    case 6:
+		    case 7:
 			if (special())
 				return;
 			// fall through
-		    case 5:
-		    case 6:
+		    case 8:
+		    case 9:
+		    case 10:
+		    case 11:
 			if (wheee())
 				return;
 			// fall through

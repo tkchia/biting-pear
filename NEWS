@@ -1,3 +1,17 @@
+2016-11-02	"A list is only as strong as its weakest link."  (5)
+
+		include/innocent-pear/tfw.h :
+		- new
+
+		include/innocent-pear/omg.h :
+		- added possibility that indirect jumps may _not_ be taken,
+		  with the help of tfw.h
+		- added possibility of choosing between two omg<...>'s
+		- redistributed probabilities
+
+		GNUmakefile :
+		- added include/innocent-pear/tfw.h as a dependency
+
 2016-10-30	"A list is only as strong as its weakest link."  (4)
 
 		include/innocent-pear/kthxbai.h :
