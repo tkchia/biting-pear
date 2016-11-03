@@ -1,3 +1,17 @@
+2016-11-03	A bit less resource wastage at compile time.  A bit more
+		branching at run time.
+
+		bin/innocent-pear-front-end.tcc :
+		- now closes temporary */calm file descriptor if running
+		  C(++) compiler as child process
+		- reduced memory leakage for child process parameters
+
+		include/innocent-pear/omg.h :
+		- added possibility of choosing between two omg<...>::omg(.)'s
+
+		share/innocent-pear/sleepier.cc :
+		- now correctly processes the return value of mkstemp(.) :-\
+
 2016-11-02	"A list is only as strong as its weakest link."  (5)
 
 		include/innocent-pear/tfw.h :

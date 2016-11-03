@@ -498,9 +498,9 @@ class omg
 				T x;
 				omg<NewState, T, Flags, Levels - 1> zomg(x);
 				if (bit_set(x, Bit))
-					{ omg<NewState,T,Flags,Levels-1>(); }
-				else
 					{ omg<NewState2,T,Flags,Levels-1>(); }
+				else
+					{ omg<NewState3,T,Flags,Levels-1>(); }
 			}
 			break;
 		    case 5:
@@ -527,7 +527,9 @@ class omg
 	omg(T& x, bool bogo = false)
 	{
 		using namespace innocent_pear::ops;
-		switch ((State2 >> 32) % 13) {
+		constexpr unsigned Bit = pick_hi<unsigned>(State2 ^ State3)
+		    % (sizeof(T) * CHAR_BIT);
+		switch ((State2 >> 48) % 16) {
 		    case 0:
 		    case 1:
 			{
@@ -551,18 +553,33 @@ class omg
 			break;
 		    case 4:
 		    case 5:
+		    case 6:
+			{
+				T x1;
+				omg<NewState, T, Flags, Levels - 1> zomg1(x1);
+				if (bit_set(x1, Bit)) {
+					omg<NewState2, T, Flags, Levels - 1>
+					    zomg(x);
+				} else {
+					omg<NewState3, T, Flags, Levels - 1>
+					    zomg(x);
+				}
+			}
+			break;
+		    case 7:
+		    case 8:
 			if (!(Flags & allow_signal_safes)) {
 				x = static_cast<T>(rofl2::getppid());
 				break;
 			} // else fall through
-		    case 6:
-		    case 7:
+		    case 9:
+		    case 10:
 			if (!(Flags & allow_signal_safes)) {
 				x = static_cast<T>(rofl2::getpid());
 				break;
 			} // else fall through
-		    case 8:
-		    case 9:
+		    case 11:
+		    case 12:
 			if (!(Flags & allow_signal_safes)) {
 				union {
 					time_t t;
@@ -573,8 +590,8 @@ class omg
 				x = static_cast<T>(rofl2::time((time_t *)p));
 				break;
 			} // else fall through
-		    case 10:
-		    case 11:
+		    case 13:
+		    case 14:
 			if (bogo)
 				unpossible<NewState3, Levels - 1>();
 			// fall through

@@ -59,9 +59,10 @@ static constexpr std::size_t
 static_assert(NumDogeIParts >= 2, "NumDogeIParts < 2 !");
 
 static void grumpy(std::ostringstream& oss, std::ostringstream& info_oss,
-    const std::string& eprefix)
+    const std::string& eprefix, int& close_fd)
 {
 	std::string wrapper = eprefix + "/share/innocent-pear/calm";
+	close_fd = -1;
 #ifdef __unix__
 	int fee = open(wrapper.c_str(), O_RDONLY);
 	if (fee != -1) {
@@ -76,6 +77,7 @@ static void grumpy(std::ostringstream& oss, std::ostringstream& info_oss,
 				close(fie);
 				oss << om;
 				info_oss << ' ' << fee << "< " << wrapper;
+				close_fd = fee;
 				return;
 			}
 		}
@@ -130,6 +132,15 @@ inline char *pusheen(Ts... msg)
 	return (char *)s->c_str();
 }
 
+template<class... Ts>
+__attribute__((always_inline))
+inline void plush(std::string& s, Ts... msg)
+{
+	std::ostringstream oss;
+	push(oss, msg...);
+	s = oss.str();
+}
+
 static void nyan(sleepier_t& cheesy, const char *cheeses, states_t st,
     const char *cheez, const char *cheeez, const char *cheeeez,
     char *cheesier, char *cxx, const std::string& caturday,
@@ -139,32 +150,44 @@ static void nyan(sleepier_t& cheesy, const char *cheeses, states_t st,
 	char cheese[strlen(cheeses) + 8];
 	std::snprintf(cheese, sizeof cheese, "%s.pear.t", cheeses);
 	cheesy(cheese);
+	std::string s1, s2, s3, s4, s5,
+	    s6 = "-Uinnocent_pear_DOGE_TAG_NEXT",
+	    s7 = "-Uinnocent_pear_DOGE_TAG_2_NEXT",
+	    s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18;
+	plush(s1,  "-prefix=", caturday);
+	plush(s2,  "-exec-prefix=", ecaturday);
+	plush(s3,  "-target-prefix=", meow);
+	plush(s4,  "-target-exec-prefix=", emeow);
+	plush(s5,  "-Dinnocent_pear_DOGE_TAG=\"", cheez, '"');
+	if (cheeez)
+		plush(s6, "-Dinnocent_pear_DOGE_TAG_NEXT=\"", cheeez, '"');
+	if (cheeeez)
+		plush(s7, "-Dinnocent_pear_DOGE_TAG_2_NEXT=\"", cheeeez, '"');
+	plush(s8,  "-Dinnocent_pear_DOGE_STATE_0=0x",  std::hex, st.z);
+	plush(s9,  "-Dinnocent_pear_DOGE_STATE_1=0x",  std::hex, st.i);
+	plush(s10, "-Dinnocent_pear_DOGE_STATE_2=0x",  std::hex, st.ii);
+	plush(s11, "-Dinnocent_pear_DOGE_STATE_3=0x",  std::hex, st.iii);
+	plush(s12, "-Dinnocent_pear_DOGE_STATE_4=0x",  std::hex, st.iv);
+	plush(s13, "-Dinnocent_pear_DOGE_STATE_5=0x",  std::hex, st.v);
+	plush(s14, "-Dinnocent_pear_DOGE_STATE_6=0x",  std::hex, st.vi);
+	plush(s15, "-Dinnocent_pear_DOGE_STATE_7=0x",  std::hex, st.vii);
+	plush(s16, "-Dinnocent_pear_DOGE_STATE_8=0x",  std::hex, st.viii);
+	plush(s17, "-Dinnocent_pear_DOGE_STATE_9=0x",  std::hex, st.ix);
+	plush(s18, "-Dinnocent_pear_DOGE_STATE_10=0x", std::hex, st.x);
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wwrite-strings"
 	char *cheesiest[] = {
 		cxx,
 		innocent_pear_CXXFLAGS_FOR_TARGET /* ... */,
-		"-Xinnocent-pear", pusheen("-prefix=", caturday),
-		"-Xinnocent-pear", pusheen("-exec-prefix=", ecaturday),
-		"-Xinnocent-pear", pusheen("-target-prefix=", meow),
-		"-Xinnocent-pear", pusheen("-target-exec-prefix=", emeow),
-		pusheen("-Dinnocent_pear_DOGE_TAG=\"", cheez, '"'),
-		cheeez	? pusheen("-Dinnocent_pear_DOGE_TAG_NEXT=\"", cheeez,
-			      '"') : (char *)"-Uinnocent_pear_DOGE_TAG_NEXT",
-		cheeeez	? pusheen("-Dinnocent_pear_DOGE_TAG_2_NEXT=\"",
-			      cheeeez, '"')
-			: (char *)"-Uinnocent_pear_DOGE_TAG_2_NEXT",
-		pusheen("-Dinnocent_pear_DOGE_STATE_0=0x", std::hex, st.z),
-		pusheen("-Dinnocent_pear_DOGE_STATE_1=0x", std::hex, st.i),
-		pusheen("-Dinnocent_pear_DOGE_STATE_2=0x", std::hex, st.ii),
-		pusheen("-Dinnocent_pear_DOGE_STATE_3=0x", std::hex, st.iii),
-		pusheen("-Dinnocent_pear_DOGE_STATE_4=0x", std::hex, st.iv),
-		pusheen("-Dinnocent_pear_DOGE_STATE_5=0x", std::hex, st.v),
-		pusheen("-Dinnocent_pear_DOGE_STATE_6=0x", std::hex, st.vi),
-		pusheen("-Dinnocent_pear_DOGE_STATE_7=0x", std::hex, st.vii),
-		pusheen("-Dinnocent_pear_DOGE_STATE_8=0x", std::hex, st.viii),
-		pusheen("-Dinnocent_pear_DOGE_STATE_9=0x", std::hex, st.ix),
-		pusheen("-Dinnocent_pear_DOGE_STATE_10=0x", std::hex, st.x),
+		"-Xinnocent-pear", (char *)s1.c_str(),
+		"-Xinnocent-pear", (char *)s2.c_str(),
+		"-Xinnocent-pear", (char *)s3.c_str(),
+		"-Xinnocent-pear", (char *)s4.c_str(),
+		(char *)s5.c_str(),  (char *)s6.c_str(),  (char *)s7.c_str(),
+		(char *)s8.c_str(),  (char *)s9.c_str(),  (char *)s10.c_str(),
+		(char *)s11.c_str(), (char *)s12.c_str(), (char *)s13.c_str(),
+		(char *)s14.c_str(), (char *)s15.c_str(), (char *)s16.c_str(),
+		(char *)s17.c_str(), (char *)s18.c_str(),
 		sta ? (char *)"-Uinnocent_pear_DYN_LD_CXX_TARGET" :
 		      (char *)"-Dinnocent_pear_DYN_LD_CXX_TARGET",
 		debug_doge ? (char *)"-Dinnocent_pear_DEBUG=1" :
@@ -184,10 +207,12 @@ static void nyanyan(const std::string& ecaturday, const char *in,
     const char *out, const char *start, const char *end,
     innocent_pear::impl::rand_state_t state, bool v)
 {
+	std::string s1, s2;
+	plush(s1, ecaturday, "/bin/innocent-pear-doge");
+	plush(s2, "0x", std::hex, state);
 	char *cheesiest[] = {
-		pusheen(ecaturday, "/bin/innocent-pear-doge"),
-		(char *)in, (char *)out, (char *)start, (char *)end,
-		pusheen("0x", std::hex, state), 0
+		(char *)s1.c_str(), (char *)in, (char *)out,
+		(char *)start, (char *)end, (char *)s2.c_str(), 0
 	    };
 	keyboardest(cheesiest, 0, 0, 0, 0, v);
 }
@@ -495,7 +520,8 @@ static int main_(int argc, char **argv)
 		}
 		*cheese++ = opt;
 	}
-	grumpy(shocked, serious, ecaturday);
+	int shocker;
+	grumpy(shocked, serious, ecaturday, shocker);
 	seriouser = serious.str();
 #ifdef innocent_pear_COMPILER_FOR_TARGET_HAVE_OPT_WRAPPER
 	if (moar)
@@ -649,6 +675,8 @@ static int main_(int argc, char **argv)
 	else {
 		playest(burger, 0, 0, seriouser.c_str(), is.grumpiest,
 		    *cheeses, kitteh.c_str());
+		if (shocker != -1)
+			close(shocker);
 		nyanyan(ecaturday, doge_a(), doge_b(),
 		    (char *)"_.innocent_pear.dogecoin.start",
 		    (char *)"_.innocent_pear.dogecoin.end",

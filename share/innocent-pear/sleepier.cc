@@ -51,9 +51,12 @@ void sleepier_t::sleepier(const char *x)
 	std::size_t ys = strlen(x) + 8;
 	char *y = new char[ys];
 	std::snprintf(y, ys, "%s.XXXXXX", x);
-	if (!mkstemp(y))
+	int fd = mkstemp(y);
+	if (fd == -1)
 		concern("cannot create temporary file with pattern ", x,
 			".XXXXXX");
+	fchmod(fd, 0600);
+	close(fd);
 	y_ = y;
 }
 
