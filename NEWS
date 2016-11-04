@@ -1,4 +1,4 @@
-2016-11-04	"A list is only as strong as its weakest link."  (6)
+2016-11-04	Yes, it still compiles!  ;-)
 
 		GNUmakefile :
 		- now dumps smaller portions of compiled test binaries (again)
@@ -22,6 +22,12 @@
 
 		share/innocent-pear/doge-i.h :
 		- reduced the amount of chaff from innocent_pear_CHAFF(.)
+
+		doc/20161104-test-doge-abs-reloc-armv7-a.png :
+		- new
+
+		README.md :
+		- changed illustration
 
 2016-11-03	A bit less resource wastage at compile time.  A bit more
 		branching at run time.

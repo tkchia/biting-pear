@@ -32,7 +32,7 @@
 
 There is also a rather undocumented C++ API for various code obfuscation subtasks.
 
-![](doc/20161015-test-doge.png)
+![](doc/20161104-test-doge-abs-reloc-armv7-a.png)
 
 ## Bugs
 
