@@ -74,11 +74,7 @@
  * seed each time.
  */
 #define innocent_pear_CHAFF(flags) \
-	(innocent_pear::omg?<unsigned, (flags)>::special(), \
-	 innocent_pear::omg?<unsigned, (flags)>::special(), \
-	 innocent_pear::omg?<unsigned, (flags)>::special(), \
-	 innocent_pear::omg?<unsigned, (flags)>::special(), \
-	 innocent_pear::omg?<unsigned, (flags)>::special())
+	(innocent_pear::omg?<unsigned, (flags), 2u>::special())
 
 /*
  * This is here just to make sure that the preprocessed C++ output contains

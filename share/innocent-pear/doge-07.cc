@@ -36,7 +36,7 @@ innocent_pear_DOGE unscramble_07_1()
 	 * the end of .data.rel.ro .
 	 */
 	while (prot_start + pg_sz <= our_relro_end) {
-		innocent_pear::rofl?<flags>::mprotect(prot_start, pg_sz,
+		innocent_pear::rofl?<flags, 2u>::mprotect(prot_start, pg_sz,
 		    PROT_READ);
 		prot_start += pg_sz;
 	}
@@ -47,21 +47,21 @@ innocent_pear_DOGE unscramble_07_1()
 	 * segment.
 	 */
 	unsigned char *prot_end =
-	    (unsigned char *)(((uintptr_t)our_bss_end + pg_sz - 1)& -pg_sz);
-	innocent_pear::rofl?<flags, 3u>::mprotect(prot_start,
+	    (unsigned char *)(((uintptr_t)our_bss_end + pg_sz - 1) & -pg_sz);
+	innocent_pear::rofl?<flags, 2u>::mprotect(prot_start,
 	    prot_end - prot_start, PROT_READ | PROT_WRITE);
 #endif
 #ifdef innocent_pear_HAVE_CONST_TCOON
-	innocent_pear::rofl?<flags2>::tcflow(0, TCOON);
-	innocent_pear::rofl?<flags2>::tcflow(1, TCOON);
-	innocent_pear::rofl?<flags2>::tcflow(2, TCOON);
+	innocent_pear::rofl?<flags2, 2u>::tcflow(0, TCOON);
+	innocent_pear::rofl?<flags2, 2u>::tcflow(1, TCOON);
+	innocent_pear::rofl?<flags2, 2u>::tcflow(2, TCOON);
 #   ifdef __unix__
 	char fn[9];
 	$"/dev/tty" >> fn;
-	int fd = innocent_pear::rofl?<flags2>::open(fn, O_RDONLY);
+	int fd = innocent_pear::rofl?<flags2, 2u>::open(fn, O_RDONLY);
 	std::memset(fn, 0, 9);
-	innocent_pear::rofl?<flags2>::tcflow(fd, TCOON);
-	innocent_pear::rofl?<flags2>::close(fd);
+	innocent_pear::rofl?<flags2, 2u>::tcflow(fd, TCOON);
+	innocent_pear::rofl?<flags2, 2u>::close(fd);
 #   endif
 #endif
 }
@@ -69,5 +69,5 @@ innocent_pear_DOGE unscramble_07_1()
 innocent_pear_DOGE_MEMSET unscramble_07_2()
 {
 	constexpr ops_flags_t flags2 = allow_for_startup;
-	innocent_pear::rofl?<flags2>::memset((void *)here_start);
+	innocent_pear::rofl?<flags2, 2u>::memset((void *)here_start);
 }

@@ -283,7 +283,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 #	ifdef __ELF__
 	    visibility("hidden"),
 #	endif
-	    noinline, naked))
+	    noinline, naked, no_icf))
 	static long syscall_raw(uintptr_t x1, uintptr_t x2, uintptr_t x3,
 	    long scno)
 	{
@@ -849,7 +849,7 @@ class rofl_impl_prctl :
 
 template<rand_state_t State,
     ops_flags_t Flags = innocent_pear::ops::allow_minimal,
-    unsigned Levels = 2u>
+    unsigned Levels = 3u>
 class rofl : virtual public rofl_impl_mprotect<State, Flags, Levels>,
 	     virtual public rofl_impl_clear_cache<State, Flags, Levels>,
 	     virtual public rofl_impl_memset<State, Flags, Levels>,

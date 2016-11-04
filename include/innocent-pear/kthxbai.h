@@ -431,7 +431,7 @@ struct kthxbai_impl_split<State, T, IntoT, Flags, Levels, Left, true>
 
 template<rand_state_t State, class T,
     ops_flags_t Flags = innocent_pear::ops::allow_minimal,
-    unsigned Levels = 2u>
+    unsigned Levels = 3u>
 class kthxbai;
 
 template<rand_state_t State, ops_flags_t Flags, unsigned Levels>

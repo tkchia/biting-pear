@@ -1,3 +1,28 @@
+2016-11-04	"A list is only as strong as its weakest link."  (6)
+
+		GNUmakefile :
+		- now dumps smaller portions of compiled test binaries (again)
+
+		include/innocent-pear/kthxbai.h ,
+		include/innocent-pear/omg.h :
+		- upped default scrambling levels (again)
+
+		include/innocent-pear/rofl.h :
+		- upped default scrambling levels
+		- now uses `no_cfi' attribute on rofl_impl_syscall<...>::
+		  syscall_raw(...) for ARM
+
+		share/innocent-pear/doge-01.cc :
+		- split huge function into 3 parts
+		- explicitly specified fewer scrambling levels for a few calls
+
+		share/innocent-pear/doge-07.cc :
+		- explicitly specified fewer scrambling levels for pretty much
+		  all calls
+
+		share/innocent-pear/doge-i.h :
+		- reduced the amount of chaff from innocent_pear_CHAFF(.)
+
 2016-11-03	A bit less resource wastage at compile time.  A bit more
 		branching at run time.
 
