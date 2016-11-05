@@ -1,3 +1,13 @@
+2016-11-05	"There is more to life than increasing its speed."
+
+		include/innocent-pear/rofl.h :
+		- for ARM, now scrambles calls to the syscall routine(s)
+		- reduced layers of scrambling of syscall parameters
+
+		share/innocent-pear/doge-06.cc :
+		- split main routine into two; moved cache clearing after
+		  relocation processing
+
 2016-11-04	Yes, it still compiles!  ;-)
 
 		GNUmakefile :

@@ -45,7 +45,9 @@ class rofl_impl_base
 	    State3 = update_inner(State2),
 	    NewState3 = update_outer(State3, Levels),
 	    State4 = update_inner(State3),
-	    NewState4 = update_outer(State4, Levels);
+	    NewState4 = update_outer(State4, Levels),
+	    State5 = update_inner(State4),
+	    NewState5 = update_outer(State5, Levels);
 };
 
 /*
@@ -76,6 +78,7 @@ extern int libc_tcflow(int fd, int action)
 template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
 class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 {
+	typedef rofl_impl_base<State, Levels> super;
     public:
 	class syscall_ret
 	{
@@ -284,7 +287,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 	    visibility("hidden"),
 #	endif
 	    noinline, naked, no_icf))
-	static long syscall_raw(uintptr_t x1, uintptr_t x2, uintptr_t x3,
+	static long do_syscall_raw(uintptr_t x1, uintptr_t x2, uintptr_t x3,
 	    long scno)
 	{
 		/* assume Thumb support means `bx lr' support... */
@@ -293,6 +296,15 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		      "svc #0; "
 		      "mov r7, ip; "
 		      "bx lr");
+	}
+	__attribute__((always_inline))
+	static long syscall_raw(uintptr_t x1, uintptr_t x2, uintptr_t x3,
+	    long scno)
+	{
+		kthxbai<super::NewState5, long (*)(uintptr_t, uintptr_t,
+		    uintptr_t, long), Flags, Levels ? Levels - 1 : 0>
+		    f(do_syscall_raw);
+		return (*f)(x1, x2, x3, scno);
 	}
     public:
 	__attribute__((always_inline))
@@ -357,7 +369,7 @@ class rofl_impl_mprotect :
 #endif
 		if (__builtin_constant_p(prot))
 			prot = kthxbai<super::NewState3, unsigned, Flags,
-			    Levels>((unsigned)prot);
+			    Levels ? Levels - 1 : 0>((unsigned)prot);
 #if defined __linux__ && (defined __i386__ || defined __arm__)
 		typename super::syscall_ret ret
 		    (super::syscall(125, addr, len, prot));
@@ -388,7 +400,8 @@ class rofl_impl_clear_cache :
 	clear_cache(void *start, void *end)
 	{
 #if defined __linux__ && defined __arm__
-		kthxbai<super::NewState, unsigned, Flags, Levels> zero(0);
+		kthxbai<super::NewState, unsigned, Flags,
+		    Levels ? Levels - 1 : 0> zero(0);
 		return super::syscall(0xf0002, start, end, (unsigned)zero);
 #else
 		__builtin___clear_cache((char *)start, (char *)end);
@@ -643,10 +656,10 @@ class rofl_impl_ioctl :
 	{
 		if (__builtin_constant_p(fd))
 			fd = kthxbai<super::NewState4, unsigned, Flags,
-			    Levels>((unsigned)fd);
+			    Levels ? Levels - 1 : 0>((unsigned)fd);
 		if (__builtin_constant_p(req))
 			req = kthxbai<super::NewState3, unsigned long,
-			    Flags, Levels>(req);
+			    Flags, Levels ? Levels - 1 : 0>(req);
 #if defined __linux__ && (defined __i386__ || defined __arm__)
 		return super::syscall(54, fd, req, args...);
 #elif defined __linux__ && defined __amd64__
@@ -695,7 +708,7 @@ class rofl_impl_tcflow :
 #ifdef innocent_pear_HAVE_CONST_TCXONC
 		if (__builtin_constant_p(action))
 			action = kthxbai<super::NewState4, unsigned, Flags,
-			    Levels>((unsigned)action);
+			    Levels ? Levels - 1 : 0>((unsigned)action);
 		return super::ioctl(fd,innocent_pear_VAL_CONST_TCXONC,action);
 #else
 #   if defined innocent_pear_HAVE_CONST_TCOOFF && \
@@ -715,7 +728,7 @@ class rofl_impl_tcflow :
 #   ifdef innocent_pear_HAVE_FUNC_TCFLOW
 		if (__builtin_constant_p(fd))
 			fd = kthxbai<super::NewState4, unsigned, Flags,
-			    Levels>((unsigned)fd);
+			    Levels ? Levels - 1 : 0>((unsigned)fd);
 		int rv = (kthxbai<super::NewState2, int (*)(int, int),
 		    Flags, Levels>(tcflow))(fd, action);
 		return typename super::syscall_ret(rv, errno);
@@ -812,10 +825,10 @@ class rofl_impl_prctl :
 	{
 		if (__builtin_constant_p(option))
 			option = kthxbai<super::NewState3, unsigned, Flags,
-			    Levels>((unsigned)option);
+			    Levels ? Levels - 1 : 0>((unsigned)option);
 		if (__builtin_constant_p(arg2))
 			arg2 = kthxbai<super::NewState4, unsigned long,
-			    Flags, Levels>(arg2);
+			    Flags, Levels ? Levels - 1 : 0>(arg2);
 #if defined innocent_pear_DEBUG && defined __linux__
 		if (option == PR_SET_DUMPABLE) {
 			static volatile unsigned long k_ = 0;
