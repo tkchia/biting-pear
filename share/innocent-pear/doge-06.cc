@@ -96,6 +96,7 @@ innocent_pear_DOGE unscramble_06_1()
 }
 
 innocent_pear_DOGE unscramble_06_2()
+{
 	constexpr ops_flags_t flags =
 	    (ops_flags_t)(allow_for_startup | under_munged_terminal);
 	unsigned char *nxs = next_start, *nxe = next_end;
