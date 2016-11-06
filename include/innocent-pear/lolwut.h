@@ -26,8 +26,21 @@ class lolwut_impl
 	    impl::update_outer(State, Levels);
 	static constexpr rand_state_t NewNewState =
 	    impl::update_outer(NewState, Levels);
+#ifdef __arm__
+	/*
+	 * On ARM, make sure that the displacement is even, so that an
+	 * R_ARM_ABS32 relocation (say) with a Thumb function symbol will do
+	 * the right thing, and we do not end up invoking the Thumb function
+	 * as an ARM mode function.
+	 *
+	 * (Perhaps this should be considered a bug in GNU binutils...)
+	 */
+	static constexpr unsigned Disp =
+	    (impl::pick_hi<unsigned>(State2 ^ NewState) / 2u) & ~1u;
+#else
 	static constexpr unsigned Disp =
 	    impl::pick_hi<unsigned>(State2 ^ NewState) / 2u;
+#endif
 	static constexpr bool Sign =
 	    impl::pick_hi<unsigned>(State2 ^ NewState) % 2u != 0;
 	static constexpr rand_state_t State3 = impl::update_inner(State2);
@@ -99,7 +112,7 @@ class lolwut_impl
 	    impl::pick_hi<unsigned>(State2 ^ State3) % (Disp / 2) : 0;
 #endif
 	static constexpr rand_state_t State4 = impl::update_inner(State3);
-#if defined __arm__ && defined __thumb2__
+#if defined __arm__ && defined __thumb__
 	static constexpr rand_state_t State5 = impl::update_inner(State4);
 	static constexpr unsigned Subsxn =
 	    impl::pick_hi<unsigned>(State3 ^ State4) % 4096u + 1u;
@@ -277,17 +290,42 @@ class lolwut_impl
 		    quux:
 			break;
 #   endif
-#elif defined __arm__ && defined __thumb2__ && defined __OPTIMIZE__
+#elif defined __arm__ && defined __thumb__ && defined __OPTIMIZE__ && \
+      (defined __pic__ || defined __pie__)
 		    case 1:
 			{
 				uintptr_t scratch;
 				__asm("" : "=r" (p_) : "0" (&&qux));
-				__asm("movw %1, #:lower16:(%a4+%a5-%a3); "
+				__asm(
+#   ifdef __thumb2__
+				      "movw %1, #:lower16:(%a4+%a5-%a3); "
 				      "movt %1, #:upper16:(%a4+%a5-%a3); "
+#   else
+				      ".subsection %a6; "
+				      ".balign 4; "
+				      ".thumb_func; "
+				      "1: "
+				      "ldr %1, 2f; "
+				      "bx lr; "
+				      ".balign 4; "
+				      "2: "
+				      ".long %a4+%a5-%a3; "
+				      ".previous; "
+				      "bl 1b; "
+#   endif
 				      "add %0, %0, %1"
+#   ifdef __thumb2__
 				    : "=r" (p_), "=&r" (scratch)
+#   else
+				    : "=l" (p_), "=&l" (scratch)
+#   endif
 				    : "0" (p_), "X" (&&qux),
-				      "n" (Sign ? -Disp : Disp), "X" (v));
+				      "n" (Sign ? -Disp : Disp), "X" (v)
+#   ifndef __thumb2__
+				      , "n" (Subsxn)
+				    : "lr"
+#   endif
+				    );
 			}
 		    qux:
 			break;
@@ -300,24 +338,44 @@ class lolwut_impl
 				    Levels2>(disp3, Disp3);
 				__asm(".ifc \"#%a2\", \"\%2\"; "
 					".subsection %a3; "
+#	ifndef __thumb2__
+					".thumb_func; "
+					"1: "
+					"adr %0, 2f; "
+					"bx lr; "
+#	endif
 					".balign 4; "
 					".reloc ., R_ARM_GOT_PREL, %a2; "
-					"1: "
+					"2: "
 					".long %a4; "
 					".previous; "
-					"movw %0, #:lower16:(1b-2f-4); "
-					"movt %0, #:upper16:(1b-2f-4); "
-					"2: "
+#	ifdef __thumb2__
+					"movw %0, #:lower16:(2b-3f-4); "
+					"movt %0, #:upper16:(2b-3f-4); "
+					"3: "
 					"add %0, %0, pc; "
+#	else
+					"bl 1b; "
+#	endif
 					"ldr %1, [%0]; "
-					"add %1, %1, %0; "
-					"ldr %0, [%5, %1]; "
+					"add %0, %0, %1; "
+					"ldr %0, [%5, %0]; "
 				      ".else; "  /* assume %2 is a reg...? */
 					"mov %0, %2; "
 				      ".endif"
+#	ifdef __thumb2__
 				    : "=&r" (p_), "=&r" (scratch)
+#	else
+				    : "=&l" (p_), "=&l" (scratch)
+#	endif
 				    : "X" (v), "n" (Subsxn), "n" (-Disp3),
-				      "r" (disp3));
+#	ifdef __thumb2__
+				      "r" (disp3)
+#	else
+				      "l" (disp3)
+				    : "lr"
+#	endif
+				    );
 				if (Sign)
 					p_ -= Disp;
 				else	p_ += Disp;

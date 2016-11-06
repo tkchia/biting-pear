@@ -1,3 +1,20 @@
+2016-11-06	Let static relocations lie.  (2)
+
+		include/innocent-pear/lolwut.h :
+		- for ARM,
+		  - now makes sure that lolwut_impl<...>::Disp is even,
+		    to work around a bug (?) in binutils in handling Thumb
+		    function symbols
+		  - added code for case where Thumb sans Thumb-32 but with
+		    dynamic linking
+
+		share/innocent-pear/doge-03.cc :
+		- split main function into two, to avert a compiler crash
+
+		.travis.yml :
+		- added test setups for armv6 and armv4t with dynamic
+		  linking, since the going is getting weird...
+
 2016-11-05	"There is more to life than increasing its speed."
 
 		include/innocent-pear/rofl.h :
