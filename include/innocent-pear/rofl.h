@@ -282,29 +282,21 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 	}
 #   elif defined __arm__ && defined __thumb__
     private:
-	__attribute__((
-#	ifdef __ELF__
-	    visibility("hidden"),
-#	endif
-	    noinline, naked, no_icf))
-	static long do_syscall_raw(uintptr_t x1, uintptr_t x2, uintptr_t x3,
-	    long scno)
-	{
-		/* assume Thumb support means `bx lr' support... */
-		__asm("mov ip, r7; "
-		      "movs r7, r3; "
-		      "svc #0; "
-		      "mov r7, ip; "
-		      "bx lr");
-	}
 	__attribute__((always_inline))
 	static long syscall_raw(uintptr_t x1, uintptr_t x2, uintptr_t x3,
 	    long scno)
 	{
-		kthxbai<super::NewState5, long (*)(uintptr_t, uintptr_t,
-		    uintptr_t, long), Flags, Levels ? Levels - 1 : 0>
-		    f(do_syscall_raw);
-		return (*f)(x1, x2, x3, scno);
+		long rv;
+		__asm __volatile("movs r2, %3; "
+				 "movs r1, %2; "
+				 "movs r0, %1; "
+				 "movs r7, %4; "
+				 "svc #0; "
+				 "movs %0, r0; "
+		    : "=r" (rv)
+		    : "rI" (x1), "rI" (x2), "rI" (x3), "rI" (scno)
+		    : "r0", "r1", "r2", "r3", "r7", "cc", "memory");
+		return rv;
 	}
     public:
 	__attribute__((always_inline))

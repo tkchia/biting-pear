@@ -5,8 +5,12 @@
 		  - now makes sure that lolwut_impl<...>::Disp is even,
 		    to work around a bug (?) in binutils in handling Thumb
 		    function symbols
-		  - added code for case where Thumb sans Thumb-32 but with
-		    dynamic linking
+		  - added code for case where the target is Thumb sans
+		    Thumb-32 but with dynamic linking
+
+		include/innocent-pear/rofl.h :
+		- rofl_impl_syscall<...>::syscall_raw(...) for ARM:  this
+		  sucks
 
 		.travis.yml :
 		- added test setups for armv6 and armv4t with dynamic
