@@ -8,9 +8,6 @@
 		  - added code for case where Thumb sans Thumb-32 but with
 		    dynamic linking
 
-		share/innocent-pear/doge-03.cc :
-		- split main function into two, to avert a compiler crash
-
 		.travis.yml :
 		- added test setups for armv6 and armv4t with dynamic
 		  linking, since the going is getting weird...
