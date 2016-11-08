@@ -1,7 +1,7 @@
 include config.cache
 
 conf_Srcdir ?= .
-include $(conf_Srcdir)/lolwutconf/lolwutconf.mk
+include $(conf_Lolwutconf_dir)/lolwutconf.mk
 
 bindir = $(conf_Prefix)/bin
 datarootdir = $(conf_Prefix)/share

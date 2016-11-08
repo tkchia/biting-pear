@@ -1,4 +1,5 @@
-2016-11-08	Fourth time's _the_ charm.
+2016-11-08	"A child of five could understand this!  Fetch me a child of
+		 five."
 
 		infra/KeccakCodePackage.tar.xz ,
 		infra/lolwutconf.tar.xz :
@@ -12,6 +13,7 @@
 		GNUmakefile :
 		- `make distclean' now cleans away submodule directories if
 		  they were unpacked from infra/*.tar.xz
+		- now includes lolwutconf.mk from $(conf_Lolwutconf_dir)
 
 		lolwutconf/ :
 		- bumped to d090d6a1d5
