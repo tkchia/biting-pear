@@ -8,8 +8,8 @@ us="`dirname "$0"`"
 if test -e "$us"/lolwutconf/configure.inc; then
 	. "$us"/lolwutconf/configure.inc
 else
-	xz -dc infra/KeccakCodePackage.tar.xz | tar xvf -
-	xz -dc infra/lolwutconf.tar.xz | tar xvf -
+	xz -dc "$us"/infra/KeccakCodePackage.tar.xz | tar xvf -
+	xz -dc "$us"/infra/lolwutconf.tar.xz | tar xvf -
 	. lolwutconf/configure.inc
 fi
 conf_begin ${1+"$@"}
