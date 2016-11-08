@@ -4,7 +4,14 @@ set -e
 : "${CXXFLAGS=-O3 -fPIC -pie -Wall}"
 : "${CXXFLAGS_FOR_TARGET=-O3 -Wall -static}"
 : "${CFLAGS_FOR_TARGET=-O3 -Wall -static}"
-. "`dirname "$0"`"/lolwutconf/configure.inc
+us="`dirname "$0"`"
+if test -e "$us"/lolwutconf/configure.inc; then
+	. "$us"/lolwutconf/configure.inc
+else
+	xz -dc infra/KeccakCodePackage.tar.xz | tar xvf -
+	xz -dc infra/lolwutconf.tar.xz | tar xvf -
+	. lolwutconf/configure.inc
+fi
 conf_begin ${1+"$@"}
 conf_mod app.build c++ c++.target c.target bfd
 #

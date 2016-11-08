@@ -1,3 +1,21 @@
+2016-11-08	Third time's a charm...
+
+		infra/KeccakCodePackage.tar.xz ,
+		infra/lolwutconf.tar.xz :
+		- added backup packages (mainly to work around issue where
+		  GitHub's release packages do not include submodules)
+
+		configure :
+		- now unpacks infra/KeccakCodePackage.tar.xz and infra/
+		  lolwutconf.tar.xz if submodules are not already present
+
+		GNUmakefile :
+		- `make distclean' now cleans away submodule directories if
+		  they were unpacked from infra/*.tar.xz
+
+		lolwutconf/ :
+		- bumped to d090d6a1d5
+
 2016-11-06	Let static relocations lie.  (2)
 
 		include/innocent-pear/lolwut.h :

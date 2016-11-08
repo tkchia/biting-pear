@@ -181,6 +181,8 @@ distclean: clean
 ifeq "$(conf_Separate_build_dir)" "yes"
 	-$(RM) GNUmakefile
 endif
+	test -e KeccakCodePackage/.git || $(RM) -r KeccakCodePackage
+	test -e lolwutconf/.git || $(RM) -r lolwutconf
 
 config.cache:
 	@echo '*'
