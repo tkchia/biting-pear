@@ -69,7 +69,8 @@ class kthxbai_impl<State, T, Flags, 0u>
 				    : "memory");
 				x = (T)y;
 				break;
-			} // else fall through
+			}
+			if (false)
 		    case 1:
 			if (sizeof(T) <= sizeof(uintptr_t)) {
 				uintptr_t y, z;
@@ -334,7 +335,7 @@ class kthxbai_impl
 				x = (T)x1;
 				break;
 			}
-			// else fall through
+			if (false)
 #endif
 		    case 20:
 			if (sizeof(T) > sizeof(unsigned char)) {
@@ -357,7 +358,8 @@ class kthxbai_impl
 				kthxbai_impl_split<NewState, T, IntoT, Flags,
 				    Levels - 1>(x, v);
 				break;
-			} // else fall through
+			}
+			if (false)
 		    case 21:
 			if (special(x, v))
 				return;

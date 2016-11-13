@@ -1,3 +1,10 @@
+2016-11-13	"I shot an arrow in to the air, and it stuck."
+
+		include/innocent-pear/kthxbai.h ,
+		include/innocent-pear/omg.h :
+		- use a variant of Duff's Device to get all the weird cases to
+		  fall back to the default case and nothing else
+
 2016-11-08	"A child of five could understand this!  Fetch me a child of
 		 five."
 

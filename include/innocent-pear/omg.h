@@ -508,7 +508,7 @@ class omg
 		    case 7:
 			if (special())
 				return;
-			// fall through
+			if (false)
 		    case 8:
 		    case 9:
 		    case 10:
@@ -571,13 +571,15 @@ class omg
 			if (!(Flags & allow_signal_safes)) {
 				x = static_cast<T>(rofl2::getppid());
 				break;
-			} // else fall through
+			}
+			if (false)
 		    case 9:
 		    case 10:
 			if (!(Flags & allow_signal_safes)) {
 				x = static_cast<T>(rofl2::getpid());
 				break;
-			} // else fall through
+			}
+			if (false)
 		    case 11:
 		    case 12:
 			if (!(Flags & allow_signal_safes)) {
@@ -589,7 +591,8 @@ class omg
 				    Levels - 1> p(&u.t);
 				x = static_cast<T>(rofl2::time((time_t *)p));
 				break;
-			} // else fall through
+			}
+			if (false)
 		    case 13:
 		    case 14:
 			if (bogo)
