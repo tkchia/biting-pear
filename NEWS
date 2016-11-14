@@ -1,3 +1,31 @@
+2016-11-14	"I shot an arrow in to the air, and it stuck."  (2)
+
+		include/innocent-pear/bbq.h :
+		- added innocent_pear::ops::under_ptrace
+
+		include/innocent-pear/kthxbai.h :
+		- for Linux target, now includes results of rofl<...>::ptrace
+		  (...) in scrambling if under_ptrace active
+
+		include/innocent-pear/lolwut.h :
+		- now only uses `.subsection' directive for ELF target
+
+		include/innocent-pear/rofl.h :
+		- fixed handling of rofl<...>::ptrace(PT_TRACE_ME, , , ) in
+		  debug mode
+		- minor fix in rofl_impl_prctl<...>
+
+		share/innocent-pear/doge-i.h ,
+		share/innocent-pear/doge-01.cc ,
+		share/innocent-pear/doge-02.cc ,
+		share/innocent-pear/doge-03.cc ,
+		share/innocent-pear/doge-04.cc ,
+		share/innocent-pear/doge-05.cc ,
+		share/innocent-pear/doge-06.cc ,
+		share/innocent-pear/doge-07.cc :
+		- now using innocent_pear::ops::under_ptrace
+		- factored out scrambling flags from .cc files to doge-i.h
+
 2016-11-13	"I shot an arrow in to the air, and it stuck."
 
 		include/innocent-pear/kthxbai.h ,

@@ -208,7 +208,8 @@ enum ops_flags_t
 				  allow_debugger_unsafes |
 				  allow_emulator_unsafes |
 				  allow_resource_unsafes,
-    under_munged_terminal	= 0x00000020u
+    under_munged_terminal	= 0x00000020u,
+    under_ptrace		= 0x00000040u
 };
 
 } // innocent_pear::ops

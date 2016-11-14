@@ -10,8 +10,6 @@
 #include "doge-i.h"
 
 using innocent_pear::impl::uintptr_t;
-using innocent_pear::ops_flags_t;
-using namespace innocent_pear::ops;
 
 extern unsigned char our_relro_start[] __asm("_.innocent_pear.relro.start");
 extern unsigned char our_relro_end[] __asm("_.innocent_pear.relro.end");
@@ -21,8 +19,7 @@ innocent_pear_NEXT
 
 innocent_pear_DOGE unscramble_04_1()
 {
-	constexpr ops_flags_t flags =
-	    (ops_flags_t)(allow_for_startup | under_munged_terminal);
+	constexpr auto flags = innocent_pear_FLAGS;
 	unsigned char *nxs = next_start, *nxe = next_end,
 	    *rrs = our_relro_start, *rre = our_relro_end;
 	innocent_pear_CHAFF(flags);
@@ -37,7 +34,6 @@ innocent_pear_DOGE unscramble_04_1()
 
 innocent_pear_DOGE_MEMSET unscramble_04_2()
 {
-	constexpr ops_flags_t flags =
-	    (ops_flags_t)(allow_for_startup | under_munged_terminal);
+	constexpr auto flags = innocent_pear_FLAGS;
 	innocent_pear::rofl?<flags>::memset((void *)here_start);
 }

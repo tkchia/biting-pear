@@ -25,16 +25,17 @@ innocent_pear_NEXT
 
 innocent_pear_DOGE unscramble_01_1()
 {
-	using innocent_pear::ops_flags_t;
-	using namespace innocent_pear::ops;
-	constexpr ops_flags_t flags =
-	    (ops_flags_t)(allow_for_startup | under_munged_terminal);
+	constexpr auto flags =
+	    ((innocent_pear::ops_flags_t)(innocent_pear_FLAGS &
+	      ~innocent_pear::ops::under_ptrace));
 	unsigned char *nxs = next_start, *re = our_rodata_end;
+	innocent_pear_CHAFF(innocent_pear::ops::allow_for_startup);
 #if defined innocent_pear_HAVE_CONST_TCOOFF
-	innocent_pear::rofl?<allow_for_startup, 2u>::
+	innocent_pear::rofl?<innocent_pear::ops::allow_for_startup, 2u>::
 	    tcflow((int)((0ull + innocent_pear_DOGE_STATE_0 +
 				 innocent_pear_DOGE_STATE_1)
 		% 100000001ull % 3ull), TCOOFF);
+	innocent_pear_CHAFF(flags);
 #endif
 	uintptr_t pg_sz = (uintptr_t)(innocent_pear::kthxbai?<
 	    innocent_pear_decltype(&getpagesize), flags>(getpagesize))();
@@ -49,31 +50,28 @@ innocent_pear_DOGE unscramble_01_1()
 
 innocent_pear_DOGE unscramble_01_2()
 {
-	using innocent_pear::ops_flags_t;
-	using namespace innocent_pear::ops;
-	constexpr ops_flags_t flags =
-	    (ops_flags_t)(allow_for_startup | under_munged_terminal);
+	constexpr auto flags =
+	    ((innocent_pear::ops_flags_t)(innocent_pear_FLAGS &
+	      ~innocent_pear::ops::under_ptrace)),
+	    flags2 = innocent_pear_FLAGS;
 	unsigned char *nxs = next_start, *nxe = next_end;
 	innocent_pear_CHAFF(flags);
 #if defined innocent_pear_HAVE_IMPLD_FUNC_PTRACE && \
     defined innocent_pear_HAVE_CONST_PT_TRACE_ME
 	nxs -= (0x80 + innocent_pear_DOGE_STATE_0 % 0xff80ull) *
 	    innocent_pear::rofl?<flags>::ptrace(PT_TRACE_ME, 0, 0, 0);
-	innocent_pear_CHAFF(flags);
+	innocent_pear_CHAFF(flags2);
 #endif
 	innocent_pear::orly<innocent_pear_DOGE_STATE_0, unsigned char, false,
-	    true, flags>().wut(nxs, nxe);
-	innocent_pear_CHAFF(flags);
+	    true, flags2>().wut(nxs, nxe);
+	innocent_pear_CHAFF(flags2);
 }
 
 innocent_pear_DOGE unscramble_01_3()
 {
-	using innocent_pear::ops_flags_t;
-	using namespace innocent_pear::ops;
-	constexpr ops_flags_t flags =
-	    (ops_flags_t)(allow_for_startup | under_munged_terminal);
+	constexpr auto flags2 = innocent_pear_FLAGS;
 	unsigned char *nxs = next_start, *nxe = next_end;
-	innocent_pear_CHAFF(flags);
-	innocent_pear::rofl?<flags>::clear_cache(nxs, nxe);
-	innocent_pear_CHAFF(flags);
+	innocent_pear_CHAFF(flags2);
+	innocent_pear::rofl?<flags2>::clear_cache(nxs, nxe);
+	innocent_pear_CHAFF(flags2);
 }

@@ -291,7 +291,7 @@ class lolwut_impl
 			break;
 #   endif
 #elif defined __arm__ && defined __thumb__ && defined __OPTIMIZE__ && \
-      (defined __pic__ || defined __pie__)
+      (defined __pic__ || defined __pie__) && defined __ELF__
 		    case 1:
 			{
 				uintptr_t scratch;

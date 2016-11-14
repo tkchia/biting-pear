@@ -11,6 +11,14 @@
 #include <innocent-pear/omg.h>
 #include <innocent-pear/orly.h>
 #include <innocent-pear/teh.h>
+#if defined innocent_pear_HAVE_IMPLD_FUNC_PTRACE && \
+    defined innocent_pear_HAVE_CONST_PT_TRACE_ME
+#   include <cerrno>
+#   include <sys/ptrace.h>
+#endif
+#if defined innocent_pear_DEBUG
+#   include <cstdio>
+#endif
 
 namespace innocent_pear
 {
@@ -118,6 +126,27 @@ class kthxbai_impl
 	__attribute__((always_inline))
 	static bool special(T& x, T v)
 	{
+#if defined __linux__ && \
+    defined innocent_pear_HAVE_IMPLD_FUNC_PTRACE && \
+    defined innocent_pear_HAVE_CONST_PT_TRACE_ME
+		if ((Flags & ops::under_ptrace) != 0) {
+			constexpr unsigned WhichOp = (unsigned)(State3 >> 16);
+			T y = (T)rofl<NewState2, Flags, Levels - 1>::
+			    ptrace(PT_TRACE_ME, 0, 0, 0).err();
+			T z;
+			{ impl_n(z, do_op<WhichOp>(v, (T)EPERM)); }
+			{ impl_z(x, do_inv_op<WhichOp>(z, y)); }
+#   ifdef innocent_pear_DEBUG
+			if (x == v)
+				return true;
+			std::fprintf(stderr, "kthxbai_impl<...>::special(, "
+			    "%#" PRIxMAX "): WhichOp = %#x, z = %#" PRIxMAX
+			    ", x = %#" PRIxMAX "\n", (std::uintmax_t)v,
+			    WhichOp, (std::uintmax_t)z, (std::uintmax_t)x);
+#   endif
+			return true;
+		}
+#endif
 		return false;
 	}
 	__attribute__((
@@ -361,6 +390,7 @@ class kthxbai_impl
 			}
 			if (false)
 		    case 21:
+		    case 22:
 			if (special(x, v))
 				return;
 			// else fall through

@@ -483,6 +483,14 @@ class rofl_impl_memset :
 	}
 };
 
+#ifdef innocent_pear_DEBUG
+/*
+ * This needs to be common to, and thus outside of, all template
+ * instantiations.
+ */
+__attribute__((weak)) unsigned long ptrace_counter = 0;
+#endif
+
 template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
 class rofl_impl_ptrace :
     virtual public rofl_impl_syscall<State, Flags, Levels>
@@ -524,18 +532,21 @@ class rofl_impl_ptrace :
 #endif
 	    req, pid_t pid, void *addr, void *data)
 	{
-#if defined innocent_pear_DEBUG
+#ifdef innocent_pear_DEBUG
 		if (req == PT_TRACE_ME) {
-			static volatile bool traced = false;
+			unsigned long k = __atomic_fetch_add(&ptrace_counter,
+			    1, __ATOMIC_SEQ_CST);
+			if (k > 200)
+				return typename super::syscall_ret(-1, EPERM);
 			std::fprintf(stderr, "ptrace(%ld, %ld, %p, %p) = ",
 			    (long)req, (long)pid, addr, data);
-			if (!traced) {
+			if (!k) {
 				std::fprintf(stderr, "0\n");
 				std::fflush(stderr);
-				traced = true;
 				return typename super::syscall_ret(0, 0);
 			} else {
-				std::fprintf(stderr, "-1; EPERM\n");
+				std::fprintf(stderr, "-1; EPERM%s\n",
+				    k == 200 ? " ..." : "");
 				std::fflush(stderr);
 				return typename super::syscall_ret(-1, EPERM);
 			}
@@ -686,7 +697,7 @@ class rofl_impl_tcflow :
     defined innocent_pear_HAVE_CONST_TCOOFF
 		if (action == innocent_pear_VAL_CONST_TCOOFF) {
 			static volatile unsigned long k_ = 0;
-			unsigned k = __atomic_fetch_add(&k_, 1,
+			unsigned long k = __atomic_fetch_add(&k_, 1,
 			    __ATOMIC_SEQ_CST);
 			if (k < 200)
 				std::fprintf(stderr, "tcflow(%d, %d)\n", fd,
@@ -824,7 +835,7 @@ class rofl_impl_prctl :
 #if defined innocent_pear_DEBUG && defined __linux__
 		if (option == PR_SET_DUMPABLE) {
 			static volatile unsigned long k_ = 0;
-			unsigned k = __atomic_fetch_add(&k_, 1,
+			unsigned long k = __atomic_fetch_add(&k_, 1,
 			    __ATOMIC_SEQ_CST);
 			if (k < 200)
 				std::fprintf(stderr, "prctl(%d, %lu)\n",
