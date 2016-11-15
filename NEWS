@@ -1,3 +1,13 @@
+2016-11-15	"I shot an arrow in to the air, and it stuck."  (3)
+
+		include/innocent-pear/rofl.h :
+		- for x86-32 under clang++, now falls back on calling libc
+		  syscall(...) for syscalls with >= 4 arguments, to avoid
+		  "ran out of registers during register allocation" error
+		- for ARM, now tries to add dummy constant parameters to
+		  syscalls, and (g++ >= 5) use register constrants to slot
+		  some parameters in right places
+
 2016-11-14	"I shot an arrow in to the air, and it stuck."  (2)
 
 		include/innocent-pear/bbq.h :
