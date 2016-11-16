@@ -26,12 +26,7 @@ class ohai
 	~ohai()
 	{
 		std::memset(b_, 0, sizeof b_);
-#if defined __clang__ || __GNUC__ >= 5
 		__asm __volatile("" : : : "memory");
-#else
-#   pragma message \
-	"may emit inferior code to avoid g++ < 5 compiler-crashing bug"
-#endif
 	}
 };
 

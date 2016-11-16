@@ -67,6 +67,7 @@ headers.target = \
 tests.target = \
     test/test-kthxbai \
     test/test-kthxbai-p \
+    test/test-omg-wheee \
     test/test-orly-1 \
     test/test-orly-2 \
     test/test-dawg \

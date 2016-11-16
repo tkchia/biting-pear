@@ -243,6 +243,8 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 	 * (PT_TRACE_ME, ...), which has 4 arguments.  Fall back on using the
 	 * library routine...
 	 */
+#	    pragma message \
+		"may emit inferior code so clang++ won't run out of registers"
 #	endif
 #   elif defined __amd64__
     public:
@@ -315,7 +317,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		constexpr unsigned Which =
 		    pick_hi<unsigned>(super::State2 ^ super::State3) % 3;
 		long rv;
-		uintptr_t x1;
+		uintptr_t x1, t1, t2, t3;
 		switch (Which) {
 		    case 0:
 			__asm __volatile("movs r7, %1; "
@@ -327,11 +329,14 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 			return re_rv(rv);
 #	if __GNUC__ >= 5
 		    case 1:
-			__asm __volatile("movs r7, %1; "
+			__asm __volatile("movs r7, %4; "
 					 "svc #0; "
-			    : "=Cs" (rv)
+					 ".ifnc \"%0\", \"r0\"; "
+						"movs %0, r0; "
+					 ".endif"
+			    : "=Cs" (rv), "=Cs" (t1), "=Cs" (t2), "=Cs" (t3)
 			    : "rI" (re_scno(scno))
-			    : "r1", "r2", "r3", "r7", "ip", "memory");
+			    : "r7", "ip", "memory");
 			return re_rv(rv);
 #	endif
 		    default:
@@ -348,7 +353,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		if (wutwut(x1))
 			return use_libc_syscall(scno, x1);
 		long rv;
-		uintptr_t x2;
+		uintptr_t x2, t1, t2, t3;
 		switch (Which) {
 		    case 0:
 			__asm __volatile("movs r0, %2; "
@@ -361,11 +366,19 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 			return re_rv(rv);
 #	if __GNUC__ >= 5
 		    case 1:
-			__asm __volatile("movs r7, %1; "
-					 "svc #0"
-			    : "=Cs" (rv)
-			    : "rI" (re_scno(scno)), "0" (re_arg(x1))
-			    : "r1", "r2", "r3", "r7", "ip", "memory");
+			__asm __volatile("movs r7, %4; "
+					 ".ifnc \"%5\", \"r0\"; "
+						"movs r0, %5; "
+					 ".endif; "
+					 "svc #0; "
+					 ".ifnc \"%0\", \"r0\"; "
+						"movs %0, r0; "
+					 ".endif"
+			    : "=Cs,Cs,Cs,Cs" (rv), "=Cs,Cs,Cs,Cs" (t1),
+			      "=Cs,Cs,Cs,Cs" (t2), "=Cs,Cs,Cs,Cs" (t3)
+			    : "rI,rI,rI,rI" (re_scno(scno)),
+			      "0,1,2,3" (re_arg(x1))
+			    : "r7", "ip", "memory");
 			return re_rv(rv);
 #	endif
 		    default:
@@ -509,7 +522,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 			    : "rI" (re_scno(scno)), "rI" (re_arg(x1)),
 			      "rI" (re_arg(x2)), "rI" (re_arg(x3)),
 			      "rI" (re_arg(x4))
-			    : "r0", "r1", "r2", "r7", "memory");
+			    : "r0", "r1", "r2", "r3", "r7", "memory");
 			return re_rv(rv);
 #	if __GNUC__ >= 5
 		    case 1:

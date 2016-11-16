@@ -1,3 +1,35 @@
+2016-11-16	Veneers and more.
+
+		include/innocent-pear/omg.h :
+		- further fleshed out basis cases for ARM, x86-32, and x86-64
+		- omg<...>::wheee():
+		  - reduced layers of pointer scrambling
+		  - is now public, not private, if either innocent_pear_DEBUG
+		    or innocent_pear_DEBUG_WHEEE is defined
+		  - for ELF on ARM, now tries generating veneers
+
+		include/innocent-pear/rofl.h :
+		- ARM syscalls:
+		  - now uses dummy outputs rather than clobbers for 0- and
+		    1-argument syscalls; this should give the compiler a bit
+		    more freedom when allocating registers
+		  - fixed bug in 4-argument syscalls
+		- x86-32 under clang++: now produces compiler warning when
+		  using fallback
+
+		include/innocent-pear/ohai.h :
+		- removed non-working compiler feature workaround
+
+		include/innocent-pear/kthxbai.h :
+		- added forward declaration for rofl<...>
+
+		test/test-omg-wheee.cc ,
+		test/test-omg-wheee.good :
+		- new
+
+		GNUmakefile :
+		- added test-omg-wheee test case
+
 2016-11-15	"I shot an arrow in to the air, and it stuck."  (3)
 
 		include/innocent-pear/rofl.h :

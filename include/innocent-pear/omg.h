@@ -64,7 +64,11 @@ class omg<State, T, Flags, 0u>
 		constexpr rand_state_t State2 = update_inner(State);
 		constexpr rand_state_t State3 = update_inner(State2);
 		constexpr unsigned Which2 = (State2 >> 32) % 16;
+#if defined __amd64__ || defined __i386__
 		constexpr unsigned Which3 = (State3 >> 32) % 15;
+#elif defined __arm__
+		uintptr_t x, y;
+#endif
 		switch (Which2) {
 #if defined __amd64__ || defined __i386__
 #   define innocent_pear_X86_PREFIXED_INSN(insn, ...) \
@@ -99,6 +103,16 @@ class omg<State, T, Flags, 0u>
 			innocent_pear_X86_PREFIXED_INSN("cqto", "rdx");  break;
 #   endif
 #   undef innocent_pear_X86_PREFIXED_INSN
+#elif defined __arm__ && defined __thumb2__
+		    case 0:
+			__asm __volatile("msr CPSR_f, %0" : "=r" (x)
+			    : : "cc");  break;
+		    case 1:
+			__asm __volatile("tst %0, %1" : "=r" (x), "=r" (y)
+			    : : "cc");  break;
+		    case 2:
+			__asm __volatile("teq %0, %1" : "=r" (x), "=r" (y)
+			    : : "cc");  break;
 #endif
 		    default:
 			;
@@ -109,48 +123,98 @@ class omg<State, T, Flags, 0u>
 	{
 		constexpr rand_state_t State2 = update_inner(State);
 		constexpr rand_state_t State3 = update_inner(State2);
-		switch (State2 % 7) {
+		constexpr unsigned Which = (State2 >> 16) % 21;
+		constexpr unsigned WhichPfx = (State3 >> 32) % 6;
+#if defined __amd64__ || defined __i386__ || defined __arm__
+		uintptr_t y, z;
+#   ifndef __arm__
+		unsigned w;
+#   endif
+#endif
+		switch (Which) {
 		    case 0:
 		    case 1:
+		    case 2:
+		    case 3:
+		    case 4:
+		    case 5:
 			{
 				omg<State3, T, Flags, 0>();
 				__asm __volatile("" : "=g" (x));
 			}
 			break;
 #if defined __amd64__ || defined __i386__
+		    case 6:
+		    case 7:
 #   if defined __amd64__
-		    case 2:
-			{
-				uint_least64_t y;
-				__asm(innocent_pear_X86_PREFIX(1) "rdtsc"
-				    : "=a" (y)
-				    : "n" ((State3 >> 32) % 6)
-				    : "rdx");
-				x = static_cast<T>(y);
-			}
+			__asm(innocent_pear_X86_PREFIX(1) "rdtsc"
+			    : "=a" (y) : "n" (WhichPfx) : "rdx");
+			x = static_cast<T>(y);
 			break;
 #   elif defined __i486__ || defined __i586__ || defined __i686__
-		    case 2:
-			{
-				unsigned y;
-				__asm(innocent_pear_X86_PREFIX(1) "rdtsc"
-				    : "=a" (y)
-				    : "n" ((State3 >> 32) % 6)
-				    : "edx");
-				x = static_cast<T>(y);
-			}
+			__asm(innocent_pear_X86_PREFIX(1) "rdtsc"
+			    : "=a" (y) : "n" (WhichPfx) : "edx");
+			x = static_cast<T>(y);
 			break;
 #   endif
-		    case 3:
-			{
-				unsigned y;
-				__asm(innocent_pear_X86_PREFIX(1) "smsw %0"
-				    : "=r" (y) : "n" ((State3 >> 32) % 6));
-				x = static_cast<T>(y);
-			}
+		    case 8:
+		    case 9:
+			__asm(innocent_pear_X86_PREFIX(1) "smsw %0"
+			    : "=r" (w) : "n" (WhichPfx));
+			x = static_cast<T>(w);
+			break;
+		    case 10:
+			__asm __volatile("" : "=a" (z));
+			__asm __volatile(innocent_pear_X86_PREFIX(2) "cbtw"
+			    : "=a" (y) : "0" (z), "n" (WhichPfx));
+			x = static_cast<T>(y);
+			break;
+		    case 11:
+			__asm __volatile("" : "=a" (z));
+			__asm __volatile(innocent_pear_X86_PREFIX(2) "cwtl"
+			    : "=a" (y) : "0" (z), "n" (WhichPfx));
+			x = static_cast<T>(y);
+			break;
+#   ifdef __amd64__
+		    case 12:
+			__asm __volatile("" : "=a" (z));
+			__asm __volatile(innocent_pear_X86_PREFIX(2) "cltq"
+			    : "=a" (y) : "0" (z), "n" (WhichPfx));
+			x = static_cast<T>(y);
+			break;
+#   endif
+#elif defined __arm__ && defined __thumb2__
+		    case 6:
+			__asm("mrs %0, CPSR" : "=r" (y));
+			x = static_cast<T>(y);
+			break;
+		    case 7:
+			__asm __volatile("sxtb %0, %1" : "=r" (y), "=r" (z));
+			x = static_cast<T>(y);
+			break;
+		    case 8:
+			__asm __volatile("sxtb16 %0, %1" : "=r" (y), "=r" (z));
+			x = static_cast<T>(y);
+			break;
+		    case 9:
+			__asm __volatile("sxth %0, %1" : "=r" (y), "=r" (z));
+			x = static_cast<T>(y);
+			break;
+		    case 10:
+			__asm __volatile("uxtb %0, %1" : "=r" (y), "=r" (z));
+			x = static_cast<T>(y);
+			break;
+		    case 11:
+			__asm __volatile("uxtb16 %0, %1" : "=r" (y), "=r" (z));
+			x = static_cast<T>(y);
+			break;
+		    case 12:
+			__asm __volatile("uxth %0, %1" : "=r" (y), "=r" (z));
+			x = static_cast<T>(y);
 			break;
 #endif
-		    case 4:
+		    case 19:
+		    case 20:
 			if (bogo)
 				unpossible<State3, 0>();
 		    default:
@@ -209,6 +273,10 @@ class omg
 		p();
 	}
 #endif
+#if defined innocent_pear_DEBUG || \
+    defined innocent_pear_DEBUG_WHEEE
+    public:
+#endif
 	__attribute__((always_inline))
 	static bool wheee()
 	{
@@ -226,7 +294,7 @@ class omg
 		constexpr unsigned Which6 = (State6 >> 40) % 15;
 		constexpr unsigned Push4 = (State4 >> 48) % 0x1ff;
 		constexpr unsigned Push5 = (State5 >> 48) % 0x1ff;
-		kthxbai<NewState, void *, Flags, Levels>
+		kthxbai<NewState, void *, Flags, Levels - 1>
 		    p(Flip ? &&bar : &&foo, 1);
 		void *q, *r = 0;
 		if (Flip) {
@@ -314,7 +382,11 @@ class omg
 #elif (defined __arm__ || defined __thumb__) && \
     defined innocent_pear_HAVE_ASM_GOTO
 		constexpr bool Flip = (State4 >> 63) % 2 != 0;
-		constexpr unsigned Which2 = (State2 >> 56) % 4;
+		constexpr unsigned Which2 = (State2 >> 56) % 8;
+#   if defined __THUMB_INTERWORK__ && defined __ELF__
+		static constexpr unsigned Subsxn =
+		    pick_hi<unsigned>(State3 ^ State4) % 4096 + 1u;
+#   endif
 #   if defined __thumb__
 		kthxbai<NewState, void *, Flags, Levels - 1>
 		    p((char *)(Flip ? &&bar : &&foo) + 1, 1);
@@ -345,8 +417,36 @@ class omg
 	// blx is supported only from ARMv5T onwards
 #	if !defined __ARM_ARCH_4__ && !defined __ARM_ARCH_4T__
 		    case 3:
+		    case 4:
 			__asm goto("blx %0" : : "r" (q) : "lr" : foo, bar);
 			break;
+#	endif
+#	ifdef __ELF__
+		    case 5:
+		    case 6:
+			__asm goto("bl 0f; "
+				   ".subsection %a1; "
+#	    ifdef __thumb__
+				   ".thumb_func; "
+#	    endif
+				   "0: "
+				   "bx %0; "
+				   ".previous"
+			    : : "r" (q), "n" (Subsxn) : "lr" : foo, bar);
+			break;
+#	    if defined __thumb__ && defined __ARM_ARCH_ISA_ARM
+		    case 7:
+			__asm goto("blx 0f; "
+				   ".subsection %a1; "
+				   ".arm; "
+				   ".balign 4; "
+				   "0: "
+				   "bx %0; "
+				   ".thumb; "
+				   ".previous"
+			    : : "r" (q), "n" (Subsxn) : "lr" : foo, bar);
+			break;
+#	    endif
 #	endif
 #   endif
 		}

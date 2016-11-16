@@ -10,6 +10,7 @@
 #include <innocent-pear/nowai.h>
 #include <innocent-pear/omg.h>
 #include <innocent-pear/orly.h>
+#include <innocent-pear/rofl.h>
 #include <innocent-pear/teh.h>
 #if defined innocent_pear_HAVE_IMPLD_FUNC_PTRACE && \
     defined innocent_pear_HAVE_CONST_PT_TRACE_ME
@@ -36,6 +37,9 @@ class lolwut;  // forward
 template<rand_state_t State, class T, bool Boreal, bool BigBad,
     ops_flags_t Flags, unsigned Levels>
 class orly;  // forward
+
+template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
+class rofl;  // forward
 
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
 class kthxbai_impl;
