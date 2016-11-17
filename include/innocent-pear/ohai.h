@@ -25,8 +25,9 @@ class ohai
 	__attribute__((always_inline))
 	~ohai()
 	{
-		std::memset(b_, 0, sizeof b_);
-		__asm __volatile("" : : : "memory");
+		int c;
+		__asm __volatile("" : "=g" (c));
+		std::memset(b_, (int)(unsigned char)c, N * sizeof(T));
 	}
 };
 
