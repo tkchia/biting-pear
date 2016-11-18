@@ -1,3 +1,12 @@
+2016-11-18	"I shot an arrow in to the air, and it stuck."  (5)
+
+		include/innocent-pear/omg.h :
+		- omg<...>::wheee() now correctly marks `push'...`ret'/`lret'/
+		  `iret' sequences as clobbering memory
+
+		include/innocent-pear/ohai.h :
+		- try something else to keep the compiler from crashing...
+
 2016-11-17	"I shot an arrow in to the air, and it stuck."  (4)
 
 		include/innocent-pear/ohai.h :

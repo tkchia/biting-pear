@@ -319,7 +319,7 @@ class omg
 				   innocent_pear_X86_BR_PREFIX(3) "retq"
 			    : /* no outputs */
 			    : "r" (q), "n" (Which4), "n" (Push4), "n" (Which5)
-			    : /* no clobbers */
+			    : "memory"
 			    : foo, bar);
 			coax_nonleaf();
 			break;
@@ -330,7 +330,7 @@ class omg
 			    : /* no outputs */
 			    : "r" (q), "r" (r), "n" (Which4), "n" (Push4),
 			      "n" (Which5), "n" (Push5), "n" (Which6)
-			    : /* no clobbers */
+			    : "memory"
 			    : foo, bar);
 			coax_nonleaf();
 			break;
@@ -340,7 +340,7 @@ class omg
 				   innocent_pear_X86_BR_PREFIX(1) "retl"
 			    : /* no outputs */
 			    : "r" (q), "n" (Which3), "n" (Which4), "n" (Push4)
-			    : /* no clobbers */
+			    : "memory"
 			    : foo, bar);  break;
 		    case 2:
 			__asm goto(innocent_pear_X86_PREFIXED_PUSH(3, 4, 1)
@@ -349,7 +349,7 @@ class omg
 			    : /* no outputs */
 			    : "r" (q), "r" (r), "n" (Which3), "n" (Which4),
 			      "n" (Push4), "n" (Which5), "n" (Push5)
-			    : /* no clobbers */
+			    : "memory"
 			    : foo, bar);  break;
 		    case 3:
 			__asm goto(innocent_pear_X86_PREFIX(2) "pushfl; "
@@ -360,7 +360,7 @@ class omg
 			    : "r" (q), "r" (r), "n" (Which3), "n" (Which4),
 			      "n" (Push4), "n" (Which5), "n" (Push5),
 			      "n" (Which6)
-			    : /* no clobbers */
+			    : "memory"
 			    : foo, bar);  break;
 		    case 4:
 			{

@@ -17,17 +17,24 @@ class ohai
 {
 	static_assert(std::is_pod<T>::value, "T in "
 	    "innocent_pear::ohai<, T, ...> is not a \"plain old data\" type");
-	T b_[N];
+	enum { NP = ((N + 1) * sizeof(T) - 1) / sizeof(uintptr_t) };
+	union {
+		T t_[N];
+		uintptr_t v_[NP];
+	} u_;
     public:
 	__attribute__((always_inline))
 	operator T *()
-		{ return b_; }
+		{ return u_.t_; }
 	__attribute__((always_inline))
 	~ohai()
 	{
-		int c;
-		__asm __volatile("" : "=g" (c));
-		std::memset(b_, (int)(unsigned char)c, N * sizeof(T));
+		uintptr_t x;
+		std::size_t i;
+		for (i = 0; i < NP; ++i) {
+			__asm __volatile("" : "=g" (x));
+			u_.v_[i] = x;
+		}
 	}
 };
 
