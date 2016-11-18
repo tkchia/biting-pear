@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <innocent-pear/dawg.h>
-#include <innocent-pear/ohai.h>
 #include <innocent-pear/orly.h>
 #include <innocent-pear/rofl.h>
 #ifdef innocent_pear_HAVE_IMPLD_FUNC_PTRACE

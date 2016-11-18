@@ -54,7 +54,6 @@ headers.target = \
     include/innocent-pear/kthxbai.h \
     include/innocent-pear/lolwut.h \
     include/innocent-pear/nowai.h \
-    include/innocent-pear/ohai.h \
     include/innocent-pear/omg.h \
     include/innocent-pear/orly.h \
     include/innocent-pear/rofl.h \

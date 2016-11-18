@@ -8,7 +8,6 @@
 #include <innocent-pear/bbq.h>
 #include <innocent-pear/kthxbai.h>
 #include <innocent-pear/nowai.h>
-#include <innocent-pear/ohai.h>
 #include <innocent-pear/rofl.h>
 #include <innocent-pear/teh.h>
 #include <innocent-pear/tfw.h>
@@ -240,6 +239,7 @@ class omg
 	    State9 = update_inner(State8),
 	    State10 = update_inner(State9),
 	    State11 = update_inner(State10),
+	    State12 = update_inner(State11),
 	    NewState = update_outer(State, Levels),
 	    NewState2 = update_outer(NewState, Levels),
 	    NewState3 = update_outer(NewState2, Levels),
@@ -254,7 +254,8 @@ class omg
 	    Frob5 = pick_hi<unsigned char>(State7  ^ State8),
 	    Frob6 = pick_hi<unsigned char>(State8  ^ State9),
 	    Frob7 = pick_hi<unsigned char>(State9  ^ State10),
-	    Frob8 = pick_hi<unsigned char>(State10 ^ State11);
+	    Frob8 = pick_hi<unsigned char>(State10 ^ State11),
+	    Frob9 = pick_hi<unsigned char>(State11 ^ State12);
 	typedef kthxbai<NewState, unsigned, Flags, Levels - 1> kthxbai1;
 	typedef rofl<NewState2, Flags, Levels - 1> rofl2;
 	typedef rofl<NewState3, Flags, Levels - 1> rofl3;
@@ -525,7 +526,8 @@ class omg
 				char& cfn6 = teh<char, 't' ^ Frob6>::x;
 				char& cfn7 = teh<char, 'y' ^ Frob7>::x;
 				char& cfn8 = teh<char,	     Frob8>::x;
-				ohai<char, 9> fn;
+				char& cfn9 = teh<char,	     Frob9>::x;
+				char fn[9];
 				fn[0] = cfn0 ^ Frob0;
 				fn[1] = cfn1 ^ Frob1;
 				fn[2] = cfn2 ^ Frob2;
@@ -535,7 +537,9 @@ class omg
 				fn[6] = cfn6 ^ Frob6;
 				fn[7] = cfn7 ^ Frob7;
 				fn[8] = cfn8 ^ Frob8;
-				fd = rofl2::open((char *)fn, O_RDONLY);
+				fd = rofl2::open(fn, O_RDONLY);
+				fn[0] = fn[1] = fn[2] = fn[3] = fn[4] =
+				    fn[5] = fn[6] = fn[7] = fn[8] = cfn9;
 			}
 			break;
 #   endif

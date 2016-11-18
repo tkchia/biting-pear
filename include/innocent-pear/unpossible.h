@@ -58,17 +58,17 @@ struct unpossible<State, 0u>
 			    : /* no outputs */
 			    : "n" ((uint_least32_t)pick_hi<uint_least16_t>
 				(State ^ State2))
-			    : "memory");
+			    : "cc", "memory");
 #   elif defined __arm__
 			__asm __volatile(".inst %c0"
 			    : /* no outputs */
 			    : "n" (pick_hi<uint_least32_t>(State ^ State2))
-			    : "memory");
+			    : "cc", "memory");
 #   elif defined __i386__ || defined __amd64__
 			__asm __volatile(".byte %c0"
 			    : /* no outputs */
 			    : "n" (pick_hi<uint_least8_t>(State ^ State2))
-			    : "memory");
+			    : "cc", "memory");
 #   else
 			;
 #   endif

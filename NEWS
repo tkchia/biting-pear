@@ -3,9 +3,17 @@
 		include/innocent-pear/omg.h :
 		- omg<...>::wheee() now correctly marks `push'...`ret'/`lret'/
 		  `iret' sequences as clobbering memory
+		- removed use of ohai.h
+
+		include/innocent-pear/unpossible.h :
+		- marked junk bytes as clobbering memory _and_ condition flags
 
 		include/innocent-pear/ohai.h :
-		- try something else to keep the compiler from crashing...
+		- removed -- was causing much trouble for little benefit
+
+		GNUmakefile ,
+		share/innocent-pear/doge-01.cc :
+		- removed use of ohai.h
 
 2016-11-17	"I shot an arrow in to the air, and it stuck."  (4)
 
