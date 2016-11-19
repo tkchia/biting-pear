@@ -3,6 +3,9 @@
 		include/innocent-pear/omg.h :
 		- gobs of debugging code for omg<...>::wheee()
 
+		include/innocent-pear/rofl.h :
+		- for ARM, now marks some operands as early-clobber
+
 		GNUmakefile :
 		- now also compiles test-omg-wheee in full-fledged debug mode
 

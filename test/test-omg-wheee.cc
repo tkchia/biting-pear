@@ -15,12 +15,15 @@
 BLARGH(f1, 1u)
 BLARGH(f2, 1u)
 BLARGH(f3, 1u)
-BLARGH(f4, 2u)
-BLARGH(f5, 2u)
+BLARGH(f4, 1u)
+BLARGH(f5, 1u)
 BLARGH(f6, 2u)
-BLARGH(f7, 3u)
-BLARGH(f8, 3u)
-BLARGH(f9, 3u)
+BLARGH(f7, 2u)
+BLARGH(f8, 2u)
+BLARGH(f9, 2u)
+BLARGH(f10, 3u)
+BLARGH(f11, 3u)
+BLARGH(f12, 3u)
 
 int main(void)
 {
@@ -42,6 +45,12 @@ int main(void)
 	f8();
 	std::cout << "9\n";
 	f9();
+	std::cout << "10\n";
+	f10();
+	std::cout << "11\n";
+	f11();
+	std::cout << "12\n";
+	f12();
 	std::cout << "done\n";
 	return 0;
 }

@@ -285,9 +285,10 @@ class omg
 	__attribute__((always_inline))
 	static bool wheee()
 	{
-#ifdef innocent_pear_DEBUG
-		std::fprintf(stderr, "wheee() %#" PRIxLEAST64 " %#x %u\n",
-		    State, (unsigned)Flags, Levels);
+#if defined innocent_pear_DEBUG && innocent_pear_HAVE_ASM_GOTO
+		std::fprintf(stderr, "wheee() %#" PRIxLEAST64 " %#x %u @%p\n",
+		    State, (unsigned)Flags, Levels, &&qux);
+	    qux:
 #endif
 #if (defined __amd64__ || defined __i386__ ) && \
     defined innocent_pear_HAVE_ASM_GOTO
@@ -315,20 +316,16 @@ class omg
 			if ((bool)tfw<NewState4, T, Flags, Levels - 1>())
 				return true;
 #   ifdef innocent_pear_DEBUG
-			void *rip;
-			__asm("leaq 0(%%rip), %0" : "=r" (rip));
 			std::fprintf(stderr, "wheee() %#" PRIxLEAST64
-			    ": UNPOSSIBLE!!!1 %p\n", State, rip);
-			std::abort();
+			    ": UNPOSSIBLE!!!1 @%p\n", State, &&quux);
+	    quux:	std::abort();
 #   endif
 		} else {
 			if (!tfw<NewState4, T, Flags, Levels - 1>()) {
 #   ifdef innocent_pear_DEBUG
-				void *rip;
-				__asm("leaq 0(%%rip), %0" : "=r" (rip));
 				std::fprintf(stderr, "wheee() %#" PRIxLEAST64
-				    ": UNPOSSIBLE!!!1 %p\n", State, rip);
-				std::abort();
+				    ": UNPOSSIBLE!!!1 @%p\n", State, &&quuux);
+	    quuux:		std::abort();
 #   endif
 				goto bar;
 			}
@@ -435,9 +432,20 @@ class omg
 		if (Flip) {
 			if ((bool)tfw<NewState4, T, Flags, Levels - 1>())
 				return true;
+#   ifdef innocent_pear_DEBUG
+			std::fprintf(stderr, "wheee() %#" PRIxLEAST64
+			    ": UNPOSSIBLE!!!1 @%p\n", State, &&quux);
+	    quux:	std::abort();
+#   endif
 		} else {
-			if (!tfw<NewState4, T, Flags, Levels - 1>())
+			if (!tfw<NewState4, T, Flags, Levels - 1>()) {
+#   ifdef innocent_pear_DEBUG
+				std::fprintf(stderr, "wheee() %#" PRIxLEAST64
+				    ": UNPOSSIBLE!!!1 @%p\n", State, &&quuux);
+	    quuux:		std::abort();
+#   endif
 				goto bar;
+			}
 		}
 		switch (Which2) {
 		    default:

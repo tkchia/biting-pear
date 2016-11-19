@@ -374,8 +374,8 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 					 ".ifnc \"%0\", \"r0\"; "
 						"movs %0, r0; "
 					 ".endif"
-			    : "=Cs,Cs,Cs,Cs" (rv), "=Cs,Cs,Cs,Cs" (t1),
-			      "=Cs,Cs,Cs,Cs" (t2), "=Cs,Cs,Cs,Cs" (t3)
+			    : "=Cs,&Cs,&Cs,&Cs" (rv), "=&Cs,Cs,&Cs,&Cs" (t1),
+			      "=&Cs,&Cs,Cs,&Cs" (t2), "=&Cs,&Cs,&Cs,Cs" (t3)
 			    : "rI,rI,rI,rI" (re_scno(scno)),
 			      "0,1,2,3" (re_arg(x1))
 			    : "r7", "ip", "memory");
