@@ -16,6 +16,10 @@
 #ifdef __unix__
 #   include <fcntl.h>
 #endif
+#ifdef innocent_pear_DEBUG
+#   include <cstdio>
+#   include <cstdlib>
+#endif
 
 namespace innocent_pear
 {
@@ -281,6 +285,10 @@ class omg
 	__attribute__((always_inline))
 	static bool wheee()
 	{
+#ifdef innocent_pear_DEBUG
+		std::fprintf(stderr, "wheee() %#" PRIxLEAST64 " %#x %u\n",
+		    State, (unsigned)Flags, Levels);
+#endif
 #if (defined __amd64__ || defined __i386__ ) && \
     defined innocent_pear_HAVE_ASM_GOTO
 		constexpr bool Flip = (State4 >> 63) % 2 != 0;
@@ -298,15 +306,39 @@ class omg
 		kthxbai<NewState, void *, Flags, Levels - 1>
 		    p(Flip ? &&bar : &&foo, 1);
 		void *q, *r = 0;
+#   ifdef innocent_pear_DEBUG
+		std::fprintf(stderr, "wheee() %#" PRIxLEAST64 ": "
+		    "Which2 = %u, Flip = %s, NewState4 = %#" PRIxLEAST64 "\n",
+		    State, Which2, Flip ? "true" : "false", NewState4);
+#   endif
 		if (Flip) {
 			if ((bool)tfw<NewState4, T, Flags, Levels - 1>())
 				return true;
+#   ifdef innocent_pear_DEBUG
+			void *rip;
+			__asm("leaq 0(%%rip), %0" : "=r" (rip));
+			std::fprintf(stderr, "wheee() %#" PRIxLEAST64
+			    ": UNPOSSIBLE!!!1 %p\n", State, rip);
+			std::abort();
+#   endif
 		} else {
-			if (!tfw<NewState4, T, Flags, Levels - 1>())
+			if (!tfw<NewState4, T, Flags, Levels - 1>()) {
+#   ifdef innocent_pear_DEBUG
+				void *rip;
+				__asm("leaq 0(%%rip), %0" : "=r" (rip));
+				std::fprintf(stderr, "wheee() %#" PRIxLEAST64
+				    ": UNPOSSIBLE!!!1 %p\n", State, rip);
+				std::abort();
+#   endif
 				goto bar;
+			}
 		}
 		__asm("movw %%cs, %w0" : "=g" (r));
 		q = static_cast<void *>(p);
+#   ifdef innocent_pear_DEBUG
+		std::fprintf(stderr, "wheee() %#" PRIxLEAST64 ": q = %p\n",
+		    State, q);
+#   endif
 		switch (Which2) {
 		    default:
 			__asm goto(innocent_pear_X86_BR_PREFIX(1) "jmp%z0 *%0"
@@ -379,6 +411,10 @@ class omg
 	    bar:
 		{ unpossible<NewState3, Levels - 1>(); }
 	    foo:
+#   ifdef innocent_pear_DEBUG
+		std::fprintf(stderr, "wheee() %#" PRIxLEAST64 ": w00t\n",
+		    State);
+#   endif
 		return true;
 #elif (defined __arm__ || defined __thumb__) && \
     defined innocent_pear_HAVE_ASM_GOTO
@@ -458,6 +494,10 @@ class omg
 			__asm __volatile(".ltorg");
 		}
 	    foo:
+#   ifdef innocent_pear_DEBUG
+		std::fprintf(stderr, "wheee() %#" PRIxLEAST64 ": w00t\n",
+		    State);
+#   endif
 		return true;
 #else
 		return false;

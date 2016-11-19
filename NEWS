@@ -1,3 +1,15 @@
+2016-11-19	"I shot an arrow in to the air, and it stuck."  (6)
+
+		include/innocent-pear/omg.h :
+		- gobs of debugging code for omg<...>::wheee()
+
+		GNUmakefile :
+		- now also compiles test-omg-wheee in full-fledged debug mode
+
+		test/test-omg-wheee.cc ,
+		test/test-omg-wheee.good :
+		- beefed up
+
 2016-11-18	"I shot an arrow in to the air, and it stuck."  (5)
 
 		include/innocent-pear/omg.h :
