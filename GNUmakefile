@@ -78,6 +78,7 @@ tests.target = \
     test/test-doge.debug \
     test/test-doge \
     test/test-doge-abs-reloc \
+    test/test-doge-eh.debug \
     test/test-doge-eh \
     test/test-doge-with-c
 utils.host = \

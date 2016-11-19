@@ -286,8 +286,13 @@ class omg
 	static bool wheee()
 	{
 #if defined innocent_pear_DEBUG && innocent_pear_HAVE_ASM_GOTO
-		std::fprintf(stderr, "wheee() %#" PRIxLEAST64 " %#x %u @%p\n",
-		    State, (unsigned)Flags, Levels, &&qux);
+		static volatile unsigned long k_ = 0;
+		unsigned long k = __atomic_fetch_add(&k_, 1, __ATOMIC_SEQ_CST);
+		if (k > 200)
+			return true;
+		std::fprintf(stderr, "wheee() %#" PRIxLEAST64 " %#x %u "
+		    "@%p%s\n", State, (unsigned)Flags, Levels, &&qux,
+		    k == 200 ? "..." : "");
 	    qux:
 #endif
 #if (defined __amd64__ || defined __i386__ ) && \

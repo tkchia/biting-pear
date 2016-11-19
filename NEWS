@@ -8,6 +8,7 @@
 
 		GNUmakefile :
 		- now also compiles test-omg-wheee in full-fledged debug mode
+		- now compiles test-doge-eh.debug (again)
 
 		test/test-omg-wheee.cc ,
 		test/test-omg-wheee.good :
