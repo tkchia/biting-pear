@@ -50,7 +50,7 @@ struct unpossible;  // forward
 
 template<rand_state_t State, class T,
     ops_flags_t Flags = innocent_pear::ops::allow_minimal,
-    unsigned Levels = 3u>
+    unsigned Levels = 2u>
 class omg;
 
 template<rand_state_t State, class T, ops_flags_t Flags>

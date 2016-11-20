@@ -10,8 +10,6 @@
 		  innocent_pear_always_inline_and(...), and adds attributes
 		  for hidden visibility and anti-constant-merging
 
-		include/innocent-pear/dawg.h ,
-		include/innocent-pear/kthxbai.h ,
 		include/innocent-pear/lolwut.h ,
 		include/innocent-pear/orly.h ,
 		include/innocent-pear/rofl.h ,
@@ -32,6 +30,13 @@
 		  in ARM mode
 		- omg<...>::wheee() for ARM now marks ip as clobbered when
 		  creating its own veneers
+		- reduced confusion layers (again)
+
+		include/innocent-pear/kthxbai.h :
+		- reduced confusion layers (again)
+
+		include/innocent-pear/dawg.h :
+		- tweaked random state advancement
 
 		GNUmakefile :
 		- now dumps larger portions of compiled test binaries...

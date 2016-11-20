@@ -31,7 +31,8 @@ class dawg_impl<State, CT, Flags, Levels>
 {
 	typedef innocent_pear_decltype(1u | (CT)1 << 0u) PCT; // N3797 5.8.2
 	static constexpr rand_state_t State2 = update_inner(State);
-	static constexpr rand_state_t NewState = update_outer(State2, 3u);
+	static constexpr rand_state_t NewState = update_outer(State2,
+	    Levels > 3u ? Levels : 3u);
     public:
 	innocent_pear_always_inline
 	dawg_impl()
