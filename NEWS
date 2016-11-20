@@ -32,10 +32,15 @@
 		  creating its own veneers
 		- reduced confusion layers (again)
 
-		include/innocent-pear/kthxbai.h :
+		include/innocent-pear/kthxbai.h ,
+		include/innocent-pear/rofl.h :
+		- now uses innocent_pear_always_inline and
+		  innocent_pear_always_inline_and(...)
 		- reduced confusion layers (again)
 
 		include/innocent-pear/dawg.h :
+		- now uses innocent_pear_always_inline and
+		  innocent_pear_always_inline_and(...)
 		- tweaked random state advancement
 
 		GNUmakefile :

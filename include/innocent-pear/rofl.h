@@ -1114,7 +1114,7 @@ class rofl_impl_prctl :
 
 template<rand_state_t State,
     ops_flags_t Flags = innocent_pear::ops::allow_minimal,
-    unsigned Levels = 3u>
+    unsigned Levels = 2u>
 class rofl : virtual public rofl_impl_mprotect<State, Flags, Levels>,
 	     virtual public rofl_impl_clear_cache<State, Flags, Levels>,
 	     virtual public rofl_impl_memset<State, Flags, Levels>,
