@@ -109,8 +109,11 @@ omg<State, T, Flags, 0u>
 		    case 8:
 			innocent_pear_X86_PREFIXED_INSN("cqto", "rdx");  break;
 #   endif
+		    case 9:
+			__asm __volatile(innocent_pear_X86_PREFIX(0) "nop"
+			    : : "n" (Which3));  break;
 #   undef innocent_pear_X86_PREFIXED_INSN
-#elif defined __arm__ && defined __thumb2__
+#elif defined __arm__ && (!defined __thumb__ || defined __thumb2__)
 		    case 0:
 			__asm __volatile("msr CPSR_f, %0" : "=r" (x)
 			    : : "cc");  break;
@@ -120,6 +123,8 @@ omg<State, T, Flags, 0u>
 		    case 2:
 			__asm __volatile("teq %0, %1" : "=r" (x), "=r" (y)
 			    : : "cc");  break;
+		    case 3:
+			__asm __volatile("nop");  break;
 #endif
 		    default:
 			;
@@ -482,6 +487,10 @@ omg
 #	ifdef __ELF__
 		    case 5:
 		    case 6:
+			/*
+			 * Mark ip as being clobbered, _in case_ the compiler
+			 * one day decides to use a veneer to reach 0f...
+			 */
 			__asm goto("bl 0f; "
 				   ".subsection %a1; "
 #	    ifdef __thumb__
@@ -490,7 +499,10 @@ omg
 				   "0: "
 				   "bx %0; "
 				   ".previous"
-			    : : "r" (q), "n" (Subsxn) : "lr" : foo, bar);
+			    : /* no outputs */
+			    : "r" (q), "n" (Subsxn)
+			    : "ip", "lr"
+			    : foo, bar);
 			break;
 #	    if defined __thumb__ && defined __ARM_ARCH_ISA_ARM
 		    case 7:
@@ -502,7 +514,10 @@ omg
 				   "bx %0; "
 				   ".thumb; "
 				   ".previous"
-			    : : "r" (q), "n" (Subsxn) : "lr" : foo, bar);
+			    : /* no outputs */
+			    : "r" (q), "n" (Subsxn)
+			    : "ip", "lr"
+			    : foo, bar);
 			break;
 #	    endif
 #	endif

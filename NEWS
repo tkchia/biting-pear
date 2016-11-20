@@ -7,7 +7,8 @@
 
 		include/innocent-pear/bbq.h :
 		- now defines and uses innocent_pear_always_inline and
-		  innocent_pear_always_inline_and(...)
+		  innocent_pear_always_inline_and(...), and adds attributes
+		  for hidden visibility and anti-constant-merging
 
 		include/innocent-pear/dawg.h ,
 		include/innocent-pear/kthxbai.h ,
@@ -26,6 +27,14 @@
 		- now uses innocent_pear_always_inline and
 		  innocent_pear_always_inline_and(...)
 		- omg<...> is now also given hidden visibility (under ELF)
+		- omg<...>::omg() now tries to issue `nop's under x86-32,
+		  x86-64, and ARM, and also emit dummy instructions for ARM
+		  in ARM mode
+		- omg<...>::wheee() for ARM now marks ip as clobbered when
+		  creating its own veneers
+
+		GNUmakefile :
+		- now dumps larger portions of compiled test binaries...
 
 2016-11-19	"I shot an arrow in to the air, and it stuck."  (6)
 
