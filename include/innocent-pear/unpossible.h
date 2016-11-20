@@ -28,7 +28,7 @@ struct unpossible<State, ~0u> : public nowai
 template<rand_state_t State>
 struct unpossible<State, 0u>
 {
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	unpossible()
 	{
 		constexpr rand_state_t State2 = update_inner(State);
@@ -80,7 +80,7 @@ struct unpossible<State, 0u>
 template<rand_state_t State, unsigned Levels>
 struct unpossible
 {
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	unpossible()
 	{
 		constexpr rand_state_t

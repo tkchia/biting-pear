@@ -1,3 +1,32 @@
+2016-11-20	Try to inhibit constant merging for `-Xinnocent-pear -doge'.
+
+		bin/innocent-pear-front-end.tcc :
+		- now compiles doge-*.cc routines with -fno-merge-constants
+		  and -fno-merge-all-constants, so that constants in these
+		  modules do not accidentally end up in scrambled regions
+
+		include/innocent-pear/bbq.h :
+		- now defines and uses innocent_pear_always_inline and
+		  innocent_pear_always_inline_and(...)
+
+		include/innocent-pear/dawg.h ,
+		include/innocent-pear/kthxbai.h ,
+		include/innocent-pear/lolwut.h ,
+		include/innocent-pear/orly.h ,
+		include/innocent-pear/rofl.h ,
+		include/innocent-pear/tfw.h ,
+		include/innocent-pear/unpossible.h ,
+		include/innocent-pear/yarly.h ,
+		include/innocent-pear/host/lolcat.h ,
+		share/innocent-pear/doge-06.cc :
+		- now uses innocent_pear_always_inline and
+		  innocent_pear_always_inline_and(...)
+
+		include/innocent-pear/omg.h :
+		- now uses innocent_pear_always_inline and
+		  innocent_pear_always_inline_and(...)
+		- omg<...> is now also given hidden visibility (under ELF)
+
 2016-11-19	"I shot an arrow in to the air, and it stuck."  (6)
 
 		include/innocent-pear/omg.h :

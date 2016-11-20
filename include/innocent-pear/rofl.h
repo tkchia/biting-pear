@@ -93,18 +93,18 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		long rv_;
 		int err_;
 	    public:
-		__attribute__((always_inline))
+		innocent_pear_always_inline
 		syscall_ret(long rv, int err) : rv_(rv), err_(err)
 			{ }
-		__attribute__((always_inline))
+		innocent_pear_always_inline
 		operator long()
 			{ return rv_; }
-		__attribute__((always_inline))
+		innocent_pear_always_inline
 		int err()
 			{ return err_; }
 	};
     private:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static long re_scno(long scno)
 	{
 		typedef rofl_impl_base<State, Levels> super;
@@ -113,7 +113,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		return (long)(unsigned long)no;
 	}
 	template<class... Ts>
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static syscall_ret use_libc_syscall(long scno, Ts... xs)
 	{
 		typedef rofl_impl_base<State, Levels> super;
@@ -123,7 +123,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		return syscall_ret(rv, errno);
 	}
 #ifdef __linux__
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static syscall_ret re_rv(long rv)
 	{
 		if (rv < 0 && rv > -0x1000)
@@ -131,15 +131,15 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		else
 			return syscall_ret(rv, 0);
 	}
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static bool wutwut()
 		{ return false; }
 	template<class T, class... Ts>
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static bool wutwut(T x, Ts... xs)
 		{ return sizeof(x) > sizeof(uintptr_t) || wutwut(xs...); }
 	template<class T>
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static uintptr_t re_arg(T x)
 	{
 		if (std::is_integral<T>::value || std::is_enum<T>::value ||
@@ -157,7 +157,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 	    "may emit inferior code, as g++ < 5 cannot spill %ebx"
 #   elif defined __i386__ && (defined __clang__ || __GNUC__ >= 5)
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static syscall_ret syscall(long scno)
 	{
 		long rv;
@@ -168,7 +168,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		return re_rv(rv);
 	}
 	template<class T1>
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static syscall_ret syscall(long scno, T1 x1)
 	{
 		if (wutwut(x1))
@@ -181,7 +181,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		return re_rv(rv);
 	}
 	template<class T1, class T2>
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static syscall_ret syscall(long scno, T1 x1, T2 x2)
 	{
 		if (wutwut(x1, x2))
@@ -194,7 +194,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		return re_rv(rv);
 	}
 	template<class T1, class T2, class T3>
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3)
 	{
 		if (wutwut(x1, x2, x3))
@@ -209,7 +209,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 	}
 #	ifndef __clang__
 	template<class T1, class T2, class T3, class T4>
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3, T4 x4)
 	{
 		if (wutwut(x1, x2, x3, x4))
@@ -223,7 +223,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		return re_rv(rv);
 	}
 	template<class T1, class T2, class T3, class T4, class T5>
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3, T4 x4,
 	T5 x5)
 	{
@@ -248,7 +248,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 #	endif
 #   elif defined __amd64__
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static syscall_ret syscall(long scno)
 	{
 		long rv;
@@ -259,7 +259,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		return re_rv(rv);
 	}
 	template<class T1>
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static syscall_ret syscall(long scno, T1 x1)
 	{
 		if (wutwut(x1))
@@ -272,7 +272,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		return re_rv(rv);
 	}
 	template<class T1, class T2>
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static syscall_ret syscall(long scno, T1 x1, T2 x2)
 	{
 		if (wutwut(x1, x2))
@@ -285,7 +285,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		return re_rv(rv);
 	}
 	template<class T1, class T2, class T3>
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3)
 	{
 		if (wutwut(x1, x2, x3))
@@ -311,7 +311,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 	typedef omg<super::NewState9, uintptr_t, Flags,
 	    Levels ? Levels - 1 : 0> omg9;
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static syscall_ret syscall(long scno)
 	{
 		constexpr unsigned Which =
@@ -345,7 +345,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		}
 	}
 	template<class T1>
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static syscall_ret syscall(long scno, T1 x1)
 	{
 		constexpr unsigned Which =
@@ -387,7 +387,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		}
 	}
 	template<class T1, class T2>
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static syscall_ret syscall(long scno, T1 x1, T2 x2)
 	{
 		constexpr unsigned Which =
@@ -436,7 +436,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		}
 	}
 	template<class T1, class T2, class T3>
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3)
 	{
 		constexpr unsigned Which =
@@ -500,7 +500,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		}
 	}
 	template<class T1, class T2, class T3, class T4>
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3, T4 x4)
 	{
 		constexpr unsigned Which =
@@ -589,7 +589,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 #endif
     public:
 	template<class... Ts>
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static syscall_ret syscall(long scno, Ts... xs)
 		{ return use_libc_syscall(scno, xs...); }
 };
@@ -600,7 +600,7 @@ class rofl_impl_mprotect :
 {
 	typedef rofl_impl_syscall<State, Flags, Levels> super;
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static typename super::syscall_ret
 	mprotect(void *addr, std::size_t len, int prot)
 	{
@@ -636,7 +636,7 @@ class rofl_impl_clear_cache :
 {
 	typedef rofl_impl_syscall<State, Flags, Levels> super;
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static typename super::syscall_ret
 	clear_cache(void *start, void *end)
 	{
@@ -657,7 +657,7 @@ class rofl_impl_memset :
     virtual public rofl_impl_clear_cache<State, Flags, Levels>
 {
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static void memset(void *s)
 	{
 #if defined __i386__
@@ -747,7 +747,7 @@ class rofl_impl_ptrace :
 	typedef rofl_impl_syscall<State, Flags, Levels> super;
 #ifdef innocent_pear_HAVE_FUNC_PTRACE
 	template<class... Ts>
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static typename super::syscall_ret
 	ptrace_lib(Ts... xs)
 	{
@@ -760,7 +760,7 @@ class rofl_impl_ptrace :
     public:
 #ifdef __linux__
 	template<class... Ts>
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static typename super::syscall_ret
 	ptrace_raw(Ts... xs)
 	{
@@ -771,7 +771,7 @@ class rofl_impl_ptrace :
 #   endif
 	}
 #endif
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static typename super::syscall_ret
 	ptrace(
 #ifdef innocent_pear_HAVE_CONST_PT_TRACE_ME
@@ -836,7 +836,7 @@ class rofl_impl_getpid :
 {
 	typedef rofl_impl_syscall<State, Flags, Levels> super;
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static typename super::syscall_ret getpid()
 	{
 #if defined __linux__ && (defined __i386__ || defined __arm__)
@@ -857,7 +857,7 @@ class rofl_impl_getppid :
 {
 	typedef rofl_impl_syscall<State, Flags, Levels> super;
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static typename super::syscall_ret getppid()
 	{
 #if defined __linux__ && (defined __i386__ || defined __arm__)
@@ -879,7 +879,7 @@ class rofl_impl_kill :
 {
 	typedef rofl_impl_syscall<State, Flags, Levels> super;
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static typename super::syscall_ret kill(pid_t pid, int sig)
 	{
 #if defined __linux__ && (defined __i386__ || defined __arm__)
@@ -902,7 +902,7 @@ class rofl_impl_ioctl :
 	typedef rofl_impl_syscall<State, Flags, Levels> super;
     public:
 	template<class... Ts>
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static typename super::syscall_ret ioctl(int fd, unsigned long req,
 	    Ts... args)
 	{
@@ -932,7 +932,7 @@ class rofl_impl_tcflow :
 	typedef rofl_impl_ioctl<State, Flags, Levels> super;
     public:
 	template<class... Ts>
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static typename super::syscall_ret tcflow(int fd, int action)
 	{
 #if defined innocent_pear_DEBUG && \
@@ -998,7 +998,7 @@ class rofl_impl_open :
 	typedef rofl_impl_syscall<State, Flags, Levels> super;
     public:
 	template<class... Ts>
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static typename super::syscall_ret open(const char *pathname,
 	    int flags, Ts... args)
 	{
@@ -1024,7 +1024,7 @@ class rofl_impl_close :
 	typedef rofl_impl_syscall<State, Flags, Levels> super;
     public:
 	template<class... Ts>
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static typename super::syscall_ret close(int fd)
 	{
 #if defined __linux__ && (defined __i386__ || defined __arm__)
@@ -1048,7 +1048,7 @@ class rofl_impl_time :
 {
 	typedef rofl_impl_syscall<State, Flags, Levels> super;
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static typename super::syscall_ret time(time_t *tp)
 	{
 #if defined __linux__ && (defined __i386__ || defined __arm__)
@@ -1071,7 +1071,7 @@ class rofl_impl_prctl :
 {
 	typedef rofl_impl_syscall<State, Flags, Levels> super;
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static typename super::syscall_ret prctl(int option,
 	    unsigned long arg2)
 	{

@@ -123,10 +123,10 @@ class lolwut_impl
 	char *p_;
 	void advance_chars(std::ptrdiff_t n)
 		{ p_ += n; }
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	lolwut_impl()
 		{ }
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	void set(T *v, int mode = 0)
 	{
 		switch (mode) {
@@ -442,19 +442,19 @@ template<rand_state_t State, class T, ops_flags_t Flags>
 class lolwut<State, T, Flags, 0u> : public lolwut_impl<State, T, Flags, 0u>
 {
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	lolwut()
 		{ }
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	lolwut(T *v, int mode = 0)
 		{ this->set(v, mode); }
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	lolwut& operator=(T *v)
 	{
 		this->set(v);
 		return *this;
 	}
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	operator T *() const
 	{
 		if (this->Sign)
@@ -468,19 +468,19 @@ class lolwut : public lolwut_impl<State, T, Flags, Levels>
 {
 	typedef lolwut_impl<State, T, Flags, Levels> super;
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	lolwut()
 		{ }
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	lolwut(T *v, int mode = 0)
 		{ this->set(v, mode); }
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	lolwut& operator=(T *v)
 	{
 		this->set(v);
 		return *this;
 	}
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	operator T *() const
 	{
 		unsigned disp;

@@ -27,7 +27,7 @@ class dogecoin_t
 		uintptr_t d;
 		unsigned char c[sizeof(uintptr_t)];
 	} u_;
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	void reset()
 	{
 #if innocent_pear_ENDIANNESS - 0 == 1234  /* little endian */
@@ -40,7 +40,7 @@ class dogecoin_t
     public:
 	dogecoin_t()
 		{ reset(); }
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	void operator()(unsigned char c, const unsigned char *dp)
 	{
 #if innocent_pear_ENDIANNESS - 0 == 1234  /* little endian */

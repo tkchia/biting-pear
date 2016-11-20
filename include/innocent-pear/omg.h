@@ -58,10 +58,14 @@ class omg<State, T, Flags, ~0u> : public nowai
 	{ };
 
 template<rand_state_t State, class T, ops_flags_t Flags>
-class omg<State, T, Flags, 0u>
+class
+#ifdef __ELF__
+__attribute__((visibility("hidden")))
+#endif
+omg<State, T, Flags, 0u>
 {
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	omg()
 	{
 		constexpr rand_state_t State2 = update_inner(State);
@@ -121,7 +125,7 @@ class omg<State, T, Flags, 0u>
 			;
 		}
 	}
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	omg(T& x, bool bogo = false)
 	{
 		constexpr rand_state_t State2 = update_inner(State);
@@ -230,7 +234,11 @@ class omg<State, T, Flags, 0u>
 };
 
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
-class omg
+class
+#ifdef __ELF__
+__attribute__((visibility("hidden")))
+#endif
+omg
 {
 	static constexpr rand_state_t
 	    State2 = update_inner(State),
@@ -265,7 +273,7 @@ class omg
 	typedef rofl<NewState3, Flags, Levels - 1> rofl3;
 	typedef rofl<NewState4, Flags, Levels - 1> rofl4;
 #ifdef __amd64__
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static void coax_nonleaf()
 	{
 		unpossible<NewState4, Levels - 1>();
@@ -282,7 +290,7 @@ class omg
     defined innocent_pear_DEBUG_WHEEE
     public:
 #endif
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static bool wheee()
 	{
 #if defined innocent_pear_DEBUG && innocent_pear_HAVE_ASM_GOTO
@@ -517,7 +525,7 @@ class omg
 #endif
 	}
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static bool special()
 	{
 		using namespace innocent_pear::ops;
@@ -634,7 +642,7 @@ class omg
 		return true;
 	}
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	omg()
 	{
 		constexpr unsigned Which = (State2 >> 48) % 16;
@@ -680,7 +688,7 @@ class omg
 			}
 		}
 	}
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	omg(T& x, bool bogo = false)
 	{
 		using namespace innocent_pear::ops;

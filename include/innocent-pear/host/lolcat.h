@@ -21,25 +21,25 @@ extern int sleepiest(const char *);
 extern innocent_pear::impl::uint_least64_t lolrus(const char *, const char *);
 
 template<class... Ts>
-__attribute__((always_inline))
-inline void excite(Ts...);
+innocent_pear_always_inline
+void excite(Ts...);
 
-__attribute__((always_inline))
-inline void excite()
+innocent_pear_always_inline
+void excite()
 {
 }
 
 template<class T, class... Ts>
-__attribute__((always_inline))
-inline void excite(T x, Ts... xs)
+innocent_pear_always_inline
+void excite(T x, Ts... xs)
 {
 	std::cerr << x;
 	excite(xs...);
 }
 
 template<class... Ts>
-__attribute__((always_inline))
-inline void very(Ts... xs)
+innocent_pear_always_inline
+void very(Ts... xs)
 {
 	std::ios_base::fmtflags fl = std::cerr.flags();
 	excite(xs...);
@@ -47,11 +47,11 @@ inline void very(Ts... xs)
 }
 
 template<class... Ts>
-inline void wow(Ts...);
+void wow(Ts...);
 
 template<class... Ts>
-__attribute__((always_inline))
-inline void wow(Ts... msg)
+innocent_pear_always_inline
+void wow(Ts... msg)
 {
 	std::cerr << curious() << ": ";
 	very(msg...);
@@ -59,8 +59,8 @@ inline void wow(Ts... msg)
 }
 
 template<class... Ts>
-__attribute__((always_inline, noreturn))
-inline void many(Ts... msg)
+innocent_pear_always_inline_and(noreturn)
+void many(Ts... msg)
 {
 	std::cerr << curious() << ": ERROR: ";
 	very(msg...);
@@ -68,8 +68,8 @@ inline void many(Ts... msg)
 }
 
 template<class... Ts>
-__attribute__((always_inline, noreturn))
-inline void concern(Ts... msg)
+innocent_pear_always_inline_and(noreturn)
+void concern(Ts... msg)
 {
 	int err = errno;
 	many(msg..., ": ", strerror(err));

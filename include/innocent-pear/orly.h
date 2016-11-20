@@ -64,7 +64,7 @@ class orly<State, T, Boreal, BigBad, Flags, 0u> :
 {
 	typedef orly_impl<State, T, Boreal, BigBad, Flags, 0u> super;
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	T operator()(T x0 = super::DefX0,
 		     T x1 = super::DefX1, T x2 = super::DefX2,
 		     T x3 = super::DefX3, T x4 = super::DefX4,
@@ -90,15 +90,15 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 	{
 		T *o_;
 	    public:
-		__attribute__((always_inline))
+		innocent_pear_always_inline
 		woot(T *o) : o_(o)
 			{ }
-		__attribute__((always_inline))
+		innocent_pear_always_inline
 		void operator()(T i, T *p)
 			{ *o_++ = i; }
 	};
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	T operator()(T x0 = super::DefX0,
 		     T x1 = super::DefX1, T x2 = super::DefX2,
 		     T x3 = super::DefX3, T x4 = super::DefX4,
@@ -121,7 +121,7 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 		}
 	}
 	template<class C>
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	void wot(T *p, T *q, C& c)
 	{
 		T y0,
@@ -238,7 +238,7 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 			}
 		}
 	}
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	void wut(T *p, T *q, T *r)
 	{
 #ifdef innocent_pear_DEBUG
@@ -247,7 +247,7 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 		woot w(r);
 		wot(p, q, w);
 	}
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	void wut(T *p, T *q)
 		{ wut(p, q, p); }
 };

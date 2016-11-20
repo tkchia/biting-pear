@@ -18,9 +18,22 @@ namespace impl
 
 typedef uint_least64_t rand_state_t;
 
+#ifdef __ELF__
+#   define innocent_pear_always_inline \
+	__attribute__((always_inline, visibility("hidden"))) inline
+#   define innocent_pear_always_inline_and(...) \
+	__attribute__((always_inline, visibility("hidden"), __VA_ARGS__)) \
+	inline
+#else
+#   define innocent_pear_always_inline \
+	__attribute__((always_inline)) inline
+#   define innocent_pear_always_inline_and(...) \
+	__attribute__((always_inline, __VA_ARGS__)) inline
+#endif
+
 template<class T, T P = std::numeric_limits<T>::max() / 2>
-__attribute__((always_inline))
-inline constexpr T pow(T x)
+innocent_pear_always_inline
+constexpr T pow(T x)
 {
 	return P == 0 ? (T)1 :
 	    P % 2 == 0 ? pow<T, P / 2>(x * x) :
@@ -28,8 +41,8 @@ inline constexpr T pow(T x)
 }
 
 template<class T>
-__attribute__((always_inline))
-inline constexpr T creal(T x, T y)
+innocent_pear_always_inline
+constexpr T creal(T x, T y)
 {
 	/* Consider the mapping w -> 2w + 1. */
 	return (y + y + (T)1) * x + y;
@@ -38,8 +51,8 @@ inline constexpr T creal(T x, T y)
 template<class T, T P = (std::numeric_limits<T>::max() > 3 ?
 			 std::numeric_limits<T>::max() / 2 :
 			 std::numeric_limits<T>::max())>
-__attribute__((always_inline))
-inline constexpr T cpow(T x)
+innocent_pear_always_inline
+constexpr T cpow(T x)
 {
 	/*
 	 * The seemingly redundant conditionals, e.g. `P > 17 ? 17 : 0', are
@@ -59,16 +72,16 @@ inline constexpr T cpow(T x)
 }
 
 template<class T>
-__attribute__((always_inline))
-inline constexpr T crealf(T x, T y)
+innocent_pear_always_inline
+constexpr T crealf(T x, T y)
 {
 	/* Consider the mapping w -> 4w + 1. */
 	return ((T)4 * y + (T)1) * x + y;
 }
 
 template<class T, T P = std::numeric_limits<T>::max()>
-__attribute__((always_inline))
-inline constexpr T cpowf(T x)
+innocent_pear_always_inline
+constexpr T cpowf(T x)
 {
 	return P == 0 ? (T)0 :
 	    P % 17 == 0 && P > 17 ?
@@ -141,8 +154,8 @@ inline constexpr rand_state_t update_inner(rand_state_t s)
 
 /* This _must_ match up with host/srsly.h. */
 template<unsigned WhichOp, class T>
-__attribute__((always_inline))
-inline T do_op(T x, T y)
+innocent_pear_always_inline
+T do_op(T x, T y)
 {
 	switch (WhichOp % 5) {
 	    case 0:
@@ -160,8 +173,8 @@ inline T do_op(T x, T y)
 
 /* This _must_ match up with host/srsly.h. */
 template<unsigned WhichOp, class T>
-__attribute__((always_inline))
-inline T do_inv_op(T x, T y)
+innocent_pear_always_inline
+T do_inv_op(T x, T y)
 {
 	switch (WhichOp % 5) {
 	    case 0:

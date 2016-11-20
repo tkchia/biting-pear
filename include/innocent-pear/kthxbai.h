@@ -60,7 +60,7 @@ class kthxbai_impl<State, T, Flags, 0u>
 	static constexpr rand_state_t State2 = update_inner(State),
 				      State3 = update_inner(State2);
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	kthxbai_impl(T& x, T v)
 	{
 		switch ((State2 >> 32) % 8) {
@@ -127,7 +127,7 @@ class kthxbai_impl
 	typedef omg<NewState, T, Flags, Levels - 1> omg_n;
 	typedef omg<NewState3, T, Flags, Levels - 1> omg_n3;
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static bool special(T& x, T v)
 	{
 #if defined __linux__ && \
@@ -153,11 +153,7 @@ class kthxbai_impl
 #endif
 		return false;
 	}
-	__attribute__((
-#ifdef __ELF__
-	    visibility("hidden"),
-#endif
-	    always_inline))
+	innocent_pear_always_inline
 	kthxbai_impl(T& x, T v)
 	{
 		constexpr unsigned BitP =
@@ -417,7 +413,7 @@ template<rand_state_t State, class T, class IntoT, ops_flags_t Flags,
 struct kthxbai_impl_split<State, T, IntoT, Flags, Levels, Left, false>
 {
 	// we should never come here...
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	kthxbai_impl_split(T& x, T v)
 		{ x = v; }
 };
@@ -438,7 +434,7 @@ template<rand_state_t State, class T, class IntoT, ops_flags_t Flags,
     unsigned Levels>
 struct kthxbai_impl_split<State, T, IntoT, Flags, Levels, 0u, true>
 {
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	kthxbai_impl_split(T& x, T v)
 		{ x = v; }
 };
@@ -447,7 +443,7 @@ template<rand_state_t State, class T, class IntoT, ops_flags_t Flags,
     unsigned Levels, unsigned Left>
 struct kthxbai_impl_split<State, T, IntoT, Flags, Levels, Left, true>
 {
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	kthxbai_impl_split(T& x, T v)
 	{
 		constexpr rand_state_t
@@ -475,10 +471,10 @@ class kthxbai<State, void *, Flags, Levels> :
     public lolwut<State, void, Flags, Levels>
 {
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	kthxbai() : lolwut<State, void, Flags, Levels>()
 		{ }
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	kthxbai(void *p, int mode = 0) :
 	    lolwut<State, void, Flags, Levels>(p, mode)
 		{ }
@@ -491,10 +487,10 @@ class kthxbai<State, RetT (*)(ArgT...), Flags, Levels> :
 {
 	typedef RetT func_type(ArgT...);
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	kthxbai() : lolwut<State, func_type, Flags, Levels>()
 		{ }
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	kthxbai(func_type *p, int mode = 2) :
 	    lolwut<State, func_type, Flags, Levels>(p, mode)
 		{ }
@@ -507,10 +503,10 @@ class kthxbai<State, RetT (*)(ArgT..., ...), Flags, Levels> :
 {
 	typedef RetT func_type(ArgT..., ...);
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	kthxbai() : lolwut<State, func_type, Flags, Levels>()
 		{ }
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	kthxbai(func_type *p, int mode = 2) :
 	    lolwut<State, func_type, Flags, Levels>(p, mode)
 		{ }
@@ -522,25 +518,25 @@ class kthxbai<State, S *, Flags, Levels> :
 {
 	typedef kthxbai<State, S *, Flags, Levels> our_type;
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	kthxbai() : lolwut<State, S, Flags, Levels>()
 		{ }
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	kthxbai(S *p, int mode = 0) : lolwut<State, S, Flags, Levels>(p, mode)
 		{ }
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	const our_type& operator+=(std::ptrdiff_t n)
 	{
 		this->advance_chars(n * sizeof(S));
 		return *this;
 	}
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	const our_type& operator-=(std::ptrdiff_t n)
 	{
 		this->advance_chars(-n * sizeof(S));
 		return *this;
 	}
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	const our_type& operator++()
 		{ return *this += 1; }
 	const our_type& operator--()
@@ -565,23 +561,23 @@ class kthxbai
 	static constexpr T Disp = pick_hi<T>(State3 ^ State4);
 	T x_;
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	kthxbai()
 		{ }
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	kthxbai(T v)
 	{
 		kthxbai_impl<State4, T, Flags, Levels>(x_,
 		    do_op<WhichOp>(v, Disp));
 	}
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	const kthxbai& operator=(T v)
 	{
 		kthxbai_impl<State4, T, Flags, Levels>(x_,
 		    do_op<WhichOp>(v, Disp));
 		return *this;
 	}
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	operator T() const
 		{ return do_inv_op<WhichOp>(x_, Disp); }
 };

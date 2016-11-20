@@ -63,7 +63,7 @@ class yarly_impl_2<State, T, false, Flags, Levels> :
 {
 	typedef yarly_impl_1<State, T, false, Flags, Levels> super;
     protected:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	T owl()
 		{ return super::DefRetVal; }
 };
@@ -74,7 +74,7 @@ class yarly_impl_2<State, T, true, Flags, Levels> :
 {
 	typedef yarly_impl_1<State, T, true, Flags, Levels> super;
     protected:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	T owl()
 	{
 		T y;
@@ -94,7 +94,7 @@ class yarly<State, T, BigBad, Flags, 0u> :
 {
 	typedef yarly_impl_2<State, T, BigBad, Flags, 0u> super;
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	T operator()(T x1 = super::DefX1, T x2 = super::DefX2,
 		     T x3 = super::DefX3, T x4 = super::DefX4,
 		     T x5 = super::DefX5, T x6 = super::DefX6,
@@ -122,7 +122,7 @@ class yarly : public yarly_impl_2<State, T, BigBad, Flags, Levels>
 {
 	typedef yarly_impl_2<State, T, BigBad, Flags, Levels> super;
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	T operator()(T x1 = super::DefX1, T x2 = super::DefX2,
 		     T x3 = super::DefX3, T x4 = super::DefX4,
 		     T x5 = super::DefX5, T x6 = super::DefX6,

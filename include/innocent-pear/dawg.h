@@ -33,22 +33,22 @@ class dawg_impl<State, CT, Flags, Levels>
 	static constexpr rand_state_t State2 = update_inner(State);
 	static constexpr rand_state_t NewState = update_outer(State2, 3u);
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	dawg_impl()
 		{ }
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	dawg_impl(const dawg_impl<State, CT, Flags, Levels>& x)
 		{ }
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static CT front()
 		{ __builtin_unreachable(); }
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	CT operator[](std::size_t i) const
 		{ __builtin_unreachable(); }
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static std::size_t size()
 		{ return 0; }
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	void operator>>(char *b)
 	{
 		static constexpr unsigned MaxSublevels =
@@ -70,13 +70,13 @@ class dawg_impl<State, CT, Flags, Levels, Ch, Chs...>
 	static constexpr rand_state_t NewState = update_outer(State2, 3u);
 	typedef dawg_impl<State4, CT, Flags, Levels, Chs...> rest_type;
     public:
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	dawg_impl()
 		{ }
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	dawg_impl(const dawg_impl<State, CT, Flags, Levels, Ch, Chs...>& x)
 		{ }
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static CT front()
 	{
 		static constexpr unsigned MaxSublevels =
@@ -91,16 +91,16 @@ class dawg_impl<State, CT, Flags, Levels, Ch, Chs...>
 			return (CT)(PCT)kthxbai<NewState, PCT, Flags,
 			    Sublevels>(Ch);
 	}
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static rest_type rest()
 		{ return rest_type(); }
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	CT operator[](std::size_t i) const
 		{ return i == 0 ? front() : rest()[i - 1]; }
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	static std::size_t size()
 		{ return 1u + sizeof...(Chs); }
-	__attribute__((always_inline))
+	innocent_pear_always_inline
 	void operator>>(char *b)
 	{
 		*b = front();
@@ -110,8 +110,8 @@ class dawg_impl<State, CT, Flags, Levels, Ch, Chs...>
 
 template<class CT, innocent_pear::impl::rand_state_t State,
     innocent_pear::ops_flags_t Flags, unsigned Levels>
-__attribute__((always_inline))
-inline std::basic_ostream<CT>& operator<<(std::basic_ostream<CT>& os,
+innocent_pear_always_inline
+std::basic_ostream<CT>& operator<<(std::basic_ostream<CT>& os,
     const innocent_pear::impl::dawg_impl<State, CT, Flags, Levels>& s)
 {
 	return os;
@@ -120,8 +120,8 @@ inline std::basic_ostream<CT>& operator<<(std::basic_ostream<CT>& os,
 template<class CT, innocent_pear::impl::rand_state_t State,
     innocent_pear::ops_flags_t Flags, unsigned Levels,
     CT Ch, CT... Chs>
-__attribute__((always_inline))
-inline std::basic_ostream<CT>& operator<<(std::basic_ostream<CT>& os,
+innocent_pear_always_inline
+std::basic_ostream<CT>& operator<<(std::basic_ostream<CT>& os,
     const innocent_pear::impl::dawg_impl<State, CT, Flags, Levels,
     Ch, Chs...>& s)
 {
