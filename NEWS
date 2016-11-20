@@ -35,6 +35,7 @@
 
 		GNUmakefile :
 		- now dumps larger portions of compiled test binaries...
+		- no longer compiles test-doge-eh.debug on default (again)
 
 2016-11-19	"I shot an arrow in to the air, and it stuck."  (6)
 
