@@ -1,3 +1,8 @@
+2016-11-21	"I shot an arrow in to the air, and it stuck."  (7)
+
+		include/innocent-pear/omg.h :
+		- now does pointer aliasing à la kthxbai.h
+
 2016-11-20	Try to inhibit constant merging for `-Xinnocent-pear -doge'.
 
 		bin/innocent-pear-front-end.tcc :

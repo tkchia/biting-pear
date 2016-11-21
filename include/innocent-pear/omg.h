@@ -709,7 +709,7 @@ omg
 		using namespace innocent_pear::ops;
 		constexpr unsigned Bit = pick_hi<unsigned>(State2 ^ State3)
 		    % (sizeof(T) * CHAR_BIT);
-		switch ((State2 >> 48) % 16) {
+		switch ((State2 >> 48) % 19) {
 		    case 0:
 		    case 1:
 			{
@@ -774,15 +774,28 @@ omg
 			}
 			if (false)
 		    case 13:
+			{
+				kthxbai_impl<NewState2, T, Flags, Levels - 1>
+				    (x, pick_hi<T>(NewState));
+			}
+			if (false)
 		    case 14:
+		    case 15:
 			if (bogo)
 				unpossible<NewState3, Levels - 1>();
 			// fall through
 		    default:
 			{
-				kthxbai_impl<NewState2, T, Flags, Levels - 1>
-				    (x, pick_hi<T>(NewState));
+				T x1;
+				lolwut<NewState, T, Flags, Levels-1> p1(&x1);
+				lolwut<NewState2, T, Flags, Levels-1> p2(&x1);
+				{
+					omg<NewState4, T, Flags, Levels - 1>
+					    (*p1, bogo);
+				}
+				kthxbai_impl<NewState5, T, Flags, 0>(x, *p2);
 			}
+
 		}
 	}
 };
