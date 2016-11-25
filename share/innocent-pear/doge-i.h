@@ -18,12 +18,12 @@
 	__attribute__((innocent_pear_CTOR, \
 	    section(".text.unlikely." innocent_pear_DOGE_TAG ".t"))) \
 	static void
-#define innocent_pear_DOGE_MEMSET \
+#ifndef __clang__
+#   define innocent_pear_DOGE_MEMSET \
 	__attribute__((innocent_pear_CTOR, \
 	    section(".text.unlikely." innocent_pear_DOGE_TAG ".t"), \
 	    optimize("no-reorder-blocks"))) \
 	static void
-#ifndef __clang__
 /*
  * Use a different section name so that g++ will not complain about
  * inconsistent section attributes.  This will ultimately still go into .text.
@@ -35,6 +35,8 @@
 	    __attribute__((section(".text.unlikely." innocent_pear_DOGE_TAG \
 		".d"), innocent_pear_HIDDEN)) = { };
 #else
+/* clang++ does not understand __attribute__((optimize(.)))... */
+#   define innocent_pear_DOGE_MEMSET innocent_pear_DOGE
 /*
  * A rather messy hack.  clang++ does not honour `-fno-toplevel-reorder'
  * when deciding how to order top-level variables with respect to top-level

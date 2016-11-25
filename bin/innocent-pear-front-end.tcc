@@ -196,6 +196,9 @@ static void nyan(sleepier_t& cheesy, const char *cheeses, states_t st,
 		"-fno-toplevel-reorder",
 		"-fno-merge-constants",
 		"-fno-merge-all-constants",
+#ifdef innocent_pear_CXX_FOR_TARGET_HAVE_WRITABLE_STRINGS
+		"-fwritable-strings",
+#endif
 		"-fno-stack-protector",
 		v ? (char *)"-v" : (char *)"-fno-stack-protector",
 		sta ? (char *)"-static" : (char *)"-fno-stack-protector",

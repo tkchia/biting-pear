@@ -1,3 +1,21 @@
+2016-11-25	"I shot an arrow in to the air, and it stuck."  (8)
+
+		configure ,
+		GNUmakefile ,
+		bin/innocent-pear-front-end.tcc :
+		- now try to test for and use `-fwritable-strings' clang++
+		  option when compiling the doge-??.cc modules
+
+		include/innocent-pear/bbq.h :
+		- removed use of optimize(.) attributes
+
+		share/innocent-pear/doge-i.h :
+		- removed use of optimize(.) attribute in innocent_pear_DOGE
+		  _MEMSET when under clang++
+
+		lolwutconf/ :
+		- bumped to c7fa319627
+
 2016-11-21	"I shot an arrow in to the air, and it stuck."  (7)
 
 		include/innocent-pear/omg.h :

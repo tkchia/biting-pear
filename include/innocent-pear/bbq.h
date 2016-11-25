@@ -20,24 +20,15 @@ typedef uint_least64_t rand_state_t;
 
 #ifdef __ELF__
 #   define innocent_pear_always_inline \
-	__attribute__((always_inline, visibility("hidden"), \
-	    optimize("no-merge-constants"), \
-	    optimize("no-merge-all-constants"))) \
-	inline
+	__attribute__((always_inline, visibility("hidden"))) inline
 #   define innocent_pear_always_inline_and(...) \
-	__attribute__((always_inline, visibility("hidden"), \
-	    optimize("no-merge-constants"), \
-	    optimize("no-merge-all-constants"), __VA_ARGS__)) \
+	__attribute__((always_inline, visibility("hidden"), __VA_ARGS__)) \
 	inline
 #else
 #   define innocent_pear_always_inline \
-	__attribute__((always_inline, optimize("no-merge-constants"), \
-	    optimize("no-merge-all-constants"))) \
-	inline
+	__attribute__((always_inline)) inline
 #   define innocent_pear_always_inline_and(...) \
-	__attribute__((always_inline, optimize("no-merge-constants"), \
-	    optimize("no-merge-all-constants"), __VA_ARGS__)) \
-	inline
+	__attribute__((always_inline, __VA_ARGS__)) inline
 #endif
 
 template<class T, T P = std::numeric_limits<T>::max() / 2>

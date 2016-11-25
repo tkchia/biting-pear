@@ -409,6 +409,14 @@ endif
 		else	echo '#undef' \
 			  'innocent_pear_CC_FOR_TARGET_DECOUPLE_AS'; \
 		fi; \
+		if test '$(conf_Have_cxxt_opt_fwritable_strings)' = yes; then \
+			echo '#define' \
+			  'innocent_pear_CXX_FOR_TARGET_HAVE_WRITABLE_STRINGS'\
+			  1; \
+		else	echo '#undef' \
+			  'innocent_pear_CXX_FOR_TARGET_HAVE_WRITABLE_STRINGS'\
+			  ; \
+		fi; \
 		if test '$(conf_Have_cxxt_opt_wrapper)' = yes; then \
 			echo '#define' \
 			  'innocent_pear_CXX_FOR_TARGET_HAVE_OPT_WRAPPER 1'; \
