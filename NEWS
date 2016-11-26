@@ -13,6 +13,9 @@
 		- removed use of optimize(.) attribute in innocent_pear_DOGE
 		  _MEMSET when under clang++
 
+		LICENSE :
+		- reverted to using the GNU LGPL v3
+
 		lolwutconf/ :
 		- bumped to c7fa319627
 
