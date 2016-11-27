@@ -68,11 +68,13 @@ omg<State, T, Flags, 0u>
 	innocent_pear_always_inline
 	omg()
 	{
+		using innocent_pear::ops::allow_emulator_unsafes;
 		constexpr rand_state_t State2 = update_inner(State);
 		constexpr rand_state_t State3 = update_inner(State2);
 		constexpr unsigned Which2 = (State2 >> 32) % 16;
 #if defined __amd64__ || defined __i386__
 		constexpr unsigned Which3 = (State3 >> 32) % 15;
+		unsigned short h;
 #elif defined __arm__
 		uintptr_t x, y;
 #endif
@@ -112,6 +114,18 @@ omg<State, T, Flags, 0u>
 		    case 9:
 			__asm __volatile(innocent_pear_X86_PREFIX(0) "nop"
 			    : : "n" (Which3));  break;
+		    case 10:
+		    case 11:
+			if ((Flags & allow_emulator_unsafes) != 0)
+				__asm __volatile(innocent_pear_X86_PREFIX(1)
+				    "verr %0" : "=r" (h) : "n" (Which3));
+			break;
+		    case 12:
+		    case 13:
+			if ((Flags & allow_emulator_unsafes) != 0)
+				__asm __volatile(innocent_pear_X86_PREFIX(1)
+				    "verw %0" : "=r" (h) : "n" (Which3));
+			break;
 #   undef innocent_pear_X86_PREFIXED_INSN
 #elif defined __arm__ && (!defined __thumb__ || defined __thumb2__)
 		    case 0:
@@ -135,29 +149,19 @@ omg<State, T, Flags, 0u>
 	{
 		constexpr rand_state_t State2 = update_inner(State);
 		constexpr rand_state_t State3 = update_inner(State2);
-		constexpr unsigned Which = (State2 >> 16) % 21;
+		constexpr unsigned Which = (State2 >> 16) % 27;
 		constexpr unsigned WhichPfx = (State3 >> 32) % 6;
 #if defined __amd64__ || defined __i386__ || defined __arm__
 		uintptr_t y, z;
 #   ifndef __arm__
+		struct { uintptr_t h, l; } dt;
 		unsigned w;
 #   endif
 #endif
 		switch (Which) {
+#if defined __amd64__ || defined __i386__
 		    case 0:
 		    case 1:
-		    case 2:
-		    case 3:
-		    case 4:
-		    case 5:
-			{
-				omg<State3, T, Flags, 0>();
-				__asm __volatile("" : "=g" (x));
-			}
-			break;
-#if defined __amd64__ || defined __i386__
-		    case 6:
-		    case 7:
 #   if defined __amd64__
 			__asm(innocent_pear_X86_PREFIX(1) "rdtsc"
 			    : "=a" (y) : "n" (WhichPfx) : "rdx");
@@ -169,11 +173,27 @@ omg<State, T, Flags, 0u>
 			x = static_cast<T>(y);
 			break;
 #   endif
-		    case 8:
-		    case 9:
+		    case 2:
+		    case 3:
 			__asm(innocent_pear_X86_PREFIX(1) "smsw %0"
 			    : "=r" (w) : "n" (WhichPfx));
 			x = static_cast<T>(w);
+			break;
+		    case 4:
+		    case 5:
+			__asm(innocent_pear_X86_PREFIX(1) "sldt %0"
+			    : "=r" (w) : "n" (WhichPfx));
+			x = static_cast<T>(w);
+			break;
+		    case 6:
+		    case 7:
+			__asm __volatile("sgdt %0" : "=m" (dt));
+			x = static_cast<T>(Which % 2 ? dt.h : dt.l);
+			break;
+		    case 8:
+		    case 9:
+			__asm __volatile("sidt %0" : "=m" (dt));
+			x = static_cast<T>(Which % 2 ? dt.h : dt.l);
 			break;
 		    case 10:
 			__asm __volatile("" : "=a" (z));
@@ -196,43 +216,54 @@ omg<State, T, Flags, 0u>
 			break;
 #   endif
 #elif defined __arm__ && defined __thumb2__
-		    case 6:
+		    case 0:
+		    case 1:
 			__asm("mrs %0, CPSR" : "=r" (y));
 			x = static_cast<T>(y);
 			break;
-		    case 7:
+		    case 2:
+		    case 3:
 			__asm __volatile("sxtb %0, %1" : "=r" (y), "=r" (z));
 			x = static_cast<T>(y);
 			break;
-		    case 8:
+		    case 4:
+		    case 5:
 			__asm __volatile("sxtb16 %0, %1" : "=r" (y), "=r" (z));
 			x = static_cast<T>(y);
 			break;
-		    case 9:
+		    case 6:
+		    case 7:
 			__asm __volatile("sxth %0, %1" : "=r" (y), "=r" (z));
 			x = static_cast<T>(y);
 			break;
-		    case 10:
+		    case 8:
+		    case 9:
 			__asm __volatile("uxtb %0, %1" : "=r" (y), "=r" (z));
 			x = static_cast<T>(y);
 			break;
+		    case 10:
 		    case 11:
 			__asm __volatile("uxtb16 %0, %1" : "=r" (y), "=r" (z));
 			x = static_cast<T>(y);
 			break;
 		    case 12:
+		    case 13:
 			__asm __volatile("uxth %0, %1" : "=r" (y), "=r" (z));
 			x = static_cast<T>(y);
 			break;
 #endif
-		    case 19:
-		    case 20:
+		    case 25:
+		    case 26:
 			if (bogo)
 				unpossible<State3, 0>();
+			// fall through
 		    default:
-			{
+			if ((State2 >> 16) % 4 == 0) {
 				constexpr T v = pick_hi<T>(State3);
 				kthxbai_impl<State3, T, Flags, 0>(x, v);
+			} else {
+				omg<State3, T, Flags, 0>();
+				__asm __volatile("" : "=g" (x));
 			}
 		}
 	}
