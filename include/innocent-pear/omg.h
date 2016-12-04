@@ -68,7 +68,6 @@ omg<State, T, Flags, 0u>
 	innocent_pear_always_inline
 	omg()
 	{
-		using innocent_pear::ops::allow_emulator_unsafes;
 		constexpr rand_state_t State2 = update_inner(State);
 		constexpr rand_state_t State3 = update_inner(State2);
 		constexpr unsigned Which2 = (State2 >> 32) % 16;
@@ -116,16 +115,12 @@ omg<State, T, Flags, 0u>
 			    : : "n" (Which3));  break;
 		    case 10:
 		    case 11:
-			if ((Flags & allow_emulator_unsafes) != 0)
-				__asm __volatile(innocent_pear_X86_PREFIX(1)
-				    "verr %0" : "=r" (h) : "n" (Which3));
-			break;
+			__asm __volatile(innocent_pear_X86_PREFIX(1)
+			    "verr %0" : "=r" (h) : "n" (Which3));  break;
 		    case 12:
 		    case 13:
-			if ((Flags & allow_emulator_unsafes) != 0)
-				__asm __volatile(innocent_pear_X86_PREFIX(1)
-				    "verw %0" : "=r" (h) : "n" (Which3));
-			break;
+			__asm __volatile(innocent_pear_X86_PREFIX(1)
+			    "verw %0" : "=r" (h) : "n" (Which3));  break;
 #   undef innocent_pear_X86_PREFIXED_INSN
 #elif defined __arm__ && (!defined __thumb__ || defined __thumb2__)
 		    case 0:

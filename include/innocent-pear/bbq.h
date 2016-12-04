@@ -190,6 +190,42 @@ T do_inv_op(T x, T y)
 	}
 }
 
+template<unsigned WhichOp, uintptr_t N, class T>
+innocent_pear_always_inline
+T do_op_rept(T x, T y)
+{
+	switch (WhichOp % 5) {
+	    case 0:
+		return x + N * y;
+	    case 1:
+		return x - N * y;
+	    case 2:
+		return creal(x, cpow(cpow<T, N>(y)));
+	    case 3:
+		return crealf(x, cpowf(cpowf<T, N>(y)));
+	    default:
+		return N % 2 ? x ^ y : x;
+	}
+}
+
+template<unsigned WhichOp, uintptr_t N, class T>
+innocent_pear_always_inline
+T do_inv_op_rept(T x, T y)
+{
+	switch (WhichOp % 5) {
+	    case 0:
+		return x - N * y;
+	    case 1:
+		return x + N * y;
+	    case 2:
+		return creal(x, cpow<T, N>(y));
+	    case 3:
+		return crealf(x, cpowf<T, N>(y));
+	    default:
+		return N % 2 ? x ^ y : x;
+	}
+}
+
 template<class T>
 inline constexpr T pick_hi(rand_state_t x)
 {
@@ -214,15 +250,13 @@ enum ops_flags_t
     allow_signal_safes		= 0x00000001u,
     allow_signal_unsafes	= 0x00000002u,
     allow_debugger_unsafes	= 0x00000004u,
-    allow_emulator_unsafes	= 0x00000008u,
-    allow_resource_unsafes	= 0x00000010u,
+    allow_resource_unsafes	= 0x00000008u,
     allow_for_startup		= allow_signal_safes |
 				  allow_signal_unsafes |
 				  allow_debugger_unsafes |
-				  allow_emulator_unsafes |
 				  allow_resource_unsafes,
-    under_munged_terminal	= 0x00000020u,
-    under_ptrace		= 0x00000040u
+    under_munged_terminal	= 0x00000010u,
+    under_ptrace		= 0x00000020u
 };
 
 } // innocent_pear::ops

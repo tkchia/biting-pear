@@ -1,3 +1,16 @@
+2016-12-04	Loops.
+
+		include/innocent-pear/kthxbai.h :
+		- added (finite) loops
+
+		include/innocent-pear/omg.h :
+		- on x86-32 and x86-64, `verr' and `verw' are now always
+		  eligible
+
+		include/innocent-pear/bbq.h :
+		- removed innocent_pear::ops::allow_emulator_unsafes
+		- added do_op_rept(...) and do_inv_op_rept(...)
+
 2016-11-27	Commit CCCXXXIII.
 
 		include/innocent-pear/omg.h :

@@ -123,6 +123,7 @@ class kthxbai_impl
 	static constexpr bool Boreal1 = (State2 >> 30) % 2 != 0;
 	typedef kthxbai_impl<NewState, T, Flags, Levels - 1> impl_n;
 	typedef kthxbai_impl<NewState2, T, Flags, Levels - 1> impl_n2;
+	typedef kthxbai_impl<NewState3, uintptr_t, Flags, Levels - 1> impl_n3;
 	typedef kthxbai_impl<NewState4, T, Flags, 0> impl_z;
 	typedef omg<NewState, T, Flags, Levels - 1> omg_n;
 	typedef omg<NewState3, T, Flags, Levels - 1> omg_n3;
@@ -395,13 +396,27 @@ class kthxbai_impl
 				return;
 			// else fall through
 		    default:
-			{
+			if ((State2 >> 32) % 2) {
 				T x1;
 				lolwut<State3, T, Flags, Levels - 1> p1(&x1);
 				lolwut<update_outer(State3, Levels), T, Flags,
 				    Levels - 1> p2(&x1);
 				{ impl_n(*p1, v); }
 				{ impl_z(x, *p2); }
+			} else {
+				constexpr uintptr_t N = (State2 >> 48) % 256;
+				constexpr unsigned WhichOp =
+				    (unsigned)(State3 >> 16);
+				T y, u, w;
+				{ impl_n(y, pick_hi<T>(State3 ^ State4)); }
+				{ impl_n2(u, do_op_rept<WhichOp, N>(v, y)); }
+				uintptr_t c;
+				{ impl_n3(c, N); }
+				while (c-- != 0) {
+					{ impl_z(w, do_inv_op<WhichOp>(u,y)); }
+					u = w;
+				}
+				impl_z(x, u);
 			}
 			break;
 		}
