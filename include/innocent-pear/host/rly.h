@@ -111,6 +111,35 @@ class rly : public rly_impl<T, Levels>
 		    default:	return y1 >> (y2 % (sizeof(T) * CHAR_BIT));
 		}
 	}
+	template<class DT>
+	T wut(const DT *p, const DT *q)
+	{
+		T x0,
+		  x1 = (*this)(),
+		  x2 = (*this)(x1),
+		  x3 = (*this)(x2, x1),
+		  x4 = (*this)(x3, x2, x1),
+		  x5 = (*this)(x4, x3, x2, x1),
+		  x6 = (*this)(x5, x4, x3, x2, x1),
+		  x7 = (*this)(x6, x5, x4, x3, x2, x1),
+		  x8 = (*this)(x7, x6, x5, x4, x3, x2, x1),
+		  x9 = (*this)(x8, x7, x6, x5, x4, x3, x2, x1);
+		std::size_t n = q - p;
+		while (n-- != 0) {
+			x0 = (*this)((T)*p++, x1, x2, x3, x4,
+					  x5, x6, x7, x8, x9);
+			x1 = x2;
+			x2 = x3;
+			x3 = x4;
+			x4 = x5;
+			x5 = x6;
+			x6 = x7;
+			x7 = x8;
+			x8 = x9;
+			x9 = x0;
+		}
+		return x9;
+	}
 };
 
 } // innocent_pear::impl

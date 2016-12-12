@@ -1,3 +1,11 @@
+2016-12-12	"I shot an arrow in to the air, and it stuck."  (9)
+
+		include/innocent-pear/yarly.h :
+		- added yarly<...>::wut(...), for later use
+
+		include/innocent-pear/host/rly.h :
+		- added rly<...>::wut(...), for later use
+
 2016-12-04	Loops.
 
 		include/innocent-pear/kthxbai.h :
