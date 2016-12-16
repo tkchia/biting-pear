@@ -66,91 +66,18 @@ omg<State, T, Flags, 0u>
 {
     public:
 	innocent_pear_always_inline
-	omg()
-	{
-		constexpr rand_state_t State2 = update_inner(State);
-		constexpr rand_state_t State3 = update_inner(State2);
-		constexpr unsigned Which2 = (State2 >> 32) % 16;
-#if defined __amd64__ || defined __i386__
-		constexpr unsigned Which3 = (State3 >> 32) % 15;
-		unsigned short h;
-#elif defined __arm__
-		uintptr_t x, y;
-#endif
-		switch (Which2) {
-#if defined __amd64__ || defined __i386__
-#   define innocent_pear_X86_PREFIXED_INSN(insn, ...) \
-			__asm __volatile(innocent_pear_X86_PREFIX(0) insn \
-			    : /* no outputs */ \
-			    : "n" (Which3) \
-			    : __VA_ARGS__)
-		    case 0:
-			innocent_pear_X86_PREFIXED_INSN("clc", "cc");  break;
-		    case 1:
-			innocent_pear_X86_PREFIXED_INSN("stc", "cc");  break;
-		    case 2:
-			innocent_pear_X86_PREFIXED_INSN("cmc", "cc");  break;
-		    case 3:
-			innocent_pear_X86_PREFIXED_INSN("cld", "cc");  break;
-			/*
-			 * Nope, do _not_ try to use `std' here.  The glibc
-			 * runtime depends on the direction flag being clear.
-			 *
-			 * -- 20150608
-			 */
-		    case 4:
-			innocent_pear_X86_PREFIXED_INSN("cbtw", "ax");  break;
-		    case 5:
-			innocent_pear_X86_PREFIXED_INSN("cwtl", "eax");  break;
-		    case 6:
-			innocent_pear_X86_PREFIXED_INSN("cltd", "edx");  break;
-#   ifdef __amd64__
-		    case 7:
-			innocent_pear_X86_PREFIXED_INSN("cltq", "rax");  break;
-		    case 8:
-			innocent_pear_X86_PREFIXED_INSN("cqto", "rdx");  break;
-#   endif
-		    case 9:
-			__asm __volatile(innocent_pear_X86_PREFIX(0) "nop"
-			    : : "n" (Which3));  break;
-		    case 10:
-		    case 11:
-			__asm __volatile(innocent_pear_X86_PREFIX(1)
-			    "verr %0" : "=r" (h) : "n" (Which3));  break;
-		    case 12:
-		    case 13:
-			__asm __volatile(innocent_pear_X86_PREFIX(1)
-			    "verw %0" : "=r" (h) : "n" (Which3));  break;
-#   undef innocent_pear_X86_PREFIXED_INSN
-#elif defined __arm__ && (!defined __thumb__ || defined __thumb2__)
-		    case 0:
-			__asm __volatile("msr CPSR_f, %0" : "=r" (x)
-			    : : "cc");  break;
-		    case 1:
-			__asm __volatile("tst %0, %1" : "=r" (x), "=r" (y)
-			    : : "cc");  break;
-		    case 2:
-			__asm __volatile("teq %0, %1" : "=r" (x), "=r" (y)
-			    : : "cc");  break;
-		    case 3:
-			__asm __volatile("nop");  break;
-#endif
-		    default:
-			;
-		}
-	}
-	innocent_pear_always_inline
 	omg(T& x, bool bogo = false)
 	{
 		constexpr rand_state_t State2 = update_inner(State);
 		constexpr rand_state_t State3 = update_inner(State2);
-		constexpr unsigned Which = (State2 >> 16) % 27;
+		constexpr unsigned Which = (State2 >> 16) % 37;
 		constexpr unsigned WhichPfx = (State3 >> 32) % 6;
 #if defined __amd64__ || defined __i386__ || defined __arm__
 		uintptr_t y, z;
 #   ifndef __arm__
 		struct { uintptr_t h, l; } dt;
 		unsigned w;
+		unsigned short h;
 #   endif
 #endif
 		switch (Which) {
@@ -209,7 +136,55 @@ omg<State, T, Flags, 0u>
 			    : "=a" (y) : "0" (z), "n" (WhichPfx));
 			x = static_cast<T>(y);
 			break;
+		    case 13:
+			__asm __volatile(innocent_pear_X86_PREFIX(1) "cqto"
+			    : "=d" (y) : "n" (WhichPfx));
+			x = static_cast<T>(y);
+			break;
 #   endif
+		    case 14:
+			__asm __volatile(innocent_pear_X86_PREFIX(1) "clc"
+			    : "=r" (y) : "n" (WhichPfx) : "cc");
+			x = static_cast<T>(y);
+			break;
+		    case 15:
+			__asm __volatile(innocent_pear_X86_PREFIX(1) "stc"
+			    : "=r" (y) : "n" (WhichPfx) : "cc");
+			x = static_cast<T>(y);
+			break;
+		    case 16:
+			__asm __volatile(innocent_pear_X86_PREFIX(1) "cmc"
+			    : "=r" (y) : "n" (WhichPfx) : "cc");
+			x = static_cast<T>(y);
+			break;
+		    case 17:
+			__asm __volatile(innocent_pear_X86_PREFIX(1) "cld"
+			    : "=r" (y) : "n" (WhichPfx) : "cc");
+			x = static_cast<T>(y);
+			break;
+			/*
+			 * Nope, do _not_ try to use `std' here.  The glibc
+			 * runtime depends on the direction flag being clear.
+			 *
+			 * -- 20150608
+			 */
+		    case 18:
+			__asm __volatile(innocent_pear_X86_PREFIX(1) "nop"
+			    : "=r" (y) : "n" (WhichPfx));
+			x = static_cast<T>(y);
+			break;
+		    case 19:
+		    case 20:
+			__asm __volatile(innocent_pear_X86_PREFIX(1) "verr %0"
+			    : "=r" (h) : "n" (WhichPfx) : "cc");
+			x = static_cast<T>(h);
+			break;
+		    case 21:
+		    case 22:
+			__asm __volatile(innocent_pear_X86_PREFIX(1) "verw %0"
+			    : "=r" (h) : "n" (WhichPfx) : "cc");
+			x = static_cast<T>(h);
+			break;
 #elif defined __arm__ && defined __thumb2__
 		    case 0:
 		    case 1:
@@ -246,9 +221,31 @@ omg<State, T, Flags, 0u>
 			__asm __volatile("uxth %0, %1" : "=r" (y), "=r" (z));
 			x = static_cast<T>(y);
 			break;
+		    case 14:
+		    case 15:
+			__asm __volatile("msr CPSR_f, %0" : "=r" (y) : : "cc");
+			x = static_cast<T>(y);
+			break;
+		    case 16:
+		    case 17:
+			__asm __volatile("tst %0, %1" : "=r" (y), "=r" (z)
+			    : : "cc");
+			x = static_cast<T>(y);
+			break;
+		    case 18:
+		    case 19:
+			__asm __volatile("teq %0, %1" : "=r" (y), "=r" (z)
+			    : : "cc");
+			x = static_cast<T>(y);
+			break;
+		    case 20:
+		    case 21:
+			__asm __volatile("nop" : "=r" (y));
+			x = static_cast<T>(y);
+			break;
 #endif
-		    case 25:
-		    case 26:
+		    case 35:
+		    case 36:
 			if (bogo)
 				unpossible<State3, 0>();
 			// fall through
@@ -256,11 +253,15 @@ omg<State, T, Flags, 0u>
 			if ((State2 >> 16) % 4 == 0) {
 				constexpr T v = pick_hi<T>(State3);
 				kthxbai_impl<State3, T, Flags, 0>(x, v);
-			} else {
-				omg<State3, T, Flags, 0>();
+			} else
 				__asm __volatile("" : "=g" (x));
-			}
 		}
+	}
+	innocent_pear_always_inline
+	omg()
+	{
+		T x;
+		omg(x, false);
 	}
 };
 
@@ -287,7 +288,8 @@ omg
 	    NewState2 = update_outer(NewState, Levels),
 	    NewState3 = update_outer(NewState2, Levels),
 	    NewState4 = update_outer(NewState3, Levels),
-	    NewState5 = update_outer(NewState4, Levels);
+	    NewState5 = update_outer(NewState4, Levels),
+	    NewState6 = update_outer(NewState5, Levels);
 	static constexpr unsigned char
 	    Frob0 = pick_hi<unsigned char>(State2  ^ State3),
 	    Frob1 = pick_hi<unsigned char>(State3  ^ State4),
@@ -567,7 +569,7 @@ omg
 	}
     public:
 	innocent_pear_always_inline
-	static bool special()
+	static bool special(T& x, bool bogo = false)
 	{
 		using namespace innocent_pear::ops;
 		constexpr unsigned Which2 = (State2 >> 56) % 8;
@@ -653,7 +655,7 @@ omg
 			zero = (unsigned long)kthxbai1(0);
 #endif
 		}
-		omg<NewState5, T, Flags, Levels - 1>();
+		omg<NewState5, T, Flags, Levels - 1> zomg(x, bogo);
 		switch (Which2) {
 		    default:
 		    case 1:
@@ -682,52 +684,11 @@ omg
 		}
 		return true;
 	}
-    public:
 	innocent_pear_always_inline
-	omg()
+	static bool special()
 	{
-		constexpr unsigned Which = (State2 >> 48) % 16;
-		constexpr unsigned Bit = pick_hi<unsigned>(State2 ^ State3)
-		    % (sizeof(T) * CHAR_BIT);
-		switch (Which) {
-		    case 0:
-			{
-				T x;
-				omg<NewState, T, Flags, Levels - 1> zomg(x);
-			}
-			break;
-		    case 1:
-		    case 2:
-		    case 3:
-		    case 4:
-			{
-				T x;
-				omg<NewState, T, Flags, Levels - 1> zomg(x);
-				if (bit_set(x, Bit))
-					{ omg<NewState2,T,Flags,Levels-1>(); }
-				else
-					{ omg<NewState3,T,Flags,Levels-1>(); }
-			}
-			break;
-		    case 5:
-		    case 6:
-		    case 7:
-			if (special())
-				return;
-			if (false)
-		    case 8:
-		    case 9:
-		    case 10:
-		    case 11:
-			if (wheee())
-				return;
-			// fall through
-		    default:
-			{
-				omg<NewState, T, Flags, Levels - 1>();
-				omg<NewState2, T, Flags, Levels - 1>();
-			}
-		}
+		T x;
+		return special(x, false);
 	}
 	innocent_pear_always_inline
 	omg(T& x, bool bogo = false)
@@ -735,9 +696,10 @@ omg
 		using namespace innocent_pear::ops;
 		constexpr unsigned Bit = pick_hi<unsigned>(State2 ^ State3)
 		    % (sizeof(T) * CHAR_BIT);
-		switch ((State2 >> 48) % 19) {
+		switch ((State2 >> 48) % 23) {
 		    case 0:
 		    case 1:
+		    case 2:
 			{
 				T y;
 				omg<NewState, T, Flags, Levels - 1>
@@ -750,13 +712,7 @@ omg
 					   (x, y)));
 			}
 			break;
-		    case 2:
 		    case 3:
-			{
-				omg<NewState, T, Flags, Levels>();
-				__asm __volatile("" : "=g" (x));
-			}
-			break;
 		    case 4:
 		    case 5:
 		    case 6:
@@ -807,6 +763,19 @@ omg
 			if (false)
 		    case 14:
 		    case 15:
+			if (special(x, bogo))
+				return;
+			if (false)
+		    case 16:
+		    case 17:
+			if (wheee()) {
+				omg<NewState6, T, Flags, Levels - 1>
+				    zomg(x, bogo);
+				return;
+			}
+			if (false)
+		    case 18:
+		    case 19:
 			if (bogo)
 				unpossible<NewState3, Levels - 1>();
 			// fall through
@@ -823,6 +792,12 @@ omg
 			}
 
 		}
+	}
+	innocent_pear_always_inline
+	omg()
+	{
+		T x;
+		omg(x, false);
 	}
 };
 

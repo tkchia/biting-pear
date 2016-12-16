@@ -45,7 +45,10 @@ class tfw
 	}
 	innocent_pear_always_inline
 	bool operator !() const
-		{ return !(bool)*this; }
+	{
+		return bit_set(Val, Bit) ? !bit_set(x_, Bit) :
+					   bit_set(x_, Bit);
+	}
 };
 
 } // innocent_pear::impl

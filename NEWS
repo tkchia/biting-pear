@@ -1,3 +1,11 @@
+2016-12-16	"The best prophet of the future is the past."
+
+		include/innocent-pear/omg.h :
+		- unified treatment of omg<...>::omg() and omg<...>::omg(...)
+
+		include/innocent-pear/tfw.h :
+		- rewrote tfw<...>::operator!()
+
 2016-12-12	"I shot an arrow in to the air, and it stuck."  (9)
 
 		include/innocent-pear/yarly.h :
