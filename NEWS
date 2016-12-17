@@ -1,3 +1,13 @@
+2016-12-17	More loops.
+
+		include/innocent-pear/omg.h :
+		- fixed randomization for omg<..., 0>
+		- added finite loops for omg<..., {non-zero}>
+
+		share/innocent-pear/doge-i.h :
+		- innocent_pear_CHAFF(.) now uses default number of layers of
+		  scrambling -- and does it 3 times
+
 2016-12-16	"The best prophet of the future is the past."
 
 		include/innocent-pear/omg.h :

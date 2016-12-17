@@ -68,8 +68,11 @@ omg<State, T, Flags, 0u>
 	innocent_pear_always_inline
 	omg(T& x, bool bogo = false)
 	{
-		constexpr rand_state_t State2 = update_inner(State);
-		constexpr rand_state_t State3 = update_inner(State2);
+		constexpr rand_state_t
+		    State2 = update_inner(State),
+		    State3 = update_inner(State2),
+		    State4 = update_inner(State3),
+		    State5 = update_inner(State4);
 		constexpr unsigned Which = (State2 >> 16) % 37;
 		constexpr unsigned WhichPfx = (State3 >> 32) % 6;
 #if defined __amd64__ || defined __i386__ || defined __arm__
@@ -251,8 +254,8 @@ omg<State, T, Flags, 0u>
 			// fall through
 		    default:
 			if ((State2 >> 16) % 4 == 0) {
-				constexpr T v = pick_hi<T>(State3);
-				kthxbai_impl<State3, T, Flags, 0>(x, v);
+				constexpr T v = pick_hi<T>(State4);
+				kthxbai_impl<State5, T, Flags, 0>(x, v);
 			} else
 				__asm __volatile("" : "=g" (x));
 		}
@@ -696,7 +699,7 @@ omg
 		using namespace innocent_pear::ops;
 		constexpr unsigned Bit = pick_hi<unsigned>(State2 ^ State3)
 		    % (sizeof(T) * CHAR_BIT);
-		switch ((State2 >> 48) % 23) {
+		switch ((State2 >> 48) % 25) {
 		    case 0:
 		    case 1:
 		    case 2:
@@ -776,6 +779,31 @@ omg
 			if (false)
 		    case 18:
 		    case 19:
+			{
+				constexpr uintptr_t N = (State3 >> 48) % 256;
+				constexpr unsigned WhichOp =
+				    (unsigned)(State4 >> 16);
+				T w, y, z;
+				uintptr_t c;
+				{
+					kthxbai_impl<NewState, uintptr_t,
+					    Flags, Levels - 1>(c, N);
+					omg<NewState2, T, Flags, Levels - 1>
+					    (y, bogo);
+				}
+				while (c-- != 0) {
+					omg<NewState3, T, Flags, Levels - 1>
+					    (z, bogo);
+					kthxbai_impl<NewState4, T, Flags, 0>
+					    (w, do_inv_op<WhichOp>(y, z));
+					y = w;
+				}
+				kthxbai_impl<NewState5, T, Flags, 0>(x, y);
+				break;
+			}
+			if (false)
+		    case 20:
+		    case 21:
 			if (bogo)
 				unpossible<NewState3, Levels - 1>();
 			// fall through
