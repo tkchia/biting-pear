@@ -45,6 +45,21 @@ env:
     CC_FOR_TARGET=gcc-5
     CXXFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -fPIC -pie -Wall"
     CFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -fPIC -pie -Wall"
+  - TARGET=i686-linux-gnu
+    CXX_FOR_TARGET=g++
+    CC_FOR_TARGET=gcc
+    CXXFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -Wall -static"
+    CFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -Wall -static"
+  - TARGET=i386-linux-gnu
+    CXX_FOR_TARGET=g++
+    CC_FOR_TARGET=gcc
+    CXXFLAGS_FOR_TARGET="-m32 -march=i386 -O3 -Wall -static"
+    CFLAGS_FOR_TARGET="-m32 -march=i386 -O3 -Wall -static"
+  - TARGET=i686-linux-gnu
+    CXX_FOR_TARGET=g++
+    CC_FOR_TARGET=gcc
+    CXXFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -fPIC -pie -Wall"
+    CFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -fPIC -pie -Wall"
   - TARGET=armv7-a-linux-gnueabi
   - TARGET=armv7-a-linux-gnueabi
     CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
@@ -55,6 +70,10 @@ env:
     CFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
   - TARGET=armv4t-linux-gnueabi
   - TARGET=armv4t-linux-gnueabi
+    CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
+    CFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
+  - TARGET=armv4-linux-gnueabi
+  - TARGET=armv4-linux-gnueabi
     CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
     CFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
   - TARGET=armv7-a-linux-gnueabihf

@@ -1,3 +1,13 @@
+2016-12-18	"The best prophet of the future is the past."  (2)
+
+		.travis.yml :
+		- added back armv4-linux-gnueabi test configuration
+		- added (back) x86-32 test configurations with g++ (and gcc)
+
+		README.md :
+		- removed compiler crash description -- was likely caused by
+		  ohai.h, which is now removed
+
 2016-12-17	More loops.
 
 		include/innocent-pear/omg.h :
