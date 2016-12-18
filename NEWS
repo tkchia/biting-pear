@@ -8,6 +8,9 @@
 		- removed compiler crash description -- was likely caused by
 		  ohai.h, which is now removed
 
+		include/innocent-pear/omg.h :
+		- fixed typo that caused armv4 compilation to fail
+
 2016-12-17	More loops.
 
 		include/innocent-pear/omg.h :

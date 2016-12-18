@@ -474,7 +474,7 @@ omg
 		kthxbai<NewState, void *, Flags, Levels - 1>
 		    p((char *)(Flip ? &&bar : &&foo) + 1, 1);
 #   else
-		kthxbai<NewState, void *, Flags, Levels - 1> p
+		kthxbai<NewState, void *, Flags, Levels - 1>
 		    p(Flip ? &&bar : &&foo, 1);
 #   endif
 		void *q = static_cast<void *>(p);
