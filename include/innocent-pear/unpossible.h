@@ -36,8 +36,17 @@ struct unpossible<State, 0u>
 		    case 0:
 			{
 				void (*p)();
+#if defined __arm__ && !defined __thumb__
+				/*
+				 * To prevent g++ for armv4 from weirding
+				 * out... :(
+				 */
+				__asm __volatile("mov lr, pc; mov pc, %0"
+				    : "=g" (p) : : "memory", "cc");
+#else
 				__asm __volatile("" : "=g" (p));
 				p();
+#endif
 			}
 			break;
 		    case 1:

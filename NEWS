@@ -11,6 +11,9 @@
 		include/innocent-pear/omg.h :
 		- fixed typo that caused armv4 compilation to fail
 
+		include/innocent-pear/unpossible.h :
+		- added workaround for weird armv4 issue
+
 2016-12-17	More loops.
 
 		include/innocent-pear/omg.h :
