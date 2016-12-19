@@ -1,3 +1,14 @@
+2016-12-19	Now uses the `wipe' utility build-side, if present.
+
+		infra/wipe-wrapper.sh :
+		- new
+
+		GNUmakefile :
+		- may now define $(RM) to use wipe-wrapper.sh
+
+		configure :
+		- now checks for `wipe' utility build-side
+
 2016-12-18	"The best prophet of the future is the past."  (2)
 
 		.travis.yml :

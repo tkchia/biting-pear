@@ -119,7 +119,11 @@ installables.host = \
     share/innocent-pear/doge-n.ld
 installables.target = \
     $(headers.target)
-RM ?= rm -f
+ifeq "yes" "$(conf_Have_appb_wipe)"
+    RM = '$(abspath $(conf_Srcdir)/infra/wipe-wrapper.sh)'
+else
+    RM ?= rm -f
+endif
 
 default all: $(installables.host) $(installables.target)
 
