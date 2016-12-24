@@ -1,3 +1,36 @@
+2016-12-24	Eye octal.
+
+		configure :
+		- now handles FS_IOC_GETFLAGS and FS_IOC_GETVERSION constants
+		  (in <linux/fs.h>)
+
+		GNUmakefile :
+		- now handles FS_IOC_GETFLAGS and FS_IOC_GETVERSION constants
+		  (in <linux/fs.h>)
+		- added test-omg-special test case
+
+		include/innocent-pear/omg.h :
+		- now uses FS_IOC_GETFLAGS and/or FS_IOC_GETVERSION if present
+		- fixed some glitches in omg<...>::special(...)'s procedure
+		  to decide whether to enable certain sequences
+
+		include/innocent-pear/rofl.h :
+		- now writes debug messages about rofl<...>::ioctl if
+		  innocent_pear_DEBUG is defined
+
+		include/innocent-pear/kthxbai.h :
+		- fixed silly glitch in looping construct
+
+		include/innocent0-pear/tfw.h :
+		- rewriting...
+
+		test/test-omg-special.cc ,
+		test/test-omg-special.good :
+		- new
+
+		infra/wipe-wrapper.sh :
+		- now only tries to wipe each file once
+
 2016-12-19	Now uses the `wipe' utility build-side, if present.
 
 		infra/wipe-wrapper.sh :

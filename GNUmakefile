@@ -68,6 +68,8 @@ tests.target = \
     test/test-kthxbai-p \
     test/test-omg-wheee.debug \
     test/test-omg-wheee \
+    test/test-omg-special.debug \
+    test/test-omg-special \
     test/test-orly-1 \
     test/test-orly-2 \
     test/test-dawg \
@@ -382,7 +384,8 @@ endif
 				 '#undef innocent_pear_HAVE_CONST_$c'; \
 			fi; ) \
 		$(foreach c,TCOOFF TCOON TCXONC TIOCSTOP TIOCSTART \
-		    PR_GET_DUMPABLE PR_SET_DUMPABLE, \
+		    PR_GET_DUMPABLE PR_SET_DUMPABLE FS_IOC_GETFLAGS \
+		    FS_IOC_GETVERSION, \
 			if test '$(conf_Have_cxxt_const_$(subst _,_1,$c))' = \
 			    yes; then \
 				echo \

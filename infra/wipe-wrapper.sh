@@ -16,5 +16,5 @@ if test x-- = x"$1"
 	then shift; fi
 for f in ${1+"$@"}; do
 	if test -e "$f"
-		then wipe -f -q -s $opts "$f"; fi
+		then wipe -f -q -s -Q1 $opts "$f"; fi
 done

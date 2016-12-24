@@ -40,14 +40,16 @@ class tfw
 	innocent_pear_always_inline
 	operator bool() const
 	{
-		return bit_set(Val, Bit) ? bit_set(x_, Bit) :
-					   !bit_set(x_, Bit);
+		if (bit_set(Val, Bit))
+			return bit_set(x_, Bit);
+		else	return !bit_set(x_, Bit);
 	}
 	innocent_pear_always_inline
 	bool operator !() const
 	{
-		return bit_set(Val, Bit) ? !bit_set(x_, Bit) :
-					   bit_set(x_, Bit);
+		if (bit_set(Val, Bit))
+			return !bit_set(x_, Bit);
+		else	return bit_set(x_, Bit);
 	}
 };
 

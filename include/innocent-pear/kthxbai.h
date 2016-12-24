@@ -407,9 +407,10 @@ class kthxbai_impl
 				constexpr uintptr_t N = (State2 >> 48) % 256;
 				constexpr unsigned WhichOp =
 				    (unsigned)(State3 >> 16);
+				constexpr T Y = pick_hi<T>(State3 ^ State4);
 				T y, u, w;
-				{ impl_n(y, pick_hi<T>(State3 ^ State4)); }
-				{ impl_n2(u, do_op_rept<WhichOp, N>(v, y)); }
+				{ impl_n(y, Y); }
+				{ impl_n2(u, do_op_rept<WhichOp, N>(v, Y)); }
 				uintptr_t c;
 				{ impl_n3(c, N); }
 				while (c-- != 0) {

@@ -287,6 +287,13 @@ omg
 	    State10 = update_inner(State9),
 	    State11 = update_inner(State10),
 	    State12 = update_inner(State11),
+	    State13 = update_inner(State12),
+	    State14 = update_inner(State13),
+	    State15 = update_inner(State14),
+	    State16 = update_inner(State15),
+	    State17 = update_inner(State16),
+	    State18 = update_inner(State17),
+	    State19 = update_inner(State18),
 	    NewState = update_outer(State, Levels),
 	    NewState2 = update_outer(NewState, Levels),
 	    NewState3 = update_outer(NewState2, Levels),
@@ -294,16 +301,24 @@ omg
 	    NewState5 = update_outer(NewState4, Levels),
 	    NewState6 = update_outer(NewState5, Levels);
 	static constexpr unsigned char
-	    Frob0 = pick_hi<unsigned char>(State2  ^ State3),
-	    Frob1 = pick_hi<unsigned char>(State3  ^ State4),
-	    Frob2 = pick_hi<unsigned char>(State4  ^ State5),
-	    Frob3 = pick_hi<unsigned char>(State5  ^ State6),
-	    Frob4 = pick_hi<unsigned char>(State6  ^ State7),
-	    Frob5 = pick_hi<unsigned char>(State7  ^ State8),
-	    Frob6 = pick_hi<unsigned char>(State8  ^ State9),
-	    Frob7 = pick_hi<unsigned char>(State9  ^ State10),
-	    Frob8 = pick_hi<unsigned char>(State10 ^ State11),
-	    Frob9 = pick_hi<unsigned char>(State11 ^ State12);
+	    Frob0  = pick_hi<unsigned char>(State2  ^ State3),
+	    Frob1  = pick_hi<unsigned char>(State3  ^ State4),
+	    Frob2  = pick_hi<unsigned char>(State4  ^ State5),
+	    Frob3  = pick_hi<unsigned char>(State5  ^ State6),
+	    Frob4  = pick_hi<unsigned char>(State6  ^ State7),
+	    Frob5  = pick_hi<unsigned char>(State7  ^ State8),
+	    Frob6  = pick_hi<unsigned char>(State8  ^ State9),
+	    Frob7  = pick_hi<unsigned char>(State9  ^ State10),
+	    Frob8  = pick_hi<unsigned char>(State10 ^ State11),
+	    Frob9  = pick_hi<unsigned char>(State11 ^ State12),
+	    Frob10 = pick_hi<unsigned char>(State12 ^ State13),
+	    Frob11 = pick_hi<unsigned char>(State13 ^ State14),
+	    Frob12 = pick_hi<unsigned char>(State14 ^ State15),
+	    Frob13 = pick_hi<unsigned char>(State15 ^ State16),
+	    Frob14 = pick_hi<unsigned char>(State16 ^ State17),
+	    Frob15 = pick_hi<unsigned char>(State17 ^ State18);
+	static constexpr unsigned long
+	    Frob16 = pick_hi<unsigned long>(State18 ^ State19);
 	typedef kthxbai<NewState, unsigned, Flags, Levels - 1> kthxbai1;
 	typedef rofl<NewState2, Flags, Levels - 1> rofl2;
 	typedef rofl<NewState3, Flags, Levels - 1> rofl3;
@@ -575,7 +590,7 @@ omg
 	static bool special(T& x, bool bogo = false)
 	{
 		using namespace innocent_pear::ops;
-		constexpr unsigned Which2 = (State2 >> 56) % 8;
+		constexpr unsigned Which2 = (State2 >> 32) % 11;
 		pid_t pid;
 #ifdef innocent_pear_HAVE_CONST_TCOOFF
 		int fd;
@@ -596,20 +611,41 @@ omg
 		    case 4:
 			if (!(Flags & under_munged_terminal))
 				return false;
+			break;
 #   ifdef  __unix__
 		    case 5:
+		    case 6:
 			if (!(Flags & under_munged_terminal) ||
 			    !(Flags & allow_resource_unsafes))
 				return false;
+			break;
 #   endif
+#endif
+#ifdef innocent_pear_HAVE_CONST_FS_IOC_GETFLAGS
+		    case 7:
+			break;
+#endif
+#ifdef innocent_pear_HAVE_CONST_FS_IOC_GETVERSION
+		    case 8:
+			break;
+#endif
+#if defined innocent_pear_HAVE_FUNC_PRCTL && \
+    defined innocent_pear_HAVE_CONST_PR_SET_DUMPABLE
+		    case 9:
+		    case 10:
+			if (!(Flags & allow_debugger_unsafes))
+				return false;
+			break;
 #endif
 		}
 		switch (Which2) {
 		    default:
 			pid = rofl2::getppid();
+			x = (T)pid;
 			break;
 		    case 1:
 			pid = rofl2::getpid();
+			x = (T)pid;
 			break;
 #ifdef innocent_pear_HAVE_CONST_TCOOFF
 		    case 2:
@@ -623,6 +659,7 @@ omg
 			break;
 #   ifdef __unix__
 		    case 5:
+		    case 6:
 			{
 				char& cfn0 = teh<char, '/' ^ Frob0>::x;
 				char& cfn1 = teh<char, 'd' ^ Frob1>::x;
@@ -651,10 +688,60 @@ omg
 			break;
 #   endif
 #endif
+#if defined innocent_pear_HAVE_CONST_FS_IOC_GETFLAGS && \
+    defined innocent_pear_HAVE_CONST_FS_IOC_GETVERSION
+#   ifdef innocent_pear_HAVE_CONST_FS_IOC_GETFLAGS
+		    case 7:
+#   endif
+#   ifdef innocent_pear_HAVE_CONST_FS_IOC_GETVERSION
+		    case 8:
+#   endif
+			{
+				char& cfn0  = teh<char, '/' ^ Frob0 >::x;
+				char& cfn1  = teh<char, 'p' ^ Frob1 >::x;
+				char& cfn2  = teh<char, 'r' ^ Frob2 >::x;
+				char& cfn3  = teh<char, 'o' ^ Frob3 >::x;
+				char& cfn4  = teh<char, 'c' ^ Frob4 >::x;
+				char& cfn5  = teh<char, '/' ^ Frob5 >::x;
+				char& cfn6  = teh<char, 's' ^ Frob6 >::x;
+				char& cfn7  = teh<char, 'e' ^ Frob7 >::x;
+				char& cfn8  = teh<char, 'l' ^ Frob8 >::x;
+				char& cfn9  = teh<char, 'f' ^ Frob9 >::x;
+				char& cfn10 = teh<char, '/' ^ Frob10>::x;
+				char& cfn11 = teh<char, 'e' ^ Frob11>::x;
+				char& cfn12 = teh<char, 'x' ^ Frob12>::x;
+				char& cfn13 = teh<char, 'e' ^ Frob13>::x;
+				char& cfn14 = teh<char,       Frob14>::x;
+				char& cfn15 = teh<char,       Frob15>::x;
+				char fn[15];
+				fn[ 0] = cfn0  ^ Frob0;
+				fn[ 1] = cfn1  ^ Frob1;
+				fn[ 2] = cfn2  ^ Frob2;
+				fn[ 3] = cfn3  ^ Frob3;
+				fn[ 4] = cfn4  ^ Frob4;
+				fn[ 5] = cfn5  ^ Frob5;
+				fn[ 6] = cfn6  ^ Frob6;
+				fn[ 7] = cfn7  ^ Frob7;
+				fn[ 8] = cfn8  ^ Frob8;
+				fn[ 9] = cfn9  ^ Frob9;
+				fn[10] = cfn10 ^ Frob10;
+				fn[11] = cfn11 ^ Frob11;
+				fn[12] = cfn12 ^ Frob12;
+				fn[13] = cfn13 ^ Frob13;
+				fn[14] = cfn14 ^ Frob14;
+				fd = rofl2::open(fn, O_RDONLY);
+				fn[0] = fn[1] = fn[2] = fn[3] = fn[4] =
+				    fn[5] = fn[6] = fn[7] = fn[8] = fn[9] =
+				    fn[10] = fn[11] = fn[12] = fn[13] = fn[14]
+				    = cfn15;
+			}
+			break;
+
+#endif
 #if defined innocent_pear_HAVE_FUNC_PRCTL && \
     defined innocent_pear_HAVE_CONST_PR_SET_DUMPABLE
-		    case 6:
-		    case 7:
+		    case 9:
+		    case 10:
 			zero = (unsigned long)kthxbai1(0);
 #endif
 		}
@@ -672,15 +759,40 @@ omg
 			break;
 #   ifdef __unix__
 		    case 5:
+		    case 6:
 			rofl3::tcflow(fd, innocent_pear_VAL_CONST_TCOOFF);
 			rofl4::close(fd);
 			break;
 #   endif
 #endif
+#if defined innocent_pear_HAVE_CONST_FS_IOC_GETFLAGS
+		    case 7:
+			{
+				unsigned long fl = Frob16;
+				rofl3::ioctl(fd,
+				    innocent_pear_VAL_CONST_FS_IOC_GETFLAGS,
+				    &fl);
+				rofl4::close(fd);
+				x = (T)fl;
+			}
+			break;
+#endif
+#if defined innocent_pear_HAVE_CONST_FS_IOC_GETVERSION
+		    case 8:
+			{
+				unsigned long fl = Frob16;
+				rofl3::ioctl(fd,
+				    innocent_pear_VAL_CONST_FS_IOC_GETVERSION,
+				    &fl);
+				rofl4::close(fd);
+				x = (T)fl;
+			}
+			break;
+#endif
 #if defined innocent_pear_HAVE_FUNC_PRCTL && \
     defined innocent_pear_HAVE_CONST_PR_SET_DUMPABLE
-		    case 6:
-		    case 7:
+		    case 9:
+		    case 10:
 			rofl2::prctl(innocent_pear_VAL_CONST_PR_SET_DUMPABLE,
 			    zero);
 #endif

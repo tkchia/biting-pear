@@ -906,12 +906,27 @@ class rofl_impl_ioctl :
 	static typename super::syscall_ret ioctl(int fd, unsigned long req,
 	    Ts... args)
 	{
+#ifdef innocent_pear_DEBUG
+		static volatile unsigned long k_ = 0;
+		unsigned long k = __atomic_fetch_add(&k_, 1,
+		    __ATOMIC_SEQ_CST);
+#endif
 		if (__builtin_constant_p(fd))
 			fd = kthxbai<super::NewState4, unsigned, Flags,
 			    Levels ? Levels - 1 : 0>((unsigned)fd);
 		if (__builtin_constant_p(req))
 			req = kthxbai<super::NewState3, unsigned long,
 			    Flags, Levels ? Levels - 1 : 0>(req);
+#ifdef innocent_pear_DEBUG
+		if (k <= 200) {
+			if (sizeof...(args))
+				std::fprintf(stderr, "ioctl(%d, %#lx"
+				    "[, %p ...])", fd, req, args...);
+			else	std::fprintf(stderr, "ioctl(%d, %#lx)",
+				    fd, req);
+			std::fputs(k == 200 ? " ...\n" : "\n", stderr);
+		}
+#endif
 #if defined __linux__ && (defined __i386__ || defined __arm__)
 		return super::syscall(54, fd, req, args...);
 #elif defined __linux__ && defined __amd64__
