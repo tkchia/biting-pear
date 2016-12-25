@@ -454,10 +454,6 @@ omg
 #   endif
 			unpossible<NewState3, Levels - 1>();
 		}
-#   ifdef innocent_pear_DEBUG
-		std::fprintf(stderr, "wheee() %#" PRIxLEAST64 ": w00t\n",
-		    State);
-#   endif
 		return true;
 #elif (defined __arm__ || defined __thumb__) && \
     defined innocent_pear_HAVE_ASM_GOTO
@@ -558,10 +554,6 @@ omg
 			unpossible<NewState3, Levels - 1>();
 			__asm __volatile(".ltorg");
 		}
-#   ifdef innocent_pear_DEBUG
-		std::fprintf(stderr, "wheee() %#" PRIxLEAST64 ": w00t\n",
-		    State);
-#   endif
 		return true;
 #else
 		return false;
