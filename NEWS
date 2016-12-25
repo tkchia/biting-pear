@@ -1261,6 +1261,9 @@
 		include/innocent-pear/yodawg.h :
 		- updated to fit new definition of dawg_impl<...>
 
+		include/innocent-pear/unpossible.h :
+		- removed indirect calls
+
 		include/innocent-pear/rofl.h :
 		- added open(...) and close(...) syscalls
 		- some tweaks
