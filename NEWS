@@ -10,6 +10,9 @@
 		include/innocent-pear/tfw.h :
 		- redefined interface to tfw<...>
 
+		include/innocent-pear/unpossible.h :
+		- removed indirect calls
+
 		test/test-omg-wheee.cc ,
 		test/test-omg-wheee.good :
 		- added subtests
@@ -1260,9 +1263,6 @@
 
 		include/innocent-pear/yodawg.h :
 		- updated to fit new definition of dawg_impl<...>
-
-		include/innocent-pear/unpossible.h :
-		- removed indirect calls
 
 		include/innocent-pear/rofl.h :
 		- added open(...) and close(...) syscalls
