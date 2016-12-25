@@ -24,19 +24,10 @@ class tfw
 	static constexpr unsigned Bit =
 	    pick_hi<T>(State2 ^ NewState) % (sizeof(T) * CHAR_BIT);
 	T x_;
-	innocent_pear_always_inline
-	static void set(T& x)
-		{ kthxbai_impl<NewState, T, Flags, Levels>(x, Val); }
     public:
 	innocent_pear_always_inline
 	tfw()
-		{ set(x_); }
-	innocent_pear_always_inline
-	tfw(T& x)
-	{
-		set(x);
-		x_ = x;
-	}
+		{ kthxbai_impl<NewState, T, Flags, Levels>(x_, Val); }
 	innocent_pear_always_inline
 	bool operator()() const
 	{

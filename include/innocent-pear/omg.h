@@ -327,7 +327,6 @@ omg
 	innocent_pear_always_inline
 	static void coax_nonleaf()
 	{
-		unpossible<NewState4, Levels - 1>();
 		/*
 		 * Coax the compiler into not setting up a "red zone" above
 		 * the stack pointer, by making it compile a function call.
@@ -344,16 +343,6 @@ omg
 	innocent_pear_always_inline
 	static bool wheee()
 	{
-#if defined innocent_pear_DEBUG && innocent_pear_HAVE_ASM_GOTO
-		static volatile unsigned long k_ = 0;
-		unsigned long k = __atomic_fetch_add(&k_, 1, __ATOMIC_SEQ_CST);
-		if (k > 200)
-			return true;
-		std::fprintf(stderr, "wheee() %#" PRIxLEAST64 " %#x %u "
-		    "@%p%s\n", State, (unsigned)Flags, Levels, &&qux,
-		    k == 200 ? "..." : "");
-	    qux:
-#endif
 #if (defined __amd64__ || defined __i386__ ) && \
     defined innocent_pear_HAVE_ASM_GOTO
 		constexpr bool Flip = (State4 >> 63) % 2 != 0;
@@ -368,45 +357,24 @@ omg
 		constexpr unsigned Which6 = (State6 >> 40) % 15;
 		constexpr unsigned Push4 = (State4 >> 48) % 0x1ff;
 		constexpr unsigned Push5 = (State5 >> 48) % 0x1ff;
-		kthxbai<NewState, void *, Flags, Levels - 1>
-		    p(Flip ? &&bar : &&foo, 1);
+		kthxbai<NewState, void *, Flags, Levels - 1> p(&&foo, 1);
 		void *q, *r = 0;
-#   ifdef innocent_pear_DEBUG
-		std::fprintf(stderr, "wheee() %#" PRIxLEAST64 ": "
-		    "Which2 = %u, Flip = %s, NewState4 = %#" PRIxLEAST64 "\n",
-		    State, Which2, Flip ? "true" : "false", NewState4);
-#   endif
 		if (Flip) {
 			if (tfw<NewState4, T, Flags, Levels - 1>()())
 				return true;
-#   ifdef innocent_pear_DEBUG
-			std::fprintf(stderr, "wheee() %#" PRIxLEAST64
-			    ": UNPOSSIBLE!!!1 @%p\n", State, &&quux);
-	    quux:	std::abort();
-#   endif
 		} else {
-			if (!tfw<NewState4, T, Flags, Levels - 1>()()) {
-#   ifdef innocent_pear_DEBUG
-				std::fprintf(stderr, "wheee() %#" PRIxLEAST64
-				    ": UNPOSSIBLE!!!1 @%p\n", State, &&quuux);
-	    quuux:		std::abort();
-#   endif
-				goto bar;
-			}
+			if (!tfw<NewState4, T, Flags, Levels - 1>()())
+				goto foo;
 		}
 		__asm("movw %%cs, %w0" : "=g" (r));
 		q = static_cast<void *>(p);
-#   ifdef innocent_pear_DEBUG
-		std::fprintf(stderr, "wheee() %#" PRIxLEAST64 ": q = %p\n",
-		    State, q);
-#   endif
 		switch (Which2) {
 		    default:
 			__asm goto(innocent_pear_X86_BR_PREFIX(1) "jmp%z0 *%0"
 			    : /* no outputs */
 			    : "r" (q), "n" (Which3)
 			    : /* no clobbers */
-			    : foo, bar);  break;
+			    : foo);  break;
 #   ifdef __amd64__
 		    case 1:
 			__asm goto(innocent_pear_X86_PREFIXED_PUSH(1, 2, 0)
@@ -414,8 +382,7 @@ omg
 			    : /* no outputs */
 			    : "r" (q), "n" (Which4), "n" (Push4), "n" (Which5)
 			    : "memory"
-			    : foo, bar);
-			coax_nonleaf();
+			    : foo);
 			break;
 		    case 2:
 			__asm goto(innocent_pear_X86_PREFIXED_PUSH(2, 3, 1)
@@ -425,8 +392,7 @@ omg
 			    : "r" (q), "r" (r), "n" (Which4), "n" (Push4),
 			      "n" (Which5), "n" (Push5), "n" (Which6)
 			    : "memory"
-			    : foo, bar);
-			coax_nonleaf();
+			    : foo);
 			break;
 #   else
 		    case 1:
@@ -435,7 +401,7 @@ omg
 			    : /* no outputs */
 			    : "r" (q), "n" (Which3), "n" (Which4), "n" (Push4)
 			    : "memory"
-			    : foo, bar);  break;
+			    : foo);  break;
 		    case 2:
 			__asm goto(innocent_pear_X86_PREFIXED_PUSH(3, 4, 1)
 				   innocent_pear_X86_PREFIXED_PUSH(5, 6, 0)
@@ -444,7 +410,7 @@ omg
 			    : "r" (q), "r" (r), "n" (Which3), "n" (Which4),
 			      "n" (Push4), "n" (Which5), "n" (Push5)
 			    : "memory"
-			    : foo, bar);  break;
+			    : foo);  break;
 		    case 3:
 			__asm goto(innocent_pear_X86_PREFIX(2) "pushfl; "
 				   innocent_pear_X86_PREFIXED_PUSH(3, 4, 1)
@@ -455,7 +421,7 @@ omg
 			      "n" (Push4), "n" (Which5), "n" (Push5),
 			      "n" (Which6)
 			    : "memory"
-			    : foo, bar);  break;
+			    : foo);  break;
 		    case 4:
 			{
 				struct { void *qq, *rr; } qr = { q, r };
@@ -463,15 +429,31 @@ omg
 				    : /* no outputs */
 				    : "m" (qr)
 				    : /* no clobbers */
-				    : foo, bar);
+				    : foo);
 			}
 			break;
 #   endif
 		}
-		{ unpossible<NewState2, Levels - 1>(); }
-	    bar:
-		{ unpossible<NewState3, Levels - 1>(); }
+		{
+#   ifdef innocent_pear_DEBUG
+			std::fprintf(stderr, "wheee() %#" PRIxLEAST64
+			    ": UNPOSSIBLE!!!1 @%p\n", State, &&qux);
+	    qux:	std::abort();
+#   endif
+			unpossible<NewState2, Levels - 1>();
+#   ifdef __amd64__
+			coax_nonleaf();
+#   endif
+		}
 	    foo:
+		if (Flip) {
+#   ifdef innocent_pear_DEBUG
+			std::fprintf(stderr, "wheee() %#" PRIxLEAST64
+			    ": UNPOSSIBLE!!!2 @%p\n", State, &&foo);
+	    		std::abort();
+#   endif
+			unpossible<NewState3, Levels - 1>();
+		}
 #   ifdef innocent_pear_DEBUG
 		std::fprintf(stderr, "wheee() %#" PRIxLEAST64 ": w00t\n",
 		    State);
@@ -487,47 +469,35 @@ omg
 #   endif
 #   if defined __thumb__
 		kthxbai<NewState, void *, Flags, Levels - 1>
-		    p((char *)(Flip ? &&bar : &&foo) + 1, 1);
+		    p((char *)&&foo + 1, 1);
 #   else
-		kthxbai<NewState, void *, Flags, Levels - 1>
-		    p(Flip ? &&bar : &&foo, 1);
+		kthxbai<NewState, void *, Flags, Levels - 1> p(&&foo, 1);
 #   endif
 		void *q = static_cast<void *>(p);
 		if (Flip) {
 			if (tfw<NewState4, T, Flags, Levels - 1>()())
 				return true;
-#   ifdef innocent_pear_DEBUG
-			std::fprintf(stderr, "wheee() %#" PRIxLEAST64
-			    ": UNPOSSIBLE!!!1 @%p\n", State, &&quux);
-	    quux:	std::abort();
-#   endif
 		} else {
-			if (!tfw<NewState4, T, Flags, Levels - 1>()()) {
-#   ifdef innocent_pear_DEBUG
-				std::fprintf(stderr, "wheee() %#" PRIxLEAST64
-				    ": UNPOSSIBLE!!!1 @%p\n", State, &&quuux);
-	    quuux:		std::abort();
-#   endif
-				goto bar;
-			}
+			if (!tfw<NewState4, T, Flags, Levels - 1>()())
+				goto foo;
 		}
 		switch (Which2) {
 		    default:
-			__asm goto("mov pc, %0" : : "r" (q) : : foo, bar);
+			__asm goto("mov pc, %0" : : "r" (q) : : foo);
 			break;
 #   if defined __thumb2__ || !defined __thumb__
 		    case 1:
-			__asm goto("ldr pc, %0" : : "m" (q) : : foo, bar);
+			__asm goto("ldr pc, %0" : : "m" (q) : : foo);
 			break;
 #   endif
 #   ifdef __THUMB_INTERWORK__
 		    case 2:
-			__asm goto("bx %0" : : "r" (q) : : foo, bar);  break;
+			__asm goto("bx %0" : : "r" (q) : : foo);  break;
 	// blx is supported only from ARMv5T onwards
 #	if !defined __ARM_ARCH_4__ && !defined __ARM_ARCH_4T__
 		    case 3:
 		    case 4:
-			__asm goto("blx %0" : : "r" (q) : "lr" : foo, bar);
+			__asm goto("blx %0" : : "r" (q) : "lr" : foo);
 			break;
 #	endif
 #	ifdef __ELF__
@@ -548,7 +518,7 @@ omg
 			    : /* no outputs */
 			    : "r" (q), "n" (Subsxn)
 			    : "ip", "lr"
-			    : foo, bar);
+			    : foo);
 			break;
 #	    if defined __thumb__ && defined __ARM_ARCH_ISA_ARM
 		    case 7:
@@ -563,19 +533,31 @@ omg
 			    : /* no outputs */
 			    : "r" (q), "n" (Subsxn)
 			    : "ip", "lr"
-			    : foo, bar);
+			    : foo);
 			break;
 #	    endif
 #	endif
 #   endif
 		}
-		{ unpossible<NewState2, Levels - 1>(); }
-	    bar:
 		{
-			unpossible<NewState3, Levels - 1>();
+#   ifdef innocent_pear_DEBUG
+			std::fprintf(stderr, "wheee() %#" PRIxLEAST64
+			    ": UNPOSSIBLE!!!1 @%p\n", State, &&qux);
+	    qux:	std::abort();
+#   endif
+			unpossible<NewState2, Levels - 1>();
 			__asm __volatile(".ltorg");
 		}
 	    foo:
+		if (Flip) {
+#   ifdef innocent_pear_DEBUG
+			std::fprintf(stderr, "wheee() %#" PRIxLEAST64
+			    ": UNPOSSIBLE!!!2 @%p\n", State, &&foo);
+	    		std::abort();
+#   endif
+			unpossible<NewState3, Levels - 1>();
+			__asm __volatile(".ltorg");
+		}
 #   ifdef innocent_pear_DEBUG
 		std::fprintf(stderr, "wheee() %#" PRIxLEAST64 ": w00t\n",
 		    State);

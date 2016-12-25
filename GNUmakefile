@@ -1,6 +1,7 @@
 include config.cache
 
 conf_Srcdir ?= .
+conf_Lolwutconf_dir ?= $(conf_Srcdir)/lolwutconf
 include $(conf_Lolwutconf_dir)/lolwutconf.mk
 
 bindir = $(conf_Prefix)/bin
