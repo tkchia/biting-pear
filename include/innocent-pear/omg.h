@@ -377,7 +377,7 @@ omg
 		    State, Which2, Flip ? "true" : "false", NewState4);
 #   endif
 		if (Flip) {
-			if ((bool)tfw<NewState4, T, Flags, Levels - 1>())
+			if (tfw<NewState4, T, Flags, Levels - 1>()())
 				return true;
 #   ifdef innocent_pear_DEBUG
 			std::fprintf(stderr, "wheee() %#" PRIxLEAST64
@@ -385,7 +385,7 @@ omg
 	    quux:	std::abort();
 #   endif
 		} else {
-			if (!tfw<NewState4, T, Flags, Levels - 1>()) {
+			if (!tfw<NewState4, T, Flags, Levels - 1>()()) {
 #   ifdef innocent_pear_DEBUG
 				std::fprintf(stderr, "wheee() %#" PRIxLEAST64
 				    ": UNPOSSIBLE!!!1 @%p\n", State, &&quuux);
@@ -494,7 +494,7 @@ omg
 #   endif
 		void *q = static_cast<void *>(p);
 		if (Flip) {
-			if ((bool)tfw<NewState4, T, Flags, Levels - 1>())
+			if (tfw<NewState4, T, Flags, Levels - 1>()())
 				return true;
 #   ifdef innocent_pear_DEBUG
 			std::fprintf(stderr, "wheee() %#" PRIxLEAST64
@@ -502,7 +502,7 @@ omg
 	    quux:	std::abort();
 #   endif
 		} else {
-			if (!tfw<NewState4, T, Flags, Levels - 1>()) {
+			if (!tfw<NewState4, T, Flags, Levels - 1>()()) {
 #   ifdef innocent_pear_DEBUG
 				std::fprintf(stderr, "wheee() %#" PRIxLEAST64
 				    ": UNPOSSIBLE!!!1 @%p\n", State, &&quuux);
@@ -621,11 +621,18 @@ omg
 			break;
 #   endif
 #endif
-#ifdef innocent_pear_HAVE_CONST_FS_IOC_GETFLAGS
+			/*
+			 * Do not use FS_IOC_GETFLAGS and FS_IOC_GETVERSION
+			 * if ptrace(...) is unimplemented.  Ugly hack for
+			 * testing under Qemu...
+			 */
+#if defined innocent_pear_HAVE_CONST_FS_IOC_GETFLAGS && \
+    defined innocent_pear_HAVE_IMPLD_FUNC_PTRACE
 		    case 7:
 			break;
 #endif
-#ifdef innocent_pear_HAVE_CONST_FS_IOC_GETVERSION
+#if defined innocent_pear_HAVE_CONST_FS_IOC_GETVERSION && \
+    defined innocent_pear_HAVE_IMPLD_FUNC_PTRACE
 		    case 8:
 			break;
 #endif
@@ -689,7 +696,8 @@ omg
 #   endif
 #endif
 #if defined innocent_pear_HAVE_CONST_FS_IOC_GETFLAGS && \
-    defined innocent_pear_HAVE_CONST_FS_IOC_GETVERSION
+    defined innocent_pear_HAVE_CONST_FS_IOC_GETVERSION && \
+    defined innocent_pear_HAVE_IMPLD_FUNC_PTRACE
 #   ifdef innocent_pear_HAVE_CONST_FS_IOC_GETFLAGS
 		    case 7:
 #   endif
@@ -765,7 +773,8 @@ omg
 			break;
 #   endif
 #endif
-#if defined innocent_pear_HAVE_CONST_FS_IOC_GETFLAGS
+#if defined innocent_pear_HAVE_CONST_FS_IOC_GETFLAGS && \
+    defined innocent_pear_HAVE_IMPLD_FUNC_PTRACE
 		    case 7:
 			{
 				unsigned long fl = Frob16;
@@ -777,7 +786,8 @@ omg
 			}
 			break;
 #endif
-#if defined innocent_pear_HAVE_CONST_FS_IOC_GETVERSION
+#if defined innocent_pear_HAVE_CONST_FS_IOC_GETVERSION && \
+    defined innocent_pear_HAVE_IMPLD_FUNC_PTRACE
 		    case 8:
 			{
 				unsigned long fl = Frob16;

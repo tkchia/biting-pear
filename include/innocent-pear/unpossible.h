@@ -43,6 +43,10 @@ struct unpossible<State, 0u>
 				 */
 				__asm __volatile("mov lr, pc; mov pc, %0"
 				    : "=g" (p) : : "memory", "cc");
+#elif defined __i386__
+				/* ?!? */
+				__asm __volatile("call *%0" : "=g" (p)
+				    : : "memory", "cc");
 #else
 				__asm __volatile("" : "=g" (p));
 				p();
