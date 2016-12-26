@@ -32,8 +32,15 @@ struct unpossible<State, 0u>
 	unpossible()
 	{
 		constexpr rand_state_t State2 = update_inner(State);
-		switch ((State2 >> 32) % 3) {
+		switch ((State2 >> 32) % 4) {
 		    case 0:
+#if defined __amd64__ || defined __i386__
+			void (*p)();
+			__asm __volatile("call *%0" : "=g" (p) : : "cc",
+			    "memory");
+#endif
+			break;
+		    case 1:
 #if defined __amd64__
 			__asm __volatile("syscall" : : : "rax", "cc",
 			    "memory");

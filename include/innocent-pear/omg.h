@@ -325,15 +325,29 @@ omg
 	typedef rofl<NewState4, Flags, Levels - 1> rofl4;
 #ifdef __amd64__
 	innocent_pear_always_inline
-	static void coax_nonleaf()
+	static void coax_no_red()
 	{
 		/*
 		 * Coax the compiler into not setting up a "red zone" above
-		 * the stack pointer, by making it compile a function call.
+		 * the stack pointer.
+		 *
+		 * The `__builtin_alloca(0)' method works well and is
+		 * practically a no-op on g++, but produces lots of
+		 * instructions on clang++.  The "insert indirect call"
+		 * method works on clang++ but causes g++ to weird out and
+		 * produce bad code.
+		 *
+		 * Perhaps in the future the `configure' script can be made
+		 * to detect the best method to use.
 		 */
+#   ifndef __clang__
+		void *p = __builtin_alloca(0);
+		__asm __volatile("" : : "g" (p) : "memory");
+#   else
 		void (*p)();
 		__asm __volatile("" : "=g" (p));
 		p();
+#   endif
 	}
 #endif
 #if defined innocent_pear_DEBUG || \
@@ -442,7 +456,7 @@ omg
 #   endif
 			unpossible<NewState2, Levels - 1>();
 #   ifdef __amd64__
-			coax_nonleaf();
+			coax_no_red();
 #   endif
 		}
 	    foo:
@@ -509,7 +523,11 @@ omg
 				   ".thumb_func; "
 #	    endif
 				   "0: "
+#	    if defined __thumb__ || defined __THUMB_INTERWORK__
 				   "bx %0; "
+#	    else
+				   "mov pc, %0; "
+#	    endif
 				   ".previous"
 			    : /* no outputs */
 			    : "r" (q), "n" (Subsxn)

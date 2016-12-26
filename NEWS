@@ -1,3 +1,16 @@
+2016-12-26	"... the impacts of this option are callees may waste some
+		stack space, misbehave or jump to a random location."  (2)
+
+		include/innocent-pear/omg.h :
+		- on x86-64 under g++, omg<...> now uses __builtin_alloca(0)
+		  rather than an indirect call to coax the compiler into not
+		  using the red zone
+		- on ARM, now uses `mov pc, (r)' instead of `bx (r)', if in
+		  ARM mode and if interworking is disabled
+
+		include/innocent-pear/unpossible.h :
+		- added back indirect calls, but only for x86-64 and x86-32
+
 2016-12-25	Eye octal.  (2)
 
 		include/innocent-pear/omg.h :
