@@ -660,16 +660,16 @@ omg
 		    case 5:
 		    case 6:
 			{
-				char& cfn0 = teh<char, '/' ^ Frob0>::x;
-				char& cfn1 = teh<char, 'd' ^ Frob1>::x;
-				char& cfn2 = teh<char, 'e' ^ Frob2>::x;
-				char& cfn3 = teh<char, 'v' ^ Frob3>::x;
-				char& cfn4 = teh<char, '/' ^ Frob4>::x;
-				char& cfn5 = teh<char, 't' ^ Frob5>::x;
-				char& cfn6 = teh<char, 't' ^ Frob6>::x;
-				char& cfn7 = teh<char, 'y' ^ Frob7>::x;
-				char& cfn8 = teh<char,	     Frob8>::x;
-				char& cfn9 = teh<char,	     Frob9>::x;
+				char& cfn0 = teh<char, '/'^Frob0, NewState>::x;
+				char& cfn1 = teh<char, 'd'^Frob1, NewState>::x;
+				char& cfn2 = teh<char, 'e'^Frob2, NewState>::x;
+				char& cfn3 = teh<char, 'v'^Frob3, NewState>::x;
+				char& cfn4 = teh<char, '/'^Frob4, NewState>::x;
+				char& cfn5 = teh<char, 't'^Frob5, NewState>::x;
+				char& cfn6 = teh<char, 't'^Frob6, NewState>::x;
+				char& cfn7 = teh<char, 'y'^Frob7, NewState>::x;
+				char& cfn8 = teh<char,	   Frob8, NewState>::x;
+				char& cfn9 = teh<char,	   Frob9, NewState>::x;
 				char fn[9];
 				fn[0] = cfn0 ^ Frob0;
 				fn[1] = cfn1 ^ Frob1;
@@ -697,22 +697,22 @@ omg
 		    case 8:
 #   endif
 			{
-				char& cfn0  = teh<char, '/' ^ Frob0 >::x;
-				char& cfn1  = teh<char, 'p' ^ Frob1 >::x;
-				char& cfn2  = teh<char, 'r' ^ Frob2 >::x;
-				char& cfn3  = teh<char, 'o' ^ Frob3 >::x;
-				char& cfn4  = teh<char, 'c' ^ Frob4 >::x;
-				char& cfn5  = teh<char, '/' ^ Frob5 >::x;
-				char& cfn6  = teh<char, 's' ^ Frob6 >::x;
-				char& cfn7  = teh<char, 'e' ^ Frob7 >::x;
-				char& cfn8  = teh<char, 'l' ^ Frob8 >::x;
-				char& cfn9  = teh<char, 'f' ^ Frob9 >::x;
-				char& cfn10 = teh<char, '/' ^ Frob10>::x;
-				char& cfn11 = teh<char, 'e' ^ Frob11>::x;
-				char& cfn12 = teh<char, 'x' ^ Frob12>::x;
-				char& cfn13 = teh<char, 'e' ^ Frob13>::x;
-				char& cfn14 = teh<char,       Frob14>::x;
-				char& cfn15 = teh<char,       Frob15>::x;
+				char& cfn0  = teh<char,'/'^Frob0 ,NewState>::x;
+				char& cfn1  = teh<char,'p'^Frob1 ,NewState>::x;
+				char& cfn2  = teh<char,'r'^Frob2 ,NewState>::x;
+				char& cfn3  = teh<char,'o'^Frob3 ,NewState>::x;
+				char& cfn4  = teh<char,'c'^Frob4 ,NewState>::x;
+				char& cfn5  = teh<char,'/'^Frob5 ,NewState>::x;
+				char& cfn6  = teh<char,'s'^Frob6 ,NewState>::x;
+				char& cfn7  = teh<char,'e'^Frob7 ,NewState>::x;
+				char& cfn8  = teh<char,'l'^Frob8 ,NewState>::x;
+				char& cfn9  = teh<char,'f'^Frob9 ,NewState>::x;
+				char& cfn10 = teh<char,'/'^Frob10,NewState>::x;
+				char& cfn11 = teh<char,'e'^Frob11,NewState>::x;
+				char& cfn12 = teh<char,'x'^Frob12,NewState>::x;
+				char& cfn13 = teh<char,'e'^Frob13,NewState>::x;
+				char& cfn14 = teh<char,    Frob14,NewState>::x;
+				char& cfn15 = teh<char,    Frob15,NewState>::x;
 				char fn[15];
 				fn[ 0] = cfn0  ^ Frob0;
 				fn[ 1] = cfn1  ^ Frob1;

@@ -308,7 +308,7 @@ class kthxbai_impl
 				constexpr T v2 = pick_hi<T>(State ^ State2
 				    ^ State3 ^ NewState);
 				T x1;
-				static T& x2 = teh<T, v2>::x;
+				static T& x2 = teh<T, v2, NewState>::x;
 				lolwut<NewState, T, Flags, Levels - 1>
 				    p(&x2, 3);
 				{ impl_n2(x1, do_op<WhichOp>(v, v2)); }
@@ -322,7 +322,8 @@ class kthxbai_impl
 				constexpr T v2 = pick_hi<T>(State ^ State2
 				    ^ State3 ^ NewState);
 				T x1;
-				static const T& x2 = teh<const T, v2>::x;
+				static const T& x2 = teh<const T, v2,
+				    NewState>::x;
 				lolwut<NewState, T, Flags, Levels - 1>
 				    p((T *)&x2, 3);
 				{ impl_n2(x1, do_op<WhichOp>(v, v2)); }

@@ -1,3 +1,25 @@
+2016-12-28	Unmerge the unmergeable.
+
+		bin/innocent-pear-front-end.tcc :
+		- now passes `-Wa,--Xinnocent-pear=dogecoin=u' to driver
+		  (calm.cc) when compiling doge-??.cc modules, instead of
+		  using `-fno-merge-constants' `-fno-merge-all-constants' to
+		  try to inhibit section merging
+
+		bin/innocent-pear-dogecoin.cc :
+		- if seed is given as `u', now makes mergeable sections
+		  non-mergeable
+		- group information copying:
+		  - if copying fails, now says why
+		  - fixed silly off-by-one bug
+
+		include/innocent-pear/teh.h :
+		- added template parameter for tfw<...>
+
+		include/innocent-pear/kthxbai.h ,
+		include/innocent-pear/omg.h :
+		- now uses extra template parameter to tfw<...>
+
 2016-12-26	"... the impacts of this option are callees may waste some
 		stack space, misbehave or jump to a random location."  (2)
 

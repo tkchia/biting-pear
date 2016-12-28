@@ -35,6 +35,12 @@ struct fortune_t
 	sxn_list_t xsxns;
 };
 
+enum our_mode_t
+{
+	mode_relativize,
+	mode_unmerge
+};
+
 __attribute__((noinline))
 static void such()
 {
@@ -51,6 +57,7 @@ inline void much(Ts... msg)
 	such();
 }
 
+static our_mode_t our_mode;
 static innocent_pear::impl::rand_state_t prg;
 
 static unsigned get_align(unsigned x)
@@ -89,6 +96,10 @@ static void do_frob_1(bfd *ibfd, bfd *obfd)
 
 static void do_frob_2(bfd *ibfd, bfd *obfd, fortune_t *fortune)
 {
+	fortune->obfd = obfd;
+	fortune->total_abs_reloc_count = 0;
+	if (our_mode != mode_relativize)
+		return;
 	wow("figuring out how to frob relocations");
 	unsigned addr_bits = bfd_arch_bits_per_address(ibfd);
 	wow("  addresses are ", addr_bits, " bits each");
@@ -114,7 +125,6 @@ static void do_frob_2(bfd *ibfd, bfd *obfd, fortune_t *fortune)
 	extra = to;
 	wow("  rewriting relocation type ", from->name);
 	wow("    to ", to->name, " plus ", extra->name);
-	fortune->obfd = obfd;
 	fortune->addr_octets = addr_bits / 8;
 	fortune->alignment_power = get_align(addr_bits) - 3;
 	if (bfd_get_arch(obfd) == bfd_arch_i386 && addr_bits == 32)
@@ -124,7 +134,6 @@ static void do_frob_2(bfd *ibfd, bfd *obfd, fortune_t *fortune)
 	fortune->from_howto = from;
 	fortune->to_howto = to;
 	fortune->extra_howto = extra;
-	fortune->total_abs_reloc_count = 0;
 }
 
 static void prep_sxn_i(bfd *ibfd, asection *isxn, void *cookie)
@@ -138,6 +147,13 @@ static void prep_sxn_i(bfd *ibfd, asection *isxn, void *cookie)
 	bfd_size_type size = bfd_section_size(ibfd, isxn);
 	wow("  ", name, ": vma 0x", std::hex, vma,
 	    ", lma 0x", lma, ", size 0x", size);
+	if (our_mode == mode_unmerge) {
+		if ((flags & SEC_ALLOC) != 0 && (flags & SEC_MERGE) != 0) {
+			wow("    allocated, mergeable -- "
+				"making non-mergeable");
+			flags &= ~(SEC_MERGE | SEC_STRINGS);
+		}
+	}
 	asection *osxn = bfd_make_section_anyway_with_flags(obfd,name,flags);
 	if (!osxn)
 		much("bfd_make_section_anyway_with_flags");
@@ -225,19 +241,44 @@ static void prep_sxn_ii(bfd *ibfd, asection *isxn, void *cookie)
 	flagword flags = bfd_get_section_flags(ibfd, isxn);
 	if ((flags & SEC_GROUP) == 0)
 		return;
+	const char *name = bfd_section_name(ibfd, isxn);
 	bfd_elf_section_data *psd = (bfd_elf_section_data *)isxn->used_by_bfd;
-	if (!psd)
+	if (!psd) {
+		wow("  ", name, ": !psd");
 		return;
+	}
 	Elf_Internal_Shdr *psh = &psd->this_hdr;
-	if (psh->sh_type != SHT_GROUP || psh->sh_flags != 0 ||
-	    psh->sh_addr != bfd_section_vma(ibfd, isxn) ||
-	    psh->sh_info == 0 || psh->sh_info >= fortune->n_syms ||
-	    psh->bfd_section != isxn ||
-	    psd->group.id != 0)
+	if (psh->sh_type != SHT_GROUP) {
+		wow("  ", name, ": psh->sh_type != SHT_GROUP");
 		return;
+	}
+	if (psh->sh_flags != 0) {
+		wow("  ", name, ": psh->sh_flags != 0");
+		return;
+	}
+	if (psh->sh_addr != bfd_section_vma(ibfd, isxn)) {
+		wow("  ", name, ": psh->sh_addr bogus");
+		return;
+	}
+	if (psh->sh_info == 0) {
+		wow("  ", name, ": psh->sh_info == 0");
+		return;
+	}
+	if (psh->sh_info > fortune->n_syms) {
+		wow("  ", name, ": psh->sh_info > n_syms");
+		return;
+	}
+	if (psh->bfd_section != isxn) {
+		wow("  ", name, ": psh->bfd_section != isxn");
+		return;
+	}
+	if (psd->group.id != 0) {
+		wow("  ", name, ": psd->group.id != 0");
+		return;
+	}
 	asymbol *id = fortune->syms[psh->sh_info - 1];
 	psd->group.id = id;
-	wow("  ", bfd_section_name(ibfd, isxn), '[', id->name, ']');
+	wow("  ", name, '[', id->name, ']');
 }
 
 static void prep_sxn_iii(bfd *ibfd, asection *isxn, void *cookie)
@@ -293,6 +334,8 @@ static void count_sxn_relocs(bfd *ibfd, asection *isxn, void *cookie)
 		many("libbfd scanned the same section twice for some reason");
 	fortune->reloc_count[isxn] = nrels;
 	fortune->relocs[isxn] = rels;
+	if (our_mode != mode_relativize)
+		return;
 	/*
 	 * Do not frob relocations belonging to sections containing group
 	 * information.
@@ -318,6 +361,8 @@ static void do_frob_7(bfd *ibfd, fortune_t *fortune)
 {
 	wow("collecting and counting relocations");
 	bfd_map_over_sections(ibfd, count_sxn_relocs, fortune);
+	if (our_mode != mode_relativize)
+		return;
 	long cnt = fortune->total_abs_reloc_count;
 	wow("  ", cnt, " frobbable absolute relocation",
 	    cnt == 1 ? "" : "s", " found");
@@ -325,6 +370,8 @@ static void do_frob_7(bfd *ibfd, fortune_t *fortune)
 
 static void do_frob_8(bfd *ibfd, bfd *obfd, fortune_t *fortune)
 {
+	if (our_mode != mode_relativize)
+		return;
 	wow("creating new sections");
 	long nxsxns = fortune->total_abs_reloc_count;
 	for (long i = 0; i < nxsxns; ++i) {
@@ -376,6 +423,10 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 		return;
 	long nrels = fortune->reloc_count[isxn];
 	arelent **rels = fortune->relocs[isxn];
+	if (our_mode != mode_relativize) {
+		bfd_set_reloc(obfd, osxn, rels, (unsigned)nrels);
+		return;
+	}
 	if ((fl & (SEC_LINK_ONCE | SEC_MERGE | SEC_SORT_ENTRIES)) != 0 ||
 	    bfd_is_group_section(ibfd, isxn)) {
 		wow("    not frobbing");
@@ -486,7 +537,10 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 /* per phrack.org/issues/56/9.html */
 static void do_frob_9(bfd *ibfd, fortune_t *fortune)
 {
-	wow("copying and frobbing sections");
+	if (our_mode == mode_relativize)
+		wow("copying and frobbing sections");
+	else
+		wow("copying sections");
 	bfd_map_over_sections(ibfd, copy_sxn, fortune);
 	if (!fortune->xsxns.empty())
 		many("inconsistent relocation counts!");
@@ -524,7 +578,12 @@ int main(int argc, char **argv)
 		if (argc != 4)
 			many("invalid arguments");
 		const char *ifn = argv[1], *ofn = argv[2];
-		prg = lolrus(argv[3], "invalid arguments");
+		if (strcmp(argv[3], "u") == 0)
+			our_mode = mode_unmerge;
+		else {
+			our_mode = mode_relativize;
+			prg = lolrus(argv[3], "invalid arguments");
+		}
 		ibfd = bfd_openr(ifn, 0);
 		if (!ibfd)
 			much("bfd_openr");

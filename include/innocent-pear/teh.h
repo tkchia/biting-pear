@@ -1,13 +1,15 @@
 #ifndef innocent_pear_H_TEH
 #define innocent_pear_H_TEH
 
+#include <innocent-pear/bbq.h>
+
 namespace innocent_pear
 {
 
 namespace impl
 {
 
-template<class T, T V>
+template<class T, T V, rand_state_t State>
 struct
 #ifdef __ELF__
 __attribute__((visibility("hidden")))
@@ -17,8 +19,8 @@ teh
 	static T x;
 };
 
-template<class T, T V>
-T teh<T, V>::x = V;
+template<class T, T V, rand_state_t State>
+T teh<T, V, State>::x = V;
 
 } // innocent_pear::impl
 
