@@ -575,6 +575,10 @@ int main(int argc, char **argv)
 	curious(*argv);
 	bfd_init();
 	try {
+		if (argc == 5 && strcmp(argv[4], "-v") == 0) {
+			ohai(true);
+			--argc;
+		}
 		if (argc != 4)
 			many("invalid arguments");
 		const char *ifn = argv[1], *ofn = argv[2];

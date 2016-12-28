@@ -558,21 +558,13 @@ test/test-orly-wut: test/test-orly-wut.o test/test-orly-wut.ld \
 	time $(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
 	    $(LDFLAGS_FOR_TARGET) -o$@.tmp $(filter %.o %.ld,$^) \
 	    $(LDLIBS_FOR_TARGET)
-	bin/innocent-pear-doge $@.tmp $@ __doge_start __doge_end $(state)
+	bin/innocent-pear-doge $@.tmp $@ __doge_start __doge_end $(state) -v
 	$(RM) $@.tmp
 
 test/test-doge.debug \
 test/test-doge.debug.o \
 test/test-doge.debug.s : \
     CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge -v
-
-test/test-doge \
-test/test-doge.o \
-test/test-doge.s \
-test/test-doge-with-c \
-test/test-doge-with-c.o : \
-    CXXFLAGS_FOR_TARGET.test = \
-	$(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge -s -v
 
 test/test-doge-abs-reloc.debug \
 test/test-doge-abs-reloc.debug.o \
@@ -582,6 +574,11 @@ test/test-doge-eh.debug.o \
 test/test-doge-eh.debug.s : \
     CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge
 
+test/test-doge \
+test/test-doge.o \
+test/test-doge.s \
+test/test-doge-with-c \
+test/test-doge-with-c.o \
 test/test-doge-abs-reloc \
 test/test-doge-abs-reloc.o \
 test/test-doge-abs-reloc.s \
@@ -592,7 +589,7 @@ test/test-doge-eh.s : \
 
 test/test-doge-with-c \
 test/test-doge-with-c.o : \
-    CFLAGS_FOR_TARGET.test = $(CFLAGS_FOR_TARGET) -Xinnocent-pear -doge -s -v
+    CFLAGS_FOR_TARGET.test = $(CFLAGS_FOR_TARGET) -Xinnocent-pear -doge -s
 
 test/test-doge-eh: test/test-doge-eh.o test/test-doge-eh.sub.o
 

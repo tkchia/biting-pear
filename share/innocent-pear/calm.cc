@@ -115,6 +115,8 @@ static int main_(int argc, char **argv)
 				    case 'G':
 				    case 'I':
 					is.pass = true;  break;
+				    case 'v':
+					is.v = true;  break;
 				    default:
 					;
 				}
@@ -181,12 +183,16 @@ static int main_(int argc, char **argv)
 			*calmest = (char *)grumpy();
 			keyboardest(calm, 0, 0, 0, 0, is.v);
 			lolz += "/bin/innocent-pear-dogecoin";
-			char *wut[5];
+			char *wut[6];
 			wut[0] = (char *)lolz.c_str();
 			wut[1] = (char *)grumpy();
 			wut[2] = (char *)grumpier();
 			wut[3] = coin;
-			wut[4] = 0;
+			if (is.v) {
+				wut[4] = (char *)"-v";
+				wut[5] = 0;
+			} else
+				wut[4] = 0;
 			keyboardest(wut, 0, 0, 0, 0, is.v);
 			grumpier.sleepiest(lulz);
 			return 0;

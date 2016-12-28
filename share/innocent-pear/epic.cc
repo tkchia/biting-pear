@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 
 static std::string me;
+static bool bla = false;
 
 char *shocked(char *s)
 {
@@ -38,6 +39,12 @@ void curious(char *y)
 
 std::string& curious()
 	{ return me; }
+
+void ohai(bool b)
+	{ bla = b; }
+
+bool ohai()
+	{ return bla; }
 
 void squirrel(char **y, std::string z)
 {

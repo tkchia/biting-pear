@@ -10,6 +10,8 @@
 extern char *shocked(char *);
 extern void curious(char *);
 extern std::string& curious();
+extern void ohai(bool);
+extern bool ohai();
 extern void squirrel(char **, std::string = std::string());
 extern void amaze() __attribute__((noreturn));
 extern void keyboard(char **, const char *, const char *, const char *,
@@ -53,9 +55,11 @@ template<class... Ts>
 innocent_pear_always_inline
 void wow(Ts... msg)
 {
-	std::cerr << curious() << ": ";
-	very(msg...);
-	std::cerr << std::endl;
+	if (ohai()) {
+		std::cerr << curious() << ": ";
+		very(msg...);
+		std::cerr << std::endl;
+	}
 }
 
 template<class... Ts>

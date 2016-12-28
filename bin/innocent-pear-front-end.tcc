@@ -200,6 +200,7 @@ static void nyan(sleepier_t& cheesy, const char *cheeses, states_t st,
 #endif
 		"-fno-stack-protector",
 		v ? (char *)"-v" : (char *)"-fno-stack-protector",
+		v ? (char *)"-Wa,-v" : (char *)"-fno-stack-protector",
 		sta ? (char *)"-static" : (char *)"-fno-stack-protector",
 		0
 	    };
@@ -216,7 +217,8 @@ static void nyanyan(const std::string& ecaturday, const char *in,
 	plush(s2, "0x", std::hex, state);
 	char *cheesiest[] = {
 		(char *)s1.c_str(), (char *)in, (char *)out,
-		(char *)start, (char *)end, (char *)s2.c_str(), 0
+		(char *)start, (char *)end, (char *)s2.c_str(),
+		v ? (char *)"-v" : 0, 0
 	    };
 	keyboardest(cheesiest, 0, 0, 0, 0, v);
 }

@@ -5,6 +5,8 @@
 		  (calm.cc) when compiling doge-??.cc modules, instead of
 		  using `-fno-merge-constants' `-fno-merge-all-constants' to
 		  try to inhibit section merging
+		- if `-v' option is given, now also passes `-Wa,-v' calm.cc,
+		  and passes `-v' to innocent-pear-doge
 
 		bin/innocent-pear-dogecoin.cc :
 		- if seed is given as `u', now makes mergeable sections
@@ -12,6 +14,10 @@
 		- group information copying:
 		  - if copying fails, now says why
 		  - fixed silly off-by-one bug
+		- now handles trailing `-v' option
+
+		bin/innocent-pear-doge.cc :
+		- now handles trailing `-v' option
 
 		include/innocent-pear/teh.h :
 		- added template parameter for tfw<...>
@@ -19,6 +25,19 @@
 		include/innocent-pear/kthxbai.h ,
 		include/innocent-pear/omg.h :
 		- now uses extra template parameter to tfw<...>
+
+		include/innocent-pear/host/lolcat.h ,
+		share/innocent-pear/epic.cc :
+		- added ohai(.) and ohai()
+
+		share/innocent-pear/calm.cc :
+		- assembler wrapper now also processes `-v' option and
+		  forwards it to innocent-pear-dogecoin
+
+		GNUmakefile :
+		- added `-v' to direct command line to innocent-pear-doge
+		- removed `-v' for command lines to build test-doge
+		  (non-debug) and test-doge-with-c
 
 2016-12-26	"... the impacts of this option are callees may waste some
 		stack space, misbehave or jump to a random location."  (2)
