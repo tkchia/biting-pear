@@ -4,9 +4,11 @@
 #include <climits>
 #include <cstdlib>
 #include <ostream>
+#include <type_traits>
 #include <innocent-pear/bbq.h>
 #include <innocent-pear/kthxbai.h>
 #include <innocent-pear/nowai.h>
+#include <innocent-pear/teh.h>
 
 namespace innocent_pear
 {
@@ -26,10 +28,42 @@ template<rand_state_t State, class CT, ops_flags_t Flags, CT... Chs>
 class dawg_impl<State, CT, Flags, ~0u, Chs...> : public nowai
 	{ };
 
+template<rand_state_t State, class CT, ops_flags_t Flags>
+class dawg_impl<State, CT, Flags, 0u>
+{
+	typedef typename std::make_unsigned<CT>::type UCT;
+	static constexpr rand_state_t State2 = update_inner(State);
+	static constexpr rand_state_t NewState = update_outer(State2, 3u);
+    public:
+	innocent_pear_always_inline
+	dawg_impl()
+		{ }
+	innocent_pear_always_inline
+	dawg_impl(const dawg_impl<State, CT, Flags, 0u>& x)
+		{ }
+	innocent_pear_always_inline
+	static CT front()
+		{ __builtin_unreachable(); }
+	innocent_pear_always_inline
+	CT operator[](std::size_t i) const
+		{ __builtin_unreachable(); }
+	innocent_pear_always_inline
+	static std::size_t size()
+		{ return 0; }
+	innocent_pear_always_inline
+	void operator>>(CT *b)
+	{
+		constexpr UCT Frob = pick_hi<UCT>(State2);
+		volatile const UCT& x = teh<NewState, UCT, Frob>::x;
+		*b = (CT)(x ^ Frob);
+	}
+};
+
 template<rand_state_t State, class CT, ops_flags_t Flags, unsigned Levels>
 class dawg_impl<State, CT, Flags, Levels>
 {
 	typedef innocent_pear_decltype(1u | (CT)1 << 0u) PCT; // N3797 5.8.2
+	typedef typename std::make_unsigned<CT>::type UCT;
 	static constexpr rand_state_t State2 = update_inner(State);
 	static constexpr rand_state_t NewState = update_outer(State2,
 	    Levels > 3u ? Levels : 3u);
@@ -50,13 +84,57 @@ class dawg_impl<State, CT, Flags, Levels>
 	static std::size_t size()
 		{ return 0; }
 	innocent_pear_always_inline
-	void operator>>(char *b)
+	void operator>>(CT *b)
 	{
-		static constexpr unsigned MaxSublevels =
-		    ((State ^ NewState) >> 48 & 7) <= 2 ? 2u : 1u;
-		static constexpr unsigned Sublevels =
-		    Levels < MaxSublevels ? Levels : MaxSublevels;
-		*b = (CT)(PCT)kthxbai<NewState, PCT, Flags, Sublevels>(0);
+		constexpr unsigned Sublevels = ((State ^ NewState) >> 48) % 2;
+		if (Sublevels)
+			*b = (CT)(PCT)kthxbai<NewState, PCT, Flags,
+			    Sublevels>(0);
+		else {
+			constexpr UCT Frob = pick_hi<UCT>(State2);
+			volatile const UCT& x = teh<NewState, UCT, Frob>::x;
+			*b = (CT)(x ^ Frob);
+		}
+	}
+};
+
+template<rand_state_t State, class CT, ops_flags_t Flags, CT Ch, CT... Chs>
+class dawg_impl<State, CT, Flags, 0u, Ch, Chs...>
+{
+	typedef typename std::make_unsigned<CT>::type UCT;
+	static constexpr rand_state_t State2 = update_inner(State);
+	static constexpr rand_state_t State3 = update_inner(State2);
+	static constexpr rand_state_t State4 = update_inner(State3);
+	static constexpr rand_state_t NewState = update_outer(State2, 3u);
+	typedef dawg_impl<State4, CT, Flags, 0u, Chs...> rest_type;
+    public:
+	innocent_pear_always_inline
+	dawg_impl()
+		{ }
+	innocent_pear_always_inline
+	dawg_impl(const dawg_impl<State, CT, Flags, 0u, Ch, Chs...>& x)
+		{ }
+	innocent_pear_always_inline
+	static CT front()
+	{
+		constexpr UCT Frob = pick_hi<UCT>(State2);
+		volatile const UCT& x = teh<NewState, UCT, (UCT)Ch ^ Frob>::x;
+		return (CT)(x ^ Frob);
+	}
+	innocent_pear_always_inline
+	static rest_type rest()
+		{ return rest_type(); }
+	innocent_pear_always_inline
+	CT operator[](std::size_t i) const
+		{ return i == 0 ? front() : rest()[i - 1]; }
+	innocent_pear_always_inline
+	static std::size_t size()
+		{ return 1u + sizeof...(Chs); }
+	innocent_pear_always_inline
+	void operator>>(CT *b)
+	{
+		*b = front();
+		rest() >> (b + 1);
 	}
 };
 
@@ -65,6 +143,7 @@ template<rand_state_t State, class CT, ops_flags_t Flags, unsigned Levels,
 class dawg_impl<State, CT, Flags, Levels, Ch, Chs...>
 {
 	typedef innocent_pear_decltype(1u | (CT)1 << 0u) PCT; // N3797 5.8.2
+	typedef typename std::make_unsigned<CT>::type UCT;
 	static constexpr rand_state_t State2 = update_inner(State);
 	static constexpr rand_state_t State3 = update_inner(State2);
 	static constexpr rand_state_t State4 = update_inner(State3);
@@ -80,17 +159,21 @@ class dawg_impl<State, CT, Flags, Levels, Ch, Chs...>
 	innocent_pear_always_inline
 	static CT front()
 	{
-		static constexpr unsigned MaxSublevels =
-		    ((State ^ NewState) >> 48 & 7) <= 2 ? 2u : 1u;
-		static constexpr unsigned Sublevels =
-		    Levels < MaxSublevels ? Levels : MaxSublevels;
-		if (sizeof(CT) == sizeof(char))
-			return (CT)(PCT)kthxbai<NewState, PCT, Flags,
-			    Sublevels>((pick_hi<PCT>(State3^State4) &
-			    ~(PCT)UCHAR_MAX) | ((PCT)Ch & UCHAR_MAX));
-		else
-			return (CT)(PCT)kthxbai<NewState, PCT, Flags,
-			    Sublevels>(Ch);
+		constexpr unsigned Sublevels = ((State ^ NewState) >> 48) % 2;
+		if (Sublevels) {
+			if (sizeof(CT) == sizeof(char))
+				return (CT)(PCT)kthxbai<NewState, PCT, Flags,
+				    Sublevels>((pick_hi<PCT>(State3^State4) &
+				    ~(PCT)UCHAR_MAX) | ((PCT)Ch & UCHAR_MAX));
+			else
+				return (CT)(PCT)kthxbai<NewState, PCT, Flags,
+				    Sublevels>(Ch);
+		} else {
+			constexpr UCT Frob = pick_hi<UCT>(State2);
+			volatile const UCT& x = teh<NewState, UCT,
+			    (UCT)Ch ^ Frob>::x;
+			return (CT)(x ^ Frob);
+		}
 	}
 	innocent_pear_always_inline
 	static rest_type rest()
@@ -102,7 +185,7 @@ class dawg_impl<State, CT, Flags, Levels, Ch, Chs...>
 	static std::size_t size()
 		{ return 1u + sizeof...(Chs); }
 	innocent_pear_always_inline
-	void operator>>(char *b)
+	void operator>>(CT *b)
 	{
 		*b = front();
 		rest() >> (b + 1);

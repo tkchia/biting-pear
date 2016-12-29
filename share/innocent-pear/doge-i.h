@@ -82,7 +82,6 @@
  */
 #define innocent_pear_CHAFF(flags) \
 	(innocent_pear::omg?<unsigned, (flags)>::special(), \
-	 innocent_pear::omg?<unsigned, (flags)>::special(), \
 	 innocent_pear::omg?<unsigned, (flags)>::special())
 
 /*

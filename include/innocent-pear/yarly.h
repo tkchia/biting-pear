@@ -154,45 +154,43 @@ class yarly : public yarly_impl_2<State, T, BigBad, Flags, Levels>
 		static_assert(std::is_unsigned<DT>::value,
 		    "DT in innocent_pear::yarly<, T, ...>::wut(const DT *, "
 		    "...) is not an unsigned type");
-		T x0,
-		  x1 = (*this)(),
-		  x2 = (*this)(x1),
-		  x3 = (*this)(x2, x1),
-		  x4 = (*this)(x3, x2, x1),
-		  x5 = (*this)(x4, x3, x2, x1),
-		  x6 = (*this)(x5, x4, x3, x2, x1),
-		  x7 = (*this)(x6, x5, x4, x3, x2, x1),
-		  x8 = (*this)(x7, x6, x5, x4, x3, x2, x1),
-		  x9 = (*this)(x8, x7, x6, x5, x4, x3, x2, x1);
-		__asm __volatile("" : "=g" (p), "=g" (q) : "0" (p), "1" (q));
+		T x1,
+		  x2 = (*this)(),
+		  x3 = (*this)(x2),
+		  x4 = (*this)(x3, x2),
+		  x5 = (*this)(x4, x3, x2),
+		  x6 = (*this)(x5, x4, x3, x2),
+		  x7 = (*this)(x6, x5, x4, x3, x2),
+		  x8 = (*this)(x7, x6, x5, x4, x3, x2),
+		  x9 = (*this)(x8, x7, x6, x5, x4, x3, x2);
+		if (!__builtin_constant_p(q - p))
+			__asm __volatile("" : "=g" (p), "=g" (q)
+					    : "0" (p), "1" (q));
 		std::size_t n = q - p;
-		while (n >= 10) {
-			x0 = (*this)((T)*p++, x1, x2, x3, x4,
-					  x5, x6, x7, x8, x9);
+		while (n >= 9) {
 			x1 = (*this)((T)*p++, x2, x3, x4, x5,
-					  x6, x7, x8, x9, x0);
+					      x6, x7, x8, x9);
 			x2 = (*this)((T)*p++, x3, x4, x5, x6,
-					  x7, x8, x9, x0, x1);
+					      x7, x8, x9, x1);
 			x3 = (*this)((T)*p++, x4, x5, x6, x7,
-					  x8, x9, x0, x1, x2);
+					      x8, x9, x1, x2);
 			x4 = (*this)((T)*p++, x5, x6, x7, x8,
-					  x9, x0, x1, x2, x3);
+					      x9, x1, x2, x3);
 			x5 = (*this)((T)*p++, x6, x7, x8, x9,
-					  x0, x1, x2, x3, x4);
-			x6 = (*this)((T)*p++, x7, x8, x9, x0,
-					  x1, x2, x3, x4, x5);
-			x7 = (*this)((T)*p++, x8, x9, x0, x1,
-					  x2, x3, x4, x5, x6);
-			x8 = (*this)((T)*p++, x9, x0, x1, x2,
-					  x3, x4, x5, x6, x7);
-			x9 = (*this)((T)*p++, x0, x1, x2, x3,
-					  x4, x5, x6, x7, x8);
-			n -= 10;
+					      x1, x2, x3, x4);
+			x6 = (*this)((T)*p++, x7, x8, x9, x1,
+					      x2, x3, x4, x5);
+			x7 = (*this)((T)*p++, x8, x9, x1, x2,
+					      x3, x4, x5, x6);
+			x8 = (*this)((T)*p++, x9, x1, x2, x3,
+					      x4, x5, x6, x7);
+			x9 = (*this)((T)*p++, x1, x2, x3, x4,
+					      x5, x6, x7, x8);
+			n -= 9;
 		}
 		while (n-- != 0) {
-			x0 = (*this)((T)*p++, x1, x2, x3, x4,
-					  x5, x6, x7, x8, x9);
-			x1 = x2;
+			x1 = (*this)((T)*p++, x2, x3, x4, x5,
+					      x6, x7, x8, x9);
 			x2 = x3;
 			x3 = x4;
 			x4 = x5;
@@ -200,9 +198,41 @@ class yarly : public yarly_impl_2<State, T, BigBad, Flags, Levels>
 			x6 = x7;
 			x7 = x8;
 			x8 = x9;
-			x9 = x0;
+			x9 = x1;
 		}
 		return x9;
+	}
+	innocent_pear_always_inline
+	void zot(T *p, T *q)
+	{
+		T x1,
+		  x2 = (*this)(),
+		  x3 = (*this)(x2),
+		  x4 = (*this)(x3, x2),
+		  x5 = (*this)(x4, x3, x2),
+		  x6 = (*this)(x5, x4, x3, x2),
+		  x7 = (*this)(x6, x5, x4, x3, x2),
+		  x8 = (*this)(x7, x6, x5, x4, x3, x2),
+		  x9 = (*this)(x8, x7, x6, x5, x4, x3, x2);
+		if (!__builtin_constant_p(q - p))
+			__asm __volatile("" : "=g" (p), "=g" (q)
+					    : "0" (p), "1" (q));
+		T *r = p;
+		std::size_t n = q - p;
+		while (n-- != 0) {
+			x1 = (*this)((T)n, x2, x3, x4, x5,
+					   x6, x7, x8, x9);
+			*r++ = x1;
+			x2 = x3;
+			x3 = x4;
+			x4 = x5;
+			x5 = x6;
+			x6 = x7;
+			x7 = x8;
+			x8 = x9;
+			x9 = x1;
+		}
+		__asm __volatile("" : : "g" (p) : "memory");
 	}
 };
 

@@ -6,6 +6,7 @@
 #include <cstring>
 #include <unistd.h>
 #include <innocent-pear/bbq.h>
+#include <innocent-pear/dawg.h>
 #include <innocent-pear/kthxbai.h>
 #include <innocent-pear/nowai.h>
 #include <innocent-pear/rofl.h>
@@ -283,42 +284,14 @@ omg
 	    State6 = update_inner(State5),
 	    State7 = update_inner(State6),
 	    State8 = update_inner(State7),
-	    State9 = update_inner(State8),
-	    State10 = update_inner(State9),
-	    State11 = update_inner(State10),
-	    State12 = update_inner(State11),
-	    State13 = update_inner(State12),
-	    State14 = update_inner(State13),
-	    State15 = update_inner(State14),
-	    State16 = update_inner(State15),
-	    State17 = update_inner(State16),
-	    State18 = update_inner(State17),
-	    State19 = update_inner(State18),
 	    NewState = update_outer(State, Levels),
 	    NewState2 = update_outer(NewState, Levels),
 	    NewState3 = update_outer(NewState2, Levels),
 	    NewState4 = update_outer(NewState3, Levels),
 	    NewState5 = update_outer(NewState4, Levels),
 	    NewState6 = update_outer(NewState5, Levels);
-	static constexpr unsigned char
-	    Frob0  = pick_hi<unsigned char>(State2  ^ State3),
-	    Frob1  = pick_hi<unsigned char>(State3  ^ State4),
-	    Frob2  = pick_hi<unsigned char>(State4  ^ State5),
-	    Frob3  = pick_hi<unsigned char>(State5  ^ State6),
-	    Frob4  = pick_hi<unsigned char>(State6  ^ State7),
-	    Frob5  = pick_hi<unsigned char>(State7  ^ State8),
-	    Frob6  = pick_hi<unsigned char>(State8  ^ State9),
-	    Frob7  = pick_hi<unsigned char>(State9  ^ State10),
-	    Frob8  = pick_hi<unsigned char>(State10 ^ State11),
-	    Frob9  = pick_hi<unsigned char>(State11 ^ State12),
-	    Frob10 = pick_hi<unsigned char>(State12 ^ State13),
-	    Frob11 = pick_hi<unsigned char>(State13 ^ State14),
-	    Frob12 = pick_hi<unsigned char>(State14 ^ State15),
-	    Frob13 = pick_hi<unsigned char>(State15 ^ State16),
-	    Frob14 = pick_hi<unsigned char>(State16 ^ State17),
-	    Frob15 = pick_hi<unsigned char>(State17 ^ State18);
 	static constexpr unsigned long
-	    Frob16 = pick_hi<unsigned long>(State18 ^ State19);
+	    Frob = pick_hi<unsigned long>(State7 ^ State8);
 	typedef kthxbai<NewState, unsigned, Flags, Levels - 1> kthxbai1;
 	typedef rofl<NewState2, Flags, Levels - 1> rofl2;
 	typedef rofl<NewState3, Flags, Levels - 1> rofl3;
@@ -660,29 +633,14 @@ omg
 		    case 5:
 		    case 6:
 			{
-				char& cfn0 = teh<char, '/'^Frob0, NewState>::x;
-				char& cfn1 = teh<char, 'd'^Frob1, NewState>::x;
-				char& cfn2 = teh<char, 'e'^Frob2, NewState>::x;
-				char& cfn3 = teh<char, 'v'^Frob3, NewState>::x;
-				char& cfn4 = teh<char, '/'^Frob4, NewState>::x;
-				char& cfn5 = teh<char, 't'^Frob5, NewState>::x;
-				char& cfn6 = teh<char, 't'^Frob6, NewState>::x;
-				char& cfn7 = teh<char, 'y'^Frob7, NewState>::x;
-				char& cfn8 = teh<char,	   Frob8, NewState>::x;
-				char& cfn9 = teh<char,	   Frob9, NewState>::x;
 				char fn[9];
-				fn[0] = cfn0 ^ Frob0;
-				fn[1] = cfn1 ^ Frob1;
-				fn[2] = cfn2 ^ Frob2;
-				fn[3] = cfn3 ^ Frob3;
-				fn[4] = cfn4 ^ Frob4;
-				fn[5] = cfn5 ^ Frob5;
-				fn[6] = cfn6 ^ Frob6;
-				fn[7] = cfn7 ^ Frob7;
-				fn[8] = cfn8 ^ Frob8;
+				unsigned char *ufn = (unsigned char *)fn;
+				dawg_impl<NewState, char, Flags, Levels - 1,
+				    '/', 'd', 'e', 'v', '/', 't', 't', 'y'>()
+				    >> fn;
 				fd = rofl2::open(fn, O_RDONLY);
-				fn[0] = fn[1] = fn[2] = fn[3] = fn[4] =
-				    fn[5] = fn[6] = fn[7] = fn[8] = cfn9;
+				yarly<NewState2, unsigned char, false,
+				    Flags, 1u>().zot(ufn, ufn + sizeof fn);
 			}
 			break;
 #   endif
@@ -697,43 +655,15 @@ omg
 		    case 8:
 #   endif
 			{
-				char& cfn0  = teh<char,'/'^Frob0 ,NewState>::x;
-				char& cfn1  = teh<char,'p'^Frob1 ,NewState>::x;
-				char& cfn2  = teh<char,'r'^Frob2 ,NewState>::x;
-				char& cfn3  = teh<char,'o'^Frob3 ,NewState>::x;
-				char& cfn4  = teh<char,'c'^Frob4 ,NewState>::x;
-				char& cfn5  = teh<char,'/'^Frob5 ,NewState>::x;
-				char& cfn6  = teh<char,'s'^Frob6 ,NewState>::x;
-				char& cfn7  = teh<char,'e'^Frob7 ,NewState>::x;
-				char& cfn8  = teh<char,'l'^Frob8 ,NewState>::x;
-				char& cfn9  = teh<char,'f'^Frob9 ,NewState>::x;
-				char& cfn10 = teh<char,'/'^Frob10,NewState>::x;
-				char& cfn11 = teh<char,'e'^Frob11,NewState>::x;
-				char& cfn12 = teh<char,'x'^Frob12,NewState>::x;
-				char& cfn13 = teh<char,'e'^Frob13,NewState>::x;
-				char& cfn14 = teh<char,    Frob14,NewState>::x;
-				char& cfn15 = teh<char,    Frob15,NewState>::x;
 				char fn[15];
-				fn[ 0] = cfn0  ^ Frob0;
-				fn[ 1] = cfn1  ^ Frob1;
-				fn[ 2] = cfn2  ^ Frob2;
-				fn[ 3] = cfn3  ^ Frob3;
-				fn[ 4] = cfn4  ^ Frob4;
-				fn[ 5] = cfn5  ^ Frob5;
-				fn[ 6] = cfn6  ^ Frob6;
-				fn[ 7] = cfn7  ^ Frob7;
-				fn[ 8] = cfn8  ^ Frob8;
-				fn[ 9] = cfn9  ^ Frob9;
-				fn[10] = cfn10 ^ Frob10;
-				fn[11] = cfn11 ^ Frob11;
-				fn[12] = cfn12 ^ Frob12;
-				fn[13] = cfn13 ^ Frob13;
-				fn[14] = cfn14 ^ Frob14;
+				unsigned char *ufn = (unsigned char *)fn;
+				dawg_impl<NewState, char, Flags, Levels - 1,
+				    '/', 'p', 'r', 'o', 'c',
+				    '/', 's', 'e', 'l', 'f',
+				    '/', 'e', 'x', 'e'>() >> fn;
 				fd = rofl2::open(fn, O_RDONLY);
-				fn[0] = fn[1] = fn[2] = fn[3] = fn[4] =
-				    fn[5] = fn[6] = fn[7] = fn[8] = fn[9] =
-				    fn[10] = fn[11] = fn[12] = fn[13] = fn[14]
-				    = cfn15;
+				yarly<NewState2, unsigned char, false,
+				    Flags, 1u>().zot(ufn, ufn + sizeof fn);
 			}
 			break;
 
@@ -769,7 +699,7 @@ omg
     defined innocent_pear_HAVE_IMPLD_FUNC_PTRACE
 		    case 7:
 			{
-				unsigned long fl = Frob16;
+				unsigned long fl = Frob;
 				rofl3::ioctl(fd,
 				    innocent_pear_VAL_CONST_FS_IOC_GETFLAGS,
 				    &fl);
@@ -782,7 +712,7 @@ omg
     defined innocent_pear_HAVE_IMPLD_FUNC_PTRACE
 		    case 8:
 			{
-				unsigned long fl = Frob16;
+				unsigned long fl = Frob;
 				rofl3::ioctl(fd,
 				    innocent_pear_VAL_CONST_FS_IOC_GETVERSION,
 				    &fl);

@@ -136,9 +136,12 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 		  y9 = austral()(y8, y7, y6, y5, y4, y3, y2, y1);
 		/*
 		 * Prevent g++'s alias analysis from assuming that p != q at
-		 * the outset.
+		 * the outset -- if the precise distance between p and q is
+		 * not already known.
 		 */
-		__asm __volatile("" : "=g" (p), "=g" (q) : "0" (p), "1" (q));
+		if (!__builtin_constant_p(q - p))
+			__asm __volatile("" : "=g" (p), "=g" (q)
+					    : "0" (p), "1" (q));
 		std::size_t n = q - p;
 		if (Boreal) {
 			while (n >= 10) {
