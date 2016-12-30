@@ -253,6 +253,102 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 	innocent_pear_always_inline
 	void wut(T *p, T *q)
 		{ wut(p, q, p); }
+	template<class DT>
+	innocent_pear_always_inline
+	T wat(const DT *p, const DT *q)
+	{
+		static_assert(std::is_integral<DT>::value,
+		    "DT in innocent_pear::orly<, T, ...>::wat(const DT *, "
+		    "...) is not an integral type");
+		static_assert(std::is_unsigned<DT>::value,
+		    "DT in innocent_pear::orly<, T, ...>::wat(const DT *, "
+		    "...) is not an unsigned type");
+		T x0,
+		  x1 = (*this)(),
+		  x2 = (*this)(x1),
+		  x3 = (*this)(x2, x1),
+		  x4 = (*this)(x3, x2, x1),
+		  x5 = (*this)(x4, x3, x2, x1),
+		  x6 = (*this)(x5, x4, x3, x2, x1),
+		  x7 = (*this)(x6, x5, x4, x3, x2, x1),
+		  x8 = (*this)(x7, x6, x5, x4, x3, x2, x1),
+		  x9 = (*this)(x8, x7, x6, x5, x4, x3, x2, x1);
+		if (!__builtin_constant_p(q - p))
+			__asm __volatile("" : "=g" (p), "=g" (q)
+					    : "0" (p), "1" (q));
+		std::size_t n = q - p;
+		while (n >= 10) {
+			x0 = (*this)((T)*p++, x1, x2, x3, x4,
+					  x5, x6, x7, x8, x9);
+			x1 = (*this)((T)*p++, x2, x3, x4, x5,
+					  x6, x7, x8, x9, x0);
+			x2 = (*this)((T)*p++, x3, x4, x5, x6,
+					  x7, x8, x9, x0, x1);
+			x3 = (*this)((T)*p++, x4, x5, x6, x7,
+					  x8, x9, x0, x1, x2);
+			x4 = (*this)((T)*p++, x5, x6, x7, x8,
+					  x9, x0, x1, x2, x3);
+			x5 = (*this)((T)*p++, x6, x7, x8, x9,
+					  x0, x1, x2, x3, x4);
+			x6 = (*this)((T)*p++, x7, x8, x9, x0,
+					  x1, x2, x3, x4, x5);
+			x7 = (*this)((T)*p++, x8, x9, x0, x1,
+					  x2, x3, x4, x5, x6);
+			x8 = (*this)((T)*p++, x9, x0, x1, x2,
+					  x3, x4, x5, x6, x7);
+			x9 = (*this)((T)*p++, x0, x1, x2, x3,
+					  x4, x5, x6, x7, x8);
+			n -= 10;
+		}
+		while (n-- != 0) {
+			x0 = (*this)((T)*p++, x1, x2, x3, x4,
+					  x5, x6, x7, x8, x9);
+			x1 = x2;
+			x2 = x3;
+			x3 = x4;
+			x4 = x5;
+			x5 = x6;
+			x6 = x7;
+			x7 = x8;
+			x8 = x9;
+			x9 = x0;
+		}
+		return x9;
+	}
+	innocent_pear_always_inline
+	void zot(T *p, T *q)
+	{
+		T x0,
+		  x1 = (*this)(),
+		  x2 = (*this)(x1),
+		  x3 = (*this)(x2, x1),
+		  x4 = (*this)(x3, x2, x1),
+		  x5 = (*this)(x4, x3, x2, x1),
+		  x6 = (*this)(x5, x4, x3, x2, x1),
+		  x7 = (*this)(x6, x5, x4, x3, x2, x1),
+		  x8 = (*this)(x7, x6, x5, x4, x3, x2, x1),
+		  x9 = (*this)(x8, x7, x6, x5, x4, x3, x2, x1);
+		if (!__builtin_constant_p(q - p))
+			__asm __volatile("" : "=g" (p), "=g" (q)
+					    : "0" (p), "1" (q));
+		T *r = p;
+		std::size_t n = q - p;
+		while (n-- != 0) {
+			x0 = (*this)((T)n, x1, x2, x3, x4,
+				       x5, x6, x7, x8, x9);
+			*r++ = x0;
+			x1 = x2;
+			x2 = x3;
+			x3 = x4;
+			x4 = x5;
+			x5 = x6;
+			x6 = x7;
+			x7 = x8;
+			x8 = x9;
+			x9 = x0;
+		}
+		__asm __volatile("" : : "g" (p) : "memory");
+	}
 };
 
 } // innocent_pear::impl

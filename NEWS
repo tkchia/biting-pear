@@ -1,3 +1,26 @@
+2016-12-30	"No, I'm a frayed knot."  (2)
+
+		include/innocent-pear/orly.h ,
+		include/innocent-pear/yarly.h :
+		- yarly<...>::wut(...) ~> orly<...>::wot(...)
+		- yarly<...>::zot(...) ~> orly<...>::zot(...)
+
+		include/innocent-pear/omg.h :
+		- changed to use orly<...>::zot(...)
+
+		include/innocent-pear/host/rly.h :
+		- removed rly<...>::wut(...)
+
+		share/innocent-pear/doge-01.cc :
+		- combined 3 functions into one huge function -- again
+
+		test/test-doge-with-dawg.cc ,
+		test/test-doge-with-dawg.good :
+		- new
+
+		GNUmakefile :
+		- added test-doge-with-dawg test case
+
 2016-12-29	"No, I'm a frayed knot."
 
 		include/innocent-pear/teh.h :

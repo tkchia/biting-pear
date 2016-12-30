@@ -80,6 +80,7 @@ tests.target = \
     test/test-orly-wut \
     test/test-doge.debug \
     test/test-doge \
+    test/test-doge-with-dawg \
     test/test-doge-abs-reloc \
     test/test-doge-eh \
     test/test-doge-with-c
@@ -579,6 +580,10 @@ test/test-doge.o \
 test/test-doge.s \
 test/test-doge-with-c \
 test/test-doge-with-c.o \
+test/test-doge-with-c.s \
+test/test-doge-with-dawg \
+test/test-doge-with-dawg.o \
+test/test-doge-with-dawg.s \
 test/test-doge-abs-reloc \
 test/test-doge-abs-reloc.o \
 test/test-doge-abs-reloc.s \
@@ -588,7 +593,8 @@ test/test-doge-eh.s : \
     CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge -s
 
 test/test-doge-with-c \
-test/test-doge-with-c.o : \
+test/test-doge-with-c.o \
+test/test-doge-with-c.s : \
     CFLAGS_FOR_TARGET.test = $(CFLAGS_FOR_TARGET) -Xinnocent-pear -doge -s
 
 test/test-doge-eh: test/test-doge-eh.o test/test-doge-eh.sub.o

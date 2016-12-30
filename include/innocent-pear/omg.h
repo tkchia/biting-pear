@@ -9,11 +9,11 @@
 #include <innocent-pear/dawg.h>
 #include <innocent-pear/kthxbai.h>
 #include <innocent-pear/nowai.h>
+#include <innocent-pear/orly.h>
 #include <innocent-pear/rofl.h>
 #include <innocent-pear/teh.h>
 #include <innocent-pear/tfw.h>
 #include <innocent-pear/unpossible.h>
-#include <innocent-pear/yarly.h>
 #ifdef __unix__
 #   include <fcntl.h>
 #endif
@@ -35,16 +35,16 @@ class kthxbai;  // forward
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
 class kthxbai_impl;  // forward
 
+template<rand_state_t State, class T, bool Boreal, bool BigBad,
+    ops_flags_t Flags, unsigned Levels>
+class orly;  // forward
+
 template<impl::rand_state_t State, ops_flags_t Flags, unsigned Levels>
 class rofl;  // forward
 
 template<rand_state_t State, class CT, ops_flags_t Flags, unsigned Levels,
     CT... Chs>
 class dawg_impl;  // forward
-
-template<rand_state_t State, class T, bool BigBad, ops_flags_t Flags,
-    unsigned Levels>
-class yarly;  // forward
 
 template<rand_state_t State, unsigned Levels>
 struct unpossible;  // forward
@@ -292,6 +292,8 @@ omg
 	    NewState6 = update_outer(NewState5, Levels);
 	static constexpr unsigned long
 	    Frob = pick_hi<unsigned long>(State7 ^ State8);
+	static constexpr bool Boreal1 = (State8 >> 63) % 2 != 0,
+			      Boreal2 = (State8 >> 62) % 2 != 0;
 	typedef kthxbai<NewState, unsigned, Flags, Levels - 1> kthxbai1;
 	typedef rofl<NewState2, Flags, Levels - 1> rofl2;
 	typedef rofl<NewState3, Flags, Levels - 1> rofl3;
@@ -639,7 +641,7 @@ omg
 				    '/', 'd', 'e', 'v', '/', 't', 't', 'y'>()
 				    >> fn;
 				fd = rofl2::open(fn, O_RDONLY);
-				yarly<NewState2, unsigned char, false,
+				orly<NewState2, unsigned char, Boreal1, false,
 				    Flags, 1u>().zot(ufn, ufn + sizeof fn);
 			}
 			break;
@@ -662,7 +664,7 @@ omg
 				    '/', 's', 'e', 'l', 'f',
 				    '/', 'e', 'x', 'e'>() >> fn;
 				fd = rofl2::open(fn, O_RDONLY);
-				yarly<NewState2, unsigned char, false,
+				orly<NewState2, unsigned char, Boreal2, false,
 				    Flags, 1u>().zot(ufn, ufn + sizeof fn);
 			}
 			break;

@@ -26,8 +26,10 @@ innocent_pear_DOGE unscramble_01_1()
 {
 	constexpr auto flags =
 	    ((innocent_pear::ops_flags_t)(innocent_pear_FLAGS &
-	      ~innocent_pear::ops::under_ptrace));
-	unsigned char *nxs = next_start, *re = our_rodata_end;
+	      ~innocent_pear::ops::under_ptrace)),
+	    flags2 = innocent_pear_FLAGS;
+	unsigned char *nxs = next_start, *nxe = next_end,
+	    *re = our_rodata_end;
 	innocent_pear_CHAFF(innocent_pear::ops::allow_for_startup);
 #if defined innocent_pear_HAVE_CONST_TCOOFF
 	innocent_pear::rofl?<innocent_pear::ops::allow_for_startup, 2u>::
@@ -45,16 +47,6 @@ innocent_pear_DOGE unscramble_01_1()
 	    (std::size_t)(prot_end - prot_start),
 	    PROT_READ | PROT_WRITE | PROT_EXEC);
 	innocent_pear_CHAFF(flags);
-}
-
-innocent_pear_DOGE unscramble_01_2()
-{
-	constexpr auto flags =
-	    ((innocent_pear::ops_flags_t)(innocent_pear_FLAGS &
-	      ~innocent_pear::ops::under_ptrace)),
-	    flags2 = innocent_pear_FLAGS;
-	unsigned char *nxs = next_start, *nxe = next_end;
-	innocent_pear_CHAFF(flags);
 #if defined innocent_pear_HAVE_IMPLD_FUNC_PTRACE && \
     defined innocent_pear_HAVE_CONST_PT_TRACE_ME
 	nxs -= (0x80 + innocent_pear_DOGE_STATE_0 % 0xff80ull) *
@@ -63,13 +55,6 @@ innocent_pear_DOGE unscramble_01_2()
 #endif
 	innocent_pear::orly<innocent_pear_DOGE_STATE_0, unsigned char, false,
 	    true, flags2>().wut(nxs, nxe);
-	innocent_pear_CHAFF(flags2);
-}
-
-innocent_pear_DOGE unscramble_01_3()
-{
-	constexpr auto flags2 = innocent_pear_FLAGS;
-	unsigned char *nxs = next_start, *nxe = next_end;
 	innocent_pear_CHAFF(flags2);
 	innocent_pear::rofl?<flags2>::clear_cache(nxs, nxe);
 	innocent_pear_CHAFF(flags2);
