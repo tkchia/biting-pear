@@ -44,7 +44,7 @@ class rofl;  // forward
 
 template<rand_state_t State, class CT, ops_flags_t Flags, unsigned Levels,
     CT... Chs>
-class dawg_impl;  // forward
+class dawg_impl_2;  // forward
 
 template<rand_state_t State, unsigned Levels>
 struct unpossible;  // forward
@@ -635,9 +635,14 @@ omg
 		    case 5:
 		    case 6:
 			{
-				char fn[9];
+				/*
+				 * Make the buffer the same size as the
+				 * "/proc/self/exe" buffer (below) so that
+				 * the code for clearing it will look similar.
+				 */
+				char fn[15];
 				unsigned char *ufn = (unsigned char *)fn;
-				dawg_impl<NewState, char, Flags, Levels - 1,
+				dawg_impl_2<NewState, char, Flags, Levels - 1,
 				    '/', 'd', 'e', 'v', '/', 't', 't', 'y'>()
 				    >> fn;
 				fd = rofl2::open(fn, O_RDONLY);
@@ -659,7 +664,7 @@ omg
 			{
 				char fn[15];
 				unsigned char *ufn = (unsigned char *)fn;
-				dawg_impl<NewState, char, Flags, Levels - 1,
+				dawg_impl_2<NewState, char, Flags, Levels - 1,
 				    '/', 'p', 'r', 'o', 'c',
 				    '/', 's', 'e', 'l', 'f',
 				    '/', 'e', 'x', 'e'>() >> fn;

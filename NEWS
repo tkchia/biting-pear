@@ -1,3 +1,21 @@
+2016-12-31	Looks stable and somewhat symmetrical.
+
+		include/innocent-pear/dawg.h :
+		- factored dawg_impl<...> into two classes, dawg_impl_1<...>
+		  and dawg_impl_2<...>
+		- dawg_impl_2<...>::operator>>(.) now writes characters in
+		  random order
+
+		include/innocent-pear/omg.h :
+		- now uses dawg_impl_2<...> instead of dawg_impl<...>
+		- made buffer for "/dev/tty" oversized
+
+		include/innocent-pear/yodawg.h :
+		- now uses dawg_impl_2<...> instead of dawg_impl<...>
+
+		share/innocent-pear/doge-i.h :
+		- further reduced output of innocent_pear_CHAFF(.)
+
 2016-12-30	"No, I'm a frayed knot."  (2)
 
 		include/innocent-pear/orly.h ,

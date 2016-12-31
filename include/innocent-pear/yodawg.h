@@ -8,7 +8,7 @@ namespace innocent_pear
 {
 
 template<impl::rand_state_t State, ops_flags_t Flags, wchar_t... Chs>
-    using yodawg = impl::dawg_impl<State, wchar_t, Flags, 2u, Chs...>;
+    using yodawg = impl::dawg_impl_2<State, wchar_t, Flags, 2u, Chs...>;
 
 } // innocent_pear
 
