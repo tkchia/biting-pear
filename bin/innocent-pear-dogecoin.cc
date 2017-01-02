@@ -25,7 +25,7 @@ typedef std::list<asection *> sxn_list_t;
 struct fortune_t
 {
 	bfd *obfd;
-	unsigned long n_syms;
+	unsigned long sxn_ctr, n_syms;
 	asymbol **syms;
 	unsigned addr_octets, alignment_power, pcrel_adj;
 	reloc_howto_type *from_howto, *to_howto, *extra_howto;
@@ -48,6 +48,13 @@ static void such()
 	amaze();
 }
 
+__attribute__((noinline))
+static void such_very()
+{
+	std::cerr << ") failed: " << bfd_errmsg(bfd_get_error());
+	amaze();
+}
+
 template<class... Ts>
 __attribute__((always_inline))
 inline void much(Ts... msg)
@@ -55,6 +62,15 @@ inline void much(Ts... msg)
 	std::cerr << "ERROR: ";
 	very(msg...);
 	such();
+}
+
+template<class... Ts>
+__attribute__((always_inline))
+inline void much_very(Ts... msg)
+{
+	std::cerr << "ERROR: ";
+	very(msg...);
+	such_very();
 }
 
 static our_mode_t our_mode;
@@ -145,26 +161,29 @@ static void prep_sxn_i(bfd *ibfd, asection *isxn, void *cookie)
 	bfd_vma vma = bfd_section_vma(ibfd, isxn),
 		lma = bfd_section_lma(ibfd, isxn);
 	bfd_size_type size = bfd_section_size(ibfd, isxn);
-	wow("  ", name, ": vma 0x", std::hex, vma,
-	    ", lma 0x", lma, ", size 0x", size);
+	if (fortune->sxn_ctr++ == 64)
+		wow("  ...");
+	else if (fortune->sxn_ctr < 64)
+		wow("  ", name, ": vma 0x", std::hex, vma,
+		    ", lma 0x", lma, ", size 0x", size);
 	if (our_mode == mode_unmerge) {
 		if ((flags & SEC_ALLOC) != 0 && (flags & SEC_MERGE) != 0) {
-			wow("    allocated, mergeable -- "
-				"making non-mergeable");
+			wow("  ", name, ": allocated, mergeable -- "
+			    "making non-mergeable");
 			flags &= ~(SEC_MERGE | SEC_STRINGS);
 		}
 	}
 	asection *osxn = bfd_make_section_anyway_with_flags(obfd,name,flags);
 	if (!osxn)
-		much("bfd_make_section_anyway_with_flags");
+		much_very("bfd_make_section_anyway_with_flags(, ", name, ", ");
 	if (!bfd_set_section_size(obfd, osxn, size))
-		much("bfd_set_section_size");
+		much_very("bfd_set_section_size(, ", name, ", ");
 	if (!bfd_set_section_vma(obfd, osxn, vma))
-		much("bfd_set_section_vma");
+		much_very("bfd_set_section_vma(, ", name, ", ");
 	osxn->lma = lma;
 	if (!bfd_set_section_alignment(obfd, osxn,
 	    bfd_section_alignment(ibfd, isxn)))
-		much("bfd_set_section_alignment");
+		much_very("bfd_set_section_alignment(, ", name, ", ");
 	isxn->output_section = osxn;
 	isxn->output_offset = 0;
 	osxn->entsize = isxn->entsize;
@@ -174,6 +193,7 @@ static void prep_sxn_i(bfd *ibfd, asection *isxn, void *cookie)
 static void do_frob_3(bfd *ibfd, fortune_t *fortune)
 {
 	wow("preparing existing sections");
+	fortune->sxn_ctr = 0;
 	bfd_map_over_sections(ibfd, prep_sxn_i, fortune);
 }
 
@@ -278,7 +298,10 @@ static void prep_sxn_ii(bfd *ibfd, asection *isxn, void *cookie)
 	}
 	asymbol *id = fortune->syms[psh->sh_info - 1];
 	psd->group.id = id;
-	wow("  ", name, '[', id->name, ']');
+	if (fortune->sxn_ctr++ == 64)
+		wow("  ...");
+	else if (fortune->sxn_ctr < 64)
+		wow("  ", name, '[', id->name, ']');
 }
 
 static void prep_sxn_iii(bfd *ibfd, asection *isxn, void *cookie)
@@ -286,7 +309,10 @@ static void prep_sxn_iii(bfd *ibfd, asection *isxn, void *cookie)
 	fortune_t *fortune = (fortune_t *)cookie;
 	bfd *obfd = fortune->obfd;
 	const char *name = bfd_section_name(ibfd, isxn);
-	wow("  ", name);
+	if (fortune->sxn_ctr++ == 64)
+		wow("  ...");
+	else if (fortune->sxn_ctr < 64)
+		wow("  ", name);
 	asection *osxn = isxn->output_section;
 	if (!bfd_copy_private_section_data(ibfd, isxn, obfd, osxn))
 		much("bfd_copy_private_section_data");
@@ -297,9 +323,11 @@ static void do_frob_5(bfd *ibfd, fortune_t *fortune)
 	if (fortune->syms != 0 &&
 	    bfd_get_flavour(ibfd) == bfd_target_elf_flavour) {
 		wow("fishing out section group signatures");
+		fortune->sxn_ctr = 0;
 		bfd_map_over_sections(ibfd, prep_sxn_ii, fortune);
 	}
 	wow("copying BFD back-end data for sections");
+	fortune->sxn_ctr = 0;
 	bfd_map_over_sections(ibfd, prep_sxn_iii, fortune);
 }
 
@@ -379,9 +407,9 @@ static void do_frob_8(bfd *ibfd, bfd *obfd, fortune_t *fortune)
 		char *nm = new char[nm_sz];
 		prg = innocent_pear::impl::update_outer(prg, 5);
 		snprintf(nm, nm_sz, NEW_SXN_NAME_TPL ".%016" PRIxLEAST64, prg);
-		if (i == 16)
+		if (i == 64)
 			wow("  ...");
-		else if (i < 16)
+		else if (i < 64)
 			wow("  ", nm);
 		asection *xsxn = bfd_make_section_anyway_with_flags(obfd, nm,
 		    SEC_ALLOC | SEC_LOAD | SEC_READONLY | SEC_DATA |
@@ -405,7 +433,14 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 	fortune_t *fortune = (fortune_t *)cookie;
 	bfd *obfd = fortune->obfd;
 	asection *osxn = isxn->output_section;
-	wow("  ", bfd_section_name(ibfd, isxn));
+	const char *name = bfd_section_name(ibfd, isxn);
+	bool blurt = false;
+	if (fortune->sxn_ctr++ == 64)
+		wow("  ...");
+	else if (fortune->sxn_ctr < 64) {
+		wow("  ", name);
+		blurt = true;
+	}
 	flagword fl = bfd_get_section_flags(ibfd, isxn);
 	if ((fl & (SEC_HAS_CONTENTS | SEC_RELOC)) == 0)
 		return;
@@ -414,9 +449,11 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 		if (sz) {
 			unsigned char stuff[sz];
 			if (!bfd_get_section_contents(ibfd,isxn,stuff,0,sz))
-				much("bfd_get_section_contents");
+				much_very("bfd_get_section_contents(, ", name,
+				    ", ...");
 			if (!bfd_set_section_contents(obfd,osxn,stuff,0,sz))
-				much("bfd_set_section_contents");
+				much_very("bfd_set_section_contents(, ", name,
+				    ", ...");
 		}
 	}
 	if ((fl & SEC_RELOC) == 0 || fortune->relocs.count(isxn) == 0)
@@ -429,7 +466,8 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 	}
 	if ((fl & (SEC_LINK_ONCE | SEC_MERGE | SEC_SORT_ENTRIES)) != 0 ||
 	    bfd_is_group_section(ibfd, isxn)) {
-		wow("    not frobbing");
+		if (blurt)
+			wow("    not frobbing");
 		bfd_set_reloc(obfd, osxn, rels, (unsigned)nrels);
 		return;
 	}
@@ -486,7 +524,9 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 		 *     R_386_PC32 relocations, and in the target startup
 		 *     code (in share/innocent-pear/), we add 4 back in.
 		 */
-		wow("    frobbing reloc. at +0x", std::hex, pr->address);
+		if (blurt)
+			wow("    frobbing reloc. at +0x", std::hex,
+			    pr->address);
 		bfd_size_type sz = fortune->addr_octets;
 		unsigned char stuff[sz];
 		bfd_vma adj = fortune->pcrel_adj;
@@ -497,12 +537,14 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 			if (pfr->howto->src_mask != 0) {
 				if (!bfd_get_section_contents(obfd, osxn,
 				    stuff, pfr->address, sz))
-					much("bfd_get_section_contents");
+					much_very("bfd_get_section_contents"
+					    "(, ", name, ", ...");
 				bfd_put(sz * 8, obfd, bfd_get(sz * 8, obfd,
 				    stuff) - adj, stuff);
 				if (!bfd_set_section_contents(obfd, osxn,
 				    stuff, pfr->address, sz))
-					much("bfd_set_section_contents");
+					much_very("bfd_set_section_contents"
+					    "(, ", name, ", ...");
 			} else
 				pfr->addend -= adj;
 		}
@@ -518,17 +560,21 @@ static void copy_sxn(bfd *ibfd, asection *isxn, void *cookie)
 		xrel->howto = howto;
 		bfd_size_type off = pr->address;
 		off -= adj;
+		const char *xname = bfd_section_name(obfd, xsxn);
 		if (howto->src_mask != 0) {
-			wow("    ~> p ", bfd_section_name(obfd, xsxn));
+			if (blurt)
+				wow("    ~> p ", xname);
 			bfd_put(sz * 8, obfd, off, stuff);
 			xrel->addend = 0;
 		} else {
-			wow("    ~> a ", bfd_section_name(obfd, xsxn));
+			if (blurt)
+				wow("    ~> a ", xname);
 			memset(stuff, 0, sz);
 			xrel->addend = off;
 		}
 		if (!bfd_set_section_contents(obfd, xsxn, stuff, 0, sz))
-			much("bfd_set_section_contents");
+			much_very("bfd_set_section_contents(, ", xname,
+			    ", ...");
 		bfd_set_reloc(obfd, xsxn, xrels, 1u);
 	}
 	bfd_set_reloc(obfd, osxn, orels, (unsigned)nrels);
@@ -541,6 +587,7 @@ static void do_frob_9(bfd *ibfd, fortune_t *fortune)
 		wow("copying and frobbing sections");
 	else
 		wow("copying sections");
+	fortune->sxn_ctr = 0;
 	bfd_map_over_sections(ibfd, copy_sxn, fortune);
 	if (!fortune->xsxns.empty())
 		many("inconsistent relocation counts!");

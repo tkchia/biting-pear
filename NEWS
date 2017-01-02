@@ -1,3 +1,9 @@
+2017-01-02	Be even less verbose.
+
+		bin/innocent-pear-dogecoin.cc :
+		- now cuts off long lists of section names in its stderr
+		  output
+
 2016-12-31	Looks stable and somewhat symmetrical.
 
 		include/innocent-pear/dawg.h :
