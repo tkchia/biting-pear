@@ -596,11 +596,15 @@ omg
 #if defined innocent_pear_HAVE_CONST_FS_IOC_GETFLAGS && \
     defined innocent_pear_HAVE_IMPLD_FUNC_PTRACE
 		    case 7:
+			if (!(Flags & allow_resource_unsafes))
+				return false;
 			break;
 #endif
 #if defined innocent_pear_HAVE_CONST_FS_IOC_GETVERSION && \
     defined innocent_pear_HAVE_IMPLD_FUNC_PTRACE
 		    case 8:
+			if (!(Flags & allow_resource_unsafes))
+				return false;
 			break;
 #endif
 #if defined innocent_pear_HAVE_FUNC_PRCTL && \

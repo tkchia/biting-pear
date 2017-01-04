@@ -5,6 +5,6 @@
 int main()
 {
 	std::locale::global(std::locale(""));
-	std::wcout << $L"Ave, munde!\n";
+	std::wcout << $$L"Ave, " << $L"munde!\n";
 	return 0;
 }

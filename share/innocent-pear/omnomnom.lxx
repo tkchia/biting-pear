@@ -215,6 +215,18 @@ static void flush_str()
 				curr_str_enc = "";
 				BEGIN(Such);
 			}
+"$"{ws}"$"{ws}\"	{
+				char *p = strchr(yytext + 1, '$'),
+				     *q = yytext + yyleng - 1;
+				blurt(yytext + 1, p - yytext - 1);
+				blurt(p + 1, q - p - 1);
+				blurfl("::innocent_pear::dawg<0x%" PRIxLEAST64
+				    ",::innocent_pear::ops::"
+				    "allow_for_startup,",
+				    moar.fetch());
+				curr_str_enc = "";
+				BEGIN(Such);
+			}
 "["{ws}"]"{ws}L{ws}\"	{
 				char *p = strchr(yytext + 1, ']'),
 				     *q = strchr(p + 1, 'L'),
@@ -237,6 +249,20 @@ static void flush_str()
 				curr_str_enc = "L";
 				BEGIN(Such);
 			}
+"$"{ws}"$"{ws}L{ws}\"	{
+				char *p = strchr(yytext + 1, '$'),
+				     *q = strchr(p + 1, 'L'),
+				     *r = yytext + yyleng - 1;
+				blurt(yytext + 1, p - yytext - 1);
+				blurt(p + 1, q - p - 1);
+				blurt(q + 1, r - q - 1);
+				blurfl("::innocent_pear::yodawg<0x%"
+				    PRIxLEAST64 ",::innocent_pear::ops::"
+				    "allow_for_startup,",
+				    moar.fetch());
+				curr_str_enc = "L";
+				BEGIN(Such);
+			}
 "["{ws}"]"{ws}[uUR]	{
 				die("[]u\"\", []u8\"\", []U\"\", and "
 				    "[]R\"\" not supported");
@@ -251,6 +277,8 @@ static void flush_str()
 "["{ws}			|
 "$"{ws}L{ws}		|
 "$"{ws}			|
+"$"{ws}"$"{ws}		|
+"$"{ws}"$"{ws}L{ws}	|
 [^\"'#$?\[\n]+		|
 \"([^\"\\\n]|\\{any})*\"	|
 \"([^\"\\\n]|\\{any})*\\	|
