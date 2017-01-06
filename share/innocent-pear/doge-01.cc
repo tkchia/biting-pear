@@ -39,11 +39,10 @@ innocent_pear_DOGE unscramble_01_1()
 	innocent_pear_CHAFF(flags);
 #endif
 	uintptr_t pg_sz = (uintptr_t)(innocent_pear::kthxbai?<
-	    innocent_pear_decltype(&getpagesize), flags>(getpagesize))();
-	innocent_pear_CHAFF(flags);
+	    innocent_pear_decltype(&getpagesize), flags, 1u>(getpagesize))();
 	uintptr_t prot_start = (uintptr_t)nxs & -pg_sz;
 	uintptr_t prot_end = ((uintptr_t)re + pg_sz - 1) & -pg_sz;
-	innocent_pear::rofl?<flags, 2u>::mprotect((void *)prot_start,
+	innocent_pear::rofl?<flags, 1u>::mprotect((void *)prot_start,
 	    (std::size_t)(prot_end - prot_start),
 	    PROT_READ | PROT_WRITE | PROT_EXEC);
 	innocent_pear_CHAFF(flags);

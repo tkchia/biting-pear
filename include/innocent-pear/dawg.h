@@ -114,8 +114,7 @@ class dawg_impl_2<State, CT, Flags, Levels, Ch, Chs...>
 	static constexpr rand_state_t
 	    State2 = update_inner(State),
 	    State3 = update_inner(State2),
-	    State4 = update_inner(State3),
-	    State5 = update_inner(State4);
+	    State4 = update_inner(State3);
 	typedef dawg_impl_2<State4, CT, Flags, Levels, Chs...> rest_type;
     public:
 	innocent_pear_always_inline
@@ -139,13 +138,8 @@ class dawg_impl_2<State, CT, Flags, Levels, Ch, Chs...>
 	innocent_pear_always_inline
 	void operator>>(CT *b)
 	{
-		if ((State4 ^ State5) % 100000001ull % size() == 0) {
-			*b = front();
-			rest() >> (b + 1);
-		} else {
-			rest() >> (b + 1);
-			*b = front();
-		}
+		rest() >> (b + 1);
+		*b = front();
 	}
 };
 

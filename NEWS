@@ -1,3 +1,13 @@
+2017-01-06	"No, I'm a frayed knot."  (3)
+
+		share/innocent-pear/doge-01.cc :
+		- reduced the scrambling around the getpagesize() and
+		  mprotect(...) calls
+
+		include/innocent-pear/dawg.h :
+		- dawg_impl_2<...>::operator>>(.): removed randomization of
+		  character order (for now)
+
 2017-01-04	More syntactic sugar for strings.
 
 		share/innocent-pear/omnomnom.lxx :
