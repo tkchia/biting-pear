@@ -462,7 +462,7 @@ ifeq "yes" "$(conf_Have_appb_xz)"
 	@case "$*" in \
 	    doge*) \
 		echo "* base64 dump of xz'd head of $< :"; \
-		xz -9c <'$<' | base64 | head -n 1536 | sed 's,^,*  ,';; \
+		xz -9c <'$<' | base64 | head -n 256 | sed 's,^,*  ,';; \
 	esac >&2
 endif
 endif
@@ -497,7 +497,7 @@ ifeq "yes" "$(conf_Have_appb_xz)"
 	@case "$*" in \
 	    doge*) \
 		echo "* base64 dump of xz'd head of $< :"; \
-		xz -9c <'$<' | base64 | head -n 1536 | sed 's,^,*  ,';; \
+		xz -9c <'$<' | base64 | head -n 256 | sed 's,^,*  ,';; \
 	esac >&2
 endif
 endif

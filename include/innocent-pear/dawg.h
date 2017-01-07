@@ -138,8 +138,21 @@ class dawg_impl_2<State, CT, Flags, Levels, Ch, Chs...>
 	innocent_pear_always_inline
 	void operator>>(CT *b)
 	{
-		rest() >> (b + 1);
-		*b = front();
+		CT x;
+		switch ((State3 ^ State4) % 0x100000001u % 3) {
+		    case 0:
+			rest() >> (b + 1);
+			*b = front();
+			break;
+		    case 1:
+			*b = front();
+			rest() >> (b + 1);
+			break;
+		    default:
+			x = front();
+			rest() >> (b + 1);
+			*b = x;
+		}
 	}
 };
 
