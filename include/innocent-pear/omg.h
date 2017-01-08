@@ -46,7 +46,7 @@ template<rand_state_t State, class CT, ops_flags_t Flags, unsigned Levels,
     CT... Chs>
 class dawg_impl_2;  // forward
 
-template<rand_state_t State, unsigned Levels>
+template<rand_state_t State, class T, unsigned Levels>
 struct unpossible;  // forward
 
 template<rand_state_t State, class T,
@@ -67,8 +67,9 @@ omg<State, T, Flags, 0u>
 {
     public:
 	innocent_pear_always_inline
-	omg(T& x, bool bogo = false)
+	omg(T& x)
 	{
+		using namespace innocent_pear::ops;
 		constexpr rand_state_t
 		    State2 = update_inner(State),
 		    State3 = update_inner(State2),
@@ -249,8 +250,8 @@ omg<State, T, Flags, 0u>
 #endif
 		    case 35:
 		    case 36:
-			if (bogo)
-				unpossible<State3, 0>();
+			if ((Flags & under_unpossible) != 0)
+				unpossible<State3, T, 0> un(x);
 			// fall through
 		    default:
 			if ((State2 >> 16) % 4 == 0) {
@@ -264,7 +265,7 @@ omg<State, T, Flags, 0u>
 	omg()
 	{
 		T x;
-		omg(x, false);
+		omg zomg(x);
 	}
 };
 
@@ -428,7 +429,7 @@ omg
 			    ": UNPOSSIBLE!!!1 @%p\n", State, &&qux);
 	    qux:	std::abort();
 #   endif
-			unpossible<NewState2, Levels - 1>();
+			unpossible<NewState2, T, Levels - 1>();
 #   ifdef __amd64__
 			coax_no_red();
 #   endif
@@ -440,7 +441,7 @@ omg
 			    ": UNPOSSIBLE!!!2 @%p\n", State, &&foo);
 	    		std::abort();
 #   endif
-			unpossible<NewState3, Levels - 1>();
+			unpossible<NewState3, T, Levels - 1>();
 		}
 		return true;
 #elif (defined __arm__ || defined __thumb__) && \
@@ -533,7 +534,7 @@ omg
 			    ": UNPOSSIBLE!!!1 @%p\n", State, &&qux);
 	    qux:	std::abort();
 #   endif
-			unpossible<NewState2, Levels - 1>();
+			unpossible<NewState2, T, Levels - 1>();
 			__asm __volatile(".ltorg");
 		}
 	    foo:
@@ -543,7 +544,7 @@ omg
 			    ": UNPOSSIBLE!!!2 @%p\n", State, &&foo);
 	    		std::abort();
 #   endif
-			unpossible<NewState3, Levels - 1>();
+			unpossible<NewState3, T, Levels - 1>();
 			__asm __volatile(".ltorg");
 		}
 		return true;
@@ -553,7 +554,7 @@ omg
 	}
     public:
 	innocent_pear_always_inline
-	static bool special(T& x, bool bogo = false)
+	static bool special(T& x)
 	{
 		using namespace innocent_pear::ops;
 		constexpr unsigned Which2 = (State2 >> 32) % 11;
@@ -685,7 +686,7 @@ omg
 			zero = (unsigned long)kthxbai1(0);
 #endif
 		}
-		omg<NewState5, T, Flags, Levels - 1> zomg(x, bogo);
+		omg<NewState5, T, Flags, Levels - 1> zomg(x);
 		switch (Which2) {
 		    default:
 		    case 1:
@@ -745,10 +746,10 @@ omg
 	static bool special()
 	{
 		T x;
-		return special(x, false);
+		return special(x);
 	}
 	innocent_pear_always_inline
-	omg(T& x, bool bogo = false)
+	omg(T& x)
 	{
 		using namespace innocent_pear::ops;
 		constexpr unsigned Bit = pick_hi<unsigned>(State2 ^ State3)
@@ -759,10 +760,8 @@ omg
 		    case 2:
 			{
 				T y;
-				omg<NewState, T, Flags, Levels - 1>
-				    zomg(x, bogo);
-				omg<NewState2, T, Flags, Levels - 1>
-				    zomg2(y, bogo);
+				omg<NewState, T, Flags, Levels - 1> zomg(x);
+				omg<NewState2, T, Flags, Levels - 1> zomg2(y);
 				__asm __volatile(""
 				    : "=g" (x)
 				    : "0" (do_op<pick_hi<unsigned>(NewState3)>
@@ -820,14 +819,13 @@ omg
 			if (false)
 		    case 14:
 		    case 15:
-			if (special(x, bogo))
+			if (special(x))
 				return;
 			if (false)
 		    case 16:
 		    case 17:
 			if (wheee()) {
-				omg<NewState6, T, Flags, Levels - 1>
-				    zomg(x, bogo);
+				omg<NewState6, T, Flags, Levels - 1> zomg(x);
 				return;
 			}
 			if (false)
@@ -843,11 +841,11 @@ omg
 					kthxbai_impl<NewState, uintptr_t,
 					    Flags, Levels - 1>(c, N);
 					omg<NewState2, T, Flags, Levels - 1>
-					    (y, bogo);
+					    zomg(y);
 				}
 				while (c-- != 0) {
 					omg<NewState3, T, Flags, Levels - 1>
-					    (z, bogo);
+					    zomg(z);
 					kthxbai_impl<NewState4, T, Flags, 0>
 					    (w, do_inv_op<WhichOp>(y, z));
 					y = w;
@@ -858,8 +856,8 @@ omg
 			if (false)
 		    case 20:
 		    case 21:
-			if (bogo)
-				unpossible<NewState3, Levels - 1>();
+			if ((Flags & under_unpossible) != 0)
+				unpossible<NewState3, T, Levels - 1> un(x);
 			// fall through
 		    default:
 			{
@@ -868,7 +866,7 @@ omg
 				lolwut<NewState2, T, Flags, Levels-1> p2(&x1);
 				{
 					omg<NewState4, T, Flags, Levels - 1>
-					    (*p1, bogo);
+					    zomg(*p1);
 				}
 				kthxbai_impl<NewState5, T, Flags, 0>(x, *p2);
 			}
@@ -879,7 +877,7 @@ omg
 	omg()
 	{
 		T x;
-		omg(x, false);
+		omg zomg(x);
 	}
 };
 

@@ -12,6 +12,7 @@
 #include <innocent-pear/orly.h>
 #include <innocent-pear/rofl.h>
 #include <innocent-pear/teh.h>
+#include <innocent-pear/unpossible.h>
 #if defined innocent_pear_HAVE_IMPLD_FUNC_PTRACE && \
     defined innocent_pear_HAVE_CONST_PT_TRACE_ME
 #   include <cerrno>
@@ -27,9 +28,12 @@ namespace innocent_pear
 namespace impl
 {
 
-template<impl::rand_state_t State, class T, ops_flags_t Flags,
+template<rand_state_t State, class T, ops_flags_t Flags,
     unsigned Levels>
 class omg;  // forward
+
+template<rand_state_t State, class T, unsigned Levels>
+class unpossible;  // forward
 
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
 class lolwut;  // forward
@@ -123,10 +127,10 @@ class kthxbai_impl
 	static constexpr bool Boreal1 = (State2 >> 30) % 2 != 0;
 	typedef kthxbai_impl<NewState, T, Flags, Levels - 1> impl_n;
 	typedef kthxbai_impl<NewState2, T, Flags, Levels - 1> impl_n2;
-	typedef kthxbai_impl<NewState3, uintptr_t, Flags, Levels - 1> impl_n3;
 	typedef kthxbai_impl<NewState4, T, Flags, 0> impl_z;
 	typedef omg<NewState, T, Flags, Levels - 1> omg_n;
 	typedef omg<NewState3, T, Flags, Levels - 1> omg_n3;
+	typedef unpossible<NewState3, T, Levels - 1> un_n3;
     public:
 	innocent_pear_always_inline
 	static bool special(T& x, T v)
@@ -212,7 +216,7 @@ class kthxbai_impl
 				// always false
 				if (bit_set(v, BitP) ? !bit_set(x1, BitP) :
 				    bit_set(x1, BitP))
-					{ omg_n3 zomg(x1, true); }
+					{ un_n3 x(x1); }
 				impl_z(x, x1);
 			}
 			break;
@@ -250,7 +254,7 @@ class kthxbai_impl
 				// always false
 				while (bit_set(v, BitP) ? !bit_set(x1, BitP) :
 				       bit_set(x1, BitP))
-					{ omg_n3 zomg(x1, true); }
+					{ un_n3 un(x1); }
 				impl_z(x, x1);
 			}
 			break;
@@ -264,7 +268,7 @@ class kthxbai_impl
 				    !bit_set(x1, BitP))
 					{ impl_n2(x2, v); }
 				else
-					{ omg_n3 zomg(x2, true); }
+					{ un_n3 un(x2); }
 				impl_z(x, x2);
 			}
 			break;
@@ -399,6 +403,8 @@ class kthxbai_impl
 				{ impl_n(y, Y); }
 				{ impl_n2(u, do_op_rept<WhichOp, N>(v, Y)); }
 				uintptr_t c;
+				typedef kthxbai_impl<NewState3, uintptr_t,
+				    Flags, Levels - 1> impl_n3;
 				{ impl_n3(c, N); }
 				while (c-- != 0) {
 					{ impl_z(w, do_inv_op<WhichOp>(u,y)); }

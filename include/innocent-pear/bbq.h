@@ -256,7 +256,8 @@ enum ops_flags_t
 				  allow_debugger_unsafes |
 				  allow_resource_unsafes,
     under_munged_terminal	= 0x00000010u,
-    under_ptrace		= 0x00000020u
+    under_ptrace		= 0x00000020u,
+    under_unpossible		= 0x00000040u
 };
 
 } // innocent_pear::ops

@@ -18,15 +18,15 @@ namespace impl
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
 class omg;
 
-template<rand_state_t State, unsigned Levels>
+template<rand_state_t State, class T, unsigned Levels>
 struct unpossible;
 
-template<rand_state_t State>
-struct unpossible<State, ~0u> : public nowai
+template<rand_state_t State, class T>
+struct unpossible<State, T, ~0u> : public nowai
 	{ };
 
-template<rand_state_t State>
-struct unpossible<State, 0u>
+template<rand_state_t State, class T>
+struct unpossible<State, T, 0u>
 {
 	innocent_pear_always_inline
 	unpossible()
@@ -75,55 +75,59 @@ struct unpossible<State, 0u>
 #endif
 		}
 	}
+	innocent_pear_always_inline
+	unpossible(T& x)
+	{
+		unpossible();
+		__asm("" : "=g" (x));
+	}
 };
 
-template<rand_state_t State, unsigned Levels>
+template<rand_state_t State, class T, unsigned Levels>
 struct unpossible
 {
 	innocent_pear_always_inline
-	unpossible()
+	unpossible(T& x)
 	{
 		constexpr rand_state_t
 		    State2 = update_inner(State),
 		    NewState = update_outer(State, Levels),
 		    NewState2 = update_outer(NewState, Levels);
 		constexpr unsigned WhichTyp = (State2 >> 48) % 4;
-		typedef
-		    typename std::conditional<(WhichTyp >= 3), unsigned long,
-		    typename std::conditional< (WhichTyp >= 2), unsigned,
-		    typename std::conditional< (WhichTyp >= 1), unsigned short,
-			unsigned char >::type >::type >::type T;
 		constexpr unsigned BitP =
 		    (State2 >> 52) % (sizeof(T) * CHAR_BIT);
+		constexpr ops_flags_t Flags = (ops_flags_t)
+		    (innocent_pear::ops::allow_for_startup |
+		     innocent_pear::ops::under_unpossible);
 		switch ((State2 >> 32) % 4) {
 		    case 0:
-			{
-				omg<NewState, T,
-				    innocent_pear::ops::allow_for_startup,
-				    Levels - 1>();
-			}
+			{ omg<NewState, T, Flags, Levels - 1> zomg(x); }
 			break;
 		    case 1:
 			{
-				T x;
-				omg<NewState, T,
-				    innocent_pear::ops::allow_for_startup,
-				    Levels - 1> zomg(x);
-				if (bit_set(x, BitP))
-					unpossible<NewState, Levels - 1>();
-				else
-					unpossible<NewState2, Levels - 1>();
+				T y;
+				omg<NewState, T, Flags, Levels - 1> zomg(y);
+				if (bit_set(x, BitP)) {
+					unpossible<NewState, T, Levels - 1>
+					    un(x);
+				} else {
+					unpossible<NewState2, T, Levels - 1>
+					    un(x);
+				}
 			}
 			break;
 		    case 2:
-			{
-				unpossible<NewState, Levels - 1>();
-			} // fall through
+			{ unpossible<NewState, T, Levels - 1> un(x); }
+			// fall through
 		    default:
-			{
-				unpossible<NewState2, Levels - 1>();
-			}
+			{ unpossible<NewState2, T, Levels - 1> un(x); }
 		}
+	}
+	innocent_pear_always_inline
+	unpossible()
+	{
+		T x;
+		unpossible un(x);
 	}
 };
 

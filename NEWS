@@ -3,6 +3,20 @@
 		include/innocent-pear/omg.h :
 		- on x86-32 and x86-64, improved the generation of `verr' and
 		  `verw' to suppress (e.g.) `movzwl' casts which come after
+		- now uses ops::under_unpossible flag, removing need for
+		  `bogo' function parameter
+
+		include/innocent-pear/bbq.h :
+		- added ops::under_unpossible flag
+
+		include/innocent-pear/unpossible.h :
+		- unpossible<...> now accepts an additional template
+		  parameter (`class T')
+		- added unpossible<...>::unpossible(.)
+
+		include/innocent-pear/kthxbai.h :
+		- now invokes unpossible<...> directly, not via omg<...>
+		- moved `impl_n3' typedef into the only code block needing it
 
 2017-01-07	"No, I'm a frayed knot."  (4)
 
