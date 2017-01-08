@@ -18,6 +18,9 @@
 		- now invokes unpossible<...> directly, not via omg<...>
 		- moved `impl_n3' typedef into the only code block needing it
 
+		NEWS :
+		- fixed typo in 2016-12-28 entry
+
 2017-01-07	"No, I'm a frayed knot."  (4)
 
 		include/innocent-pear/dawg.h :
@@ -174,11 +177,11 @@
 		- now handles trailing `-v' option
 
 		include/innocent-pear/teh.h :
-		- added template parameter for tfw<...>
+		- added template parameter for teh<...>
 
 		include/innocent-pear/kthxbai.h ,
 		include/innocent-pear/omg.h :
-		- now uses extra template parameter to tfw<...>
+		- now uses extra template parameter to teh<...>
 
 		include/innocent-pear/host/lolcat.h ,
 		share/innocent-pear/epic.cc :
