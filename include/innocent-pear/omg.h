@@ -81,7 +81,6 @@ omg<State, T, Flags, 0u>
 #   ifndef __arm__
 		struct { uintptr_t h, l; } dt;
 		unsigned w;
-		unsigned short h;
 #   endif
 #endif
 		switch (Which) {
@@ -179,15 +178,15 @@ omg<State, T, Flags, 0u>
 			break;
 		    case 19:
 		    case 20:
-			__asm __volatile(innocent_pear_X86_PREFIX(1) "verr %0"
-			    : "=r" (h) : "n" (WhichPfx) : "cc");
-			x = static_cast<T>(h);
+			__asm __volatile(innocent_pear_X86_PREFIX(1) "verr %w0"
+			    : "=r" (y) : "n" (WhichPfx) : "cc");
+			x = static_cast<T>(y);
 			break;
 		    case 21:
 		    case 22:
-			__asm __volatile(innocent_pear_X86_PREFIX(1) "verw %0"
-			    : "=r" (h) : "n" (WhichPfx) : "cc");
-			x = static_cast<T>(h);
+			__asm __volatile(innocent_pear_X86_PREFIX(1) "verw %w0"
+			    : "=r" (y) : "n" (WhichPfx) : "cc");
+			x = static_cast<T>(y);
 			break;
 #elif defined __arm__ && defined __thumb2__
 		    case 0:
