@@ -107,7 +107,7 @@ struct unpossible
 			{
 				T y;
 				omg<NewState, T, Flags, Levels - 1> zomg(y);
-				if (bit_set(x, BitP)) {
+				if (bit_set(y, BitP)) {
 					unpossible<NewState, T, Levels - 1>
 					    un(x);
 				} else {
