@@ -1,3 +1,16 @@
+2017-01-18	"No, I'm a frayed knot."  (6)
+
+		include/innocent-pear/bbq.h ,
+		include/innocent-pear/host/srsly.h :
+		- added one more invertible operation
+
+		test/test-orly-1.cc ,
+		test/test-orly-2.cc :
+		- rewrote somewhat, to make them (more) runnable under Salwan
+		  et al.'s solve-vm.py  (-:
+		  - may now accept one command line argument
+		  - now uses printf(...) rather than std::cout << ...
+
 2017-01-08	"No, I'm a frayed knot."  (5)
 
 		include/innocent-pear/omg.h :
