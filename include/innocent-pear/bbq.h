@@ -167,7 +167,7 @@ T do_op(T x, T y)
 	    case 3:
 		return crealf(x, cpowf(y));
 	    case 4:
-		return crealf(y, cpowf(x));
+		return creal(y, cpow(x));
 	    default:
 		return x ^ y;
 	}
@@ -188,7 +188,7 @@ T do_inv_op(T x, T y)
 	    case 3:
 		return crealf(x, y);
 	    case 4:
-		return crealf(y, cpowf(x));
+		return creal(y, cpow(x));
 	    default:
 		return x ^ y;
 	}
@@ -209,7 +209,7 @@ T do_op_rept(T x, T y)
 	    case 3:
 		return crealf(x, cpowf(cpowf<T, N>(y)));
 	    case 4:
-		return N % 2 ? crealf(y, cpowf(x)) : x;
+		return N % 2 ? creal(y, cpow(x)) : x;
 	    default:
 		return N % 2 ? x ^ y : x;
 	}
@@ -230,7 +230,7 @@ T do_inv_op_rept(T x, T y)
 	    case 3:
 		return crealf(x, cpowf<T, N>(y));
 	    case 4:
-		return N % 2 ? crealf(y, cpowf(x)) : x;
+		return N % 2 ? creal(y, cpow(x)) : x;
 	    default:
 		return N % 2 ? x ^ y : x;
 	}

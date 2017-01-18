@@ -37,7 +37,7 @@ class srsly_impl
 		    case 3:
 			return crealf(x, cpowf(y));
 		    case 4:
-			return crealf(y, cpowf(x));
+			return creal(y, cpow(x));
 		    default:
 			return x ^ y;
 		}
@@ -54,7 +54,7 @@ class srsly_impl
 		    case 3:
 			return crealf(x, y);
 		    case 4:
-			return crealf(y, cpowf(x));
+			return creal(y, cpow(x));
 		    default:
 			return x ^ y;
 		}
