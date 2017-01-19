@@ -1,3 +1,8 @@
+2017-01-19	Tainting.
+
+		include/innocent-pear/orly.h :
+		- now taints output of yarly<...>()(x1 ... x9) with x0
+
 2017-01-18	"No, I'm a frayed knot."  (6)
 
 		include/innocent-pear/bbq.h ,
