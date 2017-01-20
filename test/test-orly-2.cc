@@ -29,8 +29,10 @@ int main(int argc, char **argv)
 	w2 = g2(z2);
 	if (argc < 2) {
 		uint_least32_t z3 = f3(0x10325476u), z4 = f4(0xc3d2e1f0u);
-		pf("%x %x %x\n", w2, g3(z3), g4(z4));
+		pf("%#" PRIxLEAST32 " "
+		   "%#" PRIxLEAST32 " "
+		   "%#" PRIxLEAST32 "\n", w2, g3(z3), g4(z4));
 	} else
-		pf("%x\n", w2);
+		pf("%" PRIuLEAST32 "\n", w2);
 	return 0;
 }

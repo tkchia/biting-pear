@@ -8,7 +8,7 @@ int main(int argc, char **argv)
 	typedef innocent_pear::orly?<uint_least32_t, true, true,
 	    allow_for_startup> f0_t;
 	typedef innocent_pear::orly?<uint_least32_t, false, true,
-	    allow_for_startup> f1_t;
+	    allow_for_startup, 1u> f1_t;
 	typedef f0_t::inv::unbad g0_t;
 	typedef f1_t::inv::unbad g1_t;
 	f0_t f0;  f1_t f1;
@@ -24,8 +24,8 @@ int main(int argc, char **argv)
 	w0 = g0(z0);
 	if (argc < 2) {
 		uint_least32_t z1 = f1(0xefcdab89u);
-		pf("%x %x\n", w0, g1(z1));
+		pf("%#" PRIxLEAST32 " %#" PRIxLEAST32 "\n", w0, g1(z1));
 	} else
-		pf("%x\n", w0);
+		pf("%" PRIuLEAST32 "\n", w0);
 	return 0;
 }

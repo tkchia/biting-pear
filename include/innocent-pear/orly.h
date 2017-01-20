@@ -6,6 +6,7 @@
 #include <innocent-pear/bbq.h>
 #include <innocent-pear/nowai.h>
 #include <innocent-pear/yarly.h>
+#include <climits>
 #ifdef innocent_pear_DEBUG
 #   include <cstdio>
 #endif
@@ -35,8 +36,11 @@ class orly_impl
 	    State10 = update_inner(State9), State11 = update_inner(State10),
 	    State12 = update_inner(State11),
 	    NewState = update_outer(State12, Levels);
-	static constexpr unsigned WhichOp = pick_hi<unsigned>(State ^ State2);
-	static constexpr unsigned TaintOp = pick_hi<unsigned>(State ^ State12);
+	static constexpr unsigned
+	    WhichOp = pick_hi<unsigned>(State ^ State2),
+	    TaintOp = pick_hi<unsigned>(State ^ State12);
+	static constexpr bool
+	    TaintHigh = pick_hi<unsigned char>(State ^ State10) % 2 != 0;
 	static constexpr T DefX0 = pick_hi<T>(State2  ^ State3),
 			   DefX1 = pick_hi<T>(State3  ^ State4),
 			   DefX2 = pick_hi<T>(State4  ^ State5),
@@ -110,8 +114,10 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 		T y = yarly<super::NewState, T, BigBad, Flags>()
 		    (x1, x2, x3, x4, x5, x6, x7, x8, x9);
 		if (BigBad) {
-			y = do_op<super::TaintOp>(y, x0);
-			y = do_inv_op<super::TaintOp>(y, x0);
+			if (super::TaintHigh ^ (x0 <= super::DefX0)) {
+				y = do_op<super::TaintOp>(y, x0);
+				y = do_inv_op<super::TaintOp>(y, x0);
+			}
 		}
 		if (Boreal) {
 			T z = orly<super::State12, T, true, BigBad,

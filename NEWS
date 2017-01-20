@@ -1,3 +1,28 @@
+2017-01-20	Tainting and range division.
+
+		include/innocent-pear/bbq.h :
+		- replaced new invertible operation with a cheaper one
+		- tweaked pow(.) implementation
+
+		include/innocent-pear/orly.h :
+		- now uses range division in deciding whether to taint
+
+		include/innocent-pear/host/srsly.h :
+		- updated per bbq.h changes
+
+		test/test-orly-1.cc :
+		- reduced recursion levels for one of the subtests
+		- now outputs results in either "0x"-prefixed hex (no
+		  arguments) or decimal (1 argument)
+
+		test/test-orly-2.cc :
+		- now outputs results in either "0x"-prefixed hex (no
+		  arguments) or decimal (1 argument)
+
+		test/test-orly-1.good ,
+		test/test-orly-2.good :
+		- updated per .cc changes
+
 2017-01-19	Tainting.
 
 		include/innocent-pear/orly.h :

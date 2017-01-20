@@ -35,7 +35,18 @@ template<class T, T P = std::numeric_limits<T>::max() / 2>
 innocent_pear_always_inline
 constexpr T pow(T x)
 {
+	/*
+	 * The seemingly redundant conditionals, e.g. `P > 17 ? 17 : 0', are
+	 * to prevent clang++ from giving a
+	 *
+	 *	"fatal error: recursive template instantiation exceeded
+	 *	 maximum depth of 256"
+	 */
 	return P == 0 ? (T)1 :
+	    P % 17 == 0 && P > 17 ?
+		pow<T, (P > 17 ? P / 17 : 0)>(pow<T, (P > 17 ? 17 : 0)>(x)) :
+	    P % 15 == 0 && P > 15 ?
+		pow<T, (P > 15 ? P / 15 : 0)>(pow<T, (P > 15 ? 15 : 0)>(x)) :
 	    P % 2 == 0 ? pow<T, P / 2>(x * x) :
 			 pow<T, P / 2>(x * x) * x;
 }
@@ -54,13 +65,6 @@ template<class T, T P = (std::numeric_limits<T>::max() > 3 ?
 innocent_pear_always_inline
 constexpr T cpow(T x)
 {
-	/*
-	 * The seemingly redundant conditionals, e.g. `P > 17 ? 17 : 0', are
-	 * to prevent clang++ from giving a
-	 *
-	 *	"fatal error: recursive template instantiation exceeded
-	 *	 maximum depth of 256"
-	 */
 	return P == 0 ? (T)0 :
 	    P % 17 == 0 && P > 17 ?
 		cpow<T, (P > 17 ? P / 17 : 0)>(cpow<T, (P > 17 ? 17 : 0)>(x)) :
@@ -167,7 +171,7 @@ T do_op(T x, T y)
 	    case 3:
 		return crealf(x, cpowf(y));
 	    case 4:
-		return creal(y, cpow(x));
+		return (T)5 * x + y;
 	    default:
 		return x ^ y;
 	}
@@ -188,7 +192,7 @@ T do_inv_op(T x, T y)
 	    case 3:
 		return crealf(x, y);
 	    case 4:
-		return creal(y, cpow(x));
+		return pow<T>(5) * (x - y);
 	    default:
 		return x ^ y;
 	}
@@ -209,7 +213,7 @@ T do_op_rept(T x, T y)
 	    case 3:
 		return crealf(x, cpowf(cpowf<T, N>(y)));
 	    case 4:
-		return N % 2 ? creal(y, cpow(x)) : x;
+		return pow<T, N>(5) * x + cpowf<T, N>(1) * y;
 	    default:
 		return N % 2 ? x ^ y : x;
 	}
@@ -230,7 +234,8 @@ T do_inv_op_rept(T x, T y)
 	    case 3:
 		return crealf(x, cpowf<T, N>(y));
 	    case 4:
-		return N % 2 ? creal(y, cpow(x)) : x;
+		return pow<T, std::numeric_limits<T>::max() / 2 + 1 - N>(5) *
+		    (x - cpowf<T, N>(1) * y);
 	    default:
 		return N % 2 ? x ^ y : x;
 	}
