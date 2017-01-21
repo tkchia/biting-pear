@@ -19,15 +19,16 @@ template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
 class omg;
 
 template<rand_state_t State, class T, unsigned Levels>
-struct unpossible;
+class unpossible;
 
 template<rand_state_t State, class T>
-struct unpossible<State, T, ~0u> : public nowai
+class unpossible<State, T, ~0u> : public nowai
 	{ };
 
 template<rand_state_t State, class T>
-struct unpossible<State, T, 0u>
+class unpossible<State, T, 0u>
 {
+    public:
 	innocent_pear_always_inline
 	unpossible()
 	{
@@ -84,8 +85,9 @@ struct unpossible<State, T, 0u>
 };
 
 template<rand_state_t State, class T, unsigned Levels>
-struct unpossible
+class unpossible
 {
+    public:
 	innocent_pear_always_inline
 	unpossible(T& x)
 	{
@@ -93,7 +95,6 @@ struct unpossible
 		    State2 = update_inner(State),
 		    NewState = update_outer(State, Levels),
 		    NewState2 = update_outer(NewState, Levels);
-		constexpr unsigned WhichTyp = (State2 >> 48) % 4;
 		constexpr unsigned BitP =
 		    (State2 >> 52) % (sizeof(T) * CHAR_BIT);
 		constexpr ops_flags_t Flags = (ops_flags_t)

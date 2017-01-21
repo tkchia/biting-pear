@@ -47,7 +47,7 @@ template<rand_state_t State, class CT, ops_flags_t Flags, unsigned Levels,
 class dawg_impl_2;  // forward
 
 template<rand_state_t State, class T, unsigned Levels>
-struct unpossible;  // forward
+class unpossible;  // forward
 
 template<rand_state_t State, class T,
     ops_flags_t Flags = innocent_pear::ops::allow_minimal,

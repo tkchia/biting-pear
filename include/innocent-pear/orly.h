@@ -36,11 +36,7 @@ class orly_impl
 	    State10 = update_inner(State9), State11 = update_inner(State10),
 	    State12 = update_inner(State11),
 	    NewState = update_outer(State12, Levels);
-	static constexpr unsigned
-	    WhichOp = pick_hi<unsigned>(State ^ State2),
-	    TaintOp = pick_hi<unsigned>(State ^ State12);
-	static constexpr bool
-	    TaintHigh = pick_hi<unsigned char>(State ^ State10) % 2 != 0;
+	static constexpr unsigned WhichOp = pick_hi<unsigned>(State ^ State2);
 	static constexpr T DefX0 = pick_hi<T>(State2  ^ State3),
 			   DefX1 = pick_hi<T>(State3  ^ State4),
 			   DefX2 = pick_hi<T>(State4  ^ State5),
@@ -51,6 +47,36 @@ class orly_impl
 			   DefX7 = pick_hi<T>(State9  ^ State10),
 			   DefX8 = pick_hi<T>(State10 ^ State11),
 			   DefX9 = pick_hi<T>(State11 ^ State12);
+    private:
+	innocent_pear_always_inline
+	static T do_taint(T y, T t)
+	{
+		constexpr unsigned TaintOp = pick_hi<unsigned>(State^State12);
+		y = do_op<TaintOp>(y, t);
+		y = do_inv_op<TaintOp>(y, t);
+		return y;
+	}
+    protected:
+	innocent_pear_always_inline
+	static T taint(T y, T t)
+	{
+		constexpr bool TaintByRange =
+		    (pick_hi<unsigned char>(State ^ State4) % 2 != 0);
+		constexpr bool TaintLow =
+		    (pick_hi<unsigned char>(State ^ State10) % 2 != 0);
+		constexpr unsigned BitP =
+		    pick_hi<unsigned>(State ^ State6) % (sizeof(T) * CHAR_BIT);
+		if (BigBad) {
+			if (TaintByRange) {
+				if (TaintLow ^ (t > DefX0))
+					y = do_taint(y, t);
+			} else {
+				if (TaintLow ^ bit_set(t * (DefX0 | 1), BitP))
+					y = do_taint(y, t);
+			}
+		}
+		return y;
+	}
     public:
 	typedef orly<State, T, !Boreal, BigBad, Flags, Levels> inv;
 	typedef orly<State, T, Boreal, true, Flags, Levels> bad;
@@ -79,6 +105,7 @@ class orly<State, T, Boreal, BigBad, Flags, 0u> :
 	{
 		T y = yarly<super::NewState, T, BigBad, Flags>()
 		    (x1, x2, x3, x4, x5, x6, x7, x8, x9);
+		y = super::taint(y, x0);
 		if (Boreal)
 			return do_op<super::WhichOp>(x0, y);
 		else	return do_inv_op<super::WhichOp>(x0, y);
@@ -113,12 +140,7 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 	{
 		T y = yarly<super::NewState, T, BigBad, Flags>()
 		    (x1, x2, x3, x4, x5, x6, x7, x8, x9);
-		if (BigBad) {
-			if (super::TaintHigh ^ (x0 <= super::DefX0)) {
-				y = do_op<super::TaintOp>(y, x0);
-				y = do_inv_op<super::TaintOp>(y, x0);
-			}
-		}
+		y = super::taint(y, x0);
 		if (Boreal) {
 			T z = orly<super::State12, T, true, BigBad,
 			    Flags, Levels - 1>()

@@ -26,15 +26,26 @@ static void cheshire(int fd)
 	char buf[BUFSIZ];
 	memset(buf, 0xaa, BUFSIZ);
 	while (sz > 0) {
-		if (write(fd, buf, BUFSIZ) < 0);
-		sz -= BUFSIZ;
+		ssize_t wr = write(fd, buf, BUFSIZ);
+#ifdef EINTR
+		while (wr < 0 && errno == EINTR)
+			wr = write(fd, buf, BUFSIZ);
+#endif
+		if (wr >= 0)
+			sz -= wr;
+		else
+			break;		/* erm... */
 	}
 #ifdef innocent_pear_HAVE_FUNC_FDATASYNC
 	fdatasync(fd);
 #else
 	fsync(fd);
 #endif
-	if (ftruncate(fd, (off_t)0) < 0);
+#ifdef EINTR
+	while (ftruncate(fd, (off_t)0) < 0 && errno == EINTR);
+#else
+	ftruncate(fd, (off_t)0);
+#endif
 	fsync(fd);
 }
 

@@ -1,3 +1,23 @@
+2017-01-21	Tainting and range division.  (2)
+
+		include/innocent-pear/orly.h :
+		- orly<...>::operator()(x0, x1 ... x9) now tries to taint
+		  yarly<...>()(x1 ... x9) with x0 even when Levels == 0
+		- added "range division" that uses bit-wise test
+
+		include/innocent-pear/unpossible.h ,
+		- made unpossible<...> a `class' rather than a `struct' (to
+		  stop clang++ warnings)
+		- removed redundant definition of `WhichTyp'
+
+		include/innocent-pear/omg.h :
+		- made unpossible<...> a `class' rather than a `struct' (to
+		  stop clang++ warnings)
+
+		share/innocent-pear/sleepier.cc :
+		- now actually checks return values of write(...) and
+		  ftruncate(...)
+
 2017-01-20	Tainting and range division.
 
 		include/innocent-pear/bbq.h :
