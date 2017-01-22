@@ -11,6 +11,13 @@
 		- upped scrambling levels for first orly<...> operation
 		- enabled badness for g2(.)
 
+		test/test-orly-3.cc ,
+		test/test-orly-3.good :
+		- new
+
+		GNUmakefile :
+		- added test-orly-3 test case
+
 		share/innocent-pear/calm.cc ,
 		share/innocent-pear/keyboard.cc :
 		- removed string scrambling

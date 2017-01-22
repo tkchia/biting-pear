@@ -73,6 +73,7 @@ tests.target = \
     test/test-omg-special \
     test/test-orly-1 \
     test/test-orly-2 \
+    test/test-orly-3 \
     test/test-dawg \
     test/test-dawg-syn \
     test/test-yodawg \
