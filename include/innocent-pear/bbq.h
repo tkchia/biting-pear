@@ -211,7 +211,7 @@ T do_op_rept(T x, T y)
 	    case 2:
 		return creal(x, cpow(cpow<T, N>(y)));
 	    case 3:
-		return crealf(x, cpowf(cpowf<T, N>(y)));
+		return crealf(x, cpowf<T, (T)-(T)N>(y));
 	    case 4:
 		return pow<T, N>(5) * x + cpowf<T, N>(1) * y;
 	    default:

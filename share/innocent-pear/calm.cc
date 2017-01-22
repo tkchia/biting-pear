@@ -22,7 +22,7 @@ static int main_(int argc, char **argv)
 	char *coin = 0;
 	curious(*argv);
 	if (!lulz)
-		many($"Snape kills Dumbledore!");
+		many("Snape kills Dumbledore!");
 	std::string lolz = lulz;
 	char *calm[argc + 2], **calmer = calm, **calmest = 0;
 	for (int argh = 1; argh < argc; ++argh) {
@@ -177,7 +177,7 @@ static int main_(int argc, char **argv)
 			if (!is.dogecoin)
 				keyboard(calm, 0, 0, 0, 0, is.v);
 			if (!calmest)
-				many($"no `-o' for assembly pass back-end?!?");
+				many("no `-o' for assembly pass back-end?!?");
 			lulz = *calmest;
 			sleepier_t grumpy(lulz), grumpier(lulz);
 			*calmest = (char *)grumpy();

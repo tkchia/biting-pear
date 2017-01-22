@@ -8,7 +8,7 @@ int main(int argc, char **argv)
 	using innocent_pear::ops::allow_for_startup;
 	using innocent_pear::impl::uint_least32_t;
 	typedef innocent_pear::orly?<uint_least32_t, true, true,
-	    allow_for_startup, 3u> f2_t;
+	    allow_for_startup, 4u> f2_t;
 	typedef innocent_pear::orly?<uint_least32_t, false, false,
 	    allow_for_startup> f3_t;
 	typedef innocent_pear::orly?<uint_least32_t, true, false,

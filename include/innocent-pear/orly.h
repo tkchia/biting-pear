@@ -47,34 +47,44 @@ class orly_impl
 			   DefX7 = pick_hi<T>(State9  ^ State10),
 			   DefX8 = pick_hi<T>(State10 ^ State11),
 			   DefX9 = pick_hi<T>(State11 ^ State12);
-    private:
-	innocent_pear_always_inline
-	static T do_taint(T y, T t)
-	{
-		constexpr unsigned TaintOp = pick_hi<unsigned>(State^State12);
-		y = do_op<TaintOp>(y, t);
-		y = do_inv_op<TaintOp>(y, t);
-		return y;
-	}
-    protected:
 	innocent_pear_always_inline
 	static T taint(T y, T t)
 	{
-		constexpr bool TaintByRange =
-		    (pick_hi<unsigned char>(State ^ State4) % 2 != 0);
-		constexpr bool TaintLow =
-		    (pick_hi<unsigned char>(State ^ State10) % 2 != 0);
-		constexpr unsigned BitP =
-		    pick_hi<unsigned>(State ^ State6) % (sizeof(T) * CHAR_BIT);
-		if (BigBad) {
-			if (TaintByRange) {
-				if (TaintLow ^ (t > DefX0))
-					y = do_taint(y, t);
-			} else {
-				if (TaintLow ^ bit_set(t * (DefX0 | 1), BitP))
-					y = do_taint(y, t);
-			}
+		constexpr unsigned
+		    TaintCond = pick_hi<unsigned short>
+			(Boreal ? (State ^ State4) : (State2 ^ State5)) % 5u,
+		    TaintOp = pick_hi<unsigned>
+			(Boreal ? (State ^ State12) : (State2 ^ State11)),
+		    TBits = sizeof(T) * CHAR_BIT,
+		    BitP = pick_hi<unsigned>
+			(Boreal ? (State ^ State6) : (State2 ^ State7))
+			% TBits;
+		constexpr T Divider = pick_hi<T>
+		    (Boreal ? (State ^ State3) : (State2 ^ State4));
+		if (!BigBad)
+			return y;
+		switch (TaintCond) {
+		    default:
+			break;
+		    case 1:
+			if (t < Divider)
+				return y;
+			break;
+		    case 2:
+			if (t > Divider)
+				return y;
+			break;
+		    case 3:
+			if (bit_set(t, BitP))
+				return y;
+			break;
+		    case 4:
+			if (!bit_set(t, BitP))
+				return y;
 		}
+		y = do_op<TaintOp>(y, t);
+		__asm("" : "=g" (y) : "0" (y));
+		y = do_inv_op<TaintOp>(y, t);
 		return y;
 	}
     public:

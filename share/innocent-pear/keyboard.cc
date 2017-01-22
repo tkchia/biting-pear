@@ -18,9 +18,9 @@ static void keyboarder(int fd, const char *fn, int fl, mode_t mo)
 		return;
 	int ofd = open(fn, fl, mo);
 	if (ofd == -1)
-		concern($"cannot open", fn);
+		concern("cannot open", fn);
 	if (dup2(ofd, fd) != fd)
-		concern($"dup2( ) failed");
+		concern("dup2( ) failed");
 	close(ofd);
 }
 
@@ -58,7 +58,7 @@ void keyboard(char **argv, const char *in, const char *out, const char *err,
 		dup2(oerr, 2);
 		close(oerr);
 	}
-	concern($"cannot run ", *argv);
+	concern("cannot run ", *argv);
 }
 
 void keyboardest(char **argv, const char *in, const char *out,
@@ -67,7 +67,7 @@ void keyboardest(char **argv, const char *in, const char *out,
 	pid_t sleepy = fork();
 	switch (sleepy) {
 	    case -1:
-		concern($"fork() failed");
+		concern("fork() failed");
 	    case 0:		/* child */
 		keyboard(argv, in, out, err, seriouser, v);
 	}
@@ -75,5 +75,5 @@ void keyboardest(char **argv, const char *in, const char *out,
 	int curiouser;
 	while (waitpid(sleepy, &curiouser, 0) != sleepy);
 	if (!WIFEXITED(curiouser) || WEXITSTATUS(curiouser) != 0)
-		many(*argv, $" exited abnormally");
+		many(*argv, " exited abnormally");
 }

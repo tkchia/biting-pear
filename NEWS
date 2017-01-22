@@ -1,3 +1,19 @@
+2017-01-22	Tainting and range division.  (3)
+
+		include/innocent-pear/orly.h :
+		- rewrote and somewhat simplified tainting code
+		- taint conditions now depend on `Boreal' template parameter
+
+		include/innocent-pear/bbq.h :
+		- somewhat optimized (compile-time) a case in do_op_rept(...)
+
+		test/test-orly-2.cc :
+		- upped scrambling levels for first orly<...> operation
+
+		share/innocent-pear/calm.cc ,
+		share/innocent-pear/keyboard.cc :
+		- removed string scrambling
+
 2017-01-21	Tainting and range division.  (2)
 
 		include/innocent-pear/orly.h :
