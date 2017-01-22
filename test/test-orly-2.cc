@@ -13,7 +13,7 @@ int main(int argc, char **argv)
 	    allow_for_startup> f3_t;
 	typedef innocent_pear::orly?<uint_least32_t, true, false,
 	    allow_for_startup, 1u> f4_t;
-	typedef f2_t::inv::unbad g2_t;
+	typedef f2_t::inv g2_t;
 	typedef f3_t::inv::unbad g3_t;
 	typedef f4_t::inv::unbad g4_t;
 	f2_t f2;  f3_t f3;  f4_t f4;

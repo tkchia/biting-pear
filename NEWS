@@ -9,6 +9,7 @@
 
 		test/test-orly-2.cc :
 		- upped scrambling levels for first orly<...> operation
+		- enabled badness for g2(.)
 
 		share/innocent-pear/calm.cc ,
 		share/innocent-pear/keyboard.cc :
