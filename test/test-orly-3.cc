@@ -5,8 +5,8 @@ int main(int argc, char **argv)
 {
 	using innocent_pear::ops::allow_for_startup;
 	using innocent_pear::impl::uint_least64_t;
-	typedef innocent_pear::orly?<uint_least64_t, false, true,
-	    allow_for_startup> f0_t;
+	typedef innocent_pear::orly?<uint_least64_t, false, false,
+	    allow_for_startup, 4u> f0_t;
 	typedef f0_t::inv::bad g0_t;
 	f0_t f0;
 	g0_t g0;
