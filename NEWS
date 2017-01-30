@@ -1,3 +1,10 @@
+2017-01-30	Tainting and range division -- now with a twist.
+
+		include/innocent-pear/orly.h :
+		- orly_impl<...>::taint(y, t) may now frob a bit in t after
+		  its state is known; result is that solve-vm.py now gives
+		  wrong answers for test-orly-1 (for now -- w00t)
+
 2017-01-22	Tainting and range division.  (3)
 
 		include/innocent-pear/orly.h :
