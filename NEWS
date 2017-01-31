@@ -8,6 +8,10 @@
 		- orly_impl<...>::taint(y, t) now has more probability mass
 		  for the alternatives that frob t
 
+		include/innocent-pear/bbq.h :
+		- do_op_rept<...>(...) and do_inv_op_rept<...>(...) now
+		  properly cast N
+
 2017-01-30	Tainting and range division -- now with a twist.
 
 		include/innocent-pear/orly.h :

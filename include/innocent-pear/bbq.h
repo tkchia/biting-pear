@@ -209,7 +209,7 @@ T do_op_rept(T x, T y)
 	    case 1:
 		return x - N * y;
 	    case 2:
-		return creal(x, cpow(cpow<T, N>(y)));
+		return creal(x, cpow(cpow<T, (T)N>(y)));
 	    case 3:
 		return crealf(x, cpowf<T, (T)-(T)N>(y));
 	    case 4:
@@ -230,9 +230,9 @@ T do_inv_op_rept(T x, T y)
 	    case 1:
 		return x + N * y;
 	    case 2:
-		return creal(x, cpow<T, N>(y));
+		return creal(x, cpow<T, (T)N>(y));
 	    case 3:
-		return crealf(x, cpowf<T, N>(y));
+		return crealf(x, cpowf<T, (T)N>(y));
 	    case 4:
 		return pow<T, std::numeric_limits<T>::max() / 2 + 1 - N>(5) *
 		    (x - cpowf<T, N>(1) * y);
