@@ -52,7 +52,7 @@ class orly_impl
 	{
 		constexpr unsigned
 		    TaintCond = pick_hi<unsigned short>
-			(Boreal ? (State ^ State4) : (State2 ^ State5)) % 7u,
+			(Boreal ? (State ^ State4) : (State2 ^ State5)) % 9u,
 		    TaintOp = pick_hi<unsigned>
 			(Boreal ? (State ^ State12) : (State2 ^ State11)),
 		    TBits = sizeof(T) * CHAR_BIT,
@@ -76,11 +76,13 @@ class orly_impl
 			break;
 		    case 3:
 		    case 4:
+		    case 5:
 			if (bit_set(t, BitP))
 				return y;
 			break;
-		    case 5:
 		    case 6:
+		    case 7:
+		    case 8:
 			if (!bit_set(t, BitP))
 				return y;
 			break;
@@ -91,9 +93,11 @@ class orly_impl
 		    default:
 			break;
 		    case 4:
+		    case 5:
 			t &= ~((T)1 << BitP);
 			break;
-		    case 6:
+		    case 7:
+		    case 8:
 			t |= (T)1 << BitP;
 		}
 		y = do_inv_op<TaintOp>(y, t);

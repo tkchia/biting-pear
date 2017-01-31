@@ -1,3 +1,13 @@
+2017-01-31	Tainting and range division -- now with a twist.  (2)
+
+		include/innocent-pear/kthxbai.h ,
+		include/innocent-pear/omg.h :
+		- upped the maximum number of iterations for inner loops
+
+		include/innocent-pear/orly.h :
+		- orly_impl<...>::taint(y, t) now has more probability mass
+		  for the alternatives that frob t
+
 2017-01-30	Tainting and range division -- now with a twist.
 
 		include/innocent-pear/orly.h :

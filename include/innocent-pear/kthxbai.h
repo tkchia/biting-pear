@@ -395,7 +395,7 @@ class kthxbai_impl
 				{ impl_n(*p1, v); }
 				{ impl_z(x, *p2); }
 			} else {
-				constexpr uintptr_t N = (State2 >> 48) % 256;
+				constexpr uintptr_t N = (State2 >> 48) % 8191;
 				constexpr unsigned WhichOp =
 				    (unsigned)(State3 >> 16);
 				constexpr T Y = pick_hi<T>(State3 ^ State4);

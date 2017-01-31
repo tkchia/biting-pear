@@ -832,7 +832,7 @@ omg
 		    case 18:
 		    case 19:
 			{
-				constexpr uintptr_t N = (State3 >> 48) % 256;
+				constexpr uintptr_t N = (State3 >> 48) % 8191;
 				constexpr unsigned WhichOp =
 				    (unsigned)(State4 >> 16);
 				T w, y, z;
