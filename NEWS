@@ -1,3 +1,9 @@
+2017-02-01	Tainting and range division.  (4)
+
+		include/innocent-pear/orly.h :
+		- orly_impl<...>::taint(y, t) no longer taints based on t's
+		  numeric magnitude
+
 2017-01-31	Tainting and range division -- now with a twist.  (2)
 
 		include/innocent-pear/kthxbai.h ,
