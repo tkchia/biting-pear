@@ -108,4 +108,7 @@ conf_cxxt_probe_const_val PR_SET_DUMPABLE '#include <linux/prctl.h>'
 conf_cxxt_probe_const_val FS_IOC_GETFLAGS '#include <linux/fs.h>'
 conf_cxxt_probe_const_val FS_IOC_GETVERSION '#include <linux/fs.h>'
 #
+conf_cxxt_probe_func ::__gnu_cxx::__verbose_terminate_handler 0 \
+    '#include <cxxabi.h>'
+#
 conf_end

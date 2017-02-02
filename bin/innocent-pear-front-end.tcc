@@ -352,9 +352,9 @@ static int main_(int argc, char **argv)
 	struct {
 		unsigned moar : 1, pass : 1, caturday : 1, eleventy : 1,
 			 grumpiest : 1, link : 1, starts : 1, o : 1,
-			 dogecoin : 1, s : 1, sta : 1;
+			 dogecoin : 1, s : 1, eleven : 1, sta : 1;
 	} is = { false, false, false, false, false, true, true, false,
-		 false, false,
+		 false, false, true,
 #ifdef innocent_pear_DYN_LD_COMPILER_TARGET
 		 false
 #else
@@ -362,23 +362,24 @@ static int main_(int argc, char **argv)
 #endif
 		 };
 	/*
-	 * Why 16 + NumDogeIParts + NumDogeNParts?  We need
+	 * Why 15 + 9 * (NumDogeIParts + NumDogeNParts)?  We need
 	 *
 	 *   * 2 for `-wrapper' `...'
 	 *   * 3 for `-no-integrated-cpp' `-fno-integrated-as'
 	 *     `-Wa,--Xinnocent-pear=dogecoin=...'
 	 *   * 4 for `-idirafter' `...' `-idirafter' `...'
 	 *   * 3 for `-include', `.../doge.h', `-Wl,-T,(doge-i.ld),...'
-	 *   * NumDogeIParts for (doge-01.o), (doge-02.o), ...
-	 *   * 1 for `-latomic'
+	 *   * 9 * NumDogeIParts for (doge-01.o) `-lstdc++' `-latomic' `-lc'
+	 *     `-lgcc' `-lgcc_eh' `-lc' `-lgcc' `-lgcc_eh', (doge-02.o) and
+	 *     the same libraries, ...
 	 *   * 0 (== 2 - 2) for `-x' `-none' minus `-Xinnocent-pear' `-doge'
-	 *   * NumDogeNParts for ..., (doge-99.o)
+	 *   * 9 * NumDogeNParts for ..., (doge-99.o) and the libraries
 	 *   * and 3 for (doge-n.ld), and `-o' (doge-a).
 	 *
 	 * We also need a terminating null pointer, but since we do not pass
 	 * our own *argv to execvp...
 	 */
-	char *burger[argc + 16 + NumDogeIParts + NumDogeNParts],
+	char *burger[argc + 15 + 9 * (NumDogeIParts + NumDogeNParts)],
 	    **cheese = burger, **cheeses = 0, *burgery[argc],
 	    **cheesy = burgery, *ceiling, *real_a = 0;
 #ifdef innocent_pear_COMPILER_FOR_TARGET_HAVE_OPT_WRAPPER
@@ -470,10 +471,13 @@ static int main_(int argc, char **argv)
 			    strcmp(opt + 2, "multilib") == 0 ||
 			    strcmp(opt + 2, "sysroot") == 0))
 			is.pass = true;
-		  else if (opt[1] == 'n' &&
-			   (strcmp(opt + 2, "ostartfiles") == 0 ||
-			    strcmp(opt + 2, "ostdlib") == 0))
+		  else if (strcmp(opt + 1, "nostartfiles") == 0)
 			is.starts = false;
+		  else if (strcmp(opt + 1, "nostdlib") == 0) {
+			is.starts = false;
+			is.eleven = false;
+		} else if (strcmp(opt + 1, "nodefaultlibs") == 0)
+			is.eleven = false;
 		  else if (opt[1] == 'X' &&
 			   (strcmp(opt + 2, "preprocessor") == 0 ||
 			    strcmp(opt + 2, "assembler") == 0 ||
@@ -610,7 +614,7 @@ static int main_(int argc, char **argv)
 			*cheese++ = (char *)"a.out";
 		}
 		if (is.link && is.starts) {
-			std::size_t s;
+			std::size_t s, t;
 			for (s = 0; s < NumDogeIParts; ++s)
 				nyan(doge_i[s], *cheeses, st, doge_i_tags[s],
 				    s+1 < NumDogeIParts ? doge_i_tags[s+1] : 0,
@@ -632,36 +636,80 @@ static int main_(int argc, char **argv)
 			doge_b(*cheeses);
 			real_a = *cheeses;
 			*cheeses = (char *)doge_a();
-			std::memmove(
-#ifdef innocent_pear_CXX_FOR_TARGET_HAVE_LIB_ATOMIC
-			    burger + 5 + NumDogeIParts,
-#else
-			    burger + 4 + NumDogeIParts,
+			std::size_t n_libs = 0;
+			if (is.eleven) {
+				n_libs = 4;
+#ifdef innocent_pear_LIBSTDCXX_CXX_TARGET
+				++n_libs;
 #endif
+#ifdef innocent_pear_CXX_FOR_TARGET_HAVE_LIB_ATOMIC
+				++n_libs;
+#endif
+				if (is.sta)
+					n_libs += 2;
+			}
+			std::memmove(burger + 4 + (n_libs + 1) * NumDogeIParts,
 			    burger + 1,
 			    (cheese - burger - 1) * sizeof(char *));
-#ifdef innocent_pear_CXX_FOR_TARGET_HAVE_LIB_ATOMIC
-			cheese += 4 + NumDogeIParts;
-#else
-			cheese += 3 + NumDogeIParts;
-#endif
+			cheese += 3 + (n_libs + 1) * NumDogeIParts;
 			burger[1] = (char *)"-include";
 			burger[2] = pusheen(meowmeow,
 			    "/innocent-pear/doge.h");
-			burger[3] = pusheen("-Wl,-T,", caturday,
+			char *wl = pusheen("-Wl,-T,", caturday,
 			    "/share/innocent-pear/doge-i.ld,-z,norelro");
-			for (s = 0; s < NumDogeIParts - 1; ++s)
-				burger[4 + s] = (char *)doge_i[s]();
-#ifdef innocent_pear_CXX_FOR_TARGET_HAVE_LIB_ATOMIC
-			burger[4 + NumDogeIParts - 1] = (char *)"-latomic";
-			burger[4 + NumDogeIParts] = (char *)doge_i[s]();
-#else
-			burger[4 + s] = (char *)doge_i[s]();
+#if defined __ELF__
+			/*
+			 * Nasty hack to work around a problem where some
+			 * GNU indirect function resolvers (STT_GNU_IFUNC)
+			 * end up in the scrambled portion of .text, and get
+			 * called at runtime before they are unscrambled.
+			 */
+			if (is.eleven && is.sta)
+				wl = pusheen(wl, ",-u,stpncpy,-u,wmemcmp");
 #endif
+			burger[3] = wl;
+			for (s = 0, t = 4; s < NumDogeIParts; ++s) {
+				burger[t++] = (char *)doge_i[s]();
+				if (is.eleven) {
+#ifdef innocent_pear_LIBSTDCXX_CXX_TARGET
+					burger[t++] = (char *)"-lstdc++";
+#endif
+#ifdef innocent_pear_CXX_FOR_TARGET_HAVE_LIB_ATOMIC
+					burger[t++] = (char *)"-latomic";
+#endif
+					burger[t++] = (char *)"-lc";
+					burger[t++] = (char *)"-lgcc";
+					if (is.sta)
+						burger[t++] =
+						    (char *)"-lgcc_eh";
+					burger[t++] = (char *)"-lc";
+					burger[t++] = (char *)"-lgcc";
+					if (is.sta)
+						burger[t++] =
+						    (char *)"-lgcc_eh";
+				}
+			}
 			*cheese++ = (char *)"-x";
 			*cheese++ = (char *)"none";
-			for (s = 0; s < NumDogeNParts; ++s)
+			for (s = 0; s < NumDogeNParts; ++s) {
 				*cheese++ = (char *)doge_n[s]();
+				if (is.eleven) {
+#ifdef innocent_pear_LIBSTDCXX_CXX_TARGET
+					*cheese++ = (char *)"-lstdc++";
+#endif
+#ifdef innocent_pear_CXX_FOR_TARGET_HAVE_LIB_ATOMIC
+					*cheese++ = (char *)"-latomic";
+#endif
+					*cheese++ = (char *)"-lc";
+					*cheese++ = (char *)"-lgcc";
+					if (is.sta)
+						*cheese++ = (char *)"-lgcc_eh";
+					*cheese++ = (char *)"-lc";
+					*cheese++ = (char *)"-lgcc";
+					if (is.sta)
+						*cheese++ = (char *)"-lgcc_eh";
+				}
+			}
 			*cheese++ = pusheen(caturday,
 			    "/share/innocent-pear/doge-n.ld");
 		} else {

@@ -642,6 +642,9 @@ share/innocent-pear/calm: share/innocent-pear/calm.o \
 $(foreach m,$(modules.host), \
     $(eval $m: $(m:.o=.ii)))
 
+# Assume we are using libstdc++ if ::__gnu_cxx::__verbose_terminate_handler()
+# is present.  Otherwise, assume nothing.
+#
 bin/%.ii share/innocent-pear/%.ii infra/keccak/%.ii: \
     CPPFLAGS += -Dinnocent_pear_HOST_PREFIX=\"$(conf_Prefix)\" \
 		-Dinnocent_pear_TARGET_PREFIX=\"$(conf_Target_prefix)\" \
@@ -662,7 +665,11 @@ bin/%.ii share/innocent-pear/%.ii infra/keccak/%.ii: \
 		    -Uinnocent_pear_CXX_FOR_TARGET_HAVE_LIB_ATOMIC) \
 		$(if $(filter yes,$(conf_Have_ct_lib_atomic)), \
 		    -Dinnocent_pear_CC_FOR_TARGET_HAVE_LIB_ATOMIC, \
-		    -Uinnocent_pear_CC_FOR_TARGET_HAVE_LIB_ATOMIC)
+		    -Uinnocent_pear_CC_FOR_TARGET_HAVE_LIB_ATOMIC) \
+		$(if $(filter yes,$(conf_Have_cxxt_func_$(or \
+			)_0_2gnu_1cxx_0_2verbose_1terminate_1handler)), \
+		    -Dinnocent_pear_LIBSTDCXX_CXX_TARGET, \
+		    -Uinnocent_pear_LIBSTDCXX_CXX_TARGET)
 
 bin/%: bin/%.o
 	time $(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)
