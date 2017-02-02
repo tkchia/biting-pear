@@ -664,8 +664,9 @@ static int main_(int argc, char **argv)
 			 * end up in the scrambled portion of .text, and get
 			 * called at runtime before they are unscrambled.
 			 */
-			if (is.eleven && is.sta)
-				wl = pusheen(wl, ",-u,stpncpy,-u,wmemcmp");
+			if (is.eleven)
+				wl = pusheen(wl, ",-u,stpncpy,-u,wmemcmp,"
+				    "-u,wcschr,-u,wcscmp");
 #endif
 			burger[3] = wl;
 			for (s = 0, t = 4; s < NumDogeIParts; ++s) {
