@@ -11,6 +11,9 @@
 		- detect whether we are using libstdc++ target-side, by
 		  looking for ::__gnu_cxx::__verbose_terminate_handler()
 
+		README.md :
+		- added bug description for GNU "indirect functions"
+
 		lolwutconf/ :
 		- bumped to d17b1ca198
 

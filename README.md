@@ -42,7 +42,13 @@ There is also a rather undocumented C++ API for various code obfuscation subtask
 
 **(3)** The `innocent-pear-c++` wrapper does not understand the `-###` command line option, even though it itself may call the underlying compiler with `-###` internally.
 
-**(4)** If `innocent-pear` is explicitly set up to compile target-side programs
+**(4)** GNU "indirect functions" (as via `__attribute__((ifunc(.)))` in `gcc`) do not work properly yet.
+
+Generally, the problem is some `ifunc` resolver routines might be scrambled, and `libc`'s startup code might call these resolvers before they are unscrambled.
+
+I have put in place a quick fix which should allow indirect functions defined in `glibc` to work for now.
+
+**(5)** If `innocent-pear` is explicitly set up to compile target-side programs
 
   * using `clang++`
   * with `libstdc++` linked in dynamically (i.e. no `-static` or `-static-libstdc++`)
