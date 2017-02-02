@@ -637,7 +637,7 @@ static int main_(int argc, char **argv)
 			real_a = *cheeses;
 			*cheeses = (char *)doge_a();
 			std::size_t n_libs = 0;
-			if (is.eleven) {
+			if (is.eleven && is.sta) {
 				n_libs = 4;
 #ifdef innocent_pear_LIBSTDCXX_CXX_TARGET
 				++n_libs;
@@ -664,14 +664,14 @@ static int main_(int argc, char **argv)
 			 * end up in the scrambled portion of .text, and get
 			 * called at runtime before they are unscrambled.
 			 */
-			if (is.eleven)
+			if (is.eleven && is.sta)
 				wl = pusheen(wl, ",-u,stpncpy,-u,wmemcmp,"
 				    "-u,wcschr,-u,wcscmp");
 #endif
 			burger[3] = wl;
 			for (s = 0, t = 4; s < NumDogeIParts; ++s) {
 				burger[t++] = (char *)doge_i[s]();
-				if (is.eleven) {
+				if (is.eleven && is.sta) {
 #ifdef innocent_pear_LIBSTDCXX_CXX_TARGET
 					burger[t++] = (char *)"-lstdc++";
 #endif
@@ -694,7 +694,7 @@ static int main_(int argc, char **argv)
 			*cheese++ = (char *)"none";
 			for (s = 0; s < NumDogeNParts; ++s) {
 				*cheese++ = (char *)doge_n[s]();
-				if (is.eleven) {
+				if (is.eleven && is.sta) {
 #ifdef innocent_pear_LIBSTDCXX_CXX_TARGET
 					*cheese++ = (char *)"-lstdc++";
 #endif

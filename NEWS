@@ -3,7 +3,8 @@
 
 		bin/innocent-pear-front-end.tcc :
 		- at link time, now tries to rope in -lstdc++, -latomic,
-		  -lc, -lgcc, and/or -lgcc_eh after each doge-??.cc module
+		  -lc, -lgcc, and/or -lgcc_eh after each doge-??.cc module,
+		  if linking statically
 
 		GNUmakefile ,
 		configure :
