@@ -99,4 +99,45 @@ static inline innocent_pear::impl::rand_state_t mixology()
 		innocent_pear_DOGE_STATE_10;
 }
 
+#ifdef innocent_pear_FIX_ELF_IFUNC
+typedef struct {
+	innocent_pear::impl::uintptr_t *r_offset, r_info;
+} Elfxx_Rel;
+
+typedef struct {
+	innocent_pear::impl::uintptr_t *r_offset, r_info,
+	    (*r_addend)(unsigned long);
+} Elfxx_Rela;
+
+innocent_pear_DOGE_HIDDEN extern const Elfxx_Rel
+    rel_iplt_start[] __asm("__real___rel_iplt_start"),
+    rel_iplt_end[] __asm("__wrap___rel_iplt_start");
+innocent_pear_DOGE_HIDDEN extern const Elfxx_Rela
+    rela_iplt_start[] __asm("__real___rela_iplt_start"),
+    rela_iplt_end[] __asm("__wrap___rela_iplt_start");
+
+/*
+ * Function to check the relocation type in an Elfxx_Rel{,a} for sanity.  If
+ * we know the correct relocation type for indirect functions, compare against
+ * that, otherwise do nothing and assume the best.
+ */
+static inline bool irel_sane(innocent_pear::impl::uintptr_t info)
+{
+	innocent_pear::impl::uint_least32_t type __attribute__((unused));
+	if (sizeof(info) > sizeof(type))
+		type = info & 0xfffffffful;
+	else
+		type = info & 0xfful;
+#   if defined __i386__
+	return type == 42;		/* R_386_IRELATIVE */
+#   elif defined __amd64__
+	return type == 37;		/* R_X86_64_IRELATIVE */
+#   elif defined __arm__
+	return type == 160;		/* R_ARM_IRELATIVE */
+#   else
+	return true;
+#   endif
+}
+#endif
+
 #endif

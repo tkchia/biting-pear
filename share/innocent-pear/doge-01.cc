@@ -9,8 +9,11 @@
 #ifdef innocent_pear_HAVE_IMPLD_FUNC_PTRACE
 #   include <sys/ptrace.h>
 #endif
-#if defined innocent_pear_HAVE_CONST_TCOOFF
+#ifdef innocent_pear_HAVE_CONST_TCOOFF
 #   include <sys/termios.h>
+#endif
+#ifdef innocent_pear_HAVE_FUNC_GETAUXVAL
+#   include <sys/auxv.h>
 #endif
 #ifdef __unix__
 #   include <fcntl.h>
@@ -21,6 +24,48 @@ innocent_pear_DOGE_HIDDEN extern unsigned char our_rodata_end[]
     __asm("_.innocent_pear.rodata.end");
 
 innocent_pear_NEXT
+
+#ifdef innocent_pear_FIX_ELF_IFUNC
+innocent_pear_DOGE_HIDDEN extern const unsigned char our_text_start[0]
+    __asm("_.innocent_pear.text.start");
+extern "C" void __real___pthread_initialize_minimal();
+
+extern "C"
+__attribute__((section(".text.unlikely." innocent_pear_DOGE_TAG ".t"),
+    visibility("hidden")))
+void __wrap___pthread_initialize_minimal()
+{
+	typedef uintptr_t (*Resolver)(unsigned long);
+#   ifdef innocent_pear_HAVE_FUNC_GETAUXVAL
+	unsigned long hwcap = getauxval(AT_HWCAP);
+#   else
+	unsigned long hwcap = 0;
+#   endif
+	const Elfxx_Rel *p, *q;
+	__asm __volatile("" : "=g" (p) : "0" (rel_iplt_start));
+	__asm __volatile("" : "=g" (q) : "0" (rel_iplt_end));
+	while (p < q) {
+		if (irel_sane(p->r_info) &&
+		    (void *)*p->r_offset < our_text_start) {
+			*p->r_offset = ((Resolver)*p->r_offset)(hwcap);
+			/* Unlikely, but possible... */
+			if ((void *)*p->r_offset >= our_text_start)
+				std::abort();
+		}
+		++p;
+	}
+	const Elfxx_Rela *r, *s;
+	__asm __volatile("" : "=g" (r) : "0" (rela_iplt_start));
+	__asm __volatile("" : "=g" (s) : "0" (rela_iplt_end));
+	while (r < s) {
+		if (irel_sane(r->r_info) &&
+		    (void *)r->r_addend < our_text_start)
+			*r->r_offset = r->r_addend(hwcap);
+		++r;
+	}
+	__real___pthread_initialize_minimal();
+}
+#endif
 
 innocent_pear_DOGE unscramble_01_1()
 {

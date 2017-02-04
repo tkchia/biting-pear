@@ -637,7 +637,7 @@ static int main_(int argc, char **argv)
 			real_a = *cheeses;
 			*cheeses = (char *)doge_a();
 			std::size_t n_libs = 0;
-			if (is.eleven && is.sta) {
+			if (is.eleven) {
 				n_libs = 4;
 #ifdef innocent_pear_LIBSTDCXX_CXX_TARGET
 				++n_libs;
@@ -655,46 +655,17 @@ static int main_(int argc, char **argv)
 			burger[1] = (char *)"-include";
 			burger[2] = pusheen(meowmeow,
 			    "/innocent-pear/doge.h");
-			char *wl = pusheen("-Wl,-T,", caturday,
-			    "/share/innocent-pear/doge-i.ld,-z,norelro");
-#if defined __ELF__
-			/*
-			 * Nasty hack to work around a problem where some
-			 * GNU indirect function resolvers (STT_GNU_IFUNC)
-			 * end up in the scrambled portion of .text, and get
-			 * called at runtime before they are unscrambled.
-			 *
-			 * The function names are taken from ifunc-impl-list.o
-			 * in libc.a, GNU libc 2.23 for x86-64 and x86-32.
-			 *
-			 * Alas, this hack links in _all_ the indirect in
-			 * the list -- even unused ones -- and does not take
-			 * care of indirect functions outside the list.
-			 *
-			 * A neater and more general solution might be to
-			 * defer the resolution of all -- or even some -- of
-			 * the indirect functions, until all the code and data
-			 * have been unscrambled.  This is, of course, just a
-			 * Simple Matter of Programming.
-			 */
-			if (is.eleven && is.sta)
-				wl = pusheen(wl, ",-u,memcmp,-u,memmove,"
-				    "-u,memset,-u,stpcpy,-u,stpncpy,"
-				    "-u,strcasecmp,-u,strcasecmp_l,"
-				    "-u,strcat,-u,strchr,-u,strcmp,"
-				    "-u,strcspn,-u,strncasecmp,"
-				    "-u,strncasecmp_l,-u,strncat,-u,strncpy,"
-				    "-u,strpbrk,-u,strspn,-u,strstr,"
-				    "-u,wcscpy,-u,wmemcmp,-u,bcopy,-u,bzero,"
-				    "-u,memchr,-u,memrchr,-u,rawmemchr,"
-				    "-u,strcpy,-u,strnlen,-u,strrchr,"
-				    "-u,wcschr,-u,wcscmp,-u,wcslen,"
-				    "-u,wcsrchr");
+			burger[3] = pusheen("-Wl,-T,", caturday,
+			    "/share/innocent-pear/doge-i.ld,-z,norelro"
+#ifdef innocent_pear_FIX_ELF_IFUNC
+			    ",--wrap=__pthread_initialize_minimal"
+			    ",--wrap=__rel_iplt_start"
+			    ",--wrap=__rela_iplt_start"
 #endif
-			burger[3] = wl;
+			    );
 			for (s = 0, t = 4; s < NumDogeIParts; ++s) {
 				burger[t++] = (char *)doge_i[s]();
-				if (is.eleven && is.sta) {
+				if (is.eleven) {
 #ifdef innocent_pear_LIBSTDCXX_CXX_TARGET
 					burger[t++] = (char *)"-lstdc++";
 #endif
@@ -717,7 +688,7 @@ static int main_(int argc, char **argv)
 			*cheese++ = (char *)"none";
 			for (s = 0; s < NumDogeNParts; ++s) {
 				*cheese++ = (char *)doge_n[s]();
-				if (is.eleven && is.sta) {
+				if (is.eleven) {
 #ifdef innocent_pear_LIBSTDCXX_CXX_TARGET
 					*cheese++ = (char *)"-lstdc++";
 #endif

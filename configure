@@ -108,7 +108,14 @@ conf_cxxt_probe_const_val PR_SET_DUMPABLE '#include <linux/prctl.h>'
 conf_cxxt_probe_const_val FS_IOC_GETFLAGS '#include <linux/fs.h>'
 conf_cxxt_probe_const_val FS_IOC_GETVERSION '#include <linux/fs.h>'
 #
+# For deciding whether we are using libstdc++ or some other C++ library.
 conf_cxxt_probe_func ::__gnu_cxx::__verbose_terminate_handler 0 \
     '#include <cxxabi.h>'
+#
+# For deciding whether and how we need to handle GNU "indirect functions".
+conf_cxxt_probe_const __ELF__
+conf_cxxt_probe_func ::getauxval 1 '#include <sys/auxv.h>'
+conf_cxxt_probe_func ::__pthread_initialize_minimal 0 \
+    'extern "C" void __pthread_initialize_minimal();'
 #
 conf_end

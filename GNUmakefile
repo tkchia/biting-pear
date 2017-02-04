@@ -322,6 +322,13 @@ else
 		echo "#undef innocent_pear_TARGET_WCHAR_IS_CHAR32"; \
 	fi >>$@.tmp
 endif
+	if test yes = '$(conf_Have_cxxt_const__2ELF_2)' -a yes = \
+	    '$(conf_Have_cxxt_func__0_2pthread_1initialize_1minimal)'; \
+	then \
+		echo '#define innocent_pear_FIX_ELF_IFUNC 1'; \
+	else \
+		echo '#undef innocent_pear_FIX_ELF_IFUNC'; \
+	fi >>$@.tmp
 	if test '$(conf_Have_cxx_decltype),$@' = 'yes,$(config.h.host)'; then\
 		echo '#define innocent_pear_decltype decltype' >>$@.tmp; \
 	elif test '$(conf_Have_cxxt_decltype),$@' = \
@@ -378,9 +385,14 @@ endif
 		else \
 			echo '#undef innocent_pear_HAVE_FUNC_PRCTL'; \
 		fi; \
+		if test '$(conf_Have_cxxt_func__0getauxval)' = yes; then \
+			echo '#define innocent_pear_HAVE_FUNC_GETAUXVAL 1'; \
+		else \
+			echo '#undef innocent_pear_HAVE_FUNC_GETAUXVAL'; \
+		fi; \
 		$(foreach c,PT_TRACE_ME PT_READ_I PT_READ_D PT_READ_U, \
-			if test '$(conf_Have_cxxt_const_$(subst _,_1,$c))' = \
-			    yes; then \
+			if test '$(conf_Have_cxxt_const_$(subst \
+			    _,_1,$(subst __,,$c)))' = yes; then \
 				echo \
 				 '#define innocent_pear_HAVE_CONST_$c 1';\
 			else	echo \

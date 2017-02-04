@@ -1,8 +1,4 @@
-#ifdef __ELF__
-#   define innocent_pear_HIDDEN	visibility("hidden")
-#else
-#   define innocent_pear_HIDDEN	visibility("default")
-#endif
+#include "doge-i.h"
 
 extern const unsigned char startup_text_end[0]
     __asm("_.innocent_pear.text.startup.end")

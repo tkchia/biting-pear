@@ -1,3 +1,33 @@
+2017-02-04	Better handling of GNU indirect functions.
+
+		share/innocent-pear/doge-01.cc ,
+		share/innocent-pear/doge-07.cc ,
+		share/innocent-pear/doge-i.h ,
+		share/innocent-pear/doge-n.ld :
+		- implemented .rel{,a}.iplt + ::__pthread_initialize_minimal()
+		  hack
+
+		share/innocent-pear/doge-99.cc :
+		- tweaked
+
+		bin/innocent-pear-front-end.tcc :
+		- now tries to rope in -lstdc++, -latomic, -lc, -lgcc, and/or
+		  -lgcc_eh even if not linking statically
+		- implemented .rel{,a}.iplt + ::__pthread_initialize_minimal()
+		  hack
+
+		configure :
+		- now looks for __ELF__, ::getauxval(.), and ::__pthread_
+		  initialize_minimal() target-side
+
+		GNUmakefile :
+		- now defines/undefines innocent_pear_FIX_ELF_IFUNC both
+		  host-side and target-side, and innocent_pear_HAVE_FUNC_
+		  GETAUXVAL host-side
+
+		README.md :
+		- updated bug description for GNU "indirect functions"
+
 2017-02-02	Can now scramble C and C++ library routines in statically-
 		-linked programs.
 
