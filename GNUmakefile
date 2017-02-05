@@ -492,9 +492,10 @@ endif
 endif
 	@echo "* running test $<" >&2
 	@LANG=en_US.UTF-8 $(conf_Target_exec) ./$< >$(@:.passed=.1.tmp) || \
-	    (echo "* base64 dump of xz'd $< :" >&2 && \
+	    (res=$$? && \
+	     echo "* base64 dump of xz'd $< :" >&2 && \
 	     xz -9c <'$<' | base64 | sed 's,^,*  ,' && \
-	     echo "* $< exited with error: $$?" >&2 && \
+	     echo "* $< exited with error: $$res" >&2 && \
 	     $(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
 	     exit 1)
 	@LANG=en_US.UTF-8 diff -U2 $(word 2,$+) $(@:.passed=.1.tmp) || \
@@ -532,9 +533,10 @@ endif
 	@echo "* running test $<" >&2
 	@LANG=en_US.UTF-8 $(conf_Target_exec) ./$< >$(@:.passed=.1.tmp) \
 	    2>$(@:.passed=.2.tmp) ||\
-	    (echo "* base64 dump of xz'd $< :" >&2 && \
+	    (res=$$? && \
+	     echo "* base64 dump of xz'd $< :" >&2 && \
 	     xz -9c <'$<' | base64 | sed 's,^,*  ,' && \
-	     echo "* $< exited with error: $$?" >&2 && \
+	     echo "* $< exited with error: $$res" >&2 && \
 	     $(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
 	     exit 1)
 	@LANG=en_US.UTF-8 diff -U2 /dev/null $(@:.passed=.2.tmp) || \

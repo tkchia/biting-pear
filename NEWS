@@ -16,6 +16,10 @@
 		share/innocent-pear/doge-i.h :
 		- now using a different way to define rel{, a}_iplt_start
 
+		bin/innocent-pear-front-end.tcc :
+		- scrapped -lstdc++ -latomic -lc -lgcc -lgcc_eh for dynamic
+		  linking -- it is causing problems with -static-libstdc++
+
 		GNUmakefile :
 		- upon an error from a test binary, now dumps entire binary
 
