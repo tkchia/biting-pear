@@ -1,5 +1,11 @@
 2017-02-05	"Harp not on that string."
 
+		share/innocent-pear/doge-n.ld :
+		- tweaked to use DEFINED(.)
+
+		share/innocent-pear/doge-07.cc :
+		- some debugging output for ifunc resolving
+
 		GNUmakefile :
 		- upon an error from a test binary, now dumps entire binary
 

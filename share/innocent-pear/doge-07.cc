@@ -38,6 +38,9 @@ innocent_pear_DOGE unscramble_07_1()
 	const Elfxx_Rel *p, *q;
 	__asm __volatile("" : "=g" (p) : "0" (rel_iplt_start));
 	__asm __volatile("" : "=g" (q) : "0" (rel_iplt_end));
+#   ifdef innocent_pear_DEBUG
+	fprintf(stderr, "rel_iplt_start = %p, rel_iplt_end = %p\n", p, q);
+#   endif
 	while (p < q) {
 		if (irel_sane(p->r_info) &&
 		    (void *)*p->r_offset >= our_text_start)
@@ -47,6 +50,9 @@ innocent_pear_DOGE unscramble_07_1()
 	const Elfxx_Rela *r, *s;
 	__asm __volatile("" : "=g" (r) : "0" (rela_iplt_start));
 	__asm __volatile("" : "=g" (s) : "0" (rela_iplt_end));
+#   ifdef innocent_pear_DEBUG
+	fprintf(stderr, "rela_iplt_start = %p, rela_iplt_end = %p\n", r, s);
+#   endif
 	while (r < s) {
 		if (irel_sane(r->r_info) &&
 		    (void *)r->r_addend >= our_text_start)
