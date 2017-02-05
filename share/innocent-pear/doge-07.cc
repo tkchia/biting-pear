@@ -39,24 +39,53 @@ innocent_pear_DOGE unscramble_07_1()
 	__asm __volatile("" : "=g" (p) : "0" (rel_iplt_start));
 	__asm __volatile("" : "=g" (q) : "0" (rel_iplt_end));
 #   ifdef innocent_pear_DEBUG
-	fprintf(stderr, "rel_iplt_start = %p, rel_iplt_end = %p\n", p, q);
+	std::fprintf(stderr, "rel_iplt_start = %p, rel_iplt_end = %p\n", p, q);
 #   endif
 	while (p < q) {
+#   ifdef innocent_pear_DEBUG
+		std::fprintf(stderr, "rel %p: offset %p {%#" PRIxPTR "}, "
+		    "info %" PRIuPTR ": ", p, p->r_offset, *p->r_offset,
+		    p->r_info);
+#   endif
 		if (irel_sane(p->r_info) &&
-		    (void *)*p->r_offset >= our_text_start)
+		    (void *)*p->r_offset >= our_text_start) {
 			*p->r_offset = ((Resolver)*p->r_offset)(hwcap);
+#   ifdef innocent_pear_DEBUG
+			std::fprintf(stderr, "{~> %#" PRIxPTR "}\n",
+			    *p->r_offset);
+#   endif
+		}
+#   ifdef innocent_pear_DEBUG
+		else
+			std::fprintf(stderr, "skipping\n");
+#   endif
 		++p;
 	}
 	const Elfxx_Rela *r, *s;
 	__asm __volatile("" : "=g" (r) : "0" (rela_iplt_start));
 	__asm __volatile("" : "=g" (s) : "0" (rela_iplt_end));
 #   ifdef innocent_pear_DEBUG
-	fprintf(stderr, "rela_iplt_start = %p, rela_iplt_end = %p\n", r, s);
+	std::fprintf(stderr, "rela_iplt_start = %p, rela_iplt_end = %p\n",
+	    r, s);
 #   endif
 	while (r < s) {
+#   ifdef innocent_pear_DEBUG
+		std::fprintf(stderr, "rela %p: offset %p {%#" PRIxPTR "}, "
+		    "info %" PRIuPTR ", addend %p: ", r, r->r_offset,
+		    *r->r_offset, r->r_info, (void *)r->r_addend);
+#   endif
 		if (irel_sane(r->r_info) &&
-		    (void *)r->r_addend >= our_text_start)
+		    (void *)r->r_addend >= our_text_start) {
 			*r->r_offset = r->r_addend(hwcap);
+#   ifdef innocent_pear_DEBUG
+			std::fprintf(stderr, "{~> %#" PRIxPTR "}\n",
+			    *r->r_offset);
+#   endif
+		}
+#   ifdef innocent_pear_DEBUG
+		else
+			std::fprintf(stderr, "skipping\n");
+#   endif
 		++r;
 	}
 }

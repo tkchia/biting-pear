@@ -2,9 +2,19 @@
 
 		share/innocent-pear/doge-n.ld :
 		- tweaked to use DEFINED(.)
+		- .init now slurps up any stray definitions of .rel{, a}.
+		  {, i}plt sections not used by the default linker script
+
+		share/innocent-pear/doge-01.cc :
+		- in debug mode, now detects if __wrap___pthread_initialize_
+		  minimal() is called more than once
 
 		share/innocent-pear/doge-07.cc :
 		- some debugging output for ifunc resolving
+
+		share/innocent-pear/doge-99.cc ,
+		share/innocent-pear/doge-i.h :
+		- now using a different way to define rel{, a}_iplt_start
 
 		GNUmakefile :
 		- upon an error from a test binary, now dumps entire binary

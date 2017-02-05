@@ -109,11 +109,20 @@ typedef struct {
 	    (*r_addend)(unsigned long);
 } Elfxx_Rela;
 
+/*
+ * Using __real___rel{, a}_iplt_start for rel{, a}_iplt_start is unreliable
+ * -- apparently some slightly older versions of GNU binutils (e.g. 2.24)
+ * get confused and give __real___rel{, a}_iplt_start == __wrap___rel{, a}_
+ * iplt_start.
+ *
+ * Instead, use the symbols defined in doge-99.cc, which should fall
+ * somewhere inside .rel{, a}.plt and before .rel{, a}.iplt .
+ */
 innocent_pear_DOGE_HIDDEN extern const Elfxx_Rel
-    rel_iplt_start[] __asm("__real___rel_iplt_start"),
+    rel_iplt_start[] __asm("_.innocent_pear.rel.iplt.start"),
     rel_iplt_end[] __asm("__wrap___rel_iplt_start");
 innocent_pear_DOGE_HIDDEN extern const Elfxx_Rela
-    rela_iplt_start[] __asm("__real___rela_iplt_start"),
+    rela_iplt_start[] __asm("_.innocent_pear.rela.iplt.start"),
     rela_iplt_end[] __asm("__wrap___rela_iplt_start");
 
 /*

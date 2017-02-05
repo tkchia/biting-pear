@@ -35,6 +35,16 @@ __attribute__((section(".text.unlikely." innocent_pear_DOGE_TAG ".t"),
     visibility("hidden")))
 void __wrap___pthread_initialize_minimal()
 {
+#   ifdef innocent_pear_DEBUG
+	static bool called = false;
+	if (!called)
+		called = true;
+	else {
+		std::fprintf(stderr, "%s called more than once; "
+		    "indirect functions possibly borked\n", __func__);
+		std::abort();
+	}
+#   endif
 	typedef uintptr_t (*Resolver)(unsigned long);
 #   ifdef innocent_pear_HAVE_FUNC_GETAUXVAL
 	unsigned long hwcap = getauxval(AT_HWCAP);
