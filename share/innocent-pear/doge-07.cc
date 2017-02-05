@@ -100,6 +100,7 @@ innocent_pear_DOGE unscramble_07_2()
 #endif
 }
 
+#if 0
 innocent_pear_DOGE_MEMSET unscramble_07_3()
 {
 	constexpr auto flags2 =
@@ -107,3 +108,4 @@ innocent_pear_DOGE_MEMSET unscramble_07_3()
 		& ~innocent_pear::ops::under_munged_terminal));
 	innocent_pear::rofl?<flags2, 2u>::memset((void *)here_start);
 }
+#endif

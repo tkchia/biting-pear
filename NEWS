@@ -1,3 +1,8 @@
+2017-02-05	"Harp not on that string."
+
+		share/innocent-pear/doge-07.cc :
+		- disabled call to rofl<...>::memset(...)
+
 2017-02-04	Better handling of GNU indirect functions.
 
 		share/innocent-pear/doge-01.cc ,
