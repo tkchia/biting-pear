@@ -116,7 +116,7 @@ typedef struct {
  * iplt_start.
  *
  * Instead, use the symbols defined in doge-99.cc, which should fall
- * somewhere inside .rel{, a}.plt and before .rel{, a}.iplt .
+ * somewhere inside .rel{, a}.bss and before .rel{, a}.iplt .
  */
 innocent_pear_DOGE_HIDDEN extern const Elfxx_Rel
     rel_iplt_start[] __asm("_.innocent_pear.rel.iplt.start"),

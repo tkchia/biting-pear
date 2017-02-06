@@ -1,3 +1,12 @@
+2017-02-06	Better handling of GNU indirect functions.  (2)
+
+		share/innocent-pear/doge-99.cc ,
+		share/innocent-pear/doge-n.ld ,
+		share/innocent-pear/doge-i.h :
+		- .rel{, a}.plt -> .rel{, a}.bss -- ELF on ARM places
+		  .rel{, a}.iplt _before_ .rel{, a}.plt but after .rel{, a}
+		  .bss
+
 2017-02-05	"Harp not on that string."
 
 		share/innocent-pear/doge-n.ld :

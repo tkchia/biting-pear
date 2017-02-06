@@ -28,8 +28,8 @@ unsigned char our_data_end[0]
 #ifdef innocent_pear_FIX_ELF_IFUNC
 extern const Elfxx_Rel rel_iplt_start[0]
     __asm("_.innocent_pear.rel.iplt.start")
-    __attribute__((section(".rel.plt"))) = { };
+    __attribute__((section(".rel.bss"))) = { };
 extern const Elfxx_Rela rela_iplt_start[0]
     __asm("_.innocent_pear.rela.iplt.start")
-    __attribute__((section(".rela.plt"))) = { };
+    __attribute__((section(".rela.bss"))) = { };
 #endif
