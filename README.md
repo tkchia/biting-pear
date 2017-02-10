@@ -8,7 +8,7 @@
 
 `innocent-pear-cc` is a wrapper for `gcc` or `clang`, for compiling C or assembly language modules to be linked into an `innocent-pear-c++` program.
 
-`innocent-pear-c++` and `innocent-pear-cc` are being tested with x86-64, x86-32, and 32-bit ARM target platforms, and *may* partially work with other targets.
+`innocent-pear-c++` and `innocent-pear-cc` are being tested with Linux on x86-64, x86-32, and 32-bit ARM target platforms, and *may* partially work with other targets.
 
 There is also a rather undocumented C++ API for various code obfuscation subtasks, and `innocent-pear-c++` enables some syntactic sugar for expressing obfuscated strings.
 

@@ -1,3 +1,8 @@
+2017-02-10	"An unbreakable toy is useful for breaking other toys."
+
+		README.md :
+		- now explicitly states that testing is done on Linux
+
 2017-02-06	Better handling of GNU indirect functions.  (2)
 
 		share/innocent-pear/doge-99.cc ,
