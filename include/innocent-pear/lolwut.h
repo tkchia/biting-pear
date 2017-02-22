@@ -126,6 +126,13 @@ class lolwut_impl
 	innocent_pear_always_inline
 	lolwut_impl()
 		{ }
+    private:
+	innocent_pear_always_inline
+	char *cast(T *v)
+	{
+		return const_cast<char *>(reinterpret_cast<const char *>(v));
+	}
+    protected:
 	innocent_pear_always_inline
 	void set(T *v, int mode = 0)
 	{
@@ -391,12 +398,12 @@ class lolwut_impl
 			if (Sign) {
 				__asm __volatile(""
 				    : "=r" (p_)
-				    : "0" (reinterpret_cast<char*>(v)-Disp2));
+				    : "0" (cast(v) - Disp2));
 				p_ -= Disp - Disp2;
 			} else {
 				__asm __volatile(""
 				    : "=r" (p_)
-				    : "0" (reinterpret_cast<char*>(v)+Disp2));
+				    : "0" (cast(v) + Disp2));
 				p_ += Disp - Disp2;
 			}
 #elif defined __amd64__ && defined __clang__ && \
@@ -406,23 +413,23 @@ class lolwut_impl
 			if (Sign) {
 				__asm __volatile(""
 				    : "=r" (p_)
-				    : "0" (reinterpret_cast<char*>(v)-Disp2));
+				    : "0" (cast(v) - Disp2));
 				p_ -= Disp - Disp2;
 			} else {
 				__asm __volatile(""
 				    : "=r" (p_)
-				    : "0" (reinterpret_cast<char*>(v)+Disp2));
+				    : "0" (cast(v) + Disp2));
 				p_ += Disp - Disp2;
 			}
 #else
 			if (Sign)
 				__asm __volatile(""
 				    : "=r" (p_)
-				    : "0" (reinterpret_cast<char *>(v)-Disp));
+				    : "0" (cast(v) - Disp));
 			else
 				__asm __volatile(""
 				    : "=r" (p_)
-				    : "0" (reinterpret_cast<char *>(v)+Disp));
+				    : "0" (cast(v) + Disp));
 #endif
 		}
 		__asm("" : "=g" (p_) : "0" (p_));

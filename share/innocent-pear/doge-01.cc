@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <innocent-pear/dawg.h>
+#include <innocent-pear/kthxbai.h>
 #include <innocent-pear/orly.h>
 #include <innocent-pear/rofl.h>
 #ifdef innocent_pear_HAVE_IMPLD_FUNC_PTRACE
@@ -51,9 +52,12 @@ void __wrap___pthread_initialize_minimal()
 #   else
 	unsigned long hwcap = 0;
 #   endif
-	const Elfxx_Rel *p, *q;
-	__asm __volatile("" : "=g" (p) : "0" (rel_iplt_start));
-	__asm __volatile("" : "=g" (q) : "0" (rel_iplt_end));
+	using innocent_pear::kthxbai;
+	using innocent_pear::ops::allow_minimal;
+	const Elfxx_Rel *p = kthxbai?<const Elfxx_Rel *, allow_minimal, 0u>
+				 (rel_iplt_start),
+			*q = kthxbai?<const Elfxx_Rel *, allow_minimal, 0u>
+				 (rel_iplt_end);
 	while (p < q) {
 		if (irel_sane(p->r_info) &&
 		    (void *)*p->r_offset < our_text_start) {
@@ -64,9 +68,10 @@ void __wrap___pthread_initialize_minimal()
 		}
 		++p;
 	}
-	const Elfxx_Rela *r, *s;
-	__asm __volatile("" : "=g" (r) : "0" (rela_iplt_start));
-	__asm __volatile("" : "=g" (s) : "0" (rela_iplt_end));
+	const Elfxx_Rela *r = kthxbai?<const Elfxx_Rela *, allow_minimal, 0u>
+				  (rela_iplt_start),
+			 *s = kthxbai?<const Elfxx_Rela *, allow_minimal, 0u>
+				  (rela_iplt_end);
 	while (r < s) {
 		if (irel_sane(r->r_info) &&
 		    (void *)r->r_addend < our_text_start)
