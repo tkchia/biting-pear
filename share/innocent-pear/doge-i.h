@@ -2,6 +2,7 @@
 #define innocent_pear_H_DOGE_I
 
 #include <innocent-pear/bbq.h>
+#include <innocent-pear/orly.h>
 
 #ifdef innocent_pear_HAVE_CTOR_PRIORITY
 #   define innocent_pear_CTOR	constructor(101)
@@ -130,19 +131,22 @@ innocent_pear_DOGE_HIDDEN extern const Elfxx_Rela
  * we know the correct relocation type for indirect functions, compare against
  * that, otherwise do nothing and assume the best.
  */
-static inline bool irel_sane(innocent_pear::impl::uintptr_t info)
+innocent_pear_always_inline
+bool irel_sane(innocent_pear::impl::uintptr_t info)
 {
-	innocent_pear::impl::uint_least32_t type __attribute__((unused));
+	using innocent_pear::impl::uint_least32_t;
+	innocent_pear::orly?<uint_least32_t> f;
+	uint_least32_t type __attribute__((unused));
 	if (sizeof(info) > sizeof(type))
 		type = info & 0xfffffffful;
 	else
 		type = info & 0xfful;
 #   if defined __i386__
-	return type == 42;		/* R_386_IRELATIVE */
+	return f(type) == f(42);	/* R_386_IRELATIVE */
 #   elif defined __amd64__
-	return type == 37;		/* R_X86_64_IRELATIVE */
+	return f(type) == f(37);	/* R_X86_64_IRELATIVE */
 #   elif defined __arm__
-	return type == 160;		/* R_ARM_IRELATIVE */
+	return f(type) == f(160);	/* R_ARM_IRELATIVE */
 #   else
 	return true;
 #   endif
