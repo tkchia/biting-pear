@@ -468,6 +468,9 @@ class lolwut<State, T, Flags, 0u> : public lolwut_impl<State, T, Flags, 0u>
 			return reinterpret_cast<T *>(this->p_ + this->Disp);
 		else	return reinterpret_cast<T *>(this->p_ - this->Disp);
 	}
+	innocent_pear_always_inline
+	T *operator->() const
+		{ return (T *)*this; }
 };
 
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
@@ -504,6 +507,9 @@ class lolwut : public lolwut_impl<State, T, Flags, Levels>
 			return reinterpret_cast<T *>(p + disp);
 		else	return reinterpret_cast<T *>(p - disp);
 	}
+	innocent_pear_always_inline
+	T *operator->() const
+		{ return (T *)*this; }
 };
 
 } // innocent_pear::impl

@@ -1,3 +1,23 @@
+2017-03-01	"An unbreakable toy is useful for breaking other toys."  (4)
+
+		include/innocent-pear/orly.h :
+		- orly<, T, ...>::wot(p, q, c) and orly<, T, ...>::wut(p, q[,
+		  r]) now allow p and q to be objects that "point to" T, not
+		  necessarily `T *' values
+
+		include/innocent-pear/kthxbai.h :
+		- kthxbai<...> now has postincrement and postdecrement
+
+		include/innocent-pear/lolwut.h :
+		- added lolwut<...>::operator->()
+
+		share/innocent-pear/doge-01.cc ,
+		share/innocent-pear/doge-02.cc ,
+		share/innocent-pear/doge-03.cc ,
+		test/test-orly-wut.cc :
+		- take advantage of interface changes to orly<...> and
+		  kthxbai<...> to scramble pointers
+
 2017-02-25	"An unbreakable toy is useful for breaking other toys."  (3)
 
 		share/innocent-pear/doge-i.h :

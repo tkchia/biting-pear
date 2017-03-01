@@ -7,6 +7,7 @@
 #include <innocent-pear/nowai.h>
 #include <innocent-pear/yarly.h>
 #include <climits>
+#include <type_traits>
 #ifdef innocent_pear_DEBUG
 #   include <cstdio>
 #endif
@@ -134,15 +135,16 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 {
 	typedef orly_impl<State, T, Boreal, BigBad, Flags, Levels> super;
 	typedef orly<State, T, false, BigBad, Flags, Levels> austral;
+	template<class PT = T *>
 	class woot
 	{
-		T *o_;
+		PT o_;
 	    public:
 		innocent_pear_always_inline
-		woot(T *o) : o_(o)
+		woot(PT o) : o_(o)
 			{ }
 		innocent_pear_always_inline
-		void operator()(T i, T *p)
+		void operator()(T i, PT p)
 			{ *o_++ = i; }
 	};
     public:
@@ -169,10 +171,18 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 			    (z, x1, x2, x3, x4, x5, x6, x7, x8, x9);
 		}
 	}
-	template<class C>
+	template<class C, class PT = T *, class QT = T *>
 	innocent_pear_always_inline
-	void wot(T *p, T *q, C& c)
+	void wot(PT p, QT q, C& c)
 	{
+		static_assert(std::is_same<innocent_pear_decltype(*p), T&>::
+		    value,
+		    "PT in innocent_pear::orly<, T, ...>::wot(PT, QT, C&) "
+		    "does not point to a T");
+		static_assert(std::is_same<innocent_pear_decltype(*q), T&>::
+		    value,
+		    "QT in innocent_pear::orly<, T, ...>::wot(PT, QT, C&) "
+		    "does not point to a T");
 		T y0,
 		  y1 = austral()(),
 		  y2 = austral()(y1),
@@ -290,17 +300,20 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 			}
 		}
 	}
+	template<class PT = T *, class QT = T *>
 	innocent_pear_always_inline
-	void wut(T *p, T *q, T *r)
+	void wut(PT p, QT q, PT r)
 	{
 #ifdef innocent_pear_DEBUG
-		std::fprintf(stderr, "orly<...>::wut(%p, %p, %p)\n", p, q, r);
+		std::fprintf(stderr, "orly<...>::wut(%p, %p, %p)\n",
+		    &*p, &*q, &*r);
 #endif
-		woot w(r);
+		woot<PT> w(r);
 		wot(p, q, w);
 	}
+	template<class PT = T *, class QT = T *>
 	innocent_pear_always_inline
-	void wut(T *p, T *q)
+	void wut(PT p, QT q)
 		{ wut(p, q, p); }
 	template<class DT>
 	innocent_pear_always_inline

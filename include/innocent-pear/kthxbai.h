@@ -548,8 +548,20 @@ class kthxbai<State, S *, Flags, Levels> :
 	innocent_pear_always_inline
 	const our_type& operator++()
 		{ return *this += 1; }
+	const our_type operator++(int)
+	{
+		our_type that = *this;
+		*this += 1;
+		return that;
+	}
 	const our_type& operator--()
 		{ return *this -= 1; }
+	const our_type operator--(int)
+	{
+		our_type that = *this;
+		*this -= 1;
+		return that;
+	}
 };
 
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>

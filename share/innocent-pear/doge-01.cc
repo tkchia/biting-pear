@@ -54,11 +54,10 @@ void __wrap___pthread_initialize_minimal()
 #   endif
 	using innocent_pear::kthxbai;
 	using innocent_pear::ops::allow_minimal;
-	const Elfxx_Rel *p = kthxbai?<const Elfxx_Rel *, allow_minimal, 0u>
-				 (rel_iplt_start),
-			*q = kthxbai?<const Elfxx_Rel *, allow_minimal, 0u>
-				 (rel_iplt_end);
-	while (p < q) {
+	kthxbai?<const Elfxx_Rel *, allow_minimal, 0u> p(rel_iplt_start);
+	kthxbai?<const Elfxx_Rel *, allow_minimal, 0u> q(rel_iplt_end);
+	std::ptrdiff_t n1 = q - p;
+	while (n1-- > 0) {
 		if (irel_sane(p->r_info) &&
 		    (void *)*p->r_offset < our_text_start) {
 			*p->r_offset = ((Resolver)*p->r_offset)(hwcap);
@@ -68,11 +67,10 @@ void __wrap___pthread_initialize_minimal()
 		}
 		++p;
 	}
-	const Elfxx_Rela *r = kthxbai?<const Elfxx_Rela *, allow_minimal, 0u>
-				  (rela_iplt_start),
-			 *s = kthxbai?<const Elfxx_Rela *, allow_minimal, 0u>
-				  (rela_iplt_end);
-	while (r < s) {
+	kthxbai?<const Elfxx_Rela *, allow_minimal, 0u> r(rela_iplt_start);
+	kthxbai?<const Elfxx_Rela *, allow_minimal, 0u> s(rela_iplt_end);
+	std::ptrdiff_t n2 = s - r;
+	while (n2-- > 0) {
 		if (irel_sane(r->r_info) &&
 		    (void *)r->r_addend < our_text_start)
 			*r->r_offset = r->r_addend(hwcap);
@@ -84,12 +82,14 @@ void __wrap___pthread_initialize_minimal()
 
 innocent_pear_DOGE unscramble_01_1()
 {
+	using innocent_pear::kthxbai;
 	constexpr auto flags =
 	    ((innocent_pear::ops_flags_t)(innocent_pear_FLAGS &
 	      ~innocent_pear::ops::under_ptrace)),
 	    flags2 = innocent_pear_FLAGS;
-	unsigned char *nxs = next_start, *nxe = next_end,
-	    *re = our_rodata_end;
+	kthxbai?<unsigned char *> nxs(next_start);
+	kthxbai?<unsigned char *> nxe(next_end);
+	unsigned char *re = our_rodata_end;
 	innocent_pear_CHAFF(innocent_pear::ops::allow_for_startup);
 #if defined innocent_pear_HAVE_CONST_TCOOFF
 	innocent_pear::rofl?<innocent_pear::ops::allow_for_startup, 2u>::
@@ -100,7 +100,7 @@ innocent_pear_DOGE unscramble_01_1()
 #endif
 	uintptr_t pg_sz = (uintptr_t)(innocent_pear::kthxbai?<
 	    innocent_pear_decltype(&getpagesize), flags, 1u>(getpagesize))();
-	uintptr_t prot_start = (uintptr_t)nxs & -pg_sz;
+	uintptr_t prot_start = (uintptr_t)(unsigned char *)nxs & -pg_sz;
 	uintptr_t prot_end = ((uintptr_t)re + pg_sz - 1) & -pg_sz;
 	innocent_pear::rofl?<flags, 1u>::mprotect((void *)prot_start,
 	    (std::size_t)(prot_end - prot_start),

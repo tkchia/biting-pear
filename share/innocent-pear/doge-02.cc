@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <innocent-pear/dawg.h>
+#include <innocent-pear/kthxbai.h>
 #include <innocent-pear/orly.h>
 #include <innocent-pear/rofl.h>
 #ifdef innocent_pear_HAVE_CONST_TCOON
@@ -31,8 +32,10 @@ extern const unsigned char startup_text_start[0]
 innocent_pear_DOGE unscramble_02_1()
 {
 	constexpr auto flags = innocent_pear_FLAGS;
-	unsigned char *nxs = next_start, *nxe = next_end,
-	    *ts = our_text_start, *te = our_text_end;
+	innocent_pear::kthxbai?<unsigned char *> nxs(next_start);
+	innocent_pear::kthxbai?<unsigned char *> nxe(next_end);
+	innocent_pear::kthxbai?<unsigned char *> ts(our_text_start);
+	innocent_pear::kthxbai?<unsigned char *> te(our_text_end);
 	innocent_pear_CHAFF(flags);
 	innocent_pear::orly<innocent_pear_DOGE_STATE_1,
 	    unsigned char, false, true, flags>().wut(nxs, nxe);
