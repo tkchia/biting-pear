@@ -1,3 +1,19 @@
+2017-03-02	"An unbreakable toy is useful for breaking other toys."  (5)
+
+		share/innocent-pear/doge-01.cc :
+		- tweaked pointer scrambling to allow more operations
+
+		share/innocent-pear/doge-02.cc ,
+		share/innocent-pear/doge-03.cc :
+		- tweaked pointer scrambling to allow more operations, and
+		  to reduce the pointer scrambling when unfrobbing .text and
+		  .rodata
+
+		share/innocent-pear/doge-04.cc ,
+		share/innocent-pear/doge-05.cc :
+		- take advantage of interface changes to orly<...> and
+		  kthxbai<...> to scramble pointers
+
 2017-03-01	"An unbreakable toy is useful for breaking other toys."  (4)
 
 		include/innocent-pear/orly.h :

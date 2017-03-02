@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <innocent-pear/dawg.h>
+#include <innocent-pear/kthxbai.h>
 #include <innocent-pear/orly.h>
 #include <innocent-pear/rofl.h>
 #include "doge-i.h"
@@ -20,8 +21,10 @@ innocent_pear_NEXT
 innocent_pear_DOGE unscramble_05_1()
 {
 	constexpr auto flags = innocent_pear_FLAGS;
-	unsigned char *nxs = next_start, *nxe = next_end,
-	    *ds = our_data_start, *de = our_data_end;
+	innocent_pear::kthxbai?<unsigned char *, flags> nxs(next_start);
+	innocent_pear::kthxbai?<unsigned char *, flags> nxe(next_end);
+	innocent_pear::kthxbai?<unsigned char *, flags, 0u> ds(our_data_start);
+	innocent_pear::kthxbai?<unsigned char *, flags, 0u> de(our_data_end);
 	innocent_pear_CHAFF(flags);
 	innocent_pear::orly<innocent_pear_DOGE_STATE_7,
 	    unsigned char, false, true, flags>().wut(nxs, nxe);

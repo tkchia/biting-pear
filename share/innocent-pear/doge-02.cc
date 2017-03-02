@@ -32,10 +32,10 @@ extern const unsigned char startup_text_start[0]
 innocent_pear_DOGE unscramble_02_1()
 {
 	constexpr auto flags = innocent_pear_FLAGS;
-	innocent_pear::kthxbai?<unsigned char *> nxs(next_start);
-	innocent_pear::kthxbai?<unsigned char *> nxe(next_end);
-	innocent_pear::kthxbai?<unsigned char *> ts(our_text_start);
-	innocent_pear::kthxbai?<unsigned char *> te(our_text_end);
+	innocent_pear::kthxbai?<unsigned char *, flags> nxs(next_start);
+	innocent_pear::kthxbai?<unsigned char *, flags> nxe(next_end);
+	innocent_pear::kthxbai?<unsigned char *, flags, 0u> ts(our_text_start);
+	innocent_pear::kthxbai?<unsigned char *, flags, 0u> te(our_text_end);
 	innocent_pear_CHAFF(flags);
 	innocent_pear::orly<innocent_pear_DOGE_STATE_1,
 	    unsigned char, false, true, flags>().wut(nxs, nxe);

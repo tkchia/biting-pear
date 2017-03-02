@@ -21,10 +21,11 @@ innocent_pear_NEXT
 innocent_pear_DOGE unscramble_03_1()
 {
 	constexpr auto flags = innocent_pear_FLAGS;
-	innocent_pear::kthxbai?<unsigned char *> nxs(next_start);
-	innocent_pear::kthxbai?<unsigned char *> nxe(next_end);
-	innocent_pear::kthxbai?<unsigned char *> rs(our_rodata_start);
-	innocent_pear::kthxbai?<unsigned char *> re(our_rodata_end);
+	innocent_pear::kthxbai?<unsigned char *, flags> nxs(next_start);
+	innocent_pear::kthxbai?<unsigned char *, flags> nxe(next_end);
+	innocent_pear::kthxbai?<unsigned char *, flags, 0u>
+	    rs(our_rodata_start);
+	innocent_pear::kthxbai?<unsigned char *, flags, 0u> re(our_rodata_end);
 	innocent_pear_CHAFF(flags);
 	innocent_pear::orly<innocent_pear_DOGE_STATE_3,
 	    unsigned char, false, true, flags>().wut(nxs, nxe);

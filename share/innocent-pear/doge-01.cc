@@ -83,16 +83,17 @@ void __wrap___pthread_initialize_minimal()
 innocent_pear_DOGE unscramble_01_1()
 {
 	using innocent_pear::kthxbai;
+	using innocent_pear::ops::allow_for_startup;
 	constexpr auto flags =
 	    ((innocent_pear::ops_flags_t)(innocent_pear_FLAGS &
 	      ~innocent_pear::ops::under_ptrace)),
 	    flags2 = innocent_pear_FLAGS;
-	kthxbai?<unsigned char *> nxs(next_start);
-	kthxbai?<unsigned char *> nxe(next_end);
+	kthxbai?<unsigned char *, allow_for_startup> nxs(next_start);
+	kthxbai?<unsigned char *, allow_for_startup> nxe(next_end);
 	unsigned char *re = our_rodata_end;
-	innocent_pear_CHAFF(innocent_pear::ops::allow_for_startup);
+	innocent_pear_CHAFF(allow_for_startup);
 #if defined innocent_pear_HAVE_CONST_TCOOFF
-	innocent_pear::rofl?<innocent_pear::ops::allow_for_startup, 2u>::
+	innocent_pear::rofl?<allow_for_startup, 2u>::
 	    tcflow((int)((0ull + innocent_pear_DOGE_STATE_0 +
 				 innocent_pear_DOGE_STATE_1)
 		% 100000001ull % 3ull), TCOOFF);
