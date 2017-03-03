@@ -52,9 +52,11 @@ for sz in 64 32 16 8; do
 	conf_cxxt_chk_typ_1_of std::uint_least"$sz"_t ::uint_least"$sz"_t
 done
 #
-conf_cxxt_probe_typ std::uintptr_t '#include <cinttypes>'
-conf_cxxt_probe_typ ::uintptr_t '#include <inttypes.h>'
-conf_cxxt_chk_typ_1_of std::uintptr_t ::uintptr_t
+for typ in intptr_t uintptr_t; do
+	conf_cxxt_probe_typ std::"$typ" '#include <cinttypes>'
+	conf_cxxt_probe_typ ::"$typ" '#include <inttypes.h>'
+	conf_cxxt_chk_typ_1_of std::"$typ" ::"$typ"
+done
 #
 conf_cxx_probe_wchar_typ
 conf_cxxt_probe_wchar_typ

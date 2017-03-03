@@ -54,22 +54,24 @@ void __wrap___pthread_initialize_minimal()
 #   endif
 	using innocent_pear::kthxbai;
 	using innocent_pear::ops::allow_minimal;
+	using innocent_pear::impl::intptr_t;
 	kthxbai?<const Elfxx_Rel *, allow_minimal, 0u> p(rel_iplt_start);
 	kthxbai?<const Elfxx_Rel *, allow_minimal, 0u> q(rel_iplt_end);
-	std::ptrdiff_t n1 = q - p;
+	intptr_t n1 = q - p;
 	while (n1-- > 0) {
 		if (irel_sane(p->r_info) &&
 		    (void *)*p->r_offset < our_text_start) {
-			*p->r_offset = ((Resolver)*p->r_offset)(hwcap);
+			uintptr_t resolved = ((Resolver)*p->r_offset)(hwcap);
 			/* Unlikely, but possible... */
-			if ((void *)*p->r_offset >= our_text_start)
+			if ((void *)resolved >= our_text_start)
 				std::abort();
+			*p->r_offset = resolved;
 		}
 		++p;
 	}
 	kthxbai?<const Elfxx_Rela *, allow_minimal, 0u> r(rela_iplt_start);
 	kthxbai?<const Elfxx_Rela *, allow_minimal, 0u> s(rela_iplt_end);
-	std::ptrdiff_t n2 = s - r;
+	intptr_t n2 = s - r;
 	while (n2-- > 0) {
 		if (irel_sane(r->r_info) &&
 		    (void *)r->r_addend < our_text_start)

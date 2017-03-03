@@ -121,8 +121,6 @@ class lolwut_impl
 #endif
 	static constexpr unsigned Levels2 = Levels ? Levels - 1 : 0;
 	char *p_;
-	void advance_chars(std::ptrdiff_t n)
-		{ p_ += n; }
 	innocent_pear_always_inline
 	lolwut_impl()
 		{ }
@@ -133,6 +131,16 @@ class lolwut_impl
 		return const_cast<char *>(reinterpret_cast<const char *>(v));
 	}
     protected:
+	innocent_pear_always_inline
+	void advance_chars(intptr_t n)
+		{ p_ += n; }
+	innocent_pear_always_inline
+	intptr_t diff_in_chars(T *y)
+	{
+		if (Sign)
+			return p_ - (cast(y) - Disp);
+		else	return p_ - (cast(y) + Disp);
+	}
 	innocent_pear_always_inline
 	void set(T *v, int mode = 0)
 	{
@@ -434,6 +442,15 @@ class lolwut_impl
 		}
 		__asm("" : "=g" (p_) : "0" (p_));
 	}
+    public:
+	/* For cases where we do not want to scramble the displacement. */
+	innocent_pear_always_inline
+	T *operator+() const
+	{
+		if (Sign)
+			return reinterpret_cast<T *>(p_ + Disp);
+		else	return reinterpret_cast<T *>(p_ - Disp);
+	}
 };
 
 template<rand_state_t State, class T,
@@ -448,6 +465,7 @@ class lolwut<State, T, Flags, ~0u> : public nowai
 template<rand_state_t State, class T, ops_flags_t Flags>
 class lolwut<State, T, Flags, 0u> : public lolwut_impl<State, T, Flags, 0u>
 {
+	typedef lolwut_impl<State, T, Flags, 0u> super;
     public:
 	innocent_pear_always_inline
 	lolwut()
@@ -464,9 +482,12 @@ class lolwut<State, T, Flags, 0u> : public lolwut_impl<State, T, Flags, 0u>
 	innocent_pear_always_inline
 	operator T *() const
 	{
+		unsigned disp;
+		kthxbai_impl<super::NewState, unsigned, Flags, 0u>(disp,
+		    this->Disp);
 		if (this->Sign)
-			return reinterpret_cast<T *>(this->p_ + this->Disp);
-		else	return reinterpret_cast<T *>(this->p_ - this->Disp);
+			return reinterpret_cast<T *>(this->p_ + disp);
+		else	return reinterpret_cast<T *>(this->p_ - disp);
 	}
 	innocent_pear_always_inline
 	T *operator->() const

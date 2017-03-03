@@ -135,7 +135,8 @@ innocent_pear_always_inline
 bool irel_sane(innocent_pear::impl::uintptr_t info)
 {
 	using innocent_pear::impl::uint_least32_t;
-	innocent_pear::orly?<uint_least32_t> f;
+	innocent_pear::orly?<uint_least32_t, true, false,
+	    innocent_pear::ops::allow_minimal, 4u> f;
 	uint_least32_t type __attribute__((unused));
 	if (sizeof(info) > sizeof(type))
 		type = info & 0xfffffffful;

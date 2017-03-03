@@ -217,6 +217,12 @@ $(config.h.host) $(config.h.target): config.cache
 		elif test '$(config.h.target)' = '$@'; then \
 			echo '#include <inttypes.h>' >>$@.tmp; \
 		fi; ) true
+	if test '$(conf_Have_cxxt_typ_std_0intptr_1t),$@' = \
+	    'yes,$(config.h.target)'; then \
+		echo '#include <cinttypes>' >>$@.tmp; \
+	elif test '$(config.h.target)' = '$@'; then \
+		echo '#include <inttypes.h>' >>$@.tmp; \
+	fi
 	if test '$(conf_Have_cxxt_typ_std_0uintptr_1t),$@' = \
 	    'yes,$(config.h.target)'; then \
 		echo '#include <cinttypes>' >>$@.tmp; \
@@ -255,6 +261,12 @@ $(config.h.host) $(config.h.target): config.cache
 		else \
 			echo 'using ::uint_least$(sz)_t;' >>$@.tmp; \
 		fi; ) true
+	if test '$(conf_Have_cxxt_typ_std_0intptr_1t),$@' = \
+	    'yes,$(config.h.target)'; then \
+		echo 'using std::intptr_t;' >>$@.tmp; \
+	elif test '$(config.h.target)' = '$@'; then \
+		echo 'using ::intptr_t;' >>$@.tmp; \
+	fi
 	if test '$(conf_Have_cxxt_typ_std_0uintptr_1t),$@' = \
 	    'yes,$(config.h.target)'; then \
 		echo 'using std::uintptr_t;' >>$@.tmp; \

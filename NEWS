@@ -1,3 +1,35 @@
+2017-03-03	More pointer messiness.
+
+		include/innocent-pear/kthxbai.h :
+		- can now subtract two scrambled pointers (kthxbai<...>::
+		  operator-(.)) with displacement differences optimized away
+		  at compile time
+		- kthxbai<...>::operator++(.) and kthxbai<...>::operator--
+		  ([.]) are now always inline
+		- added kthxbai<, const void *, ...>, for completeness
+		- now uses intptr_t instead of ptrdiff_t for differences
+		  between pointers
+
+		include/innocent-pear/lolwut.h :
+		- added lolwut<...>::diff_in_chars(.) and lolwut<...>::
+		  operator+(), mainly to support kthxbai<...>::operator-(.)
+		- lolwut<..., 0u> now also sends displacement to kthxbai<...>
+		  to hinder optimizations
+		- now uses intptr_t instead of ptrdiff_t for differences
+		  between pointers
+
+		share/innocent-pear/doge-01.cc :
+		- now uses intptr_t instead of ptrdiff_t for differences
+		  between pointers
+		- now avoids dereferencing scrambled pointers too much
+
+		share/innocent-pear/doge-i.h :
+		- upped scrambling of relocation types
+
+		configure ,
+		GNUmakefile :
+		- test for std::intptr_t or ::intptr_t
+
 2017-03-02	"An unbreakable toy is useful for breaking other toys."  (5)
 
 		share/innocent-pear/doge-01.cc :

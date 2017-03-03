@@ -489,6 +489,20 @@ class kthxbai<State, void *, Flags, Levels> :
 		{ }
 };
 
+template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
+class kthxbai<State, const void *, Flags, Levels> :
+    public lolwut<State, const void, Flags, Levels>
+{
+    public:
+	innocent_pear_always_inline
+	kthxbai() : lolwut<State, const void, Flags, Levels>()
+		{ }
+	innocent_pear_always_inline
+	kthxbai(const void *p, int mode = 0) :
+	    lolwut<State, const void, Flags, Levels>(p, mode)
+		{ }
+};
+
 template<rand_state_t State, class RetT, ops_flags_t Flags, unsigned Levels,
     class... ArgT>
 class kthxbai<State, RetT (*)(ArgT...), Flags, Levels> :
@@ -534,13 +548,13 @@ class kthxbai<State, S *, Flags, Levels> :
 	kthxbai(S *p, int mode = 0) : lolwut<State, S, Flags, Levels>(p, mode)
 		{ }
 	innocent_pear_always_inline
-	const our_type& operator+=(std::ptrdiff_t n)
+	const our_type& operator+=(intptr_t n)
 	{
 		this->advance_chars(n * sizeof(S));
 		return *this;
 	}
 	innocent_pear_always_inline
-	const our_type& operator-=(std::ptrdiff_t n)
+	const our_type& operator-=(intptr_t n)
 	{
 		this->advance_chars(-n * sizeof(S));
 		return *this;
@@ -548,20 +562,27 @@ class kthxbai<State, S *, Flags, Levels> :
 	innocent_pear_always_inline
 	const our_type& operator++()
 		{ return *this += 1; }
+	innocent_pear_always_inline
 	const our_type operator++(int)
 	{
 		our_type that = *this;
 		*this += 1;
 		return that;
 	}
+	innocent_pear_always_inline
 	const our_type& operator--()
 		{ return *this -= 1; }
+	innocent_pear_always_inline
 	const our_type operator--(int)
 	{
 		our_type that = *this;
 		*this -= 1;
 		return that;
 	}
+	template<rand_state_t YState, ops_flags_t YFlags, unsigned YLevels>
+	innocent_pear_always_inline
+	intptr_t operator-(kthxbai<YState, S *, YFlags, YLevels> y)
+		{ return this->diff_in_chars(+y) / sizeof(S); }
 };
 
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
