@@ -550,13 +550,13 @@ class kthxbai<State, S *, Flags, Levels> :
 	innocent_pear_always_inline
 	const our_type& operator+=(intptr_t n)
 	{
-		this->advance_chars(n * sizeof(S));
+		this->advance_chars(n * (intptr_t)sizeof(S));
 		return *this;
 	}
 	innocent_pear_always_inline
 	const our_type& operator-=(intptr_t n)
 	{
-		this->advance_chars(-n * sizeof(S));
+		this->advance_chars(-n * (intptr_t)sizeof(S));
 		return *this;
 	}
 	innocent_pear_always_inline
@@ -582,7 +582,7 @@ class kthxbai<State, S *, Flags, Levels> :
 	template<rand_state_t YState, ops_flags_t YFlags, unsigned YLevels>
 	innocent_pear_always_inline
 	intptr_t operator-(kthxbai<YState, S *, YFlags, YLevels> y)
-		{ return this->diff_in_chars(+y) / sizeof(S); }
+		{ return this->diff_in_chars(+y) / (intptr_t)sizeof(S); }
 };
 
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>

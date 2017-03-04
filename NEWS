@@ -1,5 +1,9 @@
 2017-03-04	More pointer messiness.  (2)
 
+		include/innocent-pear/kthxbai.h :
+		- kthxbai<, S *, ...> now casts sizeof(S) to intptr_t --
+		  which is signed -- before multiplying or dividing by it
+
 		share/innocent-pear/doge-02.cc ,
 		share/innocent-pear/doge-03.cc ,
 		share/innocent-pear/doge-04.cc ,
