@@ -21,6 +21,7 @@ innocent_pear_NEXT
 innocent_pear_DOGE unscramble_05_1()
 {
 	constexpr auto flags = innocent_pear_FLAGS;
+	innocent_pear_CHAFF(flags);
 	innocent_pear::kthxbai?<unsigned char *, flags> nxs(next_start);
 	innocent_pear::kthxbai?<unsigned char *, flags> nxe(next_end);
 	innocent_pear::kthxbai?<unsigned char *, flags, 0u> ds(our_data_start);

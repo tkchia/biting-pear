@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <innocent-pear/dawg.h>
+#include <innocent-pear/kthxbai.h>
 #include <innocent-pear/orly.h>
 #include <innocent-pear/rofl.h>
 #ifdef innocent_pear_DEBUG
@@ -40,8 +41,9 @@ class dogecoin_t
     public:
 	dogecoin_t()
 		{ reset(); }
+	template<class DPT>
 	innocent_pear_always_inline
-	void operator()(unsigned char c, const unsigned char *dp)
+	void operator()(unsigned char c, DPT dp)
 	{
 #if innocent_pear_ENDIANNESS - 0 == 1234  /* little endian */
 		bool a = (u_.d & 1) != 0;
@@ -60,14 +62,15 @@ class dogecoin_t
 			return;
 		dp -= sizeof(dp) - 1;
 		uintptr_t d = u_.d;
-		uintptr_t *rp = reinterpret_cast<uintptr_t *>(
-		    reinterpret_cast<uintptr_t>(dp) + d + ADJ);
+		uintptr_t *rp = reinterpret_cast<uintptr_t *>
+		    (reinterpret_cast<uintptr_t>
+			(static_cast<unsigned char *>(dp)) + d + ADJ);
 #ifdef innocent_pear_DEBUG
 		std::fprintf(stderr, "dp == %p\n"
 				     "d == %#" PRIxPTR "\n"
 				     "rp == %p\n"
 				     "*rp == %#" PRIxPTR "\n",
-		    dp, d, rp, *rp);
+		    +dp, d, rp, *rp);
 #endif
 		*rp += reinterpret_cast<uintptr_t>(rp) + ADJ;
 #ifdef innocent_pear_DEBUG
@@ -80,11 +83,16 @@ class dogecoin_t
 innocent_pear_DOGE unscramble_06_1()
 {
 	constexpr auto flags = innocent_pear_FLAGS;
-	unsigned char *nxs = next_start, *nxe = next_end;
+	innocent_pear_CHAFF(flags);
+	innocent_pear::kthxbai?<unsigned char *, flags> nxs(next_start);
+	innocent_pear::kthxbai?<unsigned char *, flags> nxe(next_end);
 	innocent_pear_CHAFF(flags);
 	innocent_pear::orly<innocent_pear_DOGE_STATE_9,
 	    unsigned char, false, true, flags>().wut(nxs, nxe);
 	innocent_pear_CHAFF(flags);
+	innocent_pear::kthxbai?<unsigned char *, flags, 0u>
+	    dcs(dogecoin_start);
+	innocent_pear::kthxbai?<unsigned char *, flags, 0u> dce(dogecoin_end);
 	dogecoin_t dogecoin;
 	innocent_pear::orly<innocent_pear_DOGE_STATE_10,
 	    unsigned char, false, false, flags>().wot(dogecoin_start,
@@ -95,7 +103,9 @@ innocent_pear_DOGE unscramble_06_1()
 innocent_pear_DOGE unscramble_06_2()
 {
 	constexpr auto flags = innocent_pear_FLAGS;
-	unsigned char *nxs = next_start, *nxe = next_end;
+	innocent_pear_CHAFF(flags);
+	innocent_pear::kthxbai?<unsigned char *, flags> nxs(next_start);
+	innocent_pear::kthxbai?<unsigned char *, flags> nxe(next_end);
 	innocent_pear_CHAFF(flags);
 	innocent_pear::rofl?<flags>::clear_cache(nxs, nxe);
 	innocent_pear_CHAFF(flags);

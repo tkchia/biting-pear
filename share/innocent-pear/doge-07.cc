@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <innocent-pear/dawg.h>
+#include <innocent-pear/kthxbai.h>
 #include <innocent-pear/orly.h>
 #include <innocent-pear/rofl.h>
 #ifdef innocent_pear_HAVE_CONST_TCOON
@@ -29,22 +30,26 @@ innocent_pear_DOGE_HIDDEN extern unsigned char our_text_start[]
 
 innocent_pear_DOGE unscramble_07_1()
 {
+	using innocent_pear::impl::intptr_t;
+	constexpr auto flags = innocent_pear_FLAGS;
 	typedef uintptr_t (*Resolver)(unsigned long);
+	innocent_pear_CHAFF(flags);
 #   ifdef innocent_pear_HAVE_FUNC_GETAUXVAL
 	unsigned long hwcap = getauxval(AT_HWCAP);
 #   else
 	unsigned long hwcap = 0;
 #   endif
-	const Elfxx_Rel *p, *q;
-	__asm __volatile("" : "=g" (p) : "0" (rel_iplt_start));
-	__asm __volatile("" : "=g" (q) : "0" (rel_iplt_end));
+	innocent_pear::kthxbai?<const Elfxx_Rel *, flags> p(rel_iplt_start);
+	innocent_pear::kthxbai?<const Elfxx_Rel *, flags> q(rel_iplt_end);
 #   ifdef innocent_pear_DEBUG
-	std::fprintf(stderr, "rel_iplt_start = %p, rel_iplt_end = %p\n", p, q);
+	std::fprintf(stderr, "rel_iplt_start = %p, rel_iplt_end = %p\n",
+	    +p, +q);
 #   endif
-	while (p < q) {
+	intptr_t n1 = q - p;
+	while (n1-- > 0) {
 #   ifdef innocent_pear_DEBUG
 		std::fprintf(stderr, "rel %p: offset %p {%#" PRIxPTR "}, "
-		    "info %" PRIuPTR ": ", p, p->r_offset, *p->r_offset,
+		    "info %" PRIuPTR ": ", +p, p->r_offset, *p->r_offset,
 		    p->r_info);
 #   endif
 		if (irel_sane(p->r_info) &&
@@ -61,17 +66,17 @@ innocent_pear_DOGE unscramble_07_1()
 #   endif
 		++p;
 	}
-	const Elfxx_Rela *r, *s;
-	__asm __volatile("" : "=g" (r) : "0" (rela_iplt_start));
-	__asm __volatile("" : "=g" (s) : "0" (rela_iplt_end));
+	innocent_pear::kthxbai?<const Elfxx_Rela *, flags> r(rela_iplt_start);
+	innocent_pear::kthxbai?<const Elfxx_Rela *, flags> s(rela_iplt_end);
 #   ifdef innocent_pear_DEBUG
 	std::fprintf(stderr, "rela_iplt_start = %p, rela_iplt_end = %p\n",
-	    r, s);
+	    +r, +s);
 #   endif
-	while (r < s) {
+	intptr_t n2 = s - r;
+	while (n2-- > 0) {
 #   ifdef innocent_pear_DEBUG
 		std::fprintf(stderr, "rela %p: offset %p {%#" PRIxPTR "}, "
-		    "info %" PRIuPTR ", addend %p: ", r, r->r_offset,
+		    "info %" PRIuPTR ", addend %p: ", +r, r->r_offset,
 		    *r->r_offset, r->r_info, (void *)r->r_addend);
 #   endif
 		if (irel_sane(r->r_info) &&

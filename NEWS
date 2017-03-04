@@ -1,3 +1,16 @@
+2017-03-04	More pointer messiness.  (2)
+
+		share/innocent-pear/doge-02.cc ,
+		share/innocent-pear/doge-03.cc ,
+		share/innocent-pear/doge-04.cc ,
+		share/innocent-pear/doge-05.cc :
+		- added chaff
+
+		share/innocent-pear/doge-06.cc ,
+		share/innocent-pear/doge-07.cc :
+		- take advantage of interface changes to orly<...> and
+		  kthxbai<...> to scramble pointers
+
 2017-03-03	More pointer messiness.
 
 		include/innocent-pear/kthxbai.h :
