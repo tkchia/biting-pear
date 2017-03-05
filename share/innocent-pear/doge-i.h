@@ -2,6 +2,7 @@
 #define innocent_pear_H_DOGE_I
 
 #include <innocent-pear/bbq.h>
+#include <innocent-pear/kthxbai.h>
 #include <innocent-pear/orly.h>
 
 #ifdef innocent_pear_HAVE_CTOR_PRIORITY
@@ -135,19 +136,21 @@ innocent_pear_always_inline
 bool irel_sane(innocent_pear::impl::uintptr_t info)
 {
 	using innocent_pear::impl::uint_least32_t;
-	innocent_pear::orly?<uint_least32_t, true, false,
-	    innocent_pear::ops::allow_minimal, 4u> f;
-	uint_least32_t type __attribute__((unused));
+	using innocent_pear::ops::allow_minimal;
+	innocent_pear::orly?<uint_least32_t, true, false, allow_minimal, 4u> f;
+	__attribute__((unused)) uint_least32_t type, f_type;
 	if (sizeof(info) > sizeof(type))
 		type = info & 0xfffffffful;
 	else
 		type = info & 0xfful;
+	f_type = innocent_pear::kthxbai?<uint_least32_t, allow_minimal, 0u>
+	    (f(type));
 #   if defined __i386__
-	return f(type) == f(42);	/* R_386_IRELATIVE */
+	return f_type == f(42);		/* R_386_IRELATIVE */
 #   elif defined __amd64__
-	return f(type) == f(37);	/* R_X86_64_IRELATIVE */
+	return f_type == f(37);		/* R_X86_64_IRELATIVE */
 #   elif defined __arm__
-	return f(type) == f(160);	/* R_ARM_IRELATIVE */
+	return f_type == f(160);	/* R_ARM_IRELATIVE */
 #   else
 	return true;
 #   endif

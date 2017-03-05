@@ -1,3 +1,8 @@
+2017-03-05	"An unbreakable toy is useful for breaking other toys."  (6)
+
+		share/innocent-pear/doge-i.h :
+		- inhibit optimization of irel_sane(.)
+
 2017-03-04	More pointer messiness.  (2)
 
 		include/innocent-pear/kthxbai.h :
