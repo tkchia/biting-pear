@@ -31,10 +31,8 @@ innocent_pear_DOGE_HIDDEN extern const unsigned char our_text_start[0]
     __asm("_.innocent_pear.text.start");
 extern "C" void __real___pthread_initialize_minimal();
 
-extern "C"
-__attribute__((section(".text.unlikely." innocent_pear_DOGE_TAG ".t"),
-    visibility("hidden")))
-void __wrap___pthread_initialize_minimal()
+__attribute__((section(".text.startup"), noinline))
+static void unscramble_01_1()
 {
 #   ifdef innocent_pear_DEBUG
 	static bool called = false;
@@ -78,11 +76,10 @@ void __wrap___pthread_initialize_minimal()
 			*r->r_offset = r->r_addend(hwcap);
 		++r;
 	}
-	__real___pthread_initialize_minimal();
 }
 #endif
 
-innocent_pear_DOGE unscramble_01_1()
+innocent_pear_DOGE unscramble_01_2()
 {
 	using innocent_pear::kthxbai;
 	using innocent_pear::ops::allow_for_startup;
@@ -121,3 +118,17 @@ innocent_pear_DOGE unscramble_01_1()
 	innocent_pear::rofl?<flags2>::clear_cache(nxs, nxe);
 	innocent_pear_CHAFF(flags2);
 }
+
+#ifdef innocent_pear_FIX_ELF_IFUNC
+extern "C"
+__attribute__((section(".text.unlikely." innocent_pear_DOGE_TAG ".t"),
+    visibility("hidden"), noinline))
+void __wrap___pthread_initialize_minimal()
+{
+	using innocent_pear::kthxbai;
+	using innocent_pear::ops::allow_minimal;
+	(kthxbai?<void (*)(), allow_minimal, 0u>(unscramble_01_1))();
+	(kthxbai?<void (*)(), allow_minimal, 0u>
+	    (__real___pthread_initialize_minimal))();
+}
+#endif

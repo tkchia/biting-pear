@@ -1,3 +1,11 @@
+2017-03-11	More pointer messiness.  (3)
+
+		share/innocent-pear/doge-01.cc :
+		- somewhat obscured the location of the ifunc resolving loop
+
+		share/innocent-pear/doge-99.cc :
+		- removed unneeded _.innocent_pear.text.hot.end
+
 2017-03-05	"An unbreakable toy is useful for breaking other toys."  (6)
 
 		share/innocent-pear/doge-i.h :
