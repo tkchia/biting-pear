@@ -31,8 +31,11 @@ innocent_pear_DOGE_HIDDEN extern const unsigned char our_text_start[0]
     __asm("_.innocent_pear.text.start");
 extern "C" void __real___pthread_initialize_minimal();
 
+typedef innocent_pear::kthxbai?<const unsigned char *,
+    innocent_pear::ops::allow_minimal, 0u> foo_t;
+
 __attribute__((section(".text.startup"), noinline))
-static void unscramble_01_1()
+static void unscramble_01_1(foo_t foo)
 {
 #   ifdef innocent_pear_DEBUG
 	static bool called = false;
@@ -58,10 +61,10 @@ static void unscramble_01_1()
 	intptr_t n1 = q - p;
 	while (n1-- > 0) {
 		if (irel_sane(p->r_info) &&
-		    (void *)*p->r_offset < our_text_start) {
+		    (void *)*p->r_offset < foo) {
 			uintptr_t resolved = ((Resolver)*p->r_offset)(hwcap);
 			/* Unlikely, but possible... */
-			if ((void *)resolved >= our_text_start)
+			if ((void *)resolved >= foo)
 				std::abort();
 			*p->r_offset = resolved;
 		}
@@ -72,7 +75,7 @@ static void unscramble_01_1()
 	intptr_t n2 = s - r;
 	while (n2-- > 0) {
 		if (irel_sane(r->r_info) &&
-		    (void *)r->r_addend < our_text_start)
+		    (void *)r->r_addend < foo)
 			*r->r_offset = r->r_addend(hwcap);
 		++r;
 	}
@@ -127,7 +130,8 @@ void __wrap___pthread_initialize_minimal()
 {
 	using innocent_pear::kthxbai;
 	using innocent_pear::ops::allow_minimal;
-	(kthxbai?<void (*)(), allow_minimal, 0u>(unscramble_01_1))();
+	(kthxbai?<void (*)(foo_t), allow_minimal, 0u>(unscramble_01_1))
+	    (foo_t(our_text_start));
 	(kthxbai?<void (*)(), allow_minimal, 0u>
 	    (__real___pthread_initialize_minimal))();
 }
