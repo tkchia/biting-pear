@@ -110,13 +110,13 @@ modules.host = \
 installables.host = \
     $(utils.host) \
     share/innocent-pear/doge-i.h \
-    share/innocent-pear/doge-01.cc \
+    share/innocent-pear/doge-00.cc \
     share/innocent-pear/doge-02.cc \
     share/innocent-pear/doge-03.cc \
     share/innocent-pear/doge-04.cc \
     share/innocent-pear/doge-05.cc \
-    share/innocent-pear/doge-06.cc \
-    share/innocent-pear/doge-07.cc \
+    share/innocent-pear/doge-40.cc \
+    share/innocent-pear/doge-42.cc \
     share/innocent-pear/doge-45.cc \
     share/innocent-pear/doge-98.cc \
     share/innocent-pear/doge-99.cc \

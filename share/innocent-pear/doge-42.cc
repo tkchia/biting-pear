@@ -28,7 +28,7 @@ innocent_pear_HERE_START
 innocent_pear_DOGE_HIDDEN extern unsigned char our_text_start[]
     __asm("_.innocent_pear.text.start");
 
-innocent_pear_DOGE unscramble_07_1()
+innocent_pear_DOGE unscramble_42_1()
 {
 	using innocent_pear::impl::intptr_t;
 	constexpr auto flags = innocent_pear_FLAGS;
@@ -96,7 +96,7 @@ innocent_pear_DOGE unscramble_07_1()
 }
 #endif
 
-innocent_pear_DOGE unscramble_07_2()
+innocent_pear_DOGE unscramble_42_2()
 {
 	constexpr auto flags = innocent_pear_FLAGS,
 	    flags2 = ((innocent_pear::ops_flags_t)(innocent_pear_FLAGS
@@ -140,7 +140,7 @@ innocent_pear_DOGE unscramble_07_2()
 #endif
 }
 
-innocent_pear_DOGE_MEMSET unscramble_07_3()
+innocent_pear_DOGE_MEMSET unscramble_42_3()
 {
 	constexpr auto flags2 =
 	    ((innocent_pear::ops_flags_t)(innocent_pear_FLAGS

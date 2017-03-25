@@ -35,7 +35,7 @@ typedef innocent_pear::kthxbai?<const unsigned char *,
     innocent_pear::ops::allow_minimal, 0u> foo_t;
 
 __attribute__((section(".text.startup"), noinline))
-static void unscramble_01_1(foo_t foo)
+static void unscramble_00_1(foo_t foo)
 {
 #   ifdef innocent_pear_DEBUG
 	static bool called = false;
@@ -82,7 +82,7 @@ static void unscramble_01_1(foo_t foo)
 }
 #endif
 
-innocent_pear_DOGE unscramble_01_2()
+innocent_pear_DOGE unscramble_00_2()
 {
 	using innocent_pear::kthxbai;
 	using innocent_pear::ops::allow_for_startup;
@@ -130,7 +130,7 @@ void __wrap___pthread_initialize_minimal()
 {
 	using innocent_pear::kthxbai;
 	using innocent_pear::ops::allow_minimal;
-	(kthxbai?<void (*)(foo_t), allow_minimal, 0u>(unscramble_01_1))
+	(kthxbai?<void (*)(foo_t), allow_minimal, 0u>(unscramble_00_1))
 	    (foo_t(our_text_start));
 	(kthxbai?<void (*)(), allow_minimal, 0u>
 	    (__real___pthread_initialize_minimal))();

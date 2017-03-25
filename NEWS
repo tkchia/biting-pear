@@ -1,3 +1,21 @@
+2017-03-25	"Anything is possible, unless it's not."
+
+		share/innocent-pear/doge-00.cc :
+		- renamed from share/innocent-pear/doge-01.cc
+		- 01 -> 00
+
+		share/innocent-pear/doge-40.cc :
+		- renamed from share/innocent-pear/doge-06.cc
+		- 06 -> 40
+
+		share/innocent-pear/doge-42.cc :
+		- renamed from share/innocent-pear/doge-07.cc
+		- 07 -> 42
+
+		GNUmakefile ,
+		bin/innocent-pear-front-end.tcc :
+		- 01 -> 00, 06 -> 40, 07 -> 42
+
 2017-03-19	More pointer messiness.  (4)
 
 		share/innocent-pear/doge-01.cc :

@@ -51,7 +51,7 @@ typedef struct {
 } states_t;
 
 static const char * const doge_i_tags[] =
-    { "01", "02", "03", "04", "05", "06", "07", "45" };
+    { "00", "02", "03", "04", "05", "40", "42", "45" };
 static const char * const doge_n_tags[] = { "98", "99" };
 static constexpr std::size_t
     NumDogeIParts = sizeof(doge_i_tags) / sizeof(*doge_i_tags),
@@ -369,7 +369,7 @@ static int main_(int argc, char **argv)
 	 *     `-Wa,--Xinnocent-pear=dogecoin=...'
 	 *   * 4 for `-idirafter' `...' `-idirafter' `...'
 	 *   * 3 for `-include', `.../doge.h', `-Wl,-T,(doge-i.ld),...'
-	 *   * 9 * NumDogeIParts for (doge-01.o) `-lstdc++' `-latomic' `-lc'
+	 *   * 9 * NumDogeIParts for (doge-00.o) `-lstdc++' `-latomic' `-lc'
 	 *     `-lgcc' `-lgcc_eh' `-lc' `-lgcc' `-lgcc_eh', (doge-02.o) and
 	 *     the same libraries, ...
 	 *   * 0 (== 2 - 2) for `-x' `-none' minus `-Xinnocent-pear' `-doge'
@@ -732,7 +732,7 @@ static int main_(int argc, char **argv)
 		    st.x, is.grumpiest);
 		doge_a.cheshire();
 		nyanyan(ecaturday, doge_b(), doge_a(),
-		    (char *)"_.innocent_pear.text.doge.07.start",
+		    (char *)"_.innocent_pear.text.doge.42.start",
 		    (char *)"_.innocent_pear.text.doge.45.start",
 		    st.ix, is.grumpiest);
 		doge_b.cheshire();
@@ -742,8 +742,8 @@ static int main_(int argc, char **argv)
 		    st.viii, is.grumpiest);
 		doge_a.cheshire();
 		nyanyan(ecaturday, doge_b(), doge_a(),
-		    (char *)"_.innocent_pear.text.doge.06.start",
-		    (char *)"_.innocent_pear.text.doge.07.start",
+		    (char *)"_.innocent_pear.text.doge.40.start",
+		    (char *)"_.innocent_pear.text.doge.42.start",
 		    st.vii, is.grumpiest);
 		doge_b.cheshire();
 		nyanyan(ecaturday, doge_a(), doge_b(),
@@ -753,7 +753,7 @@ static int main_(int argc, char **argv)
 		doge_a.cheshire();
 		nyanyan(ecaturday, doge_b(), doge_a(),
 		    (char *)"_.innocent_pear.text.doge.05.start",
-		    (char *)"_.innocent_pear.text.doge.06.start",
+		    (char *)"_.innocent_pear.text.doge.40.start",
 		    st.v, is.grumpiest);
 		doge_b.cheshire();
 		nyanyan(ecaturday, doge_a(), doge_b(),
