@@ -348,6 +348,7 @@ omg
 		constexpr unsigned Push5 = (State5 >> 48) % 0x1ff;
 		kthxbai<NewState, void *, Flags, Levels - 1> p(&&foo, 1);
 		void *q, *r = 0;
+		struct { void *qq, *rr; } qr;
 		if (Flip) {
 			if (tfw<NewState4, T, Flags, Levels - 1>()())
 				return true;
@@ -412,14 +413,9 @@ omg
 			    : "memory"
 			    : foo);  break;
 		    case 4:
-			{
-				struct { void *qq, *rr; } qr = { q, r };
-				__asm goto("ljmpl *%0"
-				    : /* no outputs */
-				    : "m" (qr)
-				    : /* no clobbers */
-				    : foo);
-			}
+			qr.qq = q;
+			qr.rr = r;
+			__asm goto("ljmpl *%0" : : "m" (qr) : : foo);
 			break;
 #   endif
 		}

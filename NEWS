@@ -4,6 +4,10 @@
 		- under g++ 5 for ARM, now (hopefully) produces better code
 		  to juggle registers
 
+		share/innocent-pear/omg.h :
+		- under x86-32, tries to avoid __asm goto(...)'ing out of
+		  a scope with its own local variables
+
 2017-03-25	"Anything is possible, unless it's not."
 
 		share/innocent-pear/doge-00.cc :
