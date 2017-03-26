@@ -299,291 +299,196 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		return re_rv(rv);
 	}
 #   elif defined __arm__ && defined __thumb__
-    private:
-	typedef omg<super::NewState5, uintptr_t, Flags,
-	    Levels ? Levels - 1 : 0> omg5;
-	typedef omg<super::NewState6, uintptr_t, Flags,
-	    Levels ? Levels - 1 : 0> omg6;
-	typedef omg<super::NewState7, uintptr_t, Flags,
-	    Levels ? Levels - 1 : 0> omg7;
-	typedef omg<super::NewState8, uintptr_t, Flags,
-	    Levels ? Levels - 1 : 0> omg8;
-	typedef omg<super::NewState9, uintptr_t, Flags,
-	    Levels ? Levels - 1 : 0> omg9;
     public:
+	/*
+	 * Local register variables (`register uintptr_t ... __asm("...")')
+	 * do not work properly, because ... reasons.  Hence these gyrations.
+	 */
 	innocent_pear_always_inline
 	static syscall_ret syscall(long scno)
 	{
-		constexpr unsigned Which =
-		    pick_hi<unsigned>(super::State2 ^ super::State3) % 3;
 		long rv;
-		uintptr_t x1, t1, t2, t3;
-		switch (Which) {
-		    case 0:
-			__asm __volatile("movs r7, %1; "
-					 "svc #0; "
-					 "movs %0, r0"
-			    : "=r" (rv)
-			    : "rI" (re_scno(scno))
-			    : "r0", "r7", "memory");
-			return re_rv(rv);
-#	if __GNUC__ >= 5
-		    case 1:
-			__asm __volatile("movs r7, %4; "
-					 "svc #0; "
-					 ".ifnc \"%0\", \"r0\"; "
-						"movs %0, r0; "
-					 ".endif"
-			    : "=Cs" (rv), "=Cs" (t1), "=Cs" (t2), "=Cs" (t3)
-			    : "rI" (re_scno(scno))
-			    : "r7", "ip", "memory");
-			return re_rv(rv);
+		uintptr_t t1, t2, t3;
+#	if __GNUC__ < 5
+		__asm __volatile("movs r7, %1; "
+				 "svc #0; "
+				 "movs %0, r0"
+		    : "=r" (rv)
+		    : "rI" (re_scno(scno))
+		    : "r0", "r7", "memory", "cc");
+#	else
+		__asm __volatile("svc #0; "
+				 ".ifnc \"%0\", \"r0\"; "
+					"movs %0, r0; .endif"
+		    : "=&Cs" (rv), "=&Cs" (t1), "=&Cs" (t2), "=&Cs" (t3)
+		    : "l" (re_scno(scno))
+		    : "r4", "r5", "r6", "ip", "memory", "cc");
 #	endif
-		    default:
-			{ omg5 zomg(x1); }
-			return syscall(scno, x1);
-		}
+		return re_rv(rv);
 	}
 	template<class T1>
 	innocent_pear_always_inline
 	static syscall_ret syscall(long scno, T1 x1)
 	{
-		constexpr unsigned Which =
-		    pick_hi<unsigned>(super::State2 ^ super::State3) % 3;
 		if (wutwut(x1))
 			return use_libc_syscall(scno, x1);
 		long rv;
-		uintptr_t x2, t1, t2, t3;
-		switch (Which) {
-		    case 0:
-			__asm __volatile("movs r0, %2; "
-					 "movs r7, %1; "
-					 "svc #0; "
-					 "movs %0, r0"
-			    : "=r" (rv)
-			    : "rI" (re_scno(scno)), "rI" (re_arg(x1))
-			    : "r0", "r7", "memory");
-			return re_rv(rv);
-#	if __GNUC__ >= 5
-		    case 1:
-			__asm __volatile("movs r7, %4; "
-					 ".ifnc \"%5\", \"r0\"; "
-						"movs r0, %5; "
-					 ".endif; "
-					 "svc #0; "
-					 ".ifnc \"%0\", \"r0\"; "
-						"movs %0, r0; "
-					 ".endif"
-			    : "=Cs,&Cs,&Cs,&Cs" (rv), "=&Cs,Cs,&Cs,&Cs" (t1),
-			      "=&Cs,&Cs,Cs,&Cs" (t2), "=&Cs,&Cs,&Cs,Cs" (t3)
-			    : "rI,rI,rI,rI" (re_scno(scno)),
-			      "0,1,2,3" (re_arg(x1))
-			    : "r7", "ip", "memory");
-			return re_rv(rv);
+		uintptr_t t1, t2, t3;
+#	if __GNUC__ < 5
+		__asm __volatile("movs r0, %2; "
+				 "movs r7, %1; "
+				 "svc #0; "
+				 "movs %0, r0"
+		    : "=r" (rv)
+		    : "rI" (re_scno(scno)), "rI" (re_arg(x1))
+		    : "r0", "r7", "memory", "cc");
+#	else
+		__asm __volatile(".ifnc \"%5\", \"r0\"; "
+					"movs r0, %5; .endif; "
+				 "svc #0; "
+				 ".ifnc \"%0\", \"r0\"; "
+					"movs %0, r0; .endif"
+		    : "=&Cs,&Cs,&Cs,&Cs" (rv), "=&Cs,&Cs,&Cs,&Cs" (t1),
+		      "=&Cs,&Cs,&Cs,&Cs" (t2), "=&Cs,&Cs,&Cs,&Cs" (t3)
+		    : "l,l,l,l" (re_scno(scno)), "^0,1,2,3" (re_arg(x1))
+		    : "r4", "r5", "r6", "ip", "memory", "cc");
 #	endif
-		    default:
-			{ omg6 zomg(x2); }
-			return syscall(scno, x1, x2);
-		}
+		return re_rv(rv);
 	}
 	template<class T1, class T2>
 	innocent_pear_always_inline
 	static syscall_ret syscall(long scno, T1 x1, T2 x2)
 	{
-		constexpr unsigned Which =
-		    pick_hi<unsigned>(super::State2 ^ super::State3) % 6;
 		if (wutwut(x1, x2))
 			return use_libc_syscall(scno, x1, x2);
 		long rv;
-		uintptr_t x3;
-		switch (Which) {
-		    case 0:
-			__asm __volatile("movs r0, %2; "
-					 "movs r1, %3; "
-					 "movs r7, %1; "
-					 "svc #0; "
-					 "movs %0, r0"
-			    : "=r" (rv)
-			    : "rI" (re_scno(scno)), "rI" (re_arg(x1)),
-			      "rI" (re_arg(x2))
-			    : "r0", "r1", "r7", "memory");
-			return re_rv(rv);
-#	if __GNUC__ >= 5
-		    case 1:
-			__asm __volatile("movs r1, %3; "
-					 "movs r7, %1; "
-					 "svc #0"
-			    : "=Cs" (rv)
-			    : "rI" (re_scno(scno)), "0" (re_arg(x1)),
-			      "rI" (re_arg(x2))
-			    : "r1", "r2", "r3", "r7", "ip", "memory");
-			return re_rv(rv);
-		    case 2:
-		    case 3:
-			__asm __volatile("movs r0, %2; "
-					 "movs r7, %1; "
-					 "svc #0; "
-					 "movs %0, r0"
-			    : "=r" (rv)
-			    : "rI" (re_scno(scno)), "rI" (re_arg(x1)),
-			      "Cs" (re_arg(x2))
-			    : "r0", "r2", "r3", "r7", "ip", "memory");
-			return re_rv(rv);
+		uintptr_t t1, t2, t3;
+#	if __GNUC__ < 5
+		__asm __volatile("movs r0, %2; "
+				 "movs r1, %3; "
+				 "movs r7, %1; "
+				 "svc #0; "
+				 "movs %0, r0"
+		    : "=r" (rv)
+		    : "rI" (re_scno(scno)), "rI" (re_arg(x1)),
+		      "rI" (re_arg(x2))
+		    : "r0", "r1", "r7", "memory", "cc");
+#	else
+		__asm __volatile(".ifc \"%5\", \"r1\"; "
+					"movs r4, %6; "
+					"movs r0, r1; "
+					"movs r1, r4; "
+				 ".else; "
+				 ".ifc \"%6\", \"r0\"; "
+					"movs r4, %5; "
+					"movs r1, r0; "
+					"movs r0, r4; "
+				 ".else; "
+					 ".ifnc \"%5\", \"r0\"; "
+						"movs r0, %5; .endif; "
+					 ".ifnc \"%6\", \"r1\"; "
+						"movs r1, %6; .endif; "
+				 ".endif; "
+				 ".endif; "
+				 "svc #0; "
+				 ".ifnc \"%0\", \"r0\"; "
+					"movs %0, r0; .endif"
+		    : "=&Cs,&Cs,&Cs,&Cs" (rv), "=&Cs,&Cs,&Cs,&Cs" (t1),
+		      "=&Cs,&Cs,&Cs,&Cs" (t2), "=&Cs,&Cs,&Cs,&Cs" (t3)
+		    : "l,l,l,l" (re_scno(scno)), "^0,1,2,3" (re_arg(x1)),
+		      "1,2,3,0" (re_arg(x2))
+		    : "r4", "r5", "r6", "ip", "memory", "cc");
 #	endif
-		    default:
-			{ omg7 zomg(x3); }
-			return syscall(scno, x1, x2, x3);
-		}
+		return re_rv(rv);
 	}
 	template<class T1, class T2, class T3>
 	innocent_pear_always_inline
 	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3)
 	{
-		constexpr unsigned Which =
-		    pick_hi<unsigned>(super::State2 ^ super::State3) % 9;
 		if (wutwut(x1, x2, x3))
 			return use_libc_syscall(scno, x1, x2, x3);
 		long rv;
-		uintptr_t x4;
-		switch (Which) {
-		    case 0:
-			__asm __volatile("movs r0, %2; "
-					 "movs r1, %3; "
-					 "movs r2, %4; "
-					 "movs r7, %1; "
-					 "svc #0; "
-					 "movs %0, r0"
-			    : "=r" (rv)
-			    : "rI" (re_scno(scno)), "rI" (re_arg(x1)),
-			      "rI" (re_arg(x2)), "rI" (re_arg(x3))
-			    : "r0", "r1", "r2", "r7", "memory");
-			return re_rv(rv);
-#	if __GNUC__ >= 5
-		    case 1:
-			__asm __volatile("movs r1, %3; "
-					 "movs r2, %4; "
-					 "movs r7, %1; "
-					 "svc #0"
-			    : "=Cs" (rv)
-			    : "rI" (re_scno(scno)), "0" (re_arg(x1)),
-			      "rI" (re_arg(x2)), "rI" (re_arg(x3))
-			    : "r1", "r2", "r3", "r7", "ip", "memory");
-			return re_rv(rv);
-		    case 2:
-			__asm __volatile("movs r0, %2; "
-					 "movs r2, %4; "
-					 "movs r7, %1; "
-					 "svc #0; "
-					 "movs %0, r0"
-			    : "=r" (rv)
-			    : "rI" (re_scno(scno)), "rI" (re_arg(x1)),
-			      "Cs" (re_arg(x2)), "rI" (re_arg(x3))
-			    : "r0", "r2", "r3", "r7", "ip", "memory");
-			return re_rv(rv);
-		    case 3:
-		    case 4:
-		    case 5:
-			__asm __volatile("movs r0, %2; "
-					 "movs r1, %3; "
-					 "movs r7, %1; "
-					 "svc #0; "
-					 "movs %0, r0"
-			    : "=r" (rv)
-			    : "rI" (re_scno(scno)), "rI" (re_arg(x1)),
-			      "rI" (re_arg(x2)), "Cs" (re_arg(x3))
-			    : "r0", "r1", "r3", "r7", "ip", "memory");
-			return re_rv(rv);
+		uintptr_t t1, t2, t3;
+#	if __GNUC__ < 5
+		__asm __volatile("movs r0, %2; "
+				 "movs r1, %3; "
+				 "movs r2, %4; "
+				 "movs r7, %1; "
+				 "svc #0; "
+				 "movs %0, r0"
+		    : "=r" (rv)
+		    : "rI" (re_scno(scno)), "rI" (re_arg(x1)),
+		      "rI" (re_arg(x2)), "rI" (re_arg(x3))
+		    : "r0", "r1", "r2", "r7", "memory", "cc");
+#	else
+		__asm __volatile(".ifnc \"%6\", \"r1\"; "
+					"movs r4, %6; .endif; "
+				 ".ifnc \"%7\", \"r2\"; "
+					"movs r5, %7; .endif; "
+				 ".ifnc \"%5\", \"r0\"; "
+					"movs r0, %5; .endif; "
+				 ".ifnc \"%6\", \"r1\"; "
+					"movs r1, r4; .endif; "
+				 ".ifnc \"%7\", \"r2\"; "
+					"movs r2, r5; .endif; "
+				 "svc #0; "
+				 ".ifnc \"%0\", \"r0\"; "
+					"movs %0, r0; .endif"
+		    : "=&Cs,&Cs,&Cs,&Cs" (rv), "=&Cs,&Cs,&Cs,&Cs" (t1),
+		      "=&Cs,&Cs,&Cs,&Cs" (t2), "=&Cs,&Cs,&Cs,&Cs" (t3)
+		    : "l,l,l,l" (re_scno(scno)), "^0,1,2,3" (re_arg(x1)),
+		      "1,2,3,0" (re_arg(x2)), "2,3,0,1" (re_arg(x3))
+		    : "r4", "r5", "r6", "ip", "memory", "cc");
 #	endif
-		    default:
-			{ omg8 zomg(x4); }
-			return syscall(scno, x1, x2, x3, x4);
-		}
+		return re_rv(rv);
 	}
 	template<class T1, class T2, class T3, class T4>
 	innocent_pear_always_inline
 	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3, T4 x4)
 	{
-		constexpr unsigned Which =
-		    pick_hi<unsigned>(super::State2 ^ super::State3) % 12;
 		if (wutwut(x1, x2, x3, x4))
 			return use_libc_syscall(scno, x1, x2, x3, x4);
 		long rv;
-		uintptr_t x5;
-		switch (Which) {
-		    case 0:
-			__asm __volatile("movs r0, %2; "
-					 "movs r1, %3; "
-					 "movs r2, %4; "
-					 "movs r3, %5; "
-					 "movs r7, %1; "
-					 "svc #0; "
-					 "movs %0, r0"
-			    : "=r" (rv)
-			    : "rI" (re_scno(scno)), "rI" (re_arg(x1)),
-			      "rI" (re_arg(x2)), "rI" (re_arg(x3)),
-			      "rI" (re_arg(x4))
-			    : "r0", "r1", "r2", "r3", "r7", "memory");
-			return re_rv(rv);
-#	if __GNUC__ >= 5
-		    case 1:
-			__asm __volatile("movs r1, %3; "
-					 "movs r2, %4; "
-					 "movs r3, %5; "
-					 "movs r7, %1; "
-					 "svc #0"
-			    : "=Cs" (rv)
-			    : "rI" (re_scno(scno)), "0" (re_arg(x1)),
-			      "rI" (re_arg(x2)), "rI" (re_arg(x3)),
-			      "rI" (re_arg(x4))
-			    : "r1", "r2", "r3", "r7", "ip", "memory");
-			return re_rv(rv);
-		    case 2:
-			__asm __volatile("movs r0, %2; "
-					 "movs r2, %4; "
-					 "movs r3, %5; "
-					 "movs r7, %1; "
-					 "svc #0; "
-					 "movs %0, r0"
-			    : "=r" (rv)
-			    : "rI" (re_scno(scno)), "rI" (re_arg(x1)),
-			      "Cs" (re_arg(x2)), "rI" (re_arg(x3)),
-			      "rI" (re_arg(x4))
-			    : "r0", "r2", "r3", "r7", "ip", "memory");
-			return re_rv(rv);
-		    case 3:
-			__asm __volatile("movs r0, %2; "
-					 "movs r1, %3; "
-					 "movs r3, %5; "
-					 "movs r7, %1; "
-					 "svc #0; "
-					 "movs %0, r0"
-			    : "=r" (rv)
-			    : "rI" (re_scno(scno)), "rI" (re_arg(x1)),
-			      "rI" (re_arg(x2)), "Cs" (re_arg(x3)),
-			      "rI" (re_arg(x4))
-			    : "r0", "r1", "r3", "r7", "ip", "memory");
-			return re_rv(rv);
-		    case 4:
-		    case 5:
-		    case 6:
-		    case 7:
-			__asm __volatile("movs r0, %2; "
-					 "movs r1, %3; "
-					 "movs r2, %4; "
-					 "movs r7, %1; "
-					 "svc #0; "
-					 "movs %0, r0"
-			    : "=r" (rv)
-			    : "rI" (re_scno(scno)), "rI" (re_arg(x1)),
-			      "rI" (re_arg(x2)), "rI" (re_arg(x3)),
-			      "Cs" (re_arg(x4))
-			    : "r0", "r1", "r2", "r7", "ip", "memory");
-			return re_rv(rv);
+		uintptr_t t1, t2, t3;
+#	if __GNUC__ < 5
+		__asm __volatile("movs r0, %2; "
+				 "movs r1, %3; "
+				 "movs r2, %4; "
+				 "movs r3, %5; "
+				 "movs r7, %1; "
+				 "svc #0; "
+				 "movs %0, r0"
+		    : "=r" (rv)
+		    : "rI" (re_scno(scno)), "rI" (re_arg(x1)),
+		      "rI" (re_arg(x2)), "rI" (re_arg(x3)),
+		      "rI" (re_arg(x4))
+		    : "r0", "r1", "r2", "r3", "r7", "memory", "cc");
+#	else
+		__asm __volatile(".ifnc \"%6\", \"r1\"; "
+					"movs r4, %6; .endif; "
+				 ".ifnc \"%7\", \"r2\"; "
+					"movs r5, %7; .endif; "
+				 ".ifnc \"%8\", \"r3\"; "
+					"movs r6, %8; .endif; "
+				 ".ifnc \"%5\", \"r0\"; "
+					"movs r0, %5; .endif; "
+				 ".ifnc \"%6\", \"r1\"; "
+					"movs r1, r4; .endif; "
+				 ".ifnc \"%7\", \"r2\"; "
+					"movs r2, r5; .endif; "
+				 ".ifnc \"%8\", \"r3\"; "
+					"movs r3, r6; .endif; "
+				 "svc #0; "
+				 ".ifnc \"%0\", \"r0\"; "
+					"movs %0, r0; .endif"
+		    : "=&Cs,&Cs,&Cs,&Cs" (rv), "=&Cs,&Cs,&Cs,&Cs" (t1),
+		      "=&Cs,&Cs,&Cs,&Cs" (t2), "=&Cs,&Cs,&Cs,&Cs" (t3)
+		    : "l,l,l,l" (re_scno(scno)), "^0,1,2,3" (re_arg(x1)),
+		      "1,2,3,0" (re_arg(x2)), "2,3,0,1" (re_arg(x3)),
+		      "3,0,1,2" (re_arg(x4))
+		    : "r4", "r5", "r6", "ip", "memory", "cc");
 #	endif
-		    default:
-			{ omg9 zomg(x5); }
-			return syscall(scno, x1, x2, x3, x4, x5);
-		}
+		return re_rv(rv);
 	}
 #   endif
 #endif

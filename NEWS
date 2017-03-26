@@ -1,3 +1,9 @@
+2017-03-26	"Anything is possible, unless it's not."  (2)
+
+		share/innocent-pear/rofl.h :
+		- under g++ 5 for ARM, now (hopefully) produces better code
+		  to juggle registers
+
 2017-03-25	"Anything is possible, unless it's not."
 
 		share/innocent-pear/doge-00.cc :
