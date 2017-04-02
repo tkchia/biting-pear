@@ -310,16 +310,16 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		long rv;
 		uintptr_t t1, t2, t3;
 #	if __GNUC__ < 5
-		__asm __volatile("movs r7, %1; "
+		__asm __volatile("mov r7, %1; "
 				 "svc #0; "
-				 "movs %0, r0"
+				 "mov %0, r0"
 		    : "=r" (rv)
 		    : "rI" (re_scno(scno))
 		    : "r0", "r7", "memory", "cc");
 #	else
 		__asm __volatile("svc #0; "
 				 ".ifnc \"%0\", \"r0\"; "
-					"movs %0, r0; .endif"
+					"mov %0, r0; .endif"
 		    : "=&Cs" (rv), "=&Cs" (t1), "=&Cs" (t2), "=&Cs" (t3)
 		    : "l" (re_scno(scno))
 		    : "r4", "r5", "r6", "ip", "memory", "cc");
@@ -333,26 +333,31 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		if (wutwut(x1))
 			return use_libc_syscall(scno, x1);
 		long rv;
-		uintptr_t t1, t2, t3;
-#	if __GNUC__ < 5
-		__asm __volatile("movs r0, %2; "
-				 "movs r7, %1; "
-				 "svc #0; "
-				 "movs %0, r0"
-		    : "=r" (rv)
-		    : "rI" (re_scno(scno)), "rI" (re_arg(x1))
-		    : "r0", "r7", "memory", "cc");
-#	else
-		__asm __volatile(".ifnc \"%5\", \"r0\"; "
-					"movs r0, %5; .endif; "
+		uintptr_t t1, t2, t3, t4;
+		__asm __volatile(".ifc \"%5\", \"r0\"; "
+					"mov r4, %6; "
+					"mov r7, r0; "
+					"mov r0, r4; "
+				 ".else; "
+				 ".ifc \"%6\", \"r7\"; "
+					"mov r4, %5; "
+					"mov r0, r7; "
+					"mov r7, r4; "
+				 ".else; "
+					 ".ifnc \"%5\", \"r7\"; "
+						"mov r7, %5; .endif; "
+					 ".ifnc \"%6\", \"r0\"; "
+						"mov r0, %6; .endif; "
+				 ".endif; "
+				 ".endif; "
 				 "svc #0; "
 				 ".ifnc \"%0\", \"r0\"; "
-					"movs %0, r0; .endif"
-		    : "=&Cs,&Cs,&Cs,&Cs" (rv), "=&Cs,&Cs,&Cs,&Cs" (t1),
-		      "=&Cs,&Cs,&Cs,&Cs" (t2), "=&Cs,&Cs,&Cs,&Cs" (t3)
-		    : "l,l,l,l" (re_scno(scno)), "^0,1,2,3" (re_arg(x1))
+					"mov %0, r0; .endif"
+		    : "=&l,&l,&l,&l,&l" (rv), "=&l,&l,&l,&l,&l" (t1),
+		      "=&l,&l,&l,&l,&l" (t2), "=&l,&l,&l,&l,&l" (t3),
+		      "=&l,&l,&l,&l,&l" (t4)
+		    : "1,2,3,4,0" (re_scno(scno)), "^0,1,2,3,4" (re_arg(x1))
 		    : "r4", "r5", "r6", "ip", "memory", "cc");
-#	endif
 		return re_rv(rv);
 	}
 	template<class T1, class T2>
@@ -364,35 +369,35 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		long rv;
 		uintptr_t t1, t2, t3;
 #	if __GNUC__ < 5
-		__asm __volatile("movs r0, %2; "
-				 "movs r1, %3; "
-				 "movs r7, %1; "
+		__asm __volatile("mov r0, %2; "
+				 "mov r1, %3; "
+				 "mov r7, %1; "
 				 "svc #0; "
-				 "movs %0, r0"
+				 "mov %0, r0"
 		    : "=r" (rv)
 		    : "rI" (re_scno(scno)), "rI" (re_arg(x1)),
 		      "rI" (re_arg(x2))
 		    : "r0", "r1", "r7", "memory", "cc");
 #	else
 		__asm __volatile(".ifc \"%5\", \"r1\"; "
-					"movs r4, %6; "
-					"movs r0, r1; "
-					"movs r1, r4; "
+					"mov r4, %6; "
+					"mov r0, r1; "
+					"mov r1, r4; "
 				 ".else; "
 				 ".ifc \"%6\", \"r0\"; "
-					"movs r4, %5; "
-					"movs r1, r0; "
-					"movs r0, r4; "
+					"mov r4, %5; "
+					"mov r1, r0; "
+					"mov r0, r4; "
 				 ".else; "
 					 ".ifnc \"%5\", \"r0\"; "
-						"movs r0, %5; .endif; "
+						"mov r0, %5; .endif; "
 					 ".ifnc \"%6\", \"r1\"; "
-						"movs r1, %6; .endif; "
+						"mov r1, %6; .endif; "
 				 ".endif; "
 				 ".endif; "
 				 "svc #0; "
 				 ".ifnc \"%0\", \"r0\"; "
-					"movs %0, r0; .endif"
+					"mov %0, r0; .endif"
 		    : "=&Cs,&Cs,&Cs,&Cs" (rv), "=&Cs,&Cs,&Cs,&Cs" (t1),
 		      "=&Cs,&Cs,&Cs,&Cs" (t2), "=&Cs,&Cs,&Cs,&Cs" (t3)
 		    : "l,l,l,l" (re_scno(scno)), "^0,1,2,3" (re_arg(x1)),
@@ -410,30 +415,30 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		long rv;
 		uintptr_t t1, t2, t3;
 #	if __GNUC__ < 5
-		__asm __volatile("movs r0, %2; "
-				 "movs r1, %3; "
-				 "movs r2, %4; "
-				 "movs r7, %1; "
+		__asm __volatile("mov r0, %2; "
+				 "mov r1, %3; "
+				 "mov r2, %4; "
+				 "mov r7, %1; "
 				 "svc #0; "
-				 "movs %0, r0"
+				 "mov %0, r0"
 		    : "=r" (rv)
 		    : "rI" (re_scno(scno)), "rI" (re_arg(x1)),
 		      "rI" (re_arg(x2)), "rI" (re_arg(x3))
 		    : "r0", "r1", "r2", "r7", "memory", "cc");
 #	else
 		__asm __volatile(".ifnc \"%6\", \"r1\"; "
-					"movs r4, %6; .endif; "
+					"mov r4, %6; .endif; "
 				 ".ifnc \"%7\", \"r2\"; "
-					"movs r5, %7; .endif; "
+					"mov r5, %7; .endif; "
 				 ".ifnc \"%5\", \"r0\"; "
-					"movs r0, %5; .endif; "
+					"mov r0, %5; .endif; "
 				 ".ifnc \"%6\", \"r1\"; "
-					"movs r1, r4; .endif; "
+					"mov r1, r4; .endif; "
 				 ".ifnc \"%7\", \"r2\"; "
-					"movs r2, r5; .endif; "
+					"mov r2, r5; .endif; "
 				 "svc #0; "
 				 ".ifnc \"%0\", \"r0\"; "
-					"movs %0, r0; .endif"
+					"mov %0, r0; .endif"
 		    : "=&Cs,&Cs,&Cs,&Cs" (rv), "=&Cs,&Cs,&Cs,&Cs" (t1),
 		      "=&Cs,&Cs,&Cs,&Cs" (t2), "=&Cs,&Cs,&Cs,&Cs" (t3)
 		    : "l,l,l,l" (re_scno(scno)), "^0,1,2,3" (re_arg(x1)),
@@ -451,13 +456,13 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		long rv;
 		uintptr_t t1, t2, t3;
 #	if __GNUC__ < 5
-		__asm __volatile("movs r0, %2; "
-				 "movs r1, %3; "
-				 "movs r2, %4; "
-				 "movs r3, %5; "
-				 "movs r7, %1; "
+		__asm __volatile("mov r0, %2; "
+				 "mov r1, %3; "
+				 "mov r2, %4; "
+				 "mov r3, %5; "
+				 "mov r7, %1; "
 				 "svc #0; "
-				 "movs %0, r0"
+				 "mov %0, r0"
 		    : "=r" (rv)
 		    : "rI" (re_scno(scno)), "rI" (re_arg(x1)),
 		      "rI" (re_arg(x2)), "rI" (re_arg(x3)),
@@ -465,22 +470,22 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		    : "r0", "r1", "r2", "r3", "r7", "memory", "cc");
 #	else
 		__asm __volatile(".ifnc \"%6\", \"r1\"; "
-					"movs r4, %6; .endif; "
+					"mov r4, %6; .endif; "
 				 ".ifnc \"%7\", \"r2\"; "
-					"movs r5, %7; .endif; "
+					"mov r5, %7; .endif; "
 				 ".ifnc \"%8\", \"r3\"; "
-					"movs r6, %8; .endif; "
+					"mov r6, %8; .endif; "
 				 ".ifnc \"%5\", \"r0\"; "
-					"movs r0, %5; .endif; "
+					"mov r0, %5; .endif; "
 				 ".ifnc \"%6\", \"r1\"; "
-					"movs r1, r4; .endif; "
+					"mov r1, r4; .endif; "
 				 ".ifnc \"%7\", \"r2\"; "
-					"movs r2, r5; .endif; "
+					"mov r2, r5; .endif; "
 				 ".ifnc \"%8\", \"r3\"; "
-					"movs r3, r6; .endif; "
+					"mov r3, r6; .endif; "
 				 "svc #0; "
 				 ".ifnc \"%0\", \"r0\"; "
-					"movs %0, r0; .endif"
+					"mov %0, r0; .endif"
 		    : "=&Cs,&Cs,&Cs,&Cs" (rv), "=&Cs,&Cs,&Cs,&Cs" (t1),
 		      "=&Cs,&Cs,&Cs,&Cs" (t2), "=&Cs,&Cs,&Cs,&Cs" (t3)
 		    : "l,l,l,l" (re_scno(scno)), "^0,1,2,3" (re_arg(x1)),

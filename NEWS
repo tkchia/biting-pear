@@ -1,3 +1,10 @@
+2017-04-02	"An unbreakable toy is useful for breaking other toys."  (7)
+
+		include/innocent-pear/rofl.h :
+		- for ARM target:
+		  - `movs' -> `mov' all the way
+		  - unified logic for 0-argument syscalls for g++ 4 and 5
+
 2017-03-26	"Anything is possible, unless it's not."  (2)
 
 		share/innocent-pear/rofl.h :
