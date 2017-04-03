@@ -299,31 +299,35 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		return re_rv(rv);
 	}
 #   elif defined __arm__ && defined __thumb__
+#	if __GNUC__ < 5
+#	    define innocent_pear_DISPARAGE(opd) opd
+#	else
+#	    define innocent_pear_DISPARAGE(opd) "^" opd
+#	endif
     public:
 	/*
 	 * Local register variables (`register uintptr_t ... __asm("...")')
 	 * do not work properly, because ... reasons.  Hence these gyrations.
+	 *
+	 * We still provide register names as hints, in case a future
+	 * version of g++ actually takes these hints.
 	 */
 	innocent_pear_always_inline
 	static syscall_ret syscall(long scno)
 	{
-		long rv;
-		uintptr_t t1, t2, t3;
-#	if __GNUC__ < 5
-		__asm __volatile("mov r7, %1; "
+		register long rv __asm("r0");
+		register uintptr_t t1 __asm("r1"), t2 __asm("r2"),
+		    t3 __asm("r3"), t4 __asm("r7");
+		__asm __volatile(".ifnc \"%4\", \"r7\"; "
+					"mov r7, %4; .endif; "
 				 "svc #0; "
-				 "mov %0, r0"
-		    : "=r" (rv)
-		    : "rI" (re_scno(scno))
-		    : "r0", "r7", "memory", "cc");
-#	else
-		__asm __volatile("svc #0; "
 				 ".ifnc \"%0\", \"r0\"; "
 					"mov %0, r0; .endif"
-		    : "=&Cs" (rv), "=&Cs" (t1), "=&Cs" (t2), "=&Cs" (t3)
-		    : "l" (re_scno(scno))
-		    : "r4", "r5", "r6", "ip", "memory", "cc");
-#	endif
+		    : "=&l,&l,&l,&l,&l" (rv), "=&l,&l,&l,&l,&l" (t1),
+		      "=&l,&l,&l,&l,&l" (t2), "=&l,&l,&l,&l,&l" (t3),
+		      "=&l,&l,&l,&l,&l" (t4)
+		    : "4,0,1,2,3" (re_scno(scno))
+		    : "r4", "r5", "r6", "memory", "cc");
 		return re_rv(rv);
 	}
 	template<class T1>
@@ -332,8 +336,9 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 	{
 		if (wutwut(x1))
 			return use_libc_syscall(scno, x1);
-		long rv;
-		uintptr_t t1, t2, t3, t4;
+		register long rv __asm("r0");
+		register uintptr_t t1 __asm("r1"), t2 __asm("r2"),
+		    t3 __asm("r3"), t4 __asm("r7");
 		__asm __volatile(".ifc \"%5\", \"r0\"; "
 					"mov r4, %6; "
 					"mov r7, r0; "
@@ -356,8 +361,9 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		    : "=&l,&l,&l,&l,&l" (rv), "=&l,&l,&l,&l,&l" (t1),
 		      "=&l,&l,&l,&l,&l" (t2), "=&l,&l,&l,&l,&l" (t3),
 		      "=&l,&l,&l,&l,&l" (t4)
-		    : "1,2,3,4,0" (re_scno(scno)), "^0,1,2,3,4" (re_arg(x1))
-		    : "r4", "r5", "r6", "ip", "memory", "cc");
+		    : "4,0,1,2,3" (re_scno(scno)),
+		      innocent_pear_DISPARAGE("0") ",1,2,3,4" (re_arg(x1))
+		    : "r4", "r5", "r6", "memory", "cc");
 		return re_rv(rv);
 	}
 	template<class T1, class T2>
@@ -366,44 +372,29 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 	{
 		if (wutwut(x1, x2))
 			return use_libc_syscall(scno, x1, x2);
-		long rv;
-		uintptr_t t1, t2, t3;
-#	if __GNUC__ < 5
-		__asm __volatile("mov r0, %2; "
-				 "mov r1, %3; "
-				 "mov r7, %1; "
-				 "svc #0; "
-				 "mov %0, r0"
-		    : "=r" (rv)
-		    : "rI" (re_scno(scno)), "rI" (re_arg(x1)),
-		      "rI" (re_arg(x2))
-		    : "r0", "r1", "r7", "memory", "cc");
-#	else
-		__asm __volatile(".ifc \"%5\", \"r1\"; "
-					"mov r4, %6; "
-					"mov r0, r1; "
-					"mov r1, r4; "
-				 ".else; "
-				 ".ifc \"%6\", \"r0\"; "
-					"mov r4, %5; "
-					"mov r1, r0; "
-					"mov r0, r4; "
-				 ".else; "
-					 ".ifnc \"%5\", \"r0\"; "
-						"mov r0, %5; .endif; "
-					 ".ifnc \"%6\", \"r1\"; "
-						"mov r1, %6; .endif; "
-				 ".endif; "
-				 ".endif; "
+		register long rv __asm("r0");
+		register uintptr_t t1 __asm("r1"), t2 __asm("r2"),
+		    t3 __asm("r3"), t4 __asm("r7");
+		__asm __volatile(".ifnc \"%6\", \"r0\"; "
+					"mov r4, %6; .endif; "
+				 ".ifnc \"%7\", \"r1\"; "
+					"mov r5, %7; .endif; "
+				 ".ifnc \"%5\", \"r7\"; "
+					"mov r7, %5; .endif; "
+				 ".ifnc \"%6\", \"r0\"; "
+					"mov r0, r4; .endif; "
+				 ".ifnc \"%7\", \"r1\"; "
+					"mov r1, r5; .endif; "
 				 "svc #0; "
 				 ".ifnc \"%0\", \"r0\"; "
 					"mov %0, r0; .endif"
-		    : "=&Cs,&Cs,&Cs,&Cs" (rv), "=&Cs,&Cs,&Cs,&Cs" (t1),
-		      "=&Cs,&Cs,&Cs,&Cs" (t2), "=&Cs,&Cs,&Cs,&Cs" (t3)
-		    : "l,l,l,l" (re_scno(scno)), "^0,1,2,3" (re_arg(x1)),
-		      "1,2,3,0" (re_arg(x2))
-		    : "r4", "r5", "r6", "ip", "memory", "cc");
-#	endif
+		    : "=&l,&l,&l,&l,&l" (rv), "=&l,&l,&l,&l,&l" (t1),
+		      "=&l,&l,&l,&l,&l" (t2), "=&l,&l,&l,&l,&l" (t3),
+		      "=&l,&l,&l,&l,&l" (t4)
+		    : "4,0,1,2,3" (re_scno(scno)),
+		      innocent_pear_DISPARAGE("0") ",1,2,3,4" (re_arg(x1)),
+		      "1,2,3,4,0" (re_arg(x2))
+		    : "r4", "r5", "r6", "memory", "cc");
 		return re_rv(rv);
 	}
 	template<class T1, class T2, class T3>
@@ -412,39 +403,33 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 	{
 		if (wutwut(x1, x2, x3))
 			return use_libc_syscall(scno, x1, x2, x3);
-		long rv;
-		uintptr_t t1, t2, t3;
-#	if __GNUC__ < 5
-		__asm __volatile("mov r0, %2; "
-				 "mov r1, %3; "
-				 "mov r2, %4; "
-				 "mov r7, %1; "
-				 "svc #0; "
-				 "mov %0, r0"
-		    : "=r" (rv)
-		    : "rI" (re_scno(scno)), "rI" (re_arg(x1)),
-		      "rI" (re_arg(x2)), "rI" (re_arg(x3))
-		    : "r0", "r1", "r2", "r7", "memory", "cc");
-#	else
-		__asm __volatile(".ifnc \"%6\", \"r1\"; "
+		register long rv __asm("r0");
+		register uintptr_t t1 __asm("r1"), t2 __asm("r2"),
+		    t3 __asm("r3"), t4 __asm("r7");
+		__asm __volatile(".ifnc \"%6\", \"r0\"; "
 					"mov r4, %6; .endif; "
-				 ".ifnc \"%7\", \"r2\"; "
+				 ".ifnc \"%7\", \"r1\"; "
 					"mov r5, %7; .endif; "
-				 ".ifnc \"%5\", \"r0\"; "
-					"mov r0, %5; .endif; "
-				 ".ifnc \"%6\", \"r1\"; "
-					"mov r1, r4; .endif; "
-				 ".ifnc \"%7\", \"r2\"; "
-					"mov r2, r5; .endif; "
+				 ".ifnc \"%8\", \"r2\"; "
+					"mov r6, %8; .endif; "
+				 ".ifnc \"%5\", \"r7\"; "
+					"mov r7, %5; .endif; "
+				 ".ifnc \"%6\", \"r0\"; "
+					"mov r0, r4; .endif; "
+				 ".ifnc \"%7\", \"r1\"; "
+					"mov r1, r5; .endif; "
+				 ".ifnc \"%8\", \"r2\"; "
+					"mov r2, r6; .endif; "
 				 "svc #0; "
 				 ".ifnc \"%0\", \"r0\"; "
 					"mov %0, r0; .endif"
-		    : "=&Cs,&Cs,&Cs,&Cs" (rv), "=&Cs,&Cs,&Cs,&Cs" (t1),
-		      "=&Cs,&Cs,&Cs,&Cs" (t2), "=&Cs,&Cs,&Cs,&Cs" (t3)
-		    : "l,l,l,l" (re_scno(scno)), "^0,1,2,3" (re_arg(x1)),
-		      "1,2,3,0" (re_arg(x2)), "2,3,0,1" (re_arg(x3))
-		    : "r4", "r5", "r6", "ip", "memory", "cc");
-#	endif
+		    : "=&l,&l,&l,&l,&l" (rv), "=&l,&l,&l,&l,&l" (t1),
+		      "=&l,&l,&l,&l,&l" (t2), "=&l,&l,&l,&l,&l" (t3),
+		      "=&l,&l,&l,&l,&l" (t4)
+		    : "4,0,1,2,3" (re_scno(scno)),
+		      innocent_pear_DISPARAGE("0") ",1,2,3,4" (re_arg(x1)),
+		      "1,2,3,4,0" (re_arg(x2)), "2,3,4,0,1" (re_arg(x3))
+		    : "r4", "r5", "r6", "memory", "cc");
 		return re_rv(rv);
 	}
 	template<class T1, class T2, class T3, class T4>
@@ -453,48 +438,41 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 	{
 		if (wutwut(x1, x2, x3, x4))
 			return use_libc_syscall(scno, x1, x2, x3, x4);
-		long rv;
-		uintptr_t t1, t2, t3;
-#	if __GNUC__ < 5
-		__asm __volatile("mov r0, %2; "
-				 "mov r1, %3; "
-				 "mov r2, %4; "
-				 "mov r3, %5; "
-				 "mov r7, %1; "
-				 "svc #0; "
-				 "mov %0, r0"
-		    : "=r" (rv)
-		    : "rI" (re_scno(scno)), "rI" (re_arg(x1)),
-		      "rI" (re_arg(x2)), "rI" (re_arg(x3)),
-		      "rI" (re_arg(x4))
-		    : "r0", "r1", "r2", "r3", "r7", "memory", "cc");
-#	else
-		__asm __volatile(".ifnc \"%6\", \"r1\"; "
+		register long rv __asm("r0");
+		register uintptr_t t1 __asm("r1"), t2 __asm("r2"),
+		    t3 __asm("r3"), t4 __asm("r7");
+		__asm __volatile(".ifnc \"%6\", \"r0\"; "
 					"mov r4, %6; .endif; "
-				 ".ifnc \"%7\", \"r2\"; "
+				 ".ifnc \"%7\", \"r1\"; "
 					"mov r5, %7; .endif; "
-				 ".ifnc \"%8\", \"r3\"; "
+				 ".ifnc \"%8\", \"r2\"; "
 					"mov r6, %8; .endif; "
-				 ".ifnc \"%5\", \"r0\"; "
-					"mov r0, %5; .endif; "
-				 ".ifnc \"%6\", \"r1\"; "
-					"mov r1, r4; .endif; "
-				 ".ifnc \"%7\", \"r2\"; "
-					"mov r2, r5; .endif; "
-				 ".ifnc \"%8\", \"r3\"; "
-					"mov r3, r6; .endif; "
+				 ".ifnc \"%9\", \"r3\"; "
+					"mov ip, %9; .endif; "
+				 ".ifnc \"%5\", \"r7\"; "
+					"mov r7, %5; .endif; "
+				 ".ifnc \"%6\", \"r0\"; "
+					"mov r0, r4; .endif; "
+				 ".ifnc \"%7\", \"r1\"; "
+					"mov r1, r5; .endif; "
+				 ".ifnc \"%8\", \"r2\"; "
+					"mov r2, r6; .endif; "
+				 ".ifnc \"%9\", \"r3\"; "
+					"mov r3, ip; .endif; "
 				 "svc #0; "
 				 ".ifnc \"%0\", \"r0\"; "
 					"mov %0, r0; .endif"
-		    : "=&Cs,&Cs,&Cs,&Cs" (rv), "=&Cs,&Cs,&Cs,&Cs" (t1),
-		      "=&Cs,&Cs,&Cs,&Cs" (t2), "=&Cs,&Cs,&Cs,&Cs" (t3)
-		    : "l,l,l,l" (re_scno(scno)), "^0,1,2,3" (re_arg(x1)),
-		      "1,2,3,0" (re_arg(x2)), "2,3,0,1" (re_arg(x3)),
-		      "3,0,1,2" (re_arg(x4))
+		    : "=&l,&l,&l,&l,&l" (rv), "=&l,&l,&l,&l,&l" (t1),
+		      "=&l,&l,&l,&l,&l" (t2), "=&l,&l,&l,&l,&l" (t3),
+		      "=&l,&l,&l,&l,&l" (t4)
+		    : "4,0,1,2,3" (re_scno(scno)),
+		      innocent_pear_DISPARAGE("0") ",1,2,3,4" (re_arg(x1)),
+		      "1,2,3,4,0" (re_arg(x2)), "2,3,4,0,1" (re_arg(x3)),
+		      "3,4,0,1,2" (re_arg(x4))
 		    : "r4", "r5", "r6", "ip", "memory", "cc");
-#	endif
 		return re_rv(rv);
 	}
+#	undef innocent_pear_DISPARAGE
 #   endif
 #endif
     public:

@@ -1,9 +1,20 @@
+2017-04-03	"An unbreakable toy is useful for breaking other toys."  (8)
+
+		include/innocent-pear/rofl.h :
+		- for ARM target:
+		  - (mostly) unified logic for 0-, 2-, 3-, 4-argument
+		    syscalls for g++ 4 and 5
+		  - disabled use of "^" constraint modifier for g++ 4
+
+		NEWS :
+		- fixed error in 2017-04-02 entry
+
 2017-04-02	"An unbreakable toy is useful for breaking other toys."  (7)
 
 		include/innocent-pear/rofl.h :
 		- for ARM target:
 		  - `movs' -> `mov' all the way
-		  - unified logic for 0-argument syscalls for g++ 4 and 5
+		  - unified logic for 1-argument syscalls for g++ 4 and 5
 
 2017-03-26	"Anything is possible, unless it's not."  (2)
 
