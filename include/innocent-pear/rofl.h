@@ -299,6 +299,13 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		return re_rv(rv);
 	}
 #   elif defined __arm__ && defined __thumb__
+	/*
+	 * Local register variables (`register uintptr_t ... __asm("...")')
+	 * do not work properly, because ... reasons.  Hence these gyrations.
+	 *
+	 * We still provide register names as hints, in case a future
+	 * version of g++ actually takes these hints.
+	 */
 #	if __GNUC__ < 5
 #	    define innocent_pear_DISPARAGE(opd) opd
 #	else
@@ -399,13 +406,6 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		".endif; " \
 		".endif; "
     public:
-	/*
-	 * Local register variables (`register uintptr_t ... __asm("...")')
-	 * do not work properly, because ... reasons.  Hence these gyrations.
-	 *
-	 * We still provide register names as hints, in case a future
-	 * version of g++ actually takes these hints.
-	 */
 	innocent_pear_always_inline
 	static syscall_ret syscall(long scno)
 	{
