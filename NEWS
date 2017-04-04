@@ -1,3 +1,8 @@
+2017-04-04	ARM syscalls, continued.
+
+		include/innocent-pear/rofl.h :
+		- improved register shuffling for syscalls on ARM
+
 2017-04-03	"An unbreakable toy is useful for breaking other toys."  (8)
 
 		include/innocent-pear/rofl.h :

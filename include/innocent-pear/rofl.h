@@ -304,6 +304,100 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 #	else
 #	    define innocent_pear_DISPARAGE(opd) "^" opd
 #	endif
+#	define innocent_pear_SVC_REGS_0(scno) \
+		".ifnc \"" scno "\", \"r7\"; " \
+			"mov r7, " scno "; .endif; "
+#	define innocent_pear_SVC_REGS_1(scno, x1, t) \
+		".ifc \"" scno "\", \"r0\"; " \
+			"mov " t ", r0; " \
+			"mov r0, " x1 "; " \
+			innocent_pear_SVC_REGS_0(t) \
+		".else; " \
+			".ifnc \"" x1 "\", \"r0\"; " \
+				"mov r0, " x1 "; .endif; " \
+			innocent_pear_SVC_REGS_0(scno) \
+		".endif; "
+#	define innocent_pear_SVC_REGS_2(scno, x1, x2, t) \
+		".ifc \"" scno "\", \"r1\"; " \
+			"mov " t ", r1; " \
+			"mov r1, " x2 "; " \
+			innocent_pear_SVC_REGS_1(t, x1, scno) \
+		".else; " \
+		".ifc \"" x1 "\", \"r1\"; " \
+			"mov " t ", r1; " \
+			"mov r1, " x2 "; " \
+			innocent_pear_SVC_REGS_1(scno, t, x2) \
+		".else; " \
+		".ifc \"" t "\", \"r1\"; " \
+			"mov r1, " x2 "; " \
+			innocent_pear_SVC_REGS_1(scno, x1, x2) \
+		".else; " \
+			".ifnc \"" x2 "\", \"r1\"; " \
+				"mov r1, " x2 "; .endif; " \
+			innocent_pear_SVC_REGS_1(scno, x1, t) \
+		".endif; " \
+		".endif; " \
+		".endif; "
+#	define innocent_pear_SVC_REGS_3(scno, x1, x2, x3, t) \
+		".ifc \"" scno "\", \"r2\"; " \
+			"mov " t ", r2; " \
+			"mov r2, " x3 "; " \
+			innocent_pear_SVC_REGS_2(t, x1, x2, scno) \
+		".else; " \
+		".ifc \"" x1 "\", \"r2\"; " \
+			"mov " t ", r2; " \
+			"mov r2, " x3 "; " \
+			innocent_pear_SVC_REGS_2(scno, t, x2, x3) \
+		".else; " \
+		".ifc \"" x2 "\", \"r2\"; " \
+			"mov " t ", r2; " \
+			"mov r2, " x3 "; " \
+			innocent_pear_SVC_REGS_2(scno, x1, t, x3) \
+		".else; " \
+		".ifc \"" t "\", \"r2\"; " \
+			"mov r2, " x3 "; " \
+			innocent_pear_SVC_REGS_2(scno, x1, x2, x3) \
+		".else; " \
+			".ifnc \"" x3 "\", \"r2\"; " \
+				"mov r2, " x3 "; .endif; " \
+			innocent_pear_SVC_REGS_2(scno, x1, x2, t) \
+		".endif; " \
+		".endif; " \
+		".endif; " \
+		".endif; "
+#	define innocent_pear_SVC_REGS_4(scno, x1, x2, x3, x4, t) \
+		".ifc \"" scno "\", \"r3\"; " \
+			"mov " t ", r3; " \
+			"mov r3, " x4 "; " \
+			innocent_pear_SVC_REGS_3(t, x1, x2, x3, scno) \
+		".else; " \
+		".ifc \"" x1 "\", \"r3\"; " \
+			"mov " t ", r3; " \
+			"mov r3, " x4 "; " \
+			innocent_pear_SVC_REGS_3(scno, t, x2, x3, x4) \
+		".else; " \
+		".ifc \"" x2 "\", \"r3\"; " \
+			"mov " t ", r3; " \
+			"mov r3, " x4 "; " \
+			innocent_pear_SVC_REGS_3(scno, x1, t, x3, x4) \
+		".else; " \
+		".ifc \"" x3 "\", \"r3\"; " \
+			"mov " t ", r3; " \
+			"mov r3, " x4 "; " \
+			innocent_pear_SVC_REGS_3(scno, x1, x2, t, x4) \
+		".else; " \
+		".ifc \"" t "\", \"r3\"; " \
+			"mov r3, " x4 "; " \
+			innocent_pear_SVC_REGS_3(scno, x1, x2, x3, x4) \
+		".else; " \
+			".ifnc \"" x4 "\", \"r3\"; " \
+				"mov r3, " x4 "; .endif; " \
+			innocent_pear_SVC_REGS_3(scno, x1, x2, x3, t) \
+		".endif; " \
+		".endif; " \
+		".endif; " \
+		".endif; " \
+		".endif; "
     public:
 	/*
 	 * Local register variables (`register uintptr_t ... __asm("...")')
@@ -318,8 +412,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		register long rv __asm("r0");
 		register uintptr_t t1 __asm("r1"), t2 __asm("r2"),
 		    t3 __asm("r3"), t4 __asm("r7");
-		__asm __volatile(".ifnc \"%4\", \"r7\"; "
-					"mov r7, %4; .endif; "
+		__asm __volatile(innocent_pear_SVC_REGS_0("%5")
 				 "svc #0; "
 				 ".ifnc \"%0\", \"r0\"; "
 					"mov %0, r0; .endif"
@@ -339,22 +432,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		register long rv __asm("r0");
 		register uintptr_t t1 __asm("r1"), t2 __asm("r2"),
 		    t3 __asm("r3"), t4 __asm("r7");
-		__asm __volatile(".ifc \"%5\", \"r0\"; "
-					"mov r4, %6; "
-					"mov r7, r0; "
-					"mov r0, r4; "
-				 ".else; "
-				 ".ifc \"%6\", \"r7\"; "
-					"mov r4, %5; "
-					"mov r0, r7; "
-					"mov r7, r4; "
-				 ".else; "
-					 ".ifnc \"%5\", \"r7\"; "
-						"mov r7, %5; .endif; "
-					 ".ifnc \"%6\", \"r0\"; "
-						"mov r0, %6; .endif; "
-				 ".endif; "
-				 ".endif; "
+		__asm __volatile(innocent_pear_SVC_REGS_1("%5", "%6", "r4")
 				 "svc #0; "
 				 ".ifnc \"%0\", \"r0\"; "
 					"mov %0, r0; .endif"
@@ -375,16 +453,8 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		register long rv __asm("r0");
 		register uintptr_t t1 __asm("r1"), t2 __asm("r2"),
 		    t3 __asm("r3"), t4 __asm("r7");
-		__asm __volatile(".ifnc \"%6\", \"r0\"; "
-					"mov r4, %6; .endif; "
-				 ".ifnc \"%7\", \"r1\"; "
-					"mov r5, %7; .endif; "
-				 ".ifnc \"%5\", \"r7\"; "
-					"mov r7, %5; .endif; "
-				 ".ifnc \"%6\", \"r0\"; "
-					"mov r0, r4; .endif; "
-				 ".ifnc \"%7\", \"r1\"; "
-					"mov r1, r5; .endif; "
+		__asm __volatile(innocent_pear_SVC_REGS_2("%5", "%6", "%7",
+				     "r4")
 				 "svc #0; "
 				 ".ifnc \"%0\", \"r0\"; "
 					"mov %0, r0; .endif"
@@ -406,20 +476,8 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		register long rv __asm("r0");
 		register uintptr_t t1 __asm("r1"), t2 __asm("r2"),
 		    t3 __asm("r3"), t4 __asm("r7");
-		__asm __volatile(".ifnc \"%6\", \"r0\"; "
-					"mov r4, %6; .endif; "
-				 ".ifnc \"%7\", \"r1\"; "
-					"mov r5, %7; .endif; "
-				 ".ifnc \"%8\", \"r2\"; "
-					"mov r6, %8; .endif; "
-				 ".ifnc \"%5\", \"r7\"; "
-					"mov r7, %5; .endif; "
-				 ".ifnc \"%6\", \"r0\"; "
-					"mov r0, r4; .endif; "
-				 ".ifnc \"%7\", \"r1\"; "
-					"mov r1, r5; .endif; "
-				 ".ifnc \"%8\", \"r2\"; "
-					"mov r2, r6; .endif; "
+		__asm __volatile(innocent_pear_SVC_REGS_3("%5", "%6", "%7",
+				     "%8", "r4")
 				 "svc #0; "
 				 ".ifnc \"%0\", \"r0\"; "
 					"mov %0, r0; .endif"
@@ -441,24 +499,8 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		register long rv __asm("r0");
 		register uintptr_t t1 __asm("r1"), t2 __asm("r2"),
 		    t3 __asm("r3"), t4 __asm("r7");
-		__asm __volatile(".ifnc \"%6\", \"r0\"; "
-					"mov r4, %6; .endif; "
-				 ".ifnc \"%7\", \"r1\"; "
-					"mov r5, %7; .endif; "
-				 ".ifnc \"%8\", \"r2\"; "
-					"mov r6, %8; .endif; "
-				 ".ifnc \"%9\", \"r3\"; "
-					"mov ip, %9; .endif; "
-				 ".ifnc \"%5\", \"r7\"; "
-					"mov r7, %5; .endif; "
-				 ".ifnc \"%6\", \"r0\"; "
-					"mov r0, r4; .endif; "
-				 ".ifnc \"%7\", \"r1\"; "
-					"mov r1, r5; .endif; "
-				 ".ifnc \"%8\", \"r2\"; "
-					"mov r2, r6; .endif; "
-				 ".ifnc \"%9\", \"r3\"; "
-					"mov r3, ip; .endif; "
+		__asm __volatile(innocent_pear_SVC_REGS_4("%5", "%6", "%7",
+				     "%8", "%9", "r4")
 				 "svc #0; "
 				 ".ifnc \"%0\", \"r0\"; "
 					"mov %0, r0; .endif"
@@ -469,10 +511,15 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		      innocent_pear_DISPARAGE("0") ",1,2,3,4" (re_arg(x1)),
 		      "1,2,3,4,0" (re_arg(x2)), "2,3,4,0,1" (re_arg(x3)),
 		      "3,4,0,1,2" (re_arg(x4))
-		    : "r4", "r5", "r6", "ip", "memory", "cc");
+		    : "r4", "r5", "r6", "memory", "cc");
 		return re_rv(rv);
 	}
 #	undef innocent_pear_DISPARAGE
+#	undef innocent_pear_SVC_REGS_0
+#	undef innocent_pear_SVC_REGS_1
+#	undef innocent_pear_SVC_REGS_2
+#	undef innocent_pear_SVC_REGS_3
+#	undef innocent_pear_SVC_REGS_4
 #   endif
 #endif
     public:
