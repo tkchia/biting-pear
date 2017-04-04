@@ -7,6 +7,7 @@
 #include <innocent-pear/bbq.h>
 #include <innocent-pear/nowai.h>
 #include <innocent-pear/omg.h>
+#include <innocent-pear/rofl.h>
 #include <innocent-pear/yarly.h>
 
 namespace innocent_pear
@@ -33,23 +34,12 @@ class unpossible<State, T, 0u>
 	unpossible()
 	{
 		constexpr rand_state_t State2 = update_inner(State);
-		switch ((State2 >> 32) % 4) {
+		switch ((State2 >> 32) % 3) {
 		    case 0:
 #if defined __amd64__ || defined __i386__
 			void (*p)();
 			__asm __volatile("call *%0" : "=g" (p) : : "cc",
 			    "memory");
-#endif
-			break;
-		    case 1:
-#if defined __amd64__
-			__asm __volatile("syscall" : : : "rax", "cc",
-			    "memory");
-#elif defined __i386__
-			__asm __volatile("int $0x80" : : : "eax",
-			    "cc", "memory");
-#elif defined __arm__
-			__asm __volatile("svc #0" : : : "r0", "cc", "memory");
 #endif
 			break;
 #ifdef __OPTIMIZE__
@@ -94,13 +84,13 @@ class unpossible
 		constexpr rand_state_t
 		    State2 = update_inner(State),
 		    NewState = update_outer(State, Levels),
-		    NewState2 = update_outer(NewState, Levels);
+		    NewState2 = update_outer(State2, Levels);
 		constexpr unsigned BitP =
 		    (State2 >> 52) % (sizeof(T) * CHAR_BIT);
 		constexpr ops_flags_t Flags = (ops_flags_t)
 		    (innocent_pear::ops::allow_for_startup |
 		     innocent_pear::ops::under_unpossible);
-		switch ((State2 >> 32) % 4) {
+		switch ((State2 >> 32) % 6) {
 		    case 0:
 			{ omg<NewState, T, Flags, Levels - 1> zomg(x); }
 			break;
@@ -118,6 +108,20 @@ class unpossible
 			}
 			break;
 		    case 2:
+			x = (T)rofl<NewState2, Flags, Levels - 1>::syscall
+			    ((long)pick_hi<unsigned long>(State2 ^ NewState));
+			break;
+		    case 3:
+			{
+				uintptr_t y;
+				unpossible<NewState, uintptr_t, Levels - 1>
+				    un(y);
+				x = (T)rofl<NewState2, Flags, Levels - 1>::
+				    syscall((long)pick_hi<unsigned long>
+					(State2 ^ NewState), y);
+			}
+			break;
+		    case 4:
 			{ unpossible<NewState, T, Levels - 1> un(x); }
 			// fall through
 		    default:

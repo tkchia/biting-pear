@@ -1,7 +1,11 @@
-2017-04-04	ARM syscalls, continued.
+2017-04-04	ARM syscalls, continued.  And, better junk syscalls.
 
 		include/innocent-pear/rofl.h :
 		- improved register shuffling for syscalls on ARM
+
+		include/innocent-pear/unpossible.h :
+		- now uses rofl<...>::syscall(...) instead of throwing up
+		  `int $0x80'/`syscall'/`svc #0' instructions at odd places
 
 2017-04-03	"An unbreakable toy is useful for breaking other toys."  (8)
 
