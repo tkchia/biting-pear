@@ -321,7 +321,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		".ifc \"" scno "\", \"r1\"; " \
 			"mov " t ", r1; " \
 			"mov r1, " x2 "; " \
-			innocent_pear_SVC_REGS_1(t, x1, scno) \
+			innocent_pear_SVC_REGS_1(t, x1, x2) \
 		".else; " \
 		".ifc \"" x1 "\", \"r1\"; " \
 			"mov " t ", r1; " \
@@ -342,7 +342,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		".ifc \"" scno "\", \"r2\"; " \
 			"mov " t ", r2; " \
 			"mov r2, " x3 "; " \
-			innocent_pear_SVC_REGS_2(t, x1, x2, scno) \
+			innocent_pear_SVC_REGS_2(t, x1, x2, x3) \
 		".else; " \
 		".ifc \"" x1 "\", \"r2\"; " \
 			"mov " t ", r2; " \
@@ -369,7 +369,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		".ifc \"" scno "\", \"r3\"; " \
 			"mov " t ", r3; " \
 			"mov r3, " x4 "; " \
-			innocent_pear_SVC_REGS_3(t, x1, x2, x3, scno) \
+			innocent_pear_SVC_REGS_3(t, x1, x2, x3, x4) \
 		".else; " \
 		".ifc \"" x1 "\", \"r3\"; " \
 			"mov " t ", r3; " \
