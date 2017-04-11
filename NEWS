@@ -1,3 +1,15 @@
+2017-04-11	Updated submodules.
+
+		KeccakCodePackage/ :
+		- bumped to affe6688d1
+
+		lolwutconf/ :
+		- bumped to 900cf99557
+
+		infra/KeccakCodePackage.tar.xz ,
+		infra/lolwutconf.tar.xz :
+		- updated
+
 2017-04-04	ARM syscalls, continued.  And, better junk syscalls.
 
 		include/innocent-pear/rofl.h :
