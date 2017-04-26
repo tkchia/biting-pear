@@ -79,6 +79,7 @@ tests.target = \
     test/test-yodawg \
     test/test-yodawg-syn \
     test/test-orly-wut \
+    test/test-rofl-1 \
     test/test-doge.debug \
     test/test-doge \
     test/test-doge-with-dawg \
@@ -397,6 +398,11 @@ endif
 		else \
 			echo '#undef innocent_pear_HAVE_FUNC_PRCTL'; \
 		fi; \
+		if test '$(conf_Have_cxxt_impld_func__0msync)' = yes; then \
+			echo '#define innocent_pear_HAVE_IMPLD_FUNC_MSYNC 1'; \
+		else \
+			echo '#undef innocent_pear_HAVE_IMPLD_FUNC_MSYNC'; \
+		fi; \
 		if test '$(conf_Have_cxxt_func__0getauxval)' = yes; then \
 			echo '#define innocent_pear_HAVE_FUNC_GETAUXVAL 1'; \
 		else \
@@ -412,7 +418,7 @@ endif
 			fi; ) \
 		$(foreach c,TCOOFF TCOON TCXONC TIOCSTOP TIOCSTART \
 		    PR_GET_DUMPABLE PR_SET_DUMPABLE FS_IOC_GETFLAGS \
-		    FS_IOC_GETVERSION, \
+		    FS_IOC_GETVERSION MS_ASYNC, \
 			if test '$(conf_Have_cxxt_const_$(subst _,_1,$c))' = \
 			    yes; then \
 				echo \

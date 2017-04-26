@@ -95,14 +95,13 @@ innocent_pear_DOGE unscramble_00_2()
 	unsigned char *re = our_rodata_end;
 	innocent_pear_CHAFF(allow_for_startup);
 #if defined innocent_pear_HAVE_CONST_TCOOFF
-	innocent_pear::rofl?<allow_for_startup, 2u>::
+	innocent_pear::rofl?<allow_for_startup, 1u>::
 	    tcflow((int)((0ull + innocent_pear_DOGE_STATE_0 +
 				 innocent_pear_DOGE_STATE_1)
 		% 100000001ull % 3ull), TCOOFF);
 	innocent_pear_CHAFF(flags);
 #endif
-	uintptr_t pg_sz = (uintptr_t)(innocent_pear::kthxbai?<
-	    innocent_pear_decltype(&getpagesize), flags, 1u>(getpagesize))();
+	uintptr_t pg_sz = innocent_pear::rofl?<flags, 1u>::getpagesize();
 	uintptr_t prot_start = (uintptr_t)(unsigned char *)nxs & -pg_sz;
 	uintptr_t prot_end = ((uintptr_t)re + pg_sz - 1) & -pg_sz;
 	innocent_pear::rofl?<flags, 1u>::mprotect((void *)prot_start,

@@ -37,7 +37,8 @@ innocent_pear_DOGE_MEMSET_L scramble_98_1()
 innocent_pear_DOGE_L scramble_98_2()
 {
 	using innocent_pear::ops::allow_debugger_unsafes;
-	uintptr_t pg_sz = (uintptr_t)getpagesize();
+	uintptr_t pg_sz = (uintptr_t)innocent_pear::rofl?
+	    <allow_debugger_unsafes>::getpagesize();
 	unsigned char *prot_start =
 	    (unsigned char *)((uintptr_t)doge_text_start & -pg_sz);
 	unsigned char *prot_end =

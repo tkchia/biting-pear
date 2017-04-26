@@ -101,7 +101,8 @@ innocent_pear_DOGE unscramble_42_2()
 	constexpr auto flags = innocent_pear_FLAGS,
 	    flags2 = ((innocent_pear::ops_flags_t)(innocent_pear_FLAGS
 		& ~innocent_pear::ops::under_munged_terminal));
-	uintptr_t pg_sz = (uintptr_t)getpagesize();
+	uintptr_t pg_sz = (uintptr_t)innocent_pear::rofl?<flags>::
+	    getpagesize();
 	unsigned char *prot_start =
 	    (unsigned char *)(((uintptr_t)our_rodata_start+pg_sz-1) & -pg_sz);
 	/*

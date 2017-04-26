@@ -102,6 +102,30 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		innocent_pear_always_inline
 		int err()
 			{ return err_; }
+		innocent_pear_always_inline
+		bool operator==(const syscall_ret sr2)
+			{ return rv_ == sr2.rv_ && err_ == sr2.err_; }
+	};
+	class syscall_mmap_ret
+	{
+		void *rv_;
+		int err_;
+	    public:
+		innocent_pear_always_inline
+		syscall_mmap_ret(void *rv, int err) : rv_(rv), err_(err)
+			{ }
+		innocent_pear_always_inline
+		syscall_mmap_ret(syscall_ret sr) :
+		    rv_(reinterpret_cast<void *>(static_cast<uintptr_t>
+			(static_cast<long>(sr)))),
+		    err_(sr.err())
+			{ }
+		innocent_pear_always_inline
+		operator void *()
+			{ return rv_; }
+		innocent_pear_always_inline
+		int err()
+			{ return err_; }
 	};
     private:
 	innocent_pear_always_inline
@@ -225,7 +249,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 	template<class T1, class T2, class T3, class T4, class T5>
 	innocent_pear_always_inline
 	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3, T4 x4,
-	T5 x5)
+	    T5 x5)
 	{
 		if (wutwut(x1, x2, x3, x4, x5))
 			return use_libc_syscall(scno, x1, x2, x3, x4, x5);
@@ -234,6 +258,24 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		    : "=a" (rv)
 		    : "0" (re_scno(scno)), "b" (re_arg(x1)), "c" (re_arg(x2)),
 		      "d" (re_arg(x3)), "S" (re_arg(x4)), "D" (re_arg(x5))
+		    : "memory", "cc");
+		return re_rv(rv);
+	}
+	template<class T1, class T2, class T3, class T4, class T5, class T6>
+	innocent_pear_always_inline
+	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3, T4 x4,
+	    T5 x5, T6 x6)
+	{
+		if (wutwut(x1, x2, x3, x4, x5, x6))
+			return use_libc_syscall(scno, x1, x2, x3, x4, x5, x6);
+		long rv, scratch;
+		__asm __volatile(".ifnc \"%1\", \"%%ebp\"; "
+					".error; .endif; "
+				 "int $0x80"
+		    : "=a" (rv), "=R" (scratch)
+		    : "0" (re_scno(scno)), "b" (re_arg(x1)), "c" (re_arg(x2)),
+		      "d" (re_arg(x3)), "S" (re_arg(x4)), "D" (re_arg(x5)),
+		      "1" (re_arg(x6))
 		    : "memory", "cc");
 		return re_rv(rv);
 	}
@@ -296,6 +338,57 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		    : "0" (re_scno(scno)), "D" (re_arg(x1)), "S" (re_arg(x2)),
 		      "d" (re_arg(x3))
 		    : "rcx", "r11", "memory", "cc");
+		return re_rv(rv);
+	}
+	template<class T1, class T2, class T3, class T4>
+	innocent_pear_always_inline
+	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3, T4 x4)
+	{
+		if (wutwut(x1, x2, x3, x4))
+			return use_libc_syscall(scno, x1, x2, x3, x4);
+		long rv;
+		__asm __volatile("movq %5, %%r10; "
+				 "syscall"
+		    : "=a" (rv)
+		    : "0" (re_scno(scno)), "D" (re_arg(x1)), "S" (re_arg(x2)),
+		      "d" (re_arg(x3)), "g" (re_arg(x4))
+		    : "r10", "rcx", "r11", "memory", "cc");
+		return re_rv(rv);
+	}
+	template<class T1, class T2, class T3, class T4, class T5>
+	innocent_pear_always_inline
+	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3, T4 x4,
+	    T5 x5)
+	{
+		if (wutwut(x1, x2, x3, x4, x5))
+			return use_libc_syscall(scno, x1, x2, x3, x4, x5);
+		long rv;
+		__asm __volatile("movq %6, %%r8; "
+				 "movq %5, %%r10; "
+				 "syscall"
+		    : "=a" (rv)
+		    : "0" (re_scno(scno)), "D" (re_arg(x1)), "S" (re_arg(x2)),
+		      "d" (re_arg(x3)), "g" (re_arg(x4)), "g" (re_arg(x5))
+		    : "r10", "r8", "rcx", "r11", "memory", "cc");
+		return re_rv(rv);
+	}
+	template<class T1, class T2, class T3, class T4, class T5, class T6>
+	innocent_pear_always_inline
+	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3, T4 x4,
+	    T5 x5, T6 x6)
+	{
+		if (wutwut(x1, x2, x3, x4, x5, x6))
+			return use_libc_syscall(scno, x1, x2, x3, x4, x5, x6);
+		long rv;
+		__asm __volatile("movq %7, %%r9; "
+				 "movq %6, %%r8; "
+				 "movq %5, %%r10; "
+				 "syscall"
+		    : "=a" (rv)
+		    : "0" (re_scno(scno)), "D" (re_arg(x1)), "S" (re_arg(x2)),
+		      "d" (re_arg(x3)), "g" (re_arg(x4)), "g" (re_arg(x5)),
+		      "g" (re_arg(x6))
+		    : "r10", "r8", "r9", "rcx", "r11", "memory", "cc");
 		return re_rv(rv);
 	}
 #   elif defined __arm__ && defined __thumb__
@@ -1062,6 +1155,127 @@ class rofl_impl_prctl :
 	}
 };
 
+template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
+class rofl_impl_msync :
+    virtual public rofl_impl_syscall<State, Flags, Levels>
+{
+	typedef rofl_impl_syscall<State, Flags, Levels> super;
+    public:
+	innocent_pear_always_inline
+	static typename super::syscall_ret msync(void *addr,
+	    std::size_t length, int flags)
+	{
+		if (__builtin_constant_p(length))
+			length = kthxbai<super::NewState3, std::size_t, Flags,
+			    Levels ? Levels - 1 : 0>(length);
+		if (__builtin_constant_p(flags))
+			flags = kthxbai<super::NewState3, unsigned, Flags,
+			    Levels ? Levels - 1 : 0>((unsigned)flags);
+#if defined __linux__ && (defined __i386__ || defined __arm__)
+		return super::syscall(144, addr, length, flags);
+#elif defined __linux__ && defined __amd64__
+		return super::syscall(26, addr, length, flags);
+#elif defined innocent_pear_HAVE_IMPLD_FUNC_MSYNC
+		int rv = (kthxbai<super::NewState2,
+		    innocent_pear_decltype(&msync), Flags, Levels>(msync))
+		    (addr, length);
+		return typename super::syscall_ret(rv, errno);
+#else
+		return typename super::syscall_ret(-1, ENOSYS);
+#endif
+	}
+};
+
+template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
+class rofl_impl_getpagesize :
+    virtual public rofl_impl_msync<State, Flags, Levels>
+{
+	typedef rofl_impl_msync<State, Flags, Levels> super;
+    public:
+	innocent_pear_always_inline
+	static std::size_t getpagesize()
+	{
+#if defined __linux__ && defined innocent_pear_HAVE_IMPLD_FUNC_MSYNC && \
+    defined innocent_pear_HAVE_CONST_MS_ASYNC
+		union {
+			char c;
+			long double d;
+			uintptr_t t;
+		} u;
+		char *p = &u.c;
+		while (super::msync(p, 1u, innocent_pear_VAL_CONST_MS_ASYNC)
+		    == typename super::syscall_ret(-1, EINVAL))
+			p -= sizeof(u);
+		std::size_t s = 1;
+		while (super::msync(p-s, 1u, innocent_pear_VAL_CONST_MS_ASYNC)
+		    == typename super::syscall_ret(-1, EINVAL))
+			s <<= 1;
+		return s;
+#else
+		long rv = (kthxbai<super::NewState2,
+		    innocent_pear_decltype(&sysconf), Flags, Levels>(sysconf))
+		    (_SC_PAGESIZE);
+		return (std::size_t)rv;
+#endif
+	}
+};
+
+template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
+class rofl_impl_mmap :
+    virtual public rofl_impl_syscall<State, Flags, Levels>
+{
+	typedef rofl_impl_syscall<State, Flags, Levels> super;
+    public:
+	innocent_pear_always_inline
+	static typename super::syscall_mmap_ret mmap(void *addr,
+	    std::size_t length, int prot, int flags, int fd, off_t off)
+	{
+#if defined __linux__ && (defined __i386__ || defined __arm__)
+		/* Use mmap2(...) syscall. */
+		if (off % 4096 != 0)
+			return typename super::syscall_mmap_ret(MAP_FAILED,
+			    EINVAL);
+		off_t pg = off / 4096;
+		if (pg != (uintptr_t)pg)
+			return typename super::syscall_mmap_ret(MAP_FAILED,
+			    EINVAL);
+		return super::syscall_mmap_ret(super::syscall(192, addr,
+		    length, prot, flags, fd, (uintptr_t)pg));
+#elif defined __linux__ && defined __amd64__
+		return super::syscall_mmap_ret(super::syscall(9, addr,
+		    length, prot, flags, fd, off));
+#else
+		void *rv = (kthxbai<super::NewState2,
+		    innocent_pear_decltype(&mmap), Flags, Levels>(mmap))(addr,
+		    length, prot, flags, fd, off);
+		return typename super::syscall_mmap_ret(rv, errno);
+#endif
+	}
+};
+
+template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
+class rofl_impl_munmap :
+    virtual public rofl_impl_syscall<State, Flags, Levels>
+{
+	typedef rofl_impl_syscall<State, Flags, Levels> super;
+    public:
+	innocent_pear_always_inline
+	static typename super::syscall_ret munmap(void *addr,
+	    std::size_t length)
+	{
+#if defined __linux__ && (defined __i386__ || defined __arm__)
+		return super::syscall(91, addr, length);
+#elif defined __linux__ && defined __amd64__
+		return super::syscall(11, addr, length);
+#else
+		int rv = (kthxbai<super::NewState2,
+		    innocent_pear_decltype(&munmap), Flags, Levels>(munmap))
+		    (addr, length);
+		return typename super::syscall_ret(rv, errno);
+#endif
+	}
+};
+
 template<rand_state_t State,
     ops_flags_t Flags = innocent_pear::ops::allow_minimal,
     unsigned Levels = 2u>
@@ -1077,7 +1291,11 @@ class rofl : virtual public rofl_impl_mprotect<State, Flags, Levels>,
 	     virtual public rofl_impl_open<State, Flags, Levels>,
 	     virtual public rofl_impl_close<State, Flags, Levels>,
 	     virtual public rofl_impl_time<State, Flags, Levels>,
-	     virtual public rofl_impl_prctl<State, Flags, Levels>
+	     virtual public rofl_impl_prctl<State, Flags, Levels>,
+	     virtual public rofl_impl_msync<State, Flags, Levels>,
+	     virtual public rofl_impl_getpagesize<State, Flags, Levels>,
+	     virtual public rofl_impl_mmap<State, Flags, Levels>,
+	     virtual public rofl_impl_munmap<State, Flags, Levels>
 	{ };
 
 #undef innocent_pear_STRINGIZE

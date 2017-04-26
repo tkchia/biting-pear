@@ -1,3 +1,35 @@
+2017-04-26	Page size in terms of msync(...) calls.
+
+		include/innocent-pear/rofl.h :
+		- added rofl<...>::msync(...) and rofl<...>::getpagesize()
+		- (untested) added rofl<...>::mmap(...) and munmap(...)
+		- (untested) added 6-argument syscalls for x86-32 and x86-64
+		- added rofl_impl_syscall<...>::syscall_ret::operator==(.)
+		- added class rofl_impl_syscall<...>::syscall_mmap_ret
+
+		include/innocent-pear/unpossible.h :
+		- added needed rofl<...> forward template declaration
+
+		share/innocent-pear/doge-00.cc :
+		- now uses rofl<...>::getpagesize()
+		- reduced scrambling layers in rofl<...>::tcflow(...) call
+
+		share/innocent-pear/doge-42.cc ,
+		share/innocent-pear/doge-98.cc :
+		- now uses rofl<...>::getpagesize()
+
+		test/test-rofl-1.cc ,
+		test/test-rofl-1.good :
+		- new
+
+		configure :
+		- now tests for implemented msync(...), and MS_ASYNC
+		  constant, target-side
+
+		GNUmakefile :
+		- added test-rofl-1 test case
+		- now writes results of tests for msync(...) and MS_ASYNC
+
 2017-04-15	Updated submodules.  (2)
 
 		lolwutconf/ :

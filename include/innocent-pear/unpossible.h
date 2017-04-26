@@ -17,7 +17,10 @@ namespace impl
 {
 
 template<rand_state_t State, class T, ops_flags_t Flags, unsigned Levels>
-class omg;
+class omg;  // forward
+
+template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
+class rofl;  // forward
 
 template<rand_state_t State, class T, unsigned Levels>
 class unpossible;
