@@ -145,7 +145,8 @@ static void nyan(sleepier_t& cheesy, const char *cheeses, states_t st,
     const char *cheez, const char *cheeez, const char *cheeeez,
     char *cheesier, char *cxx, const std::string& caturday,
     const std::string& ecaturday, const std::string& meow,
-    const std::string& emeow, bool v, bool sta, bool debug_doge)
+    const std::string& emeow, const std::string& sploosh, bool v, bool sta,
+    bool debug_doge)
 {
 	char cheese[strlen(cheeses) + 8];
 	std::snprintf(cheese, sizeof cheese, "%s.pear.t", cheeses);
@@ -201,6 +202,8 @@ static void nyan(sleepier_t& cheesy, const char *cheeses, states_t st,
 		"-fno-stack-protector",
 		v ? (char *)"-v" : (char *)"-fno-stack-protector",
 		v ? (char *)"-Wa,-v" : (char *)"-fno-stack-protector",
+		sploosh.empty() ? (char *)"-fno-stack-protector" :
+		    (char *)sploosh.c_str(),
 		sta ? (char *)"-static" : (char *)"-fno-stack-protector",
 		0
 	    };
@@ -387,7 +390,7 @@ static int main_(int argc, char **argv)
 #endif
 	char *cc = 0, *cxx = 0;
 	std::ostringstream shocked, serious;
-	std::string kitteh, meowmeow, meowmeowmeow, seriouser,
+	std::string kitteh, meowmeow, meowmeowmeow, seriouser, sploosh,
 	    caturday = innocent_pear_HOST_PREFIX,
 	    ecaturday = innocent_pear_HOST_PREFIX,
 	    meow = innocent_pear_TARGET_PREFIX,
@@ -527,7 +530,9 @@ static int main_(int argc, char **argv)
 			 */
 			wow("ignoring `-fintegrated-as'");
 			continue;
-		}
+		} else if (strncmp(opt + 1, "time", 4) == 0 &&
+			   (opt[5] == 0 || opt[5] == '='))
+			sploosh = opt;
 		*cheese++ = opt;
 	}
 	int shocker;
@@ -622,7 +627,7 @@ static int main_(int argc, char **argv)
 				    pusheen(caturday, "/share/innocent-pear/"
 					"doge-", doge_i_tags[s], ".cc"),
 				    cxx, caturday, ecaturday, meow, emeow,
-				    is.grumpiest, is.sta, debug_doge);
+				    sploosh, is.grumpiest, is.sta, debug_doge);
 			for (s = 0; s < NumDogeNParts; ++s)
 				nyan(doge_n[s], *cheeses, st, doge_n_tags[s],
 				    s+1 < NumDogeNParts ? doge_n_tags[s+1] : 0,
@@ -630,8 +635,7 @@ static int main_(int argc, char **argv)
 				    pusheen(caturday, "/share/innocent-pear/"
 					"doge-", doge_n_tags[s], ".cc"),
 				    cxx, caturday, ecaturday, meow, emeow,
-				    is.grumpiest,
-				    is.sta, debug_doge);
+				    sploosh, is.grumpiest, is.sta, debug_doge);
 			doge_a(*cheeses);
 			doge_b(*cheeses);
 			real_a = *cheeses;

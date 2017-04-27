@@ -617,7 +617,7 @@ test/test-doge-eh.debug \
 test/test-doge-eh.debug.o \
 test/test-doge-eh.debug.s : \
     CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge \
-	-Wp,-v
+	-time
 
 test/test-doge \
 test/test-doge.o \
@@ -635,13 +635,13 @@ test/test-doge-eh \
 test/test-doge-eh.o \
 test/test-doge-eh.s : \
     CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge \
-	-s -Wp,-v
+	-s -time
 
 test/test-doge-with-c \
 test/test-doge-with-c.o \
 test/test-doge-with-c.s : \
     CFLAGS_FOR_TARGET.test = $(CFLAGS_FOR_TARGET) -Xinnocent-pear -doge \
-	-s -Wp,-v
+	-s -time
 
 test/test-doge-eh: test/test-doge-eh.o test/test-doge-eh.sub.o
 

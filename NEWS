@@ -1,5 +1,9 @@
 2017-04-27	"Everyone is entitled to my opinion."
 
+		bin/innocent-pear-front-end.tcc :
+		- now passes `-time' and `-time=(...)' to child processes
+		  compiling doge-??.cc
+
 		GNUmakefile :
 		- now gets g++ to output _some_ verbose messages when
 		  compiling test-doge* test cases
