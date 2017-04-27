@@ -616,7 +616,8 @@ test/test-doge-abs-reloc.debug.s \
 test/test-doge-eh.debug \
 test/test-doge-eh.debug.o \
 test/test-doge-eh.debug.s : \
-    CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge
+    CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge \
+	-Wp,-v
 
 test/test-doge \
 test/test-doge.o \
@@ -633,12 +634,14 @@ test/test-doge-abs-reloc.s \
 test/test-doge-eh \
 test/test-doge-eh.o \
 test/test-doge-eh.s : \
-    CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge -s
+    CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge \
+	-s -Wp,-v
 
 test/test-doge-with-c \
 test/test-doge-with-c.o \
 test/test-doge-with-c.s : \
-    CFLAGS_FOR_TARGET.test = $(CFLAGS_FOR_TARGET) -Xinnocent-pear -doge -s
+    CFLAGS_FOR_TARGET.test = $(CFLAGS_FOR_TARGET) -Xinnocent-pear -doge \
+	-s -Wp,-v
 
 test/test-doge-eh: test/test-doge-eh.o test/test-doge-eh.sub.o
 

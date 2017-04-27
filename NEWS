@@ -1,3 +1,9 @@
+2017-04-27	"Everyone is entitled to my opinion."
+
+		GNUmakefile :
+		- now gets g++ to output _some_ verbose messages when
+		  compiling test-doge* test cases
+
 2017-04-26	Page size in terms of msync(...) calls.
 
 		include/innocent-pear/rofl.h :
