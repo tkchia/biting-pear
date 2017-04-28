@@ -80,6 +80,7 @@ tests.target = \
     test/test-yodawg-syn \
     test/test-orly-wut \
     test/test-rofl-1 \
+    test/test-rofl-2 \
     test/test-doge.debug \
     test/test-doge \
     test/test-doge-with-dawg \

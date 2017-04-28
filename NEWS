@@ -1,3 +1,36 @@
+2017-04-28	Test for rofl<...>::mmap(...) and rofl<...>::munmap(...); and
+		other things.
+
+		include/innocent-pear/rofl.h :
+		- fixed rofl<...>::mmap(...) so that it compiles, and also
+		  scrambles constant arguments
+		- rofl<...>::getpagesize() now scans forwards and backwards
+		  from first page boundary it finds
+
+		GNUmakefile :
+		- added test-rofl-2 test case
+
+		test/test-rofl-1.cc :
+		- tweaked
+
+		test/test-rofl-2.cc ,
+		test/test-rofl-2.good :
+		- new
+
+		infra/travis-build-and-check.sh :
+		- now accepts an optional `-x' argument, which will run
+		  `configure' under `sh -x'
+
+		KeccakCodePackage/ :
+		- bumped to 7c77cc4a4d
+
+		lolwutconf/ :
+		- bumped to e630774cb0
+
+		infra/KeccakCodePackage.tar.xz ,
+		infra/lolwutconf.tar.xz :
+		- updated
+
 2017-04-27	"Everyone is entitled to my opinion."
 
 		bin/innocent-pear-front-end.tcc :

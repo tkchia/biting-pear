@@ -3,7 +3,11 @@
 set -e -v
 mkdir build-$$
 cd build-$$
-../configure --help
-../configure ${TARGET:+"--target=$TARGET"}
+case "$1" in
+    -x)	sh='sh -x';;
+    *)	sh=;;
+esac
+$sh ../configure --help
+$sh ../configure ${TARGET:+"--target=$TARGET"}
 make
 exec make check

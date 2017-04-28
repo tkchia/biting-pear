@@ -1208,7 +1208,9 @@ class rofl_impl_getpagesize :
 			p -= sizeof(u);
 		std::size_t s = 1;
 		while (super::msync(p-s, 1u, innocent_pear_VAL_CONST_MS_ASYNC)
-		    == typename super::syscall_ret(-1, EINVAL))
+			   == typename super::syscall_ret(-1, EINVAL) &&
+		       super::msync(p+s, 1u, innocent_pear_VAL_CONST_MS_ASYNC)
+			   == typename super::syscall_ret(-1, EINVAL))
 			s <<= 1;
 		return s;
 #else
@@ -1230,25 +1232,43 @@ class rofl_impl_mmap :
 	static typename super::syscall_mmap_ret mmap(void *addr,
 	    std::size_t length, int prot, int flags, int fd, off_t off)
 	{
+		if (__builtin_constant_p(prot))
+			prot = kthxbai<super::NewState3, unsigned, Flags,
+			    Levels ? Levels - 1 : 0>((unsigned)prot);
+		if (__builtin_constant_p(flags))
+			flags = kthxbai<super::NewState4, unsigned, Flags,
+			    Levels ? Levels - 1 : 0>((unsigned)flags);
+		if (__builtin_constant_p(fd))
+			fd = kthxbai<super::NewState5, unsigned, Flags,
+			    Levels ? Levels - 1 : 0>((unsigned)fd);
 #if defined __linux__ && (defined __i386__ || defined __arm__)
 		/* Use mmap2(...) syscall. */
 		if (off % 4096 != 0)
 			return typename super::syscall_mmap_ret(MAP_FAILED,
 			    EINVAL);
 		off_t pg = off / 4096;
-		if (pg != (uintptr_t)pg)
+		uintptr_t upg = (uintptr_t)pg;
+		if (pg != upg)
 			return typename super::syscall_mmap_ret(MAP_FAILED,
 			    EINVAL);
-		return super::syscall_mmap_ret(super::syscall(192, addr,
-		    length, prot, flags, fd, (uintptr_t)pg));
-#elif defined __linux__ && defined __amd64__
-		return super::syscall_mmap_ret(super::syscall(9, addr,
-		    length, prot, flags, fd, off));
+		if (__builtin_constant_p(upg))
+			upg = kthxbai<super::NewState5, uintptr_t, Flags,
+			    Levels ? Levels - 1 : 0>(upg);
+		return typename super::syscall_mmap_ret(super::syscall(192,
+		    addr, length, prot, flags, fd, upg));
 #else
+		if (__builtin_constant_p(off) && off == (uintptr_t)off)
+			off = kthxbai<super::NewState5, uintptr_t, Flags,
+			    Levels ? Levels - 1 : 0>((uintptr_t)off);
+#   if defined __linux__ && defined __amd64__
+		return typename super::syscall_mmap_ret(super::syscall(9,
+		    addr, length, prot, flags, fd, off));
+#   else
 		void *rv = (kthxbai<super::NewState2,
 		    innocent_pear_decltype(&mmap), Flags, Levels>(mmap))(addr,
 		    length, prot, flags, fd, off);
 		return typename super::syscall_mmap_ret(rv, errno);
+#   endif
 #endif
 	}
 };
