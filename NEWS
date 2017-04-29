@@ -1,3 +1,9 @@
+2017-04-29	"Without life, Biology itself would be impossible."
+
+		include/innocent-pear/rofl.h :
+		- 6-argument syscalls for x86-32 now fall back to syscall(...)
+		  library routine  :-/
+
 2017-04-28	Test for rofl<...>::mmap(...) and rofl<...>::munmap(...); and
 		other things.
 

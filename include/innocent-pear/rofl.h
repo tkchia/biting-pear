@@ -261,6 +261,8 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		    : "memory", "cc");
 		return re_rv(rv);
 	}
+#	    if 0
+	/* Nope, g++ does not compile this. :-( */
 	template<class T1, class T2, class T3, class T4, class T5, class T6>
 	innocent_pear_always_inline
 	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3, T4 x4,
@@ -279,6 +281,7 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		    : "memory", "cc");
 		return re_rv(rv);
 	}
+#	    endif
 #	else
 	/*
 	 * clang++ may run out of registers when compiling rofl<...>::ptrace
