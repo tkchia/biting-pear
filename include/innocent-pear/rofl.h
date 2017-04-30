@@ -1253,9 +1253,9 @@ class rofl_impl_mmap :
 	    std::size_t length, int prot, int flags, int fd, off_t off)
 	{
 #ifdef MAP_FAILED
-		const void *failed = MAP_FAILED;
+		void * const failed = MAP_FAILED;
 #else
-		const void *failed = (void *)-1;
+		void * const failed = (void *)-1;
 #endif
 		if (__builtin_constant_p(prot))
 			prot = kthxbai<super::NewState3, unsigned, Flags,
