@@ -96,6 +96,7 @@ conf_cxxt_probe_const PT_READ_U \
     '#include <sys/types.h>' '#include <sys/ptrace.h>'
 #  .
 # .:
+conf_cxxt_probe_func ::ioctl 3 '#include <sys/ioctl.h>'
 conf_cxxt_probe_func ::tcflow 2 '#include <termios.h>'
 conf_cxxt_probe_const_val TCOOFF '#include <termios.h>'
 conf_cxxt_probe_const_val TCOON '#include <termios.h>'
@@ -107,6 +108,11 @@ conf_cxxt_probe_func ::prctl 2 '#include <sys/prctl.h>'
 conf_cxxt_probe_const_val PR_GET_DUMPABLE '#include <linux/prctl.h>'
 conf_cxxt_probe_const_val PR_SET_DUMPABLE '#include <linux/prctl.h>'
 #
+conf_cxxt_probe_impld_func ::mmap 6 "0, sysconf(_SC_PAGESIZE), PROT_READ, \
+    MAP_ANONYMOUS | MAP_PRIVATE, -1, (off_t)0" MAP_FAILED \
+    '#include <unistd.h>' '#include <sys/mman.h>'
+conf_cxxt_probe_func ::munmap 2 '#include <sys/mman.h>'
+conf_cxxt_probe_func ::mprotect 3 '#include <sys/mman.h>'
 conf_cxxt_probe_impld_func ::msync 3 '0, 0, MS_ASYNC' '-1' \
     '#include <sys/mman.h>'
 conf_cxxt_probe_const_val MS_ASYNC '#include <sys/mman.h>'

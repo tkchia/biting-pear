@@ -16,6 +16,7 @@ u8tl		[\x80-\xbf]
 %x Very
 %x Much
 %x Such
+%x So
 
 %{
 #include <cerrno>
@@ -312,7 +313,7 @@ static void flush_str()
 				 */
 				curr_fn = yytext + 1;
 				curr_fn.pop_back();
-				BEGIN(INITIAL);
+				BEGIN(So);
 			}
 <Very>\"([^\"\\\n]|\\.)*\\	|
 <Very>\"([^\"\\\n]|\\.)* {
@@ -407,6 +408,32 @@ static void flush_str()
 				blurt(yytext + 1, yyleng - 1);
 				flush_str();
 				blurt(">()", 3);
+				BEGIN(INITIAL);
+			}
+
+<So>{lws}4		{
+				/*
+				 * The `4' flag is causing problems when I
+				 * try to compile C++ template code for the
+				 * ia16-elf target.  Since `4' is a
+				 * deprecated feature anyway (according to
+				 * gcc 5.4.0 info), I might as well remove
+				 * instances of it...
+				 *
+				 * Anyway, from the cpp 5.4.0 info file:
+				 *
+				 *	"'4'
+				 *	"This indicates that the following
+				 *	 text should be treated as being
+				 *	 wrapped in an implicit 'extern "C"'
+				 *	 block."
+				 */
+				blurt(yytext, yyleng - 1);
+			}
+<So>{lws}{dd}+		{ blurt(yytext, yyleng); }
+<So>{lws}{any}		|
+<So>{lws}		{
+				blurt(yytext, yyleng);
 				BEGIN(INITIAL);
 			}
 

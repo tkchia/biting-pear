@@ -23,9 +23,9 @@ prefix_opts = \
     -Xinnocent-pear -exec-prefix=. \
     -Xinnocent-pear -target-prefix='$(conf_Srcdir)' \
     -Xinnocent-pear -target-exec-prefix=.
-wrap_cxx = bin/innocent-pear-c++
+wrap_cxx = bin/innocent-pear-c++$(conf_Host_exe_ext)
 wrap_cxx.staged = $(wrap_cxx) $(prefix_opts)
-wrap_cc = bin/innocent-pear-cc
+wrap_cc = bin/innocent-pear-cc$(conf_Host_exe_ext)
 wrap_cc.staged = $(wrap_cc) $(prefix_opts)
 CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET)
 CFLAGS_FOR_TARGET.test = $(CFLAGS_FOR_TARGET)
@@ -64,36 +64,47 @@ headers.target = \
     include/innocent-pear/yarly.h \
     include/innocent-pear/yodawg.h \
     $(config.h.target)
-tests.target = \
-    test/test-kthxbai \
-    test/test-kthxbai-p \
-    test/test-omg-wheee.debug \
-    test/test-omg-wheee \
-    test/test-omg-special.debug \
-    test/test-omg-special \
-    test/test-orly-1 \
-    test/test-orly-2 \
-    test/test-orly-3 \
-    test/test-dawg \
-    test/test-dawg-syn \
-    test/test-yodawg \
-    test/test-yodawg-syn \
-    test/test-orly-wut \
-    test/test-rofl-1 \
-    test/test-rofl-2 \
-    test/test-doge.debug \
-    test/test-doge \
-    test/test-doge-with-dawg \
-    test/test-doge-abs-reloc \
-    test/test-doge-eh \
-    test/test-doge-with-c
+ifneq "ia16-elf" "$(conf_Crosst_tag)"
+    tests.target = \
+	$(patsubst %,%$(conf_Target_exe_ext), \
+	    test/test-kthxbai \
+	    test/test-kthxbai-p \
+	    test/test-omg-wheee.debug \
+	    test/test-omg-wheee \
+	    test/test-omg-special.debug \
+	    test/test-omg-special \
+	    test/test-orly-1 \
+	    test/test-orly-2 \
+	    test/test-orly-3 \
+	    test/test-dawg \
+	    test/test-dawg-syn \
+	    test/test-yodawg \
+	    test/test-yodawg-syn \
+	    test/test-orly-wut \
+	    test/test-rofl-1 \
+	    test/test-rofl-2 \
+	    test/test-doge.debug \
+	    test/test-doge \
+	    test/test-doge-with-dawg \
+	    test/test-doge-abs-reloc \
+	    test/test-doge-eh \
+	    test/test-doge-with-c)
+else
+    tests.target = \
+	$(patsubst %,%$(conf_Target_exe_ext), \
+	    test/test-orly-1 \
+	    test/test-orly-2 \
+	    test/test-orly-3 \
+	    test/test-doge-with-c)
+endif
 utils.host = \
-    bin/innocent-pear-c++ \
-    bin/innocent-pear-cc \
-    bin/innocent-pear-doge \
-    bin/innocent-pear-dogecoin \
-    share/innocent-pear/calm \
-    share/innocent-pear/omnomnom
+    $(patsubst %,%$(conf_Host_exe_ext), \
+	bin/innocent-pear-c++ \
+	bin/innocent-pear-cc \
+	bin/innocent-pear-doge \
+	bin/innocent-pear-dogecoin \
+	share/innocent-pear/calm \
+	share/innocent-pear/omnomnom)
 modules.host = \
     bin/innocent-pear-c++.o \
     bin/innocent-pear-cc.o \
@@ -138,7 +149,7 @@ default all: $(installables.host) $(installables.target)
     install-host-files install-target-files \
     uninstall-host-files uninstall-target-files
 
-check: all $(tests.target:=.passed)
+check: all $(tests.target:$(conf_Target_exe_ext)=.passed)
 
 install: install-host-files install-target-files
 
@@ -389,6 +400,11 @@ endif
 		else \
 			echo '#undef innocent_pear_HAVE_IMPLD_FUNC_PTRACE'; \
 		fi; \
+		if test '$(conf_Have_cxxt_func__0ioctl)' = yes; then \
+			echo '#define innocent_pear_HAVE_FUNC_IOCTL 1'; \
+		else \
+			echo '#undef innocent_pear_HAVE_FUNC_IOCTL'; \
+		fi; \
 		if test '$(conf_Have_cxxt_func__0tcflow)' = yes; then \
 			echo '#define innocent_pear_HAVE_FUNC_TCFLOW 1'; \
 		else \
@@ -398,6 +414,26 @@ endif
 			echo '#define innocent_pear_HAVE_FUNC_PRCTL 1'; \
 		else \
 			echo '#undef innocent_pear_HAVE_FUNC_PRCTL'; \
+		fi; \
+		if test '$(conf_Have_cxxt_func__0mmap)' = yes; then \
+			echo '#define innocent_pear_HAVE_FUNC_MMAP 1'; \
+		else \
+			echo '#undef innocent_pear_HAVE_FUNC_MMAP'; \
+		fi; \
+		if test '$(conf_Have_cxxt_impld_func__0mmap)' = yes; then \
+			echo '#define innocent_pear_HAVE_IMPLD_FUNC_MMAP 1'; \
+		else \
+			echo '#undef innocent_pear_HAVE_IMPLD_FUNC_MMAP'; \
+		fi; \
+		if test '$(conf_Have_cxxt_func__0munmap)' = yes; then \
+			echo '#define innocent_pear_HAVE_FUNC_MUNMAP 1'; \
+		else \
+			echo '#undef innocent_pear_HAVE_FUNC_MUNMAP'; \
+		fi; \
+		if test '$(conf_Have_cxxt_func__0mprotect)' = yes; then \
+			echo '#define innocent_pear_HAVE_FUNC_MPROTECT 1'; \
+		else \
+			echo '#undef innocent_pear_HAVE_FUNC_MPROTECT'; \
 		fi; \
 		if test '$(conf_Have_cxxt_impld_func__0msync)' = yes; then \
 			echo '#define innocent_pear_HAVE_IMPLD_FUNC_MSYNC 1'; \
@@ -486,7 +522,8 @@ endif
 	mv $@.tmp $@
 
 # for debugging
-test/test-%.debug.passed: test/test-%.debug test/test-%.good
+test/test-%.debug.passed: test/test-%.debug$(conf_Target_exe_ext) \
+    test/test-%.good
 ifeq "yes" "$(conf_Have_appb_sed)"
 ifeq "yes" "$(conf_Have_appb_base64)"
 ifeq "yes" "$(conf_Have_appb_head)"
@@ -526,7 +563,7 @@ endif
 	@echo "* $< passed" >&2
 	@$(RM) $(@:.passed=.1.tmp)
 
-test/test-%.passed: test/test-% test/test-%.good
+test/test-%.passed: test/test-%$(conf_Target_exe_ext) test/test-%.good
 ifeq "yes" "$(conf_Have_appb_sed)"
 ifeq "yes" "$(conf_Have_appb_base64)"
 ifeq "yes" "$(conf_Have_appb_head)"
@@ -574,12 +611,12 @@ endif
 	@$(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp)
 
 # for debugging
-test/test-%.debug: test/test-%.debug.o
+test/test-%.debug$(conf_Target_exe_ext): test/test-%.debug.o
 	time $(conf_Host_exec) $(wrap_cxx.staged) -Xinnocent-pear -debug-doge \
 	    $(CXXFLAGS_FOR_TARGET.test) $(LDFLAGS_FOR_TARGET) -o$@ \
 	    $^ $(LDLIBS_FOR_TARGET)
 
-test/test-%: test/test-%.o
+test/test-%$(conf_Target_exe_ext): test/test-%.o
 	time $(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET.test) \
 	    $(LDFLAGS_FOR_TARGET) -o$@ $^ $(LDLIBS_FOR_TARGET)
 
@@ -590,7 +627,7 @@ test/test-%.o: test/test-%.c
 # for debugging
 test/test-%.debug.o: test/test-%.cc
 
-test/test-orly-wut \
+test/test-orly-wut$(conf_Target_exe_ext) \
 test/test-orly-wut.o \
 test/test-orly-wut.s : state = 0x293c42fc93032e55
 
@@ -598,61 +635,64 @@ test/test-orly-wut.o \
 test/test-orly-wut.s : \
     CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -DSTATE=$(state)
 
-test/test-orly-wut: test/test-orly-wut.o test/test-orly-wut.ld \
-    bin/innocent-pear-doge
+test/test-orly-wut$(conf_Target_exe_ext): test/test-orly-wut.o \
+    test/test-orly-wut.ld bin/innocent-pear-doge$(conf_Host_exe_ext)
 	time $(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
 	    $(LDFLAGS_FOR_TARGET) -o$@.tmp $(filter %.o %.ld,$^) \
 	    $(LDLIBS_FOR_TARGET)
-	bin/innocent-pear-doge $@.tmp $@ __doge_start __doge_end $(state) -v
+	bin/innocent-pear-doge$(conf_Host_exe_ext) $@.tmp $@ \
+	    __doge_start __doge_end $(state) -v
 	$(RM) $@.tmp
 
-test/test-doge.debug \
+test/test-doge.debug$(conf_Target_exe_ext) \
 test/test-doge.debug.o \
 test/test-doge.debug.s : \
     CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge -v
 
-test/test-doge-abs-reloc.debug \
+test/test-doge-abs-reloc.debug$(conf_Target_exe_ext) \
 test/test-doge-abs-reloc.debug.o \
 test/test-doge-abs-reloc.debug.s \
-test/test-doge-eh.debug \
+test/test-doge-eh.debug$(conf_Target_exe_ext) \
 test/test-doge-eh.debug.o \
 test/test-doge-eh.debug.s : \
     CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge \
 	-time
 
-test/test-doge \
+test/test-doge$(conf_Target_exe_ext) \
 test/test-doge.o \
 test/test-doge.s \
-test/test-doge-with-c \
+test/test-doge-with-c$(conf_Target_exe_ext) \
 test/test-doge-with-c.o \
 test/test-doge-with-c.s \
-test/test-doge-with-dawg \
+test/test-doge-with-dawg$(conf_Target_exe_ext) \
 test/test-doge-with-dawg.o \
 test/test-doge-with-dawg.s \
-test/test-doge-abs-reloc \
+test/test-doge-abs-reloc$(conf_Target_exe_ext) \
 test/test-doge-abs-reloc.o \
 test/test-doge-abs-reloc.s \
-test/test-doge-eh \
+test/test-doge-eh$(conf_Target_exe_ext) \
 test/test-doge-eh.o \
 test/test-doge-eh.s : \
     CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge \
 	-s -time
 
-test/test-doge-with-c \
+test/test-doge-with-c$(conf_Target_exe_ext) \
 test/test-doge-with-c.o \
 test/test-doge-with-c.s : \
     CFLAGS_FOR_TARGET.test = $(CFLAGS_FOR_TARGET) -Xinnocent-pear -doge \
 	-s -time
 
-test/test-doge-eh: test/test-doge-eh.o test/test-doge-eh.sub.o
+test/test-doge-eh$(conf_Target_exe_ext): test/test-doge-eh.o \
+    test/test-doge-eh.sub.o
 
-test/test-doge-eh.debug: test/test-doge-eh.debug.o \
+test/test-doge-eh.debug$(conf_Target_exe_ext): test/test-doge-eh.debug.o \
     test/test-doge-eh.sub.debug.o
 
 define preproc_for_host
 	mkdir -p $(@D)
 	time $(CXX) -E -x c++ $(CPPFLAGS) $(CXXFLAGS) -o$@.tmp $<
-	time $(conf_Host_exec) share/innocent-pear/omnomnom <$@.tmp >$@.2.tmp
+	time $(conf_Host_exec) \
+	    share/innocent-pear/omnomnom$(conf_Host_exe_ext) <$@.tmp >$@.2.tmp
 	mv $@.2.tmp $@
 	$(RM) $@.tmp
 endef
@@ -663,25 +703,27 @@ define keccak_cp
 	mv $@.tmp $@
 endef
 
-bin/innocent-pear-c++: bin/innocent-pear-c++.o share/innocent-pear/epic.o \
-    share/innocent-pear/keyboard.o share/innocent-pear/moar.o \
-    share/innocent-pear/sleepier.o infra/keccak/KeccakPRG.o \
-    infra/keccak/KeccakDuplex.o infra/keccak/KeccakP-1600-reference.o
+bin/innocent-pear-c++$(conf_Host_exe_ext): bin/innocent-pear-c++.o \
+    share/innocent-pear/epic.o share/innocent-pear/keyboard.o \
+    share/innocent-pear/moar.o share/innocent-pear/sleepier.o \
+    infra/keccak/KeccakPRG.o infra/keccak/KeccakDuplex.o \
+    infra/keccak/KeccakP-1600-reference.o
 
-bin/innocent-pear-cc: bin/innocent-pear-cc.o share/innocent-pear/epic.o \
-    share/innocent-pear/keyboard.o share/innocent-pear/moar.o \
-    share/innocent-pear/sleepier.o infra/keccak/KeccakPRG.o \
-    infra/keccak/KeccakDuplex.o infra/keccak/KeccakP-1600-reference.o
+bin/innocent-pear-cc$(conf_Host_exe_ext): bin/innocent-pear-cc.o \
+    share/innocent-pear/epic.o share/innocent-pear/keyboard.o \
+    share/innocent-pear/moar.o share/innocent-pear/sleepier.o \
+    infra/keccak/KeccakPRG.o infra/keccak/KeccakDuplex.o \
+    infra/keccak/KeccakP-1600-reference.o
 
-bin/innocent-pear-doge: bin/innocent-pear-doge.o \
+bin/innocent-pear-doge$(conf_Host_exe_ext): bin/innocent-pear-doge.o \
     share/innocent-pear/epic.o share/innocent-pear/lolrus.o \
     share/innocent-pear/sleepier.o
 
-bin/innocent-pear-dogecoin: bin/innocent-pear-dogecoin.o \
+bin/innocent-pear-dogecoin$(conf_Host_exe_ext): bin/innocent-pear-dogecoin.o \
     share/innocent-pear/epic.o share/innocent-pear/lolrus.o \
     share/innocent-pear/sleepier.o
 
-share/innocent-pear/calm: share/innocent-pear/calm.o \
+share/innocent-pear/calm$(conf_Host_exe_ext): share/innocent-pear/calm.o \
     share/innocent-pear/epic.o share/innocent-pear/keyboard.o \
     share/innocent-pear/sleepier.o
 
@@ -693,6 +735,7 @@ $(foreach m,$(modules.host), \
 #
 bin/%.ii share/innocent-pear/%.ii infra/keccak/%.ii: \
     CPPFLAGS += -Dinnocent_pear_HOST_PREFIX=\"$(conf_Prefix)\" \
+		-Dinnocent_pear_HOST_EXE_EXT=\"$(conf_Host_exe_ext)\" \
 		-Dinnocent_pear_TARGET_PREFIX=\"$(conf_Target_prefix)\" \
 		-Dinnocent_pear_CC_FOR_TARGET=\"$(CC_FOR_TARGET)\" \
 		-Dinnocent_pear_CXX_FOR_TARGET=\"$(CXX_FOR_TARGET)\" \
@@ -717,7 +760,7 @@ bin/%.ii share/innocent-pear/%.ii infra/keccak/%.ii: \
 		    -Dinnocent_pear_LIBSTDCXX_CXX_TARGET, \
 		    -Uinnocent_pear_LIBSTDCXX_CXX_TARGET)
 
-bin/%: bin/%.o
+bin/%$(conf_Host_exe_ext): bin/%.o
 	time $(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)
 
 # for debugging
@@ -731,10 +774,11 @@ bin/%.o: bin/%.ii
 	time $(CXX) $(CXXFLAGS) -c -o$@ $<
 
 bin/%.ii: bin/%.cc $(headers.host) $(headers.target) \
-    share/innocent-pear/calm share/innocent-pear/omnomnom
+    share/innocent-pear/calm$(conf_Host_exe_ext) \
+    share/innocent-pear/omnomnom$(conf_Host_exe_ext)
 	$(preproc_for_host)
 
-share/innocent-pear/%: share/innocent-pear/%.o
+share/innocent-pear/%$(conf_Host_exe_ext): share/innocent-pear/%.o
 	time $(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)
 
 share/innocent-pear/%.o: share/innocent-pear/%.ii
@@ -755,7 +799,7 @@ share/innocent-pear/moar.ii: share/innocent-pear/moar.cc $(headers.host)
 	time $(CXX) -E -x c++ $(CPPFLAGS) $(CXXFLAGS) -o$@ $<
 
 share/innocent-pear/%.ii: share/innocent-pear/%.cc $(headers.host) \
-    $(headers.target) share/innocent-pear/omnomnom
+    $(headers.target) share/innocent-pear/omnomnom$(conf_Host_exe_ext)
 	$(preproc_for_host)
 
 infra/keccak/%.ii : CPPFLAGS += -DKeccakP200_excluded \
@@ -766,10 +810,10 @@ infra/keccak/%.ii: infra/keccak/%.cc $(headers.keccak.host)
 	mkdir -p $(@D)
 	time $(CXX) -E -x c++ $(CPPFLAGS) $(CXXFLAGS) -o$@ $<
 
-share/innocent-pear/omnomnom: share/innocent-pear/omnomnom.cc \
-    share/innocent-pear/moar.o infra/keccak/KeccakPRG.o \
-    infra/keccak/KeccakDuplex.o infra/keccak/KeccakP-1600-reference.o \
-    $(config.h.host)
+share/innocent-pear/omnomnom$(conf_Host_exe_ext): \
+    share/innocent-pear/omnomnom.cc share/innocent-pear/moar.o \
+    infra/keccak/KeccakPRG.o infra/keccak/KeccakDuplex.o \
+    infra/keccak/KeccakP-1600-reference.o $(config.h.host)
 	mkdir -p $(@D)
 	time $(CXX) $(CPPFLAGS) $(CXXFLAGS) -o$@ $(filter-out %.h,$^)
 
@@ -795,7 +839,13 @@ share/innocent-pear/omnomnom: share/innocent-pear/omnomnom.cc \
 	time $(conf_Host_exec) $(wrap_cxx.staged) $(CPPFLAGS_FOR_TARGET) \
 	    $(CXXFLAGS_FOR_TARGET.test) -S -o$@ $<
 
-share/innocent-pear/%: share/innocent-pear/%.cc
+# for debugging
+%.ii: %.cc $(headers.target) $(installables.host)
+	mkdir -p $(@D)
+	time $(conf_Host_exec) $(wrap_cxx.staged) $(CPPFLAGS_FOR_TARGET) \
+	    $(CXXFLAGS_FOR_TARGET.test) -E -o$@ $<
+
+share/innocent-pear/%$(conf_Host_exe_ext): share/innocent-pear/%.cc
 	mkdir -p $(@D)
 	time $(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) -o$@ $< $(LDLIBS)
 
@@ -839,4 +889,4 @@ infra/keccak/KeccakP-1600-reference.cc: \
 .PHONY: test/test-%.passed test/test-%.debug.passed
 
 .PRECIOUS: config.cache %.ii %.cc %.s %.debug %.debug.o %.o bin/%.o \
-    share/innocent-pear/%.o helper/% $(tests.target) $(installables.host)
+    share/innocent-pear/%.o $(tests.target) $(installables.host)

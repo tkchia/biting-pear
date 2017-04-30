@@ -1,3 +1,42 @@
+2017-04-30	Towards ia16-elf-g++...  "../test/test-orly-1.cc:31:1:
+		internal compiler error: Max. number of generated reload
+		insns per insn is achieved (90)"
+
+		configure :
+		- now tests if mmap(...) is implemented and if ioctl(...),
+		  munmap(...), and/or mprotect(...) are defined
+
+		GNUmakefile :
+		- now uses $(conf_Host_exe_ext) and $(conf_Target_exe_ext)
+		- now disables most test cases for ia16-elf target
+		- now writes results of ioctl(...), mmap(...), munmap(...),
+		  and mprotect(...) tests to $(config.h.target)
+		- now compiles front-end code with innocent_pear_HOST_EXE_EXT
+		  defined
+
+		include/innocent-pear/rofl.h :
+		- rofl<...>::open(...) fallback implementation now explicitly
+		  refers to &::open rather than &open, and so on
+		- fixed fallback implementation of rofl<...>::memset(.)
+		- each of ioctl(...), mmap(...), munmap(...), and mprotect
+		  (...) in rofl<...> now gives ENOSYS if undefined or
+		  unimplemented
+		- rofl<...>::mmap(...) now uses (void *)-1 if MAP_FAILED is
+		  absent
+
+		bin/innocent-pear-front-end.tcc :
+		- now uses innocent_pear_HOST_EXE_EXT
+
+		share/innocent-pear/omnomnom.lxx :
+		- added hack to remove instances of `4' flag from end of
+		  #line directives, which were causing problem for ia16-elf
+
+		lolwutconf/ :
+		- bumped to d39383d022
+
+		infra/lolwutconf.tar.xz :
+		- updated
+
 2017-04-29	"Without life, Biology itself would be impossible."
 
 		include/innocent-pear/rofl.h :

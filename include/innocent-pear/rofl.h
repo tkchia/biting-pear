@@ -6,7 +6,16 @@
 #include <cstring>
 #include <ctime>
 #include <type_traits>
-#include <sys/mman.h>
+#include <sys/fcntl.h>
+#if defined innocent_pear_HAVE_FUNC_IOCTL
+#   include <sys/ioctl.h>
+#endif
+#if defined innocent_pear_HAVE_FUNC_MMAP || \
+    defined innocent_pear_HAVE_FUNC_MUNMAP || \
+    defined innocent_pear_HAVE_FUNC_MPROTECT || \
+    defined innocent_pear_HAVE_FUNC_MSYNC
+#   include <sys/mman.h>
+#endif
 #include <innocent-pear/bbq.h>
 #include <innocent-pear/kthxbai.h>
 #include <innocent-pear/omg.h>
@@ -648,11 +657,13 @@ class rofl_impl_mprotect :
 #elif defined __linux__ && defined __amd64__
 		typename super::syscall_ret ret
 		    (super::syscall(10, addr, len, prot));
-#else
+#elif defined innocent_pear_HAVE_FUNC_MPROTECT
 		int rv = (kthxbai<super::NewState2,
 		    innocent_pear_decltype(&mprotect),
-		    Flags, Levels>(mprotect))(addr, len, prot);
+		    Flags, Levels>(::mprotect))(addr, len, prot);
 		typename super::syscall_ret ret(rv, errno);
+#else
+		typename super::syscall_ret ret(-1, ENOSYS);
 #endif
 #ifdef innocent_pear_DEBUG
 		std::fprintf(stderr, " = %ld; %d\n", (long)ret, ret.err());
@@ -687,6 +698,8 @@ class rofl_impl_memset :
     virtual public rofl_impl_base<State, Levels>,
     virtual public rofl_impl_clear_cache<State, Flags, Levels>
 {
+	typedef rofl_impl_base<State, Levels> super;
+	typedef rofl_impl_clear_cache<State, Flags, Levels> super2;
     public:
 	innocent_pear_always_inline
 	static void memset(void *s)
@@ -752,8 +765,7 @@ class rofl_impl_memset :
 		super2::clear_cache(s, foo);
 #   undef innocent_pear_T16_INSN
 #else
-		innocent_pear::kthxbai<NewState,
-		    innocent_pear_decltype(&std::memset),
+		kthxbai<super::NewState, innocent_pear_decltype(&std::memset),
 		    Flags, Levels> f(std::memset);
 		/* A rather slippery method.  But it works.  So far. */
 		f(s, 0, (char *)&&foo - (char *)s);
@@ -783,8 +795,8 @@ class rofl_impl_ptrace :
 	ptrace_lib(Ts... xs)
 	{
 		long rv = (kthxbai<super::NewState2,
-		    innocent_pear_decltype(&ptrace), Flags, Levels>
-		    (ptrace))(xs...);
+		    innocent_pear_decltype(&::ptrace), Flags, Levels>
+		    (::ptrace))(xs...);
 		return typename super::syscall_ret(rv, errno);
 	}
 #endif
@@ -876,7 +888,8 @@ class rofl_impl_getpid :
 		return super::syscall(39);
 #else
 		int rv = (kthxbai<super::NewState2,
-		    innocent_pear_decltype(&getpid), Flags, Levels>(getpid))();
+		    innocent_pear_decltype(&::getpid), Flags, Levels>
+		    (::getpid))();
 		return typename super::syscall_ret(rv, errno);
 #endif
 	}
@@ -897,8 +910,8 @@ class rofl_impl_getppid :
 		return super::syscall(110);
 #else
 		int rv = (kthxbai<super::NewState2,
-		    innocent_pear_decltype(&getppid), Flags, Levels>
-		    (getppid))();
+		    innocent_pear_decltype(&::getppid), Flags, Levels>
+		    (::getppid))();
 		return typename super::syscall_ret(rv, errno);
 #endif
 	}
@@ -919,7 +932,7 @@ class rofl_impl_kill :
 		return super::syscall(62, pid, sig);
 #else
 		int rv = (kthxbai<super::NewState2,
-		    innocent_pear_decltype(&kill), Flags, Levels>(kill))
+		    innocent_pear_decltype(&::kill), Flags, Levels>(::kill))
 		    (pid, sig);
 		return typename super::syscall_ret(rv, errno);
 #endif
@@ -962,11 +975,13 @@ class rofl_impl_ioctl :
 		return super::syscall(54, fd, req, args...);
 #elif defined __linux__ && defined __amd64__
 		return super::syscall(16, fd, req, args...);
-#else
+#elif defined innocent_pear_HAVE_FUNC_IOCTL
 		int rv = (kthxbai<super::NewState2,
-		    int (*)(int, unsigned long, ...), Flags, Levels>
-		    (ioctl))(fd, req, args...);
+		    innocent_pear_decltype(&::ioctl), Flags, Levels>(::ioctl))
+		    (fd, req, args...);
 		return typename super::syscall_ret(rv, errno);
+#else
+		return typename super::syscall_ret(-1, ENOSYS);
 #endif
 	}
 };
@@ -1027,8 +1042,9 @@ class rofl_impl_tcflow :
 		if (__builtin_constant_p(fd))
 			fd = kthxbai<super::NewState4, unsigned, Flags,
 			    Levels ? Levels - 1 : 0>((unsigned)fd);
-		int rv = (kthxbai<super::NewState2, int (*)(int, int),
-		    Flags, Levels>(tcflow))(fd, action);
+		int rv = (kthxbai<super::NewState2,
+		    innocent_pear_decltype(&::tcflow), Flags, Levels>
+		    (::tcflow))(fd, action);
 		return typename super::syscall_ret(rv, errno);
 #   else
 		return typename super::syscall_ret(-1, ENOSYS);
@@ -1056,7 +1072,7 @@ class rofl_impl_open :
 		return super::syscall(1024, pathname, flags, args...);
 #else
 		int rv = (kthxbai<super::NewState2,
-		    int (*)(int, unsigned long, ...), Flags, Levels>(open))
+		    innocent_pear_decltype(&::open), Flags, Levels>(::open))
 		    (pathname, flags, args...);
 		return typename super::syscall_ret(rv, errno);
 #endif
@@ -1081,7 +1097,7 @@ class rofl_impl_close :
 		return super::syscall(57, fd);
 #else
 		int rv = (kthxbai<super::NewState2,
-		    int (*)(int, unsigned long, ...), Flags, Levels>(close))
+		    innocent_pear_decltype(&::close), Flags, Levels>(::close))
 		    (fd);
 		return typename super::syscall_ret(rv, errno);
 #endif
@@ -1104,8 +1120,9 @@ class rofl_impl_time :
 #elif defined __linux__ && defined __aarch64__
 		return super::syscall(1062, tp);
 #else
-		int rv = (kthxbai<super::NewState2, time_t (*)(time_t *),
-		    Flags, Levels>(time))(tp);
+		int rv = (kthxbai<super::NewState2,
+		    innocent_pear_decltype(&std::time), Flags, Levels>
+		    (std::time))(tp);
 		return typename super::syscall_ret(rv, errno);
 #endif
 	}
@@ -1149,7 +1166,7 @@ class rofl_impl_prctl :
 		return super::syscall(167, option, arg2);
 #elif defined innocent_pear_HAVE_FUNC_PRCTL
 		int rv = (kthxbai<super::NewState2,
-		    int (*)(int, unsigned long, ...), Flags, Levels>(prctl))
+		    innocent_pear_decltype(&::prctl), Flags, Levels>(::prctl))
 		    (option, arg2);
 		return typename super::syscall_ret(rv, errno);
 #else
@@ -1180,7 +1197,7 @@ class rofl_impl_msync :
 		return super::syscall(26, addr, length, flags);
 #elif defined innocent_pear_HAVE_IMPLD_FUNC_MSYNC
 		int rv = (kthxbai<super::NewState2,
-		    innocent_pear_decltype(&msync), Flags, Levels>(msync))
+		    innocent_pear_decltype(&::msync), Flags, Levels>(::msync))
 		    (addr, length);
 		return typename super::syscall_ret(rv, errno);
 #else
@@ -1218,8 +1235,8 @@ class rofl_impl_getpagesize :
 		return s;
 #else
 		long rv = (kthxbai<super::NewState2,
-		    innocent_pear_decltype(&sysconf), Flags, Levels>(sysconf))
-		    (_SC_PAGESIZE);
+		    innocent_pear_decltype(&::sysconf), Flags, Levels>
+		    (::sysconf))(_SC_PAGESIZE);
 		return (std::size_t)rv;
 #endif
 	}
@@ -1235,6 +1252,11 @@ class rofl_impl_mmap :
 	static typename super::syscall_mmap_ret mmap(void *addr,
 	    std::size_t length, int prot, int flags, int fd, off_t off)
 	{
+#ifdef MAP_FAILED
+		const void *failed = MAP_FAILED;
+#else
+		const void *failed = (void *)-1;
+#endif
 		if (__builtin_constant_p(prot))
 			prot = kthxbai<super::NewState3, unsigned, Flags,
 			    Levels ? Levels - 1 : 0>((unsigned)prot);
@@ -1247,12 +1269,12 @@ class rofl_impl_mmap :
 #if defined __linux__ && (defined __i386__ || defined __arm__)
 		/* Use mmap2(...) syscall. */
 		if (off % 4096 != 0)
-			return typename super::syscall_mmap_ret(MAP_FAILED,
+			return typename super::syscall_mmap_ret(failed,
 			    EINVAL);
 		off_t pg = off / 4096;
 		uintptr_t upg = (uintptr_t)pg;
 		if (pg != upg)
-			return typename super::syscall_mmap_ret(MAP_FAILED,
+			return typename super::syscall_mmap_ret(failed,
 			    EINVAL);
 		if (__builtin_constant_p(upg))
 			upg = kthxbai<super::NewState5, uintptr_t, Flags,
@@ -1266,11 +1288,13 @@ class rofl_impl_mmap :
 #   if defined __linux__ && defined __amd64__
 		return typename super::syscall_mmap_ret(super::syscall(9,
 		    addr, length, prot, flags, fd, off));
-#   else
+#   elif defined innocent_pear_HAVE_FUNC_MMAP
 		void *rv = (kthxbai<super::NewState2,
-		    innocent_pear_decltype(&mmap), Flags, Levels>(mmap))(addr,
-		    length, prot, flags, fd, off);
+		    innocent_pear_decltype(&::mmap), Flags, Levels>(::mmap))
+		    (addr, length, prot, flags, fd, off);
 		return typename super::syscall_mmap_ret(rv, errno);
+#   else
+		return typename super::syscall_map_ret(failed, ENOSYS);
 #   endif
 #endif
 	}
@@ -1290,11 +1314,13 @@ class rofl_impl_munmap :
 		return super::syscall(91, addr, length);
 #elif defined __linux__ && defined __amd64__
 		return super::syscall(11, addr, length);
-#else
+#elif defined innocent_pear_HAVE_FUNC_MUNMAP
 		int rv = (kthxbai<super::NewState2,
-		    innocent_pear_decltype(&munmap), Flags, Levels>(munmap))
-		    (addr, length);
+		    innocent_pear_decltype(&::munmap), Flags, Levels>
+		    (::munmap))(addr, length);
 		return typename super::syscall_ret(rv, errno);
+#else
+		return typename super::syscall_ret(-1, ENOSYS);
 #endif
 	}
 };
