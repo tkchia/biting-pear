@@ -25,6 +25,12 @@
 		- now tests for syscall(...), getpid(), getppid(), and
 		  kill(...)
 
+		lolwutconf/ :
+		- bumped to c71c870347
+
+		infra/lolwutconf.tar.xz :
+		- updated
+
 2017-04-30	Towards ia16-elf-g++...  "../test/test-orly-1.cc:31:1:
 		internal compiler error: Max. number of generated reload
 		insns per insn is achieved (90)"
