@@ -68,7 +68,7 @@ class kthxbai_impl<State, T, Flags, 0u>
 	kthxbai_impl(T& x, T v)
 	{
 		switch ((State2 >> 32) % 8) {
-#ifdef __i386__
+#if defined __i386__
 		    case 0:
 			if (sizeof(T) <= sizeof(uintptr_t)) {
 				uintptr_t y;
@@ -100,6 +100,41 @@ class kthxbai_impl<State, T, Flags, 0u>
 				    : "nr" ((uintptr_t)v),
 				      "n" ((unsigned)((State3 >> 32) & 0xf)),
 				      "n" ((unsigned)((State2 >> 48) & 0x1ff)),
+				      "n" ((unsigned)((State3 >> 48) & 0xf))
+				    : "memory");
+				x = (T)y;
+				break;
+			} // else fall through
+#elif defined __ia16__
+		    case 0:
+			if (sizeof(T) <= sizeof(uintptr_t)) {
+				uintptr_t y;
+				__asm __volatile(
+				    ".ifnc \"%0\", \"%1\"; "
+				    innocent_pear_X86_PREFIX(2) "pushw %1; "
+				    innocent_pear_X86_PREFIX(3) "popw %0; "
+				    ".endif"
+				    : "=r" (y)
+				    : "r" ((uintptr_t)v),
+				      "n" ((unsigned)((State3 >> 32) & 0xf)),
+				      "n" ((unsigned)((State3 >> 48) & 0xf))
+				    : "memory");
+				x = (T)y;
+				break;
+			}
+			if (false)
+		    case 1:
+			if (sizeof(T) <= sizeof(uintptr_t)) {
+				volatile uintptr_t vv = v;
+				uintptr_t y;
+				__asm __volatile(
+				    ".ifnc \"%0\", \"%1\"; "
+				    "pushw %1; "
+				    innocent_pear_X86_PREFIX(3) "popw %0; "
+				    ".endif"
+				    : "=r" (y)
+				    : "m" (vv),
+				      "n" ((unsigned)((State3 >> 32) & 0xf)),
 				      "n" ((unsigned)((State3 >> 48) & 0xf))
 				    : "memory");
 				x = (T)y;

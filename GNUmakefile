@@ -92,6 +92,7 @@ ifneq "ia16-elf" "$(conf_Crosst_tag)"
 else
     tests.target = \
 	$(patsubst %,%$(conf_Target_exe_ext), \
+	    test/test-kthxbai-p \
 	    test/test-orly-1 \
 	    test/test-orly-2 \
 	    test/test-orly-3 \
@@ -400,6 +401,26 @@ endif
 		else \
 			echo '#undef innocent_pear_HAVE_IMPLD_FUNC_PTRACE'; \
 		fi; \
+		if test '$(conf_Have_cxxt_func__0getpid)' = yes; then \
+			echo '#define innocent_pear_HAVE_FUNC_GETPID 1'; \
+		else \
+			echo '#undef innocent_pear_HAVE_FUNC_GETPID'; \
+		fi; \
+		if test '$(conf_Have_cxxt_func__0getppid)' = yes; then \
+			echo '#define innocent_pear_HAVE_FUNC_GETPPID 1'; \
+		else \
+			echo '#undef innocent_pear_HAVE_FUNC_GETPPID'; \
+		fi; \
+		if test '$(conf_Have_cxxt_func__0kill)' = yes; then \
+			echo '#define innocent_pear_HAVE_FUNC_KILL 1'; \
+		else \
+			echo '#undef innocent_pear_HAVE_FUNC_KILL'; \
+		fi; \
+		if test '$(conf_Have_cxxt_func__0syscall)' = yes; then \
+			echo '#define innocent_pear_HAVE_FUNC_SYSCALL 1'; \
+		else \
+			echo '#undef innocent_pear_HAVE_FUNC_SYSCALL'; \
+		fi; \
 		if test '$(conf_Have_cxxt_func__0ioctl)' = yes; then \
 			echo '#define innocent_pear_HAVE_FUNC_IOCTL 1'; \
 		else \
@@ -473,6 +494,11 @@ endif
 			echo '#define innocent_pear_HAVE_FUNC_FDATASYNC 1'; \
 		else \
 			echo '#undef innocent_pear_HAVE_FUNC_FDATASYNC'; \
+		fi; \
+		if test '$(conf_Have_cxx_func__0syscall)' = yes; then \
+			echo '#define innocent_pear_HAVE_FUNC_SYSCALL 1'; \
+		else \
+			echo '#undef innocent_pear_HAVE_FUNC_SYSCALL'; \
 		fi; \
 		if test '$(conf_Have_cxxt_opt_fno_integrated_as)' = yes; then \
 			echo '#define' \
@@ -595,14 +621,16 @@ endif
 	     echo "* $< exited with error: $$res" >&2 && \
 	     $(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
 	     exit 1)
+ifneq "ia16-elf" "$(conf_Crosst_tag)"
 	@LANG=en_US.UTF-8 diff -U2 /dev/null $(@:.passed=.2.tmp) || \
 	    (echo "* base64 dump of xz'd $< :" >&2 && \
 	     xz -9c <'$<' | base64 | sed 's,^,*  ,' && \
 	     echo "* $< produced output on stderr" >&2 && \
 	     $(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
 	     exit 1)
+endif
 	@LANG=en_US.UTF-8 diff -U2 $(word 2,$+) $(@:.passed=.1.tmp) || \
-	    (echo "* base64 dump of $< :" >&2 && \
+	    (echo "* base64 dump of xz'd $< :" >&2 && \
 	     xz -9c <'$<' | base64 | sed 's,^,*  ,' && \
 	     echo "* $<'s expected output and actual output differ" >&2 && \
 	     $(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \

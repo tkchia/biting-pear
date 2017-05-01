@@ -77,8 +77,15 @@ class yarly_impl_2<State, T, true, Flags, Levels> :
 	innocent_pear_always_inline
 	T owl()
 	{
+#ifndef __ia16__
+		constexpr unsigned Sublevels = 2u;
+#else
+		constexpr unsigned Sublevels = (super::State5 >> 32) % 2u;
+		if (!Sublevels)
+			return super::DefRetVal;
+#endif
 		T y;
-		kthxbai_impl<super::State12, T, Flags, 2u>(y,
+		kthxbai_impl<super::State12, T, Flags, Sublevels>(y,
 		    super::DefRetVal);
 		return y;
 	}

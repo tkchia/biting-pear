@@ -780,6 +780,7 @@ omg
 				}
 			}
 			break;
+#ifdef innocent_pear_HAVE_FUNC_GETPPID
 		    case 7:
 		    case 8:
 			if (!(Flags & allow_signal_safes)) {
@@ -787,6 +788,8 @@ omg
 				break;
 			}
 			if (false)
+#endif
+#ifdef innocent_pear_HAVE_FUNC_GETPID
 		    case 9:
 		    case 10:
 			if (!(Flags & allow_signal_safes)) {
@@ -794,6 +797,7 @@ omg
 				break;
 			}
 			if (false)
+#endif
 		    case 11:
 		    case 12:
 			if (!(Flags & allow_signal_safes)) {

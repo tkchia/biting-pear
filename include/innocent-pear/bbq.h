@@ -338,6 +338,29 @@ using ops::ops_flags_t;
 #	    define innocent_pear_X86_PREFIXED_PUSH(o, p, q) "pushl %" #q "; "
 #	endif
 #   endif
+#elif defined __ia16__
+#   ifdef __OPTIMIZE__
+#	define innocent_pear_X86_PREFIX(o) \
+		".if 0 == %c" #o "; " \
+			".byte 0x26; "	/* %es: */ \
+		".elseif 1 == %c" #o "; " \
+			".byte 0x2e; "	/* %cs: */ \
+		".elseif 2 == %c" #o "; " \
+			".byte 0x36; "	/* %ss: */ \
+		".elseif 3 == %c" #o "; " \
+			".byte 0x3e; "	/* %ds: */ \
+		".endif; "
+#	define innocent_pear_X86_BR_PREFIX(o) \
+		innocent_pear_X86_PREFIX(o) \
+		".if 6 == %c" #o "; " \
+			"repz; " \
+		".elseif 7 == %c" #o "; " \
+			"repnz; " \
+		".endif; "
+#    else
+#	define innocent_pear_X86_PREFIX(o) ""
+#	define innocent_pear_X86_BR_PREFIX(o) ""
+#    endif
 #endif
 
 #endif

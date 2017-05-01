@@ -1,3 +1,30 @@
+2017-05-01	"leavedos(Interp86|3056) called - shutting down"
+
+		configure :
+		- now tests for syscall(...) host-side, and syscall(...),
+		  getpid(), getppid(), and kill(...) target-side
+
+		GNUmakefile :
+		- now tests for syscall(...) host-side, and syscall(...),
+		  getpid(), getppid(), and kill(...) target-side
+		- added test-kthxbai-p test case to ia16-elf tests
+
+		include/innocent-pear/yarly.h :
+		- now reduces scrambling layers when compiling for ia16-elf
+
+		include/innocent-pear/bbq.h :
+		- added definitions of internal macros innocent_pear_X86_
+		  PREFIX(.) and innocent_pear_X86_BR_PREFIX(.) for ia16-elf
+
+		include/innocent-pear/kthxbai.h :
+		- now implements kthxbai_impl<, , , 0u> for ia16-elf
+
+		include/innocent-pear/rofl.h ,
+		include/innocent-pear/omg.h ,
+		include/innocent-pear/unpossible.h :
+		- now tests for syscall(...), getpid(), getppid(), and
+		  kill(...)
+
 2017-04-30	Towards ia16-elf-g++...  "../test/test-orly-1.cc:31:1:
 		internal compiler error: Max. number of generated reload
 		insns per insn is achieved (90)"

@@ -68,6 +68,7 @@ conf_cxx_probe_func ::mbrtoc32 4 '#include <uchar.h>'
 conf_cxx_probe_func ::mbrtowc 4 '#include <wchar.h>'
 conf_cxx_probe_func ::secure_getenv 1 '#include <cstdlib>'
 conf_cxx_probe_func ::fdatasync 1 '#include <unistd.h>'
+conf_cxx_probe_func ::syscall 2 '#include <sys/syscall.h>'
 conf_bfd_chk_exists
 conf_bfd_chk_strip
 conf_bfd_strip_probe_opt_strip_all
@@ -96,7 +97,12 @@ conf_cxxt_probe_const PT_READ_U \
     '#include <sys/types.h>' '#include <sys/ptrace.h>'
 #  .
 # .:
+conf_cxxt_probe_func ::getpid 0 '#include <sys/types.h>' '#include <unistd.h>'
+conf_cxxt_probe_func ::getppid 0 '#include <sys/types.h>' '#include <unistd.h>'
+conf_cxxt_probe_func ::kill 0 '#include <sys/types.h>' '#include <signal.h>'
+conf_cxxt_probe_func ::syscall 2 '#include <sys/syscall.h>'
 conf_cxxt_probe_func ::ioctl 3 '#include <sys/ioctl.h>'
+#
 conf_cxxt_probe_func ::tcflow 2 '#include <termios.h>'
 conf_cxxt_probe_const_val TCOOFF '#include <termios.h>'
 conf_cxxt_probe_const_val TCOON '#include <termios.h>'

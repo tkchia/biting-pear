@@ -149,11 +149,15 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 	innocent_pear_always_inline
 	static syscall_ret use_libc_syscall(long scno, Ts... xs)
 	{
+#ifdef innocent_pear_HAVE_FUNC_SYSCALL
 		typedef rofl_impl_base<State, Levels> super;
 		kthxbai<super::NewState, long (*)(long, ...), Flags, Levels>
 		    scf(libc_syscall);
 		long rv = scf(re_scno(scno), xs...);
 		return syscall_ret(rv, errno);
+#else
+		return syscall_ret(-1, ENOSYS);
+#endif
 	}
 #ifdef __linux__
 	innocent_pear_always_inline
@@ -886,11 +890,13 @@ class rofl_impl_getpid :
 		return super::syscall(20);
 #elif defined __linux__ && defined __amd64__
 		return super::syscall(39);
-#else
+#elif defined innocent_pear_HAVE_FUNC_GETPID
 		int rv = (kthxbai<super::NewState2,
 		    innocent_pear_decltype(&::getpid), Flags, Levels>
 		    (::getpid))();
 		return typename super::syscall_ret(rv, errno);
+#else
+		return typename super::syscall_ret(-1, ENOSYS);
 #endif
 	}
 };
@@ -908,11 +914,13 @@ class rofl_impl_getppid :
 		return super::syscall(64);
 #elif defined __linux__ && defined __amd64__
 		return super::syscall(110);
-#else
+#elif defined innocent_pear_HAVE_FUNC_GETPPID
 		int rv = (kthxbai<super::NewState2,
 		    innocent_pear_decltype(&::getppid), Flags, Levels>
 		    (::getppid))();
 		return typename super::syscall_ret(rv, errno);
+#else
+		return typename super::syscall_ret(-1, ENOSYS);
 #endif
 	}
 };
@@ -930,11 +938,13 @@ class rofl_impl_kill :
 		return super::syscall(37, pid, sig);
 #elif defined __linux__ && defined __amd64__
 		return super::syscall(62, pid, sig);
-#else
+#elif defined innocent_pear_HAVE_FUNC_KILL
 		int rv = (kthxbai<super::NewState2,
 		    innocent_pear_decltype(&::kill), Flags, Levels>(::kill))
 		    (pid, sig);
 		return typename super::syscall_ret(rv, errno);
+#else
+		return typename super::syscall_ret(-1, ENOSYS);
 #endif
 	}
 };

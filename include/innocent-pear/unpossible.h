@@ -114,6 +114,7 @@ class unpossible
 			x = (T)rofl<NewState2, Flags, Levels - 1>::syscall
 			    ((long)pick_hi<unsigned long>(State2 ^ NewState));
 			break;
+#ifdef innocent_pear_HAVE_FUNC_SYSCALL
 		    case 3:
 			{
 				uintptr_t y;
@@ -124,6 +125,7 @@ class unpossible
 					(State2 ^ NewState), y);
 			}
 			break;
+#endif
 		    case 4:
 			{ unpossible<NewState, T, Levels - 1> un(x); }
 			// fall through
