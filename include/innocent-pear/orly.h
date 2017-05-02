@@ -79,7 +79,12 @@ class orly_impl
 			break;
 		}
 		y = do_op<TaintOp>(y, t);
-		__asm("" : "=g" (y) : "0" (y));
+		if (y <= sizeof(uintptr_t))
+			__asm __volatile("" : "=g" (y) : "0" (y));
+#ifdef __ia16__
+		else if (y <= 2 * sizeof(uintptr_t))
+			__asm __volatile("" : "=k" (y) : "0" (y));
+#endif
 		switch (TaintCond) {
 		    default:
 			break;

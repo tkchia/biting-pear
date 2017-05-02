@@ -3,6 +3,18 @@
 		include/innocent-pear/omg.h :
 		- disabled omg<...>::wheee() on x86-32 and ARM-32 (for now)
 
+		include/innocent-pear/kthxbai.h :
+		- hacks for ia16-elf:
+		  - now checks operand size before using __asm("" : ...)
+		  - removed unused operand in one kthxbai_impl<, , , 0u> case
+
+		include/innocent-pear/orly.h :
+		- hacks for ia16-elf:
+		  - now checks operand size before using __asm("" : ...)
+
+		include/innocent-pear/yarly.h :
+		- now wraps kthxbai_impl<...> call in its own block
+
 2017-05-01	"leavedos(Interp86|3056) called - shutting down"
 
 		configure :

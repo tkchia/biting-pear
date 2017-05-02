@@ -85,8 +85,8 @@ class yarly_impl_2<State, T, true, Flags, Levels> :
 			return super::DefRetVal;
 #endif
 		T y;
-		kthxbai_impl<super::State12, T, Flags, Sublevels>(y,
-		    super::DefRetVal);
+		{ kthxbai_impl<super::State12, T, Flags, Sublevels>(y,
+		    super::DefRetVal); }
 		return y;
 	}
 };
