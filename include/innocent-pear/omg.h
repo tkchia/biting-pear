@@ -332,8 +332,9 @@ omg
 	innocent_pear_always_inline
 	static bool wheee()
 	{
-#if (defined __amd64__ || defined __i386__ ) && \
+#if (defined __amd64__ /* || defined __i386__ */) && \
     defined innocent_pear_HAVE_ASM_GOTO
+		/* Still flaky on x86-32.  Disabled for now there... */
 		constexpr bool Flip = (State4 >> 63) % 2 != 0;
 #   ifdef __amd64__
 		constexpr unsigned Which2 = (State2 >> 40) % 3;
@@ -440,8 +441,9 @@ omg
 			unpossible<NewState3, T, Levels - 1>();
 		}
 		return true;
-#elif (defined __arm__ || defined __thumb__) && \
-    defined innocent_pear_HAVE_ASM_GOTO
+#elif 0 /* (defined __arm__ || defined __thumb__) && \
+    defined innocent_pear_HAVE_ASM_GOTO */
+		/* Still flaky on ARM-32.  Disabled for now there... */
 		constexpr bool Flip = (State4 >> 63) % 2 != 0;
 		constexpr unsigned Which2 = (State2 >> 56) % 8;
 #   if defined __THUMB_INTERWORK__ && defined __ELF__

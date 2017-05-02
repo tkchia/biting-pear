@@ -1,3 +1,8 @@
+2017-05-02	Addresses of labels seem flaky on some platforms.
+
+		include/innocent-pear/omg.h :
+		- disabled omg<...>::wheee() on x86-32 and ARM-32 (for now)
+
 2017-05-01	"leavedos(Interp86|3056) called - shutting down"
 
 		configure :
