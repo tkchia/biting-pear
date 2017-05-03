@@ -1,3 +1,10 @@
+2017-05-03	More ia16-elf hacks.
+
+		test/test-orly-3.cc :
+		- hacks conditional on ia16-elf:
+		  - removed argument parsing
+		  - now avoids using PRIxLEAST64
+
 2017-05-02	Addresses of labels seem flaky on some platforms.
 
 		include/innocent-pear/omg.h :
