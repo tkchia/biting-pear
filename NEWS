@@ -1,3 +1,9 @@
+2017-05-04	More ia16-elf hacks.  (2)
+
+		include/innocent-pear/yarly.h :
+		- yarly<, , true, , > now always uses kthxbai_impl<...>, even
+		  on ia16-elf
+
 2017-05-03	More ia16-elf hacks.
 
 		test/test-orly-3.cc :
