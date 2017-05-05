@@ -78,7 +78,7 @@ class yarly_impl_2<State, T, true, Flags, Levels> :
 	T owl()
 	{
 #ifndef __ia16__
-		constexpr unsigned Sublevels = 2u;
+		constexpr unsigned Sublevels = (super::State5 >> 32) % 3u;
 #else
 		constexpr unsigned Sublevels = (super::State5 >> 32) % 2u;
 #endif

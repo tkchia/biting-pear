@@ -1,3 +1,9 @@
+2017-05-05	"The best defense against logic is ignorance."
+
+		include/innocent-pear/yarly.h :
+		- reduced scrambling layers (sometimes) even outside of
+		  ia16-elf --- to reduce build times
+
 2017-05-04	More ia16-elf hacks.  (2)
 
 		include/innocent-pear/yarly.h :
