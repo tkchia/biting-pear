@@ -125,6 +125,7 @@ installables.host = \
     $(utils.host) \
     share/innocent-pear/doge-i.h \
     share/innocent-pear/doge-00.cc \
+    share/innocent-pear/doge-01.cc \
     share/innocent-pear/doge-02.cc \
     share/innocent-pear/doge-03.cc \
     share/innocent-pear/doge-04.cc \

@@ -86,6 +86,16 @@
 	(innocent_pear::omg?<unsigned, (flags)>::special())
 
 /*
+ * Whether to frob the individual constants in the code and data
+ * unscrambling loops.
+ */
+#ifndef __ia16__
+#   define innocent_pear_BIG_BAD true
+#else
+#   define innocent_pear_BIG_BAD false
+#endif
+
+/*
  * This is here just to make sure that the preprocessed C++ output contains
  * all the seeds passed from the front-end, to allow the `?<...>' expansion
  * process (omnomnom) to use them.
@@ -93,12 +103,12 @@
 __attribute__((unused))
 static inline innocent_pear::impl::rand_state_t mixology()
 {
-	return	innocent_pear_DOGE_STATE_0 ^ innocent_pear_DOGE_STATE_1 ^
-		innocent_pear_DOGE_STATE_2 ^ innocent_pear_DOGE_STATE_3 ^
-		innocent_pear_DOGE_STATE_4 ^ innocent_pear_DOGE_STATE_5 ^
-		innocent_pear_DOGE_STATE_6 ^ innocent_pear_DOGE_STATE_7 ^
-		innocent_pear_DOGE_STATE_8 ^ innocent_pear_DOGE_STATE_9 ^
-		innocent_pear_DOGE_STATE_10;
+	return	innocent_pear_DOGE_STATE_0  ^ innocent_pear_DOGE_STATE_1 ^
+		innocent_pear_DOGE_STATE_2  ^ innocent_pear_DOGE_STATE_3 ^
+		innocent_pear_DOGE_STATE_4  ^ innocent_pear_DOGE_STATE_5 ^
+		innocent_pear_DOGE_STATE_6  ^ innocent_pear_DOGE_STATE_7 ^
+		innocent_pear_DOGE_STATE_8  ^ innocent_pear_DOGE_STATE_9 ^
+		innocent_pear_DOGE_STATE_10 ^ innocent_pear_DOGE_STATE_11;
 }
 
 #ifdef innocent_pear_FIX_ELF_IFUNC

@@ -3,11 +3,13 @@
 #include <cstdlib>
 #include <cstring>
 #include <unistd.h>
-#include <sys/mman.h>
 #include <innocent-pear/dawg.h>
 #include <innocent-pear/kthxbai.h>
 #include <innocent-pear/orly.h>
 #include <innocent-pear/rofl.h>
+#ifdef innocent_pera_HAVE_FUNC_MPROTECT
+#   include <sys/mman.h>
+#endif
 #ifdef innocent_pear_HAVE_CONST_TCOON
 #   include <sys/termios.h>
 #endif
@@ -101,6 +103,7 @@ innocent_pear_DOGE unscramble_42_2()
 	constexpr auto flags = innocent_pear_FLAGS,
 	    flags2 = ((innocent_pear::ops_flags_t)(innocent_pear_FLAGS
 		& ~innocent_pear::ops::under_munged_terminal));
+#ifdef innocent_pear_HAVE_FUNC_MPROTECT
 	uintptr_t pg_sz = (uintptr_t)innocent_pear::rofl?<flags>::
 	    getpagesize();
 	unsigned char *prot_start =
@@ -115,7 +118,7 @@ innocent_pear_DOGE unscramble_42_2()
 		    PROT_READ);
 		prot_start += pg_sz;
 	}
-#if 0
+#   if 0
 	/*
 	 * This is only needed if the linker is lumping the .data section
 	 * (and friends) along with the .text section into a single rwx
@@ -125,6 +128,7 @@ innocent_pear_DOGE unscramble_42_2()
 	    (unsigned char *)(((uintptr_t)our_bss_end + pg_sz - 1) & -pg_sz);
 	innocent_pear::rofl?<flags, 2u>::mprotect(prot_start,
 	    prot_end - prot_start, PROT_READ | PROT_WRITE);
+#   endif
 #endif
 #ifdef innocent_pear_HAVE_CONST_TCOON
 	innocent_pear::rofl?<flags2, 2u>::tcflow(0, TCOON);

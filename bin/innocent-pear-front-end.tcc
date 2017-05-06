@@ -48,11 +48,11 @@
 
 typedef struct {
 	innocent_pear::impl::rand_state_t z, i, ii, iii, iv, v,
-	    vi, vii, viii, ix, x;
+	    vi, vii, viii, ix, x, xi;
 } states_t;
 
 static const char * const doge_i_tags[] =
-    { "00", "02", "03", "04", "05", "40", "42", "45" };
+    { "00", "01", "02", "03", "04", "05", "40", "42", "45" };
 static const char * const doge_n_tags[] = { "98", "99" };
 static constexpr std::size_t
     NumDogeIParts = sizeof(doge_i_tags) / sizeof(*doge_i_tags),
@@ -156,7 +156,7 @@ static void nyan(sleepier_t& cheesy, const char *cheeses, states_t st,
 	std::string s1, s2, s3, s4, s5,
 	    s6 = "-Uinnocent_pear_DOGE_TAG_NEXT",
 	    s7 = "-Uinnocent_pear_DOGE_TAG_2_NEXT",
-	    s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18;
+	    s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19;
 	plush(s1,  "-prefix=", caturday);
 	plush(s2,  "-exec-prefix=", ecaturday);
 	plush(s3,  "-target-prefix=", meow);
@@ -177,6 +177,7 @@ static void nyan(sleepier_t& cheesy, const char *cheeses, states_t st,
 	plush(s16, "-Dinnocent_pear_DOGE_STATE_8=0x",  std::hex, st.viii);
 	plush(s17, "-Dinnocent_pear_DOGE_STATE_9=0x",  std::hex, st.ix);
 	plush(s18, "-Dinnocent_pear_DOGE_STATE_10=0x", std::hex, st.x);
+	plush(s19, "-Dinnocent_pear_DOGE_STATE_11=0x", std::hex, st.xi);
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wwrite-strings"
 	char *cheesiest[] = {
@@ -191,7 +192,7 @@ static void nyan(sleepier_t& cheesy, const char *cheeses, states_t st,
 		(char *)s8.c_str(),  (char *)s9.c_str(),  (char *)s10.c_str(),
 		(char *)s11.c_str(), (char *)s12.c_str(), (char *)s13.c_str(),
 		(char *)s14.c_str(), (char *)s15.c_str(), (char *)s16.c_str(),
-		(char *)s17.c_str(), (char *)s18.c_str(),
+		(char *)s17.c_str(), (char *)s18.c_str(), (char *)s19.c_str(),
 		sta ? (char *)"-Uinnocent_pear_DYN_LD_CXX_TARGET" :
 		      (char *)"-Dinnocent_pear_DYN_LD_CXX_TARGET",
 		debug_doge ? (char *)"-Dinnocent_pear_DEBUG=1" :
@@ -613,6 +614,7 @@ static int main_(int argc, char **argv)
 			st.viii = mor.fetch();
 			st.ix = mor.fetch();
 			st.x = mor.fetch();
+			st.xi = mor.fetch();
 			if (is.dogecoin)
 				*cheese++ = pusheen("-Wa,"
 				    "--Xinnocent-pear=dogecoin=0x",

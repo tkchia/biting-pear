@@ -3,7 +3,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <unistd.h>
-#include <sys/mman.h>
 #include <innocent-pear/dawg.h>
 #include <innocent-pear/kthxbai.h>
 #include <innocent-pear/orly.h>
@@ -28,8 +27,8 @@ innocent_pear_DOGE unscramble_03_1()
 	    rs(our_rodata_start);
 	innocent_pear::kthxbai?<unsigned char *, flags, 0u> re(our_rodata_end);
 	innocent_pear_CHAFF(flags);
-	innocent_pear::orly<innocent_pear_DOGE_STATE_3,
-	    unsigned char, false, true, flags>().wut(nxs, nxe);
+	innocent_pear::orly<innocent_pear_DOGE_STATE_3, unsigned char,
+	    false, innocent_pear_BIG_BAD, flags>().wut(nxs, nxe);
 	innocent_pear_CHAFF(flags);
 	innocent_pear::orly<innocent_pear_DOGE_STATE_4,
 	    unsigned char, false, false, flags>().wut(rs, re);

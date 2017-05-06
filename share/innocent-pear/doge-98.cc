@@ -2,9 +2,11 @@
 #include <cstdlib>
 #include <cstring>
 #include <unistd.h>
-#include <sys/mman.h>
 #include <innocent-pear/kthxbai.h>
 #include <innocent-pear/rofl.h>
+#ifdef innocent_pear_HAVE_FUNC_MPROTECT
+#   include <sys/mman.h>
+#endif
 
 extern unsigned char doge_text_start[]
     __asm("_.innocent_pear.text.doge.02.start");
@@ -34,6 +36,7 @@ innocent_pear_DOGE_MEMSET_L scramble_98_1()
 	    (startup_text_start);
 }
 
+#ifdef innocent_pear_HAVE_FUNC_MPROTECT
 innocent_pear_DOGE_L scramble_98_2()
 {
 	using innocent_pear::ops::allow_debugger_unsafes;
@@ -47,3 +50,4 @@ innocent_pear_DOGE_L scramble_98_2()
 	    (prot_start, (std::size_t)(prot_end - prot_start),
 	    PROT_READ | PROT_EXEC);
 }
+#endif

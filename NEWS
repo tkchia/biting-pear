@@ -1,4 +1,36 @@
-2017-05-06	"The best defense against logic is ignorance."  (2)
+2017-05-06	More ia16-elf hacks... and more.
+
+		share/innocent-pear/doge-i.h :
+		- now defines innocent_pear_BIG_BAD
+		- now includes innocent_pear_DOGE_STATE_11 in seeding
+
+		share/innocent-pear/doge-00.cc :
+		- split from share/innocent-pear/doge-00.cc
+		- now uses innocent_pear_DOGE_STATE_11
+		- removed unneeded #include's
+
+		share/innocent-pear/doge-01.cc :
+		- split from share/innocent-pear/doge-00.cc
+		- now checks if mprotect(...) is defined
+		- now uses innocent_pear_BIG_BAD, innocent_pear_DOGE_STATE_11
+
+		share/innocent-pear/doge-02.cc ,
+		share/innocent-pear/doge-03.cc ,
+		share/innocent-pear/doge-04.cc ,
+		share/innocent-pear/doge-05.cc :
+		- now uses innocent_pear_BIG_BAD
+		- removed unneeded #include <sys/mman.h>
+
+		share/innocent-pear/doge-42.cc ,
+		share/innocent-pear/doge-98.cc :
+		- now checks if mprotect(...) is defined
+
+		bin/innocent-pear-front-end.tcc :
+		- now uses share/innocent-pear/doge-01.cc
+		- now defines and passes innocent_pear_DOGE_STATE_11
+
+		GNUmakefile :
+		- added share/innocent-pear/doge-01.cc
 
 		configure :
 		- ::kill(, ) takes 2 arguments, not 0...
