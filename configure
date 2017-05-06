@@ -99,7 +99,7 @@ conf_cxxt_probe_const PT_READ_U \
 # .:
 conf_cxxt_probe_func ::getpid 0 '#include <sys/types.h>' '#include <unistd.h>'
 conf_cxxt_probe_func ::getppid 0 '#include <sys/types.h>' '#include <unistd.h>'
-conf_cxxt_probe_func ::kill 0 '#include <sys/types.h>' '#include <signal.h>'
+conf_cxxt_probe_func ::kill 2 '#include <sys/types.h>' '#include <signal.h>'
 conf_cxxt_probe_func ::syscall 2 '#include <unistd.h>'
 conf_cxxt_probe_func ::ioctl 3 '#include <sys/ioctl.h>'
 #

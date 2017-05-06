@@ -1,3 +1,11 @@
+2017-05-06	"The best defense against logic is ignorance."  (2)
+
+		configure :
+		- ::kill(, ) takes 2 arguments, not 0...
+
+		include/innocent-pear/yarly.h :
+		- reduced scrambling layers even further
+
 2017-05-05	"The best defense against logic is ignorance."
 
 		include/innocent-pear/yarly.h :
