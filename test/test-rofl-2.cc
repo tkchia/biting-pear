@@ -26,6 +26,19 @@ int main(void)
 		std::cout << "not OK: memchr\n";
 		return 1;
 	}
+#if defined __linux__ && (defined __i386__ || defined __amd64__)
+	int nb = innocent_pear::rofl?<allow_for_startup>::modify_ldt(0, pm,
+	    psz);
+	if (nb < 0 || (std::size_t)nb > psz) {
+		std::cout << "not OK: modify_ldt\n";
+		return 1;
+	}
+	std::memset((char *)pm + nb, 0, psz - nb);
+	if (!std::memchr(pm, 0, psz)) {
+		std::cout << "not OK: memchr #2\n";
+		return 1;
+	}
+#endif
 	if (innocent_pear::rofl?<allow_for_startup>::munmap(pm, psz) != 0) {
 		std::cout << "not OK: munmap " << errno << '\n';
 		return 1;

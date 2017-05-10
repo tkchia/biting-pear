@@ -752,7 +752,7 @@ omg
 		using namespace innocent_pear::ops;
 		constexpr unsigned Bit = pick_hi<unsigned>(State2 ^ State3)
 		    % (sizeof(T) * CHAR_BIT);
-		switch ((State2 >> 48) % 25) {
+		switch ((State2 >> 48) % 27) {
 		    case 0:
 		    case 1:
 		    case 2:
@@ -855,9 +855,23 @@ omg
 				kthxbai_impl<NewState5, T, Flags, 0>(x, y);
 				break;
 			}
+#if defined __linux__ && (defined __i386__ || defined __amd64__)
 			if (false)
 		    case 20:
 		    case 21:
+			if (!(Flags & allow_signal_safes)) {
+				constexpr unsigned N =
+				    1 + (State3 >> 48) % (65536u / sizeof(T));
+				T buf[N];
+				rofl2::modify_ldt((State2 >> 48) % 2u ? 0 : 2,
+				    buf, sizeof buf);
+				x = buf[(State4 >> 32) % N];
+				break;
+			}
+#endif
+			if (false)
+		    case 22:
+		    case 23:
 			if ((Flags & under_unpossible) != 0)
 				unpossible<NewState3, T, Levels - 1> un(x);
 			// fall through

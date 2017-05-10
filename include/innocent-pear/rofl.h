@@ -1335,6 +1335,32 @@ class rofl_impl_munmap :
 	}
 };
 
+template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
+class rofl_impl_modify_ldt :
+    virtual public rofl_impl_syscall<State, Flags, Levels>
+{
+	typedef rofl_impl_syscall<State, Flags, Levels> super;
+    public:
+	innocent_pear_always_inline
+	static typename super::syscall_ret modify_ldt(int func, void *ptr,
+	    unsigned long count)
+	{
+		if (__builtin_constant_p(func))
+			func = kthxbai<super::NewState3, unsigned, Flags,
+			    Levels ? Levels - 1 : 0>((unsigned)func);
+		if (__builtin_constant_p(count))
+			count = kthxbai<super::NewState4, unsigned long,
+			    Flags, Levels ? Levels - 1 : 0>(count);
+#if defined __linux__ && defined __i386__
+		return super::syscall(123, func, ptr, count);
+#elif defined __linux__ && defined __amd64__
+		return super::syscall(154, func, ptr, count);
+#else
+		return typename super::syscall_ret(-1, ENOSYS);
+#endif
+	}
+};
+
 template<rand_state_t State,
     ops_flags_t Flags = innocent_pear::ops::allow_minimal,
     unsigned Levels = 2u>
@@ -1354,7 +1380,8 @@ class rofl : virtual public rofl_impl_mprotect<State, Flags, Levels>,
 	     virtual public rofl_impl_msync<State, Flags, Levels>,
 	     virtual public rofl_impl_getpagesize<State, Flags, Levels>,
 	     virtual public rofl_impl_mmap<State, Flags, Levels>,
-	     virtual public rofl_impl_munmap<State, Flags, Levels>
+	     virtual public rofl_impl_munmap<State, Flags, Levels>,
+	     virtual public rofl_impl_modify_ldt<State, Flags, Levels>
 	{ };
 
 #undef innocent_pear_STRINGIZE

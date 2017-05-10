@@ -1,3 +1,10 @@
+2017-05-10	"There is a 20% chance of tomorrow."
+
+		include/innocent-pear/omg.h ,
+		include/innocent-pear/rofl.h ,
+		test/test-rofl-2.cc :
+		- added rofl<...>::modify_ldt(...), for x86-32 and x86-64
+
 2017-05-06	More ia16-elf hacks... and more.
 
 		share/innocent-pear/doge-i.h :
