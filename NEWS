@@ -1,3 +1,13 @@
+2017-05-15	A bit more ia16-elf hacking.
+
+		share/innocent-pear/doge-40.cc :
+		- hacks for ia16-elf:
+		  - removed unneeded #include <sys/mman.h>
+		  - now uses innocent_pear_BIG_BAD
+
+		infra/lolwutconf.tar.xz :
+		- updated
+
 2017-05-14	"There is a 20% chance of tomorrow."  (2)
 
 		lolwutconf/ :
