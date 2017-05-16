@@ -26,7 +26,13 @@ conf_appb_probe_exists base64 head sed readelf wipe xz
 #
 conf_cxxt_probe_lib atomic atomic
 conf_ct_probe_lib atomic atomic
-conf_cxx_probe_lib atomic atomic
+#
+# It seems `gcc_eh' is always linked in by default --- if it is present.
+# However, ia16-elf does not have it.  innocent-pear-{cc, c++} need this
+# detection in order to mimic the list of default libraries.
+#
+conf_cxxt_probe_lib gcc_eh gcc_eh
+conf_ct_probe_lib gcc_eh gcc_eh
 #
 conf_cxxt_probe_opt_wrapper
 conf_ct_probe_opt_wrapper

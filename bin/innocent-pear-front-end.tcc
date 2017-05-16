@@ -653,11 +653,17 @@ static int main_(int argc, char **argv)
 #ifdef innocent_pear_LIBSTDCXX_CXX_TARGET
 				++n_libs;
 #endif
-#ifdef innocent_pear_CXX_FOR_TARGET_HAVE_LIB_ATOMIC
+#if defined innocent_pear_FRONT_END_CXX ? \
+    defined innocent_pear_CXX_FOR_TARGET_HAVE_LIB_ATOMIC : \
+    defined innocent_pear_CC_FOR_TARGET_HAVE_LIB_ATOMIC
 				++n_libs;
 #endif
+#if defined innocent_pear_FRONT_END_CXX ? \
+    defined innocent_pear_CXX_FOR_TARGET_HAVE_LIB_GCC_EH : \
+    defined innocent_pear_CC_FOR_TARGET_HAVE_LIB_GCC_EH
 				if (is.sta)
 					n_libs += 2;
+#endif
 			}
 			std::memmove(burger + 4 + (n_libs + 1) * NumDogeIParts,
 			    burger + 1,
@@ -680,19 +686,29 @@ static int main_(int argc, char **argv)
 #ifdef innocent_pear_LIBSTDCXX_CXX_TARGET
 					burger[t++] = (char *)"-lstdc++";
 #endif
-#ifdef innocent_pear_CXX_FOR_TARGET_HAVE_LIB_ATOMIC
+#if defined innocent_pear_FRONT_END_CXX ? \
+    defined innocent_pear_CXX_FOR_TARGET_HAVE_LIB_ATOMIC : \
+    defined innocent_pear_CC_FOR_TARGET_HAVE_LIB_ATOMIC
 					burger[t++] = (char *)"-latomic";
 #endif
 					burger[t++] = (char *)"-lc";
 					burger[t++] = (char *)"-lgcc";
+#if defined innocent_pear_FRONT_END_CXX ? \
+    defined innocent_pear_CXX_FOR_TARGET_HAVE_LIB_GCC_EH : \
+    defined innocent_pear_CC_FOR_TARGET_HAVE_LIB_GCC_EH
 					if (is.sta)
 						burger[t++] =
 						    (char *)"-lgcc_eh";
+#endif
 					burger[t++] = (char *)"-lc";
 					burger[t++] = (char *)"-lgcc";
+#if defined innocent_pear_FRONT_END_CXX ? \
+    defined innocent_pear_CXX_FOR_TARGET_HAVE_LIB_GCC_EH : \
+    defined innocent_pear_CC_FOR_TARGET_HAVE_LIB_GCC_EH
 					if (is.sta)
 						burger[t++] =
 						    (char *)"-lgcc_eh";
+#endif
 				}
 			}
 			*cheese++ = (char *)"-x";
@@ -703,17 +719,27 @@ static int main_(int argc, char **argv)
 #ifdef innocent_pear_LIBSTDCXX_CXX_TARGET
 					*cheese++ = (char *)"-lstdc++";
 #endif
-#ifdef innocent_pear_CXX_FOR_TARGET_HAVE_LIB_ATOMIC
+#if defined innocent_pear_FRONT_END_CXX ? \
+    defined innocent_pear_CXX_FOR_TARGET_HAVE_LIB_ATOMIC : \
+    defined innocent_pear_CC_FOR_TARGET_HAVE_LIB_ATOMIC
 					*cheese++ = (char *)"-latomic";
 #endif
 					*cheese++ = (char *)"-lc";
 					*cheese++ = (char *)"-lgcc";
+#if defined innocent_pear_FRONT_END_CXX ? \
+    defined innocent_pear_CXX_FOR_TARGET_HAVE_LIB_GCC_EH : \
+    defined innocent_pear_CC_FOR_TARGET_HAVE_LIB_GCC_EH
 					if (is.sta)
 						*cheese++ = (char *)"-lgcc_eh";
+#endif
 					*cheese++ = (char *)"-lc";
 					*cheese++ = (char *)"-lgcc";
+#if defined innocent_pear_FRONT_END_CXX ? \
+    defined innocent_pear_CXX_FOR_TARGET_HAVE_LIB_GCC_EH : \
+    defined innocent_pear_CC_FOR_TARGET_HAVE_LIB_GCC_EH
 					if (is.sta)
 						*cheese++ = (char *)"-lgcc_eh";
+#endif
 				}
 			}
 			*cheese++ = pusheen(caturday,

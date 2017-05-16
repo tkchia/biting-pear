@@ -1,3 +1,12 @@
+2017-05-16	"warning: ../share/innocent-pear/doge-n.ld contains output
+		sections; did you forget -T?"
+
+		configure ,
+		GNUmakefile ,
+		bin/innocent-pear-front-end.tcc :
+		- test for -lgcc_eh target-side
+		- do not do useless test for -latomic host-side
+
 2017-05-15	A bit more ia16-elf hacking.
 
 		share/innocent-pear/doge-40.cc :

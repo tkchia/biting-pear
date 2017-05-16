@@ -784,6 +784,12 @@ bin/%.ii share/innocent-pear/%.ii infra/keccak/%.ii: \
 		$(if $(filter yes,$(conf_Have_ct_lib_atomic)), \
 		    -Dinnocent_pear_CC_FOR_TARGET_HAVE_LIB_ATOMIC, \
 		    -Uinnocent_pear_CC_FOR_TARGET_HAVE_LIB_ATOMIC) \
+		$(if $(filter yes,$(conf_Have_cxxt_lib_gcc_1eh)), \
+		    -Dinnocent_pear_CXX_FOR_TARGET_HAVE_LIB_GCC_EH, \
+		    -Uinnocent_pear_CXX_FOR_TARGET_HAVE_LIB_GCC_EH) \
+		$(if $(filter yes,$(conf_Have_ct_lib_gcc_1eh)), \
+		    -Dinnocent_pear_CC_FOR_TARGET_HAVE_LIB_GCC_EH, \
+		    -Uinnocent_pear_CC_FOR_TARGET_HAVE_LIB_GCC_EH) \
 		$(if $(filter yes,$(conf_Have_cxxt_func_$(or \
 			)_0_2gnu_1cxx_0_2verbose_1terminate_1handler)), \
 		    -Dinnocent_pear_LIBSTDCXX_CXX_TARGET, \
