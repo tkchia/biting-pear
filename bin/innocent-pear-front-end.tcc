@@ -234,6 +234,9 @@ static void nyanyanyan(const char *in, const char *out, bool v)
 {
 	char *cheesiest[] = {
 		(char *)innocent_pear_STRIP_FOR_TARGET,
+#ifdef innocent_pear_TARGET_IS_IA16
+		(char *)"-O", (char *)"binary",
+#endif
 #ifdef innocent_pear_STRIP_FOR_TARGET_HAVE_OPT_STRIP_ALL
 		(char *)"--strip-all",
 #endif
@@ -369,11 +372,11 @@ static int main_(int argc, char **argv)
 #endif
 		 };
 	/*
-	 * Why 15 + 9 * (NumDogeIParts + NumDogeNParts)?  We need
+	 * Why 17 + 9 * (NumDogeIParts + NumDogeNParts)?  We need
 	 *
 	 *   * 2 for `-wrapper' `...'
-	 *   * 3 for `-no-integrated-cpp' `-fno-integrated-as'
-	 *     `-Wa,--Xinnocent-pear=dogecoin=...'
+	 *   * 4 for `-no-integrated-cpp' `-fno-integrated-as'
+	 *     `-Wa,--Xinnocent-pear=dogecoin=...' `-Wl,--oformat=...'
 	 *   * 4 for `-idirafter' `...' `-idirafter' `...'
 	 *   * 3 for `-include', `.../doge.h', `-Wl,-T,(doge-i.ld),...'
 	 *   * 9 * NumDogeIParts for (doge-00.o) `-lstdc++' `-latomic' `-lc'
@@ -381,12 +384,13 @@ static int main_(int argc, char **argv)
 	 *     the same libraries, ...
 	 *   * 0 (== 2 - 2) for `-x' `-none' minus `-Xinnocent-pear' `-doge'
 	 *   * 9 * NumDogeNParts for ..., (doge-99.o) and the libraries
-	 *   * and 3 for (doge-n.ld), and `-o' (doge-a).
+	 *   * and 4 for (doge-n-dogecoin*.ld), (doge-n-ifunc.ld), and `-o'
+	 *     (doge-a).
 	 *
 	 * We also need a terminating null pointer, but since we do not pass
 	 * our own *argv to execvp...
 	 */
-	char *burger[argc + 15 + 9 * (NumDogeIParts + NumDogeNParts)],
+	char *burger[argc + 17 + 9 * (NumDogeIParts + NumDogeNParts)],
 	    **cheese = burger, **cheeses = 0, *burgery[argc],
 	    **cheesy = burgery, *ceiling, *real_a = 0;
 #ifdef innocent_pear_COMPILER_FOR_TARGET_HAVE_OPT_WRAPPER
@@ -619,6 +623,9 @@ static int main_(int argc, char **argv)
 				*cheese++ = pusheen("-Wa,"
 				    "--Xinnocent-pear=dogecoin=0x",
 				    std::hex, mor.fetch());
+#ifdef innocent_pear_TARGET_IS_IA16
+			*cheese++ = (char *)"-Wl,--oformat=elf32-i386";
+#endif
 		}
 		if (is.link && !cheeses) {
 			*cheese++ = (char *)"-o";
@@ -742,8 +749,17 @@ static int main_(int argc, char **argv)
 #endif
 				}
 			}
+#ifndef innocent_pear_TARGET_IS_IA16
 			*cheese++ = pusheen(caturday,
-			    "/share/innocent-pear/doge-n.ld");
+			    "/share/innocent-pear/doge-n-dogecoin.ld");
+#else
+			*cheese++ = pusheen(caturday,
+			    "/share/innocent-pear/doge-n-dogecoin.noinit.ld");
+#endif
+#ifdef innocent_pear_FIX_ELF_IFUNC
+			*cheese++ = pusheen(caturday,
+			    "/share/innocent-pear/doge-n-ifunc.ld");
+#endif
 		} else {
 			std::memmove(burger + 3, burger + 1,
 			    (cheese - burger - 1) * sizeof(char *));

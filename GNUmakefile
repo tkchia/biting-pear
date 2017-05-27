@@ -136,7 +136,9 @@ installables.host = \
     share/innocent-pear/doge-98.cc \
     share/innocent-pear/doge-99.cc \
     share/innocent-pear/doge-i.ld \
-    share/innocent-pear/doge-n.ld
+    share/innocent-pear/doge-n-dogecoin.ld \
+    share/innocent-pear/doge-n-dogecoin.noinit.ld \
+    share/innocent-pear/doge-n-ifunc.ld
 installables.target = \
     $(headers.target)
 ifeq "yes" "$(conf_Have_appb_wipe)"
@@ -356,6 +358,13 @@ endif
 	else \
 		echo '#undef innocent_pear_FIX_ELF_IFUNC'; \
 	fi >>$@.tmp
+ifeq "yes" "$(conf_Have_cxxt_const__2ia16_2)"
+	if test '$@' = '$(config.h.host)'; \
+		then echo '#define innocent_pear_TARGET_IS_IA16 1' >>$@.tmp; fi
+else
+	if test '$@' = '$(config.h.host)'; \
+		then echo '#undef innocent_pear_TARGET_IS_IA16'; >>$@.tmp; fi
+endif
 	if test '$(conf_Have_cxx_decltype),$@' = 'yes,$(config.h.host)'; then\
 		echo '#define innocent_pear_decltype decltype' >>$@.tmp; \
 	elif test '$(conf_Have_cxxt_decltype),$@' = \

@@ -1,3 +1,55 @@
+2017-05-27	"(.text.unlikely.01.t+0x230): relocation truncated to fit:
+		R_386_16 ..."
+
+		bin/innocent-pear-front-end.tcc :
+		- for doge mode, now adjusts arguments to ia16-elf linker and
+		  ia16-elf-strip
+
+		configure :
+		- added __ia16__ detection target-side
+
+		GNUmakefile :
+		- updated share/innocent-pear/doge-n*.ld dependencies
+		- now defines/undefines innocent_pear_TARGET_IS_IA16 host-side
+
+		include/innocent-pear/orly.h :
+		- no longer uses unrolled versions of loops if compiling for
+		  ia16-elf
+
+		share/innocent-pear/doge-03.cc ,
+		share/innocent-pear/doge-05.cc :
+		- minor tweak to rofl<...>::memset(.) call
+
+		share/innocent-pear/doge-40.cc :
+		- for ia16-elf:
+		  - reimplemented dogecoin_t
+		  - no longer calls rofl<...>::clear_cache(...)
+		- minor tweak to rofl<...>::memset(.) call
+
+		share/innocent-pear/doge-42.cc :
+		- no longer calls rofl<...>::memset(.) if unneeded
+
+		share/innocent-pear/doge-i.h :
+		- innocent_pear_CHAFF(.) is now a no-op for ia16-elf, at least
+		  for now
+
+		share/innocent-pear/doge-n-dogecoin.ld ,
+		share/innocent-pear/doge-n-ifunc.ld :
+		- split share/innocent-pear/doge-n.ld into two
+
+		share/innocent-pear/doge-n-dogecoin.noinit.ld :
+		- new
+
+		KeccakCodePackage/ :
+		- bumped to dc2c9d0792
+
+		lolwutconf/ :
+		- bumped to 86e8b79f10
+
+		infra/KeccakCodePackage.tar.xz ,
+		infra/lolwutconf.tar.xz :
+		- updated
+
 2017-05-16	"warning: ../share/innocent-pear/doge-n.ld contains output
 		sections; did you forget -T?"
 

@@ -82,8 +82,12 @@
  * This needs to be a macro so that the `?' will be expanded to a different
  * seed each time.
  */
-#define innocent_pear_CHAFF(flags) \
+#ifndef __ia16__
+#   define innocent_pear_CHAFF(flags) \
 	(innocent_pear::omg?<unsigned, (flags)>::special())
+#else
+#   define innocent_pear_CHAFF(flags) ((void)0)
+#endif
 
 /*
  * Whether to frob the individual constants in the code and data

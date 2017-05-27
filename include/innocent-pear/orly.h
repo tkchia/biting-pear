@@ -208,6 +208,7 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 					    : "0" (p), "1" (q));
 		std::size_t n = q - p;
 		if (Boreal) {
+#ifndef __ia16__
 			while (n >= 10) {
 				y0 = (*this)(*p, y1, y2, y3, y4,
 					     y5, y6, y7, y8, y9);
@@ -241,6 +242,7 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 				c(y9, p++);
 				n -= 10;
 			}
+#endif
 			while (n-- != 0) {
 				y0 = (*this)(*p, y1, y2, y3, y4,
 					     y5, y6, y7, y8, y9);
@@ -256,6 +258,7 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 				c(y9, p++);
 			}
 		} else {
+#ifndef __ia16__
 			while (n >= 10) {
 				y0 = *p;
 				c((*this)(y0, y1, y2, y3, y4,
@@ -289,6 +292,7 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 					  y4, y5, y6, y7, y8), p++);
 				n -= 10;
 			}
+#endif
 			while (n-- != 0) {
 				y0 = *p;
 				c((*this)(y0, y1, y2, y3, y4,
@@ -344,6 +348,7 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 			__asm __volatile("" : "=g" (p), "=g" (q)
 					    : "0" (p), "1" (q));
 		std::size_t n = q - p;
+#ifndef __ia16__
 		while (n >= 10) {
 			x0 = (*this)((T)*p++, x1, x2, x3, x4,
 					  x5, x6, x7, x8, x9);
@@ -367,6 +372,7 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 					  x4, x5, x6, x7, x8);
 			n -= 10;
 		}
+#endif
 		while (n-- != 0) {
 			x0 = (*this)((T)*p++, x1, x2, x3, x4,
 					  x5, x6, x7, x8, x9);

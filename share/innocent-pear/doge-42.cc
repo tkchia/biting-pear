@@ -145,6 +145,9 @@ innocent_pear_DOGE unscramble_42_2()
 #endif
 }
 
+#if defined innocent_pear_FIX_ELF_IFUNC || \
+    defined innocent_pear_HAVE_FUNC_MPROTECT || \
+    defined innocent_pear_HAVE_CONST_TCOON
 innocent_pear_DOGE_MEMSET unscramble_42_3()
 {
 	constexpr auto flags2 =
@@ -152,3 +155,4 @@ innocent_pear_DOGE_MEMSET unscramble_42_3()
 		& ~innocent_pear::ops::under_munged_terminal));
 	innocent_pear::rofl?<flags2, 2u>::memset((void *)here_start);
 }
+#endif

@@ -142,4 +142,7 @@ conf_cxxt_probe_func ::getauxval 1 '#include <sys/auxv.h>'
 conf_cxxt_probe_func ::__pthread_initialize_minimal 0 \
     'extern "C" void __pthread_initialize_minimal();'
 #
+# To enable certain special-case code that is very specific to IA-16.
+conf_cxxt_probe_const __ia16__
+#
 conf_end

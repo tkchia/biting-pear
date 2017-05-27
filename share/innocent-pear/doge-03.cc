@@ -38,6 +38,5 @@ innocent_pear_DOGE unscramble_03_1()
 
 innocent_pear_DOGE_MEMSET unscramble_03_2()
 {
-	constexpr auto flags = innocent_pear_FLAGS;
-	innocent_pear::rofl?<flags>::memset((void *)here_start);
+	innocent_pear::rofl?<innocent_pear_FLAGS>::memset((void *)here_start);
 }
