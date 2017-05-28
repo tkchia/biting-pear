@@ -91,6 +91,18 @@ class lolwut_impl
 	 *     table (GOT) entry of the target item.  We make sure that
 	 *     `Disp2' can _not_ be expressed as an 8-bit sign-extended
 	 *     offset.
+	 *
+	 * (5) On x86-16 (well, Sourcery's ia16-elf), `Disp2' is a
+	 *     displacement to apply to a local label before taking the
+	 *     distance of our target pointer value (`p_') to the label.  We
+	 *     want to avoid linker errors of the form
+	 *
+	 *	"(.text.unlikely.01.t+0x230): relocation truncated to fit:
+	 *	 R_386_16 ..."
+	 *
+	 *     One way to do this is to "split" the relocation, into an
+	 *     R_386_16 with a small displacement, and an R_386_PC16 with a
+	 *     potentially large displacement.
 	 */
 #if defined __amd64__
 #   if !defined __clang__ || defined __pic__ || defined __pie__
@@ -110,6 +122,9 @@ class lolwut_impl
       __GNUC__ == 4 && __GNUC_MINOR__ <= 7
 	static constexpr unsigned Disp2 = Disp > 2 ?
 	    impl::pick_hi<unsigned>(State2 ^ State3) % (Disp / 2) : 0;
+#elif defined __ia16__ && defined __ELF__
+	static constexpr unsigned Disp2 =
+	    impl::pick_hi<unsigned>(State2 ^ State3) % 0x80u;
 #endif
 	static constexpr rand_state_t State4 = impl::update_inner(State3);
 #if defined __arm__ && defined __thumb__
@@ -305,6 +320,36 @@ class lolwut_impl
 		    quux:
 			break;
 #   endif
+#elif defined __ia16__ && defined __ELF__
+		    case 2:
+		    case 3:
+			if (Sign) {
+				char *q;
+				uintptr_t r;
+				__asm("" : "=r" (q)
+					 : "0" ((char *)&&qux - Disp2));
+				__asm(".reloc 1f-2, R_386_PC16, %a1; "
+				      "movw $1f-2-%a2+%a3, %0; "
+				      "1: "
+				    : "=r" (r)
+				    : "X" (v), "X" (&&qux),
+				      "n" (-Disp + Disp2));
+				p_ = q + r;
+			} else {
+				char *q;
+				uintptr_t r;
+				__asm("" : "=r" (q)
+					 : "0" ((char *)&&qux + Disp2));
+				__asm(".reloc 1f-2, R_386_PC16, %a1; "
+				      "movw $1f-2-%a2+%a3, %0; "
+				      "1: "
+				    : "=r" (r)
+				    : "X" (v), "X" (&&qux),
+				      "n" (Disp - Disp2));
+				p_ = q + r;
+			}
+		    qux:
+			break;
 #elif defined __arm__ && defined __thumb__ && defined __OPTIMIZE__ && \
       (defined __pic__ || defined __pie__) && defined __ELF__
 		    case 1:

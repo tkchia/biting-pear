@@ -32,10 +32,12 @@ innocent_pear_DOGE unscramble_02_1()
 {
 	constexpr auto flags = innocent_pear_FLAGS;
 	innocent_pear_CHAFF(flags);
-	innocent_pear::kthxbai?<unsigned char *, flags> nxs(next_start);
-	innocent_pear::kthxbai?<unsigned char *, flags> nxe(next_end);
-	innocent_pear::kthxbai?<unsigned char *, flags, 0u> ts(our_text_start);
-	innocent_pear::kthxbai?<unsigned char *, flags, 0u> te(our_text_end);
+	innocent_pear::kthxbai?<unsigned char *, flags> nxs(next_start, 3);
+	innocent_pear::kthxbai?<unsigned char *, flags> nxe(next_end, 3);
+	innocent_pear::kthxbai?<unsigned char *, flags, 0u>
+	    ts(our_text_start, 3);
+	innocent_pear::kthxbai?<unsigned char *, flags, 0u>
+	    te(our_text_end, 3);
 	innocent_pear_CHAFF(flags);
 	innocent_pear::orly<innocent_pear_DOGE_STATE_1, unsigned char,
 	    false, innocent_pear_BIG_BAD, flags>().wut(nxs, nxe);
@@ -48,6 +50,5 @@ innocent_pear_DOGE unscramble_02_1()
 
 innocent_pear_DOGE_MEMSET unscramble_02_2()
 {
-	constexpr auto flags = innocent_pear_FLAGS;
-	innocent_pear::rofl?<flags>::memset((void *)here_start);
+	innocent_pear::rofl?<innocent_pear_FLAGS>::memset((void *)here_start);
 }

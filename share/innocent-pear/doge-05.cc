@@ -9,8 +9,6 @@
 #include <innocent-pear/rofl.h>
 #include "doge-i.h"
 
-using innocent_pear::impl::uintptr_t;
-
 extern unsigned char our_data_start[] __asm("_.innocent_pear.data.start");
 extern unsigned char our_data_end[] __asm("_.innocent_pear.data.end");
 
@@ -21,10 +19,12 @@ innocent_pear_DOGE unscramble_05_1()
 {
 	constexpr auto flags = innocent_pear_FLAGS;
 	innocent_pear_CHAFF(flags);
-	innocent_pear::kthxbai?<unsigned char *, flags> nxs(next_start);
-	innocent_pear::kthxbai?<unsigned char *, flags> nxe(next_end);
-	innocent_pear::kthxbai?<unsigned char *, flags, 0u> ds(our_data_start);
-	innocent_pear::kthxbai?<unsigned char *, flags, 0u> de(our_data_end);
+	innocent_pear::kthxbai?<unsigned char *, flags> nxs(next_start, 3);
+	innocent_pear::kthxbai?<unsigned char *, flags> nxe(next_end, 3);
+	innocent_pear::kthxbai?<unsigned char *, flags, 0u>
+	    ds(our_data_start, 3);
+	innocent_pear::kthxbai?<unsigned char *, flags, 0u>
+	    de(our_data_end, 3);
 	innocent_pear_CHAFF(flags);
 	innocent_pear::orly<innocent_pear_DOGE_STATE_7, unsigned char,
 	    false, innocent_pear_BIG_BAD, flags>().wut(nxs, nxe);

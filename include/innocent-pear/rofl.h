@@ -736,6 +736,21 @@ class rofl_impl_memset :
 			"stosl"			// .:
 		    : "=D" (rdi), "=c" (rcx)
 		    : "0" ((char *)s + 7) : "memory", "cc");
+#elif defined __ia16__
+		void *di, *cx, *cs;
+		__asm __volatile("movw %%cs, %0" : "=r" (cs));
+		__asm __volatile(
+			"andw $-2, %%di; "
+			"leaw 2f, %%cx; "
+			"subw %%di, %%cx; "
+			"shrw $1, %%cx; "
+			"movw %3, %%es; "
+			".balign 2; "
+			"2: "
+			"rep; stosw"
+		    : "=D" (di), "=c" (cx)
+		    : "0" ((char *)s + 1), "r" (cs)
+		    : "es", "memory", "cc");
 #elif defined __arm__
 		typedef rofl_impl_base<State, Levels> super1;
 		typedef rofl_impl_clear_cache<State, Flags, Levels> super2;

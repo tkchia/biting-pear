@@ -42,12 +42,12 @@ innocent_pear_DOGE unscramble_01_1()
 {
 	using innocent_pear::kthxbai;
 	using innocent_pear::ops::allow_for_startup;
-	constexpr auto flags =
+	constexpr auto flags __attribute__((unused)) =
 	    ((innocent_pear::ops_flags_t)(innocent_pear_FLAGS &
 	      ~innocent_pear::ops::under_ptrace)),
 	    flags2 = innocent_pear_FLAGS;
-	kthxbai?<unsigned char *, allow_for_startup> nxs(next_start);
-	kthxbai?<unsigned char *, allow_for_startup> nxe(next_end);
+	kthxbai?<unsigned char *, allow_for_startup> nxs(next_start, 3);
+	kthxbai?<unsigned char *, allow_for_startup> nxe(next_end, 3);
 #ifdef innocent_pear_HAVE_FUNC_MPROTECT
 	unsigned char *re = our_rodata_end;
 #endif
@@ -56,7 +56,7 @@ innocent_pear_DOGE unscramble_01_1()
 	innocent_pear::rofl?<allow_for_startup, 1u>::
 	    tcflow((int)((0ull + innocent_pear_DOGE_STATE_0 +
 				 innocent_pear_DOGE_STATE_1)
-		% 100000001ull % 3ull), TCOOFF);
+		% 0x100000001ull % 3ull), TCOOFF);
 	innocent_pear_CHAFF(flags);
 #endif
 #ifdef innocent_pear_HAVE_FUNC_MPROTECT

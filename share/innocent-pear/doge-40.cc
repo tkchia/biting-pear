@@ -109,16 +109,17 @@ innocent_pear_DOGE unscramble_40_1()
 {
 	constexpr auto flags = innocent_pear_FLAGS;
 	innocent_pear_CHAFF(flags);
-	innocent_pear::kthxbai?<unsigned char *, flags> nxs(next_start);
-	innocent_pear::kthxbai?<unsigned char *, flags> nxe(next_end);
+	innocent_pear::kthxbai?<unsigned char *, flags> nxs(next_start, 3);
+	innocent_pear::kthxbai?<unsigned char *, flags> nxe(next_end, 3);
 	innocent_pear_CHAFF(flags);
 	innocent_pear::orly<innocent_pear_DOGE_STATE_9,
 	    unsigned char, false, innocent_pear_BIG_BAD, flags>().
 	    wut(nxs, nxe);
 	innocent_pear_CHAFF(flags);
 	innocent_pear::kthxbai?<unsigned char *, flags, 0u>
-	    dcs(dogecoin_start);
-	innocent_pear::kthxbai?<unsigned char *, flags, 0u> dce(dogecoin_end);
+	    dcs(dogecoin_start, 3);
+	innocent_pear::kthxbai?<unsigned char *, flags, 0u>
+	    dce(dogecoin_end, 3);
 	dogecoin_t dogecoin;
 	innocent_pear::orly<innocent_pear_DOGE_STATE_10,
 	    unsigned char, false, false, flags>().wot(dogecoin_start,

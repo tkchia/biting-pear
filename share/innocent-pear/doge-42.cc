@@ -41,8 +41,8 @@ innocent_pear_DOGE unscramble_42_1()
 #   else
 	unsigned long hwcap = 0;
 #   endif
-	innocent_pear::kthxbai?<const Elfxx_Rel *, flags> p(rel_iplt_start);
-	innocent_pear::kthxbai?<const Elfxx_Rel *, flags> q(rel_iplt_end);
+	innocent_pear::kthxbai?<const Elfxx_Rel *, flags> p(rel_iplt_start, 3);
+	innocent_pear::kthxbai?<const Elfxx_Rel *, flags> q(rel_iplt_end, 3);
 #   ifdef innocent_pear_DEBUG
 	std::fprintf(stderr, "rel_iplt_start = %p, rel_iplt_end = %p\n",
 	    +p, +q);
@@ -68,8 +68,9 @@ innocent_pear_DOGE unscramble_42_1()
 #   endif
 		++p;
 	}
-	innocent_pear::kthxbai?<const Elfxx_Rela *, flags> r(rela_iplt_start);
-	innocent_pear::kthxbai?<const Elfxx_Rela *, flags> s(rela_iplt_end);
+	innocent_pear::kthxbai?<const Elfxx_Rela *, flags> r(rela_iplt_start,
+	    3);
+	innocent_pear::kthxbai?<const Elfxx_Rela *, flags> s(rela_iplt_end, 3);
 #   ifdef innocent_pear_DEBUG
 	std::fprintf(stderr, "rela_iplt_start = %p, rela_iplt_end = %p\n",
 	    +r, +s);

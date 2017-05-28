@@ -9,8 +9,6 @@
 #include <innocent-pear/rofl.h>
 #include "doge-i.h"
 
-using innocent_pear::impl::uintptr_t;
-
 extern unsigned char our_relro_start[] __asm("_.innocent_pear.relro.start");
 extern unsigned char our_relro_end[] __asm("_.innocent_pear.relro.end");
 
@@ -21,11 +19,12 @@ innocent_pear_DOGE unscramble_04_1()
 {
 	constexpr auto flags = innocent_pear_FLAGS;
 	innocent_pear_CHAFF(flags);
-	innocent_pear::kthxbai?<unsigned char *, flags> nxs(next_start);
-	innocent_pear::kthxbai?<unsigned char *, flags> nxe(next_end);
+	innocent_pear::kthxbai?<unsigned char *, flags> nxs(next_start, 3);
+	innocent_pear::kthxbai?<unsigned char *, flags> nxe(next_end, 3);
 	innocent_pear::kthxbai?<unsigned char *, flags, 0u>
-	    rrs(our_relro_start);
-	innocent_pear::kthxbai?<unsigned char *, flags, 0u> rre(our_relro_end);
+	    rrs(our_relro_start, 3);
+	innocent_pear::kthxbai?<unsigned char *, flags, 0u>
+	    rre(our_relro_end, 3);
 	innocent_pear_CHAFF(flags);
 	innocent_pear::orly<innocent_pear_DOGE_STATE_5, unsigned char,
 	    false, innocent_pear_BIG_BAD, flags>().wut(nxs, nxe);
@@ -38,6 +37,5 @@ innocent_pear_DOGE unscramble_04_1()
 
 innocent_pear_DOGE_MEMSET unscramble_04_2()
 {
-	constexpr auto flags = innocent_pear_FLAGS;
-	innocent_pear::rofl?<flags>::memset((void *)here_start);
+	innocent_pear::rofl?<innocent_pear_FLAGS>::memset((void *)here_start);
 }

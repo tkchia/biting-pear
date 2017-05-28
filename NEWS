@@ -1,3 +1,25 @@
+2017-05-28	"ERROR: unexpected CPU exception 0x0c err=0x00000000
+		cr2=402b9000 while in vm86 (DOS)"
+
+		include/innocent-pear/lolwut.h :
+		- now handles lolwut<...>::lolwut(, 2) and (, 3) for ia16-elf
+
+		include/innocent-pear/rofl.h :
+		- added custom implementation of rofl<...>::memset(.) for
+		  ia16-elf
+
+		share/innocent-pear/doge-01.cc ,
+		share/innocent-pear/doge-02.cc ,
+		share/innocent-pear/doge-03.cc ,
+		share/innocent-pear/doge-04.cc ,
+		share/innocent-pear/doge-05.cc ,
+		share/innocent-pear/doge-40.cc ,
+		share/innocent-pear/doge-42.cc :
+		- now uses kthxbai<...>::kthxbai(, 3), and other minor tweaks
+
+		share/innocent-pear/doge-99.cc :
+		- now places symbols in the right sections for ia16-elf
+
 2017-05-27	"(.text.unlikely.01.t+0x230): relocation truncated to fit:
 		R_386_16 ..."
 
