@@ -695,6 +695,13 @@ class rofl_impl_clear_cache :
 		return typename super::syscall_ret(0, 0);
 #endif
 	}
+#if defined __i386__ || defined __amd64__ || defined __ia16__
+	template<class ST, class ET>
+	innocent_pear_always_inline
+	static typename super::syscall_ret
+	clear_cache(ST start, ET end)
+		{ return typename super::syscall_ret(0, 0); }
+#endif
 };
 
 template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
@@ -843,7 +850,7 @@ class rofl_impl_ptrace :
 #endif
 	    req, pid_t pid, void *addr, void *data)
 	{
-#ifdef innocent_pear_DEBUG
+#if defined innocent_pear_DEBUG && defined innocent_pear_HAVE_CONST_PT_TRACE_ME
 		if (req == PT_TRACE_ME) {
 			unsigned long k = __atomic_fetch_add(&ptrace_counter,
 			    1, __ATOMIC_SEQ_CST);

@@ -150,8 +150,8 @@ static void nyan(sleepier_t& cheesy, const char *cheeses, states_t st,
     const std::string& emeow, const std::string& sploosh, bool v, bool sta,
     bool debug_doge)
 {
-	char cheese[strlen(cheeses) + 8];
-	std::snprintf(cheese, sizeof cheese, "%s.pear.t", cheeses);
+	char cheese[strlen(cheeses) + 9 + strlen(cheez)];
+	std::snprintf(cheese, sizeof cheese, "%s.pear.t.%s", cheeses, cheez);
 	cheesy(cheese);
 	std::string s1, s2, s3, s4, s5,
 	    s6 = "-Uinnocent_pear_DOGE_TAG_NEXT",
@@ -680,7 +680,12 @@ static int main_(int argc, char **argv)
 			burger[2] = pusheen(meowmeow,
 			    "/innocent-pear/doge.h");
 			burger[3] = pusheen("-Wl,-T,", caturday,
-			    "/share/innocent-pear/doge-i.ld,-z,norelro"
+			    "/share/innocent-pear/doge-i.ld"
+#ifdef innocent_pear_TARGET_IS_IA16
+			    ",-T,", caturday,
+			    "/share/innocent-pear/doge-i-ctors.ld"
+#endif
+			    ",-z,norelro"
 #ifdef innocent_pear_FIX_ELF_IFUNC
 			    ",--wrap=__pthread_initialize_minimal"
 			    ",--wrap=__rel_iplt_start"

@@ -1,3 +1,36 @@
+2017-05-30	ia16-elf constructors and unscrambling loop hacking...
+
+		share/innocent-pear/doge-i-ctors.ld :
+		- new; turns .ctors.* into .init_array.* for ia16-elf
+
+		share/innocent-pear/doge-00.cc :
+		- added .init_array.* constructor loop for ia16-elf
+
+		share/innocent-pear/doge-40.cc :
+		- minor fix
+
+		GNUmakefile :
+		- added doge-i-ctors.ld to dependencies
+		- now blasts the link map to stdout (for debugging), when
+		  compiling test-doge-with-c test case for ia16-elf
+
+		bin/innocent-pear-front-end.tcc :
+		- now names temporary object files for doge-??.cc with their
+		  ?? tag numbers, for easier debugging
+		- now uses doge-i-ctors.ld
+
+		include/innocent-pear/orly.h :
+		- removed munging of p, and fixed munging of q, in orly<...>::
+		  wot(p, q, c) and orly<...>::wut(p, q, r)
+
+		include/innocent-pear/rofl.h :
+		- rofl<...>::clear_cache(, ) now does nothing on x86-16/-32/
+		  -64 even if passed scrambled pointers
+		- fixed rofl<...>::ptrace(...) (== -1, ENOSYS) for ia16-elf
+
+		test/test-kthxbai-p.cc :
+		- added testing of scrambled _static data_ pointers
+
 2017-05-28	"ERROR: unexpected CPU exception 0x0c err=0x00000000
 		cr2=402b9000 while in vm86 (DOS)"
 

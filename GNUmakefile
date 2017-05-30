@@ -136,6 +136,7 @@ installables.host = \
     share/innocent-pear/doge-98.cc \
     share/innocent-pear/doge-99.cc \
     share/innocent-pear/doge-i.ld \
+    share/innocent-pear/doge-i-ctors.ld \
     share/innocent-pear/doge-n-dogecoin.ld \
     share/innocent-pear/doge-n-dogecoin.noinit.ld \
     share/innocent-pear/doge-n-ifunc.ld
@@ -713,6 +714,14 @@ test/test-doge-eh.o \
 test/test-doge-eh.s : \
     CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -Xinnocent-pear -doge \
 	-s -time
+
+# for debugging
+ifeq "ia16-elf" "$(conf_Crosst_tag)"
+test/test-doge-with-c$(conf_Target_exe_ext) \
+test/test-doge-with-c.o \
+test/test-doge-with-c.s : \
+    CXXFLAGS_FOR_TARGET.test += -Wl,-M
+endif
 
 test/test-doge-with-c$(conf_Target_exe_ext) \
 test/test-doge-with-c.o \

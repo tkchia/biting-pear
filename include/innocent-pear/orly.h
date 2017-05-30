@@ -203,9 +203,9 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 		 * the outset -- if the precise distance between p and q is
 		 * not already known.
 		 */
-		if (!__builtin_constant_p(q - p))
-			__asm __volatile("" : "=g" (p), "=g" (q)
-					    : "0" (p), "1" (q));
+		if (std::is_same<QT, T *>::value &&
+		    !__builtin_constant_p(q - p))
+			__asm __volatile("" : "=g" (q) : "0" (q));
 		std::size_t n = q - p;
 		if (Boreal) {
 #ifndef __ia16__
@@ -308,6 +308,7 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 				y9 = y0;
 			}
 		}
+		__asm __volatile("" : : "g" (p) : "memory");
 	}
 	template<class PT = T *, class QT = T *>
 	innocent_pear_always_inline
@@ -345,8 +346,7 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 		  x8 = (*this)(x7, x6, x5, x4, x3, x2, x1),
 		  x9 = (*this)(x8, x7, x6, x5, x4, x3, x2, x1);
 		if (!__builtin_constant_p(q - p))
-			__asm __volatile("" : "=g" (p), "=g" (q)
-					    : "0" (p), "1" (q));
+			__asm __volatile("" : "=g" (q) : "0" (q));
 		std::size_t n = q - p;
 #ifndef __ia16__
 		while (n >= 10) {
@@ -402,8 +402,7 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 		  x8 = (*this)(x7, x6, x5, x4, x3, x2, x1),
 		  x9 = (*this)(x8, x7, x6, x5, x4, x3, x2, x1);
 		if (!__builtin_constant_p(q - p))
-			__asm __volatile("" : "=g" (p), "=g" (q)
-					    : "0" (p), "1" (q));
+			__asm __volatile("" : "=g" (q) : "0" (q));
 		T *r = p;
 		std::size_t n = q - p;
 		while (n-- != 0) {

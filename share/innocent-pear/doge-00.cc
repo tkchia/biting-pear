@@ -65,3 +65,26 @@ void unscramble_00_1(foo_t foo)
 	}
 }
 #endif
+
+#ifdef __ia16__
+__attribute__((section(".text.unlikely." innocent_pear_DOGE_TAG ".t"),
+    noinline))
+void unscramble_00_2() __asm("_.innocent_pear.unscramble_00_2");
+
+__attribute__((section(".text.unlikely." innocent_pear_DOGE_TAG ".t"),
+    noinline))
+void unscramble_00_2()
+{
+	typedef void (*pcf_t)();
+	extern const pcf_t __init_array_start[], __init_array_end[];
+	for (const pcf_t *pp = __init_array_start; pp != __init_array_end;
+	    ++pp) {
+		pcf_t p = *pp;
+		(*p)();
+	}
+}
+
+__asm(	".pushsection .init; "
+	"call _.innocent_pear.unscramble_00_2; "
+	".popsection");
+#endif
