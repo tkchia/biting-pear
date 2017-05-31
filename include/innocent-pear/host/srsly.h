@@ -74,7 +74,7 @@ class srsly_impl
 		rand_state_t st11 = update_inner(st10);
 		st12_ = update_inner(st11);
 		new_st_ = update_outer(st12_, Levels);
-		which_op_ = pick_hi<unsigned>(st ^ st2);
+		which_op_ = ((st ^ st2) >> 32) % 8191u;
 		xd0_ = pick_hi<T>(st2 ^ st3);
 		xd1_ = pick_hi<T>(st3 ^ st4);
 		xd2_ = pick_hi<T>(st4 ^ st5);

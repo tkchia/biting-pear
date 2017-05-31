@@ -96,6 +96,7 @@ else
 	    test/test-orly-1 \
 	    test/test-orly-2 \
 	    test/test-orly-3 \
+	    test/test-orly-wut \
 	    test/test-doge-with-c)
 endif
 utils.host = \
@@ -676,12 +677,22 @@ test/test-orly-wut.s : \
 
 test/test-orly-wut$(conf_Target_exe_ext): test/test-orly-wut.o \
     test/test-orly-wut.ld bin/innocent-pear-doge$(conf_Host_exe_ext)
+ifneq "ia16-elf" "$(conf_Crosst_tag)"
 	time $(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
 	    $(LDFLAGS_FOR_TARGET) -o$@.tmp $(filter %.o %.ld,$^) \
 	    $(LDLIBS_FOR_TARGET)
 	bin/innocent-pear-doge$(conf_Host_exe_ext) $@.tmp $@ \
 	    __doge_start __doge_end $(state) -v
 	$(RM) $@.tmp
+else
+	time $(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
+	    $(LDFLAGS_FOR_TARGET) -o$@.tmp $(filter %.o %.ld,$^) \
+	    -Wl,--oformat=elf32-i386 $(LDLIBS_FOR_TARGET)
+	bin/innocent-pear-doge$(conf_Host_exe_ext) $@.tmp $@.2.tmp \
+	    __doge_start __doge_end $(state) -v
+	$(STRIP_FOR_TARGET) -O binary -o $@ $@.2.tmp
+	$(RM) $@.tmp $@.2.tmp
+endif
 
 test/test-doge.debug$(conf_Target_exe_ext) \
 test/test-doge.debug.o \

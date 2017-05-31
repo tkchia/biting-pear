@@ -37,7 +37,7 @@ class orly_impl
 	    State10 = update_inner(State9), State11 = update_inner(State10),
 	    State12 = update_inner(State11),
 	    NewState = update_outer(State12, Levels);
-	static constexpr unsigned WhichOp = pick_hi<unsigned>(State ^ State2);
+	static constexpr unsigned WhichOp = ((State ^ State2) >> 32) % 8191u;
 	static constexpr T DefX0 = pick_hi<T>(State2  ^ State3),
 			   DefX1 = pick_hi<T>(State3  ^ State4),
 			   DefX2 = pick_hi<T>(State4  ^ State5),
@@ -79,10 +79,10 @@ class orly_impl
 			break;
 		}
 		y = do_op<TaintOp>(y, t);
-		if (y <= sizeof(uintptr_t))
+		if (sizeof(y) <= sizeof(uintptr_t))
 			__asm __volatile("" : "=g" (y) : "0" (y));
 #ifdef __ia16__
-		else if (y <= 2 * sizeof(uintptr_t))
+		else if (sizeof(y) <= 2 * sizeof(uintptr_t))
 			__asm __volatile("" : "=k" (y) : "0" (y));
 #endif
 		switch (TaintCond) {

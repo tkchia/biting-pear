@@ -1,3 +1,22 @@
+2017-05-31	orly<...>::wut(...) was broken on ia16-elf.
+
+		GNUmakefile :
+		- added test-orly-wut to list of tests, and customized
+		  commands for building test-orly-wut, for ia16-elf
+
+		include/innocent-pear/orly.h :
+		- orly<...> now uses machine-independent definition of
+		  WhichOp (argh!)
+		- fixed another silly bug: y <= sizeof(.) should be sizeof(y)
+		  <= sizeof(.)
+
+		include/innocent-pear/host/srsly.h :
+		- srsly<...> now uses machine-independent definition of
+		  which_op_
+
+		test/test-orly-wut.cc :
+		- modified to (semi-)work under ia16-elf
+
 2017-05-30	ia16-elf constructors and unscrambling loop hacking...
 
 		share/innocent-pear/doge-i-ctors.ld :
