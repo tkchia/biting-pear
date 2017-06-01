@@ -1,3 +1,12 @@
+2017-06-01	"Toddlers are the stormtroopers of the Lord of Entropy."
+
+		include/innocent-pear/rofl.h :
+		- x86-64/-32/-16: rofl<...>::memset(.) now marks %rdi/%edi/%di
+		  and %rcx/%ecx/%cx as early-clobber
+
+		share/innocent-pear/doge-02.cc :
+		- quick and messy fix for ia16-elf linker problem
+
 2017-05-31	orly<...>::wut(...) was broken on ia16-elf.
 
 		GNUmakefile :

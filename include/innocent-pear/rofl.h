@@ -728,7 +728,7 @@ class rofl_impl_memset :
 			".balign 4; "
 			"2: "
 			"rep; stosl"
-		    : "=D" (edi), "=c" (ecx)
+		    : "=&D" (edi), "=&c" (ecx)
 		    : "0" ((char *)s + 3) : "memory", "cc");
 #elif defined __amd64__
 		void *rdi, *rcx;
@@ -741,21 +741,21 @@ class rofl_impl_memset :
 			"2: "
 			"rep; stosq; "		// .. 4 bytes
 			"stosl"			// .:
-		    : "=D" (rdi), "=c" (rcx)
+		    : "=&D" (rdi), "=&c" (rcx)
 		    : "0" ((char *)s + 7) : "memory", "cc");
 #elif defined __ia16__
 		void *di, *cx, *cs;
 		__asm __volatile("movw %%cs, %0" : "=r" (cs));
 		__asm __volatile(
 			"andw $-2, %%di; "
-			"leaw 2f, %%cx; "
+			"movw $2f, %%cx; "
 			"subw %%di, %%cx; "
 			"shrw $1, %%cx; "
 			"movw %3, %%es; "
 			".balign 2; "
 			"2: "
 			"rep; stosw"
-		    : "=D" (di), "=c" (cx)
+		    : "=&D" (di), "=&c" (cx)
 		    : "0" ((char *)s + 1), "r" (cs)
 		    : "es", "memory", "cc");
 #elif defined __arm__

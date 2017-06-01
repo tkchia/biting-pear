@@ -34,8 +34,18 @@ innocent_pear_DOGE unscramble_02_1()
 	innocent_pear_CHAFF(flags);
 	innocent_pear::kthxbai?<unsigned char *, flags> nxs(next_start, 3);
 	innocent_pear::kthxbai?<unsigned char *, flags> nxe(next_end, 3);
+#ifndef __ia16__
 	innocent_pear::kthxbai?<unsigned char *, flags, 0u>
 	    ts(our_text_start, 3);
+#else
+	/*
+	 *	"(.text.unlikely.02.t+0x22): relocation truncated to fit:
+	 *	 R_386_PC16 against symbol `_.innocent_pear.text.start'
+	 *	 defined in .text section in test/test-doge-with-c.exe.pear.t
+	 *	 .45.4LHGIQ"
+	 */
+	unsigned char *ts = our_text_start;
+#endif
 	innocent_pear::kthxbai?<unsigned char *, flags, 0u>
 	    te(our_text_end, 3);
 	innocent_pear_CHAFF(flags);
