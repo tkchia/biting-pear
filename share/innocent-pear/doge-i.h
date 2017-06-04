@@ -86,7 +86,8 @@
 #   define innocent_pear_CHAFF(flags) \
 	(innocent_pear::omg?<unsigned, (flags)>::special())
 #else
-#   define innocent_pear_CHAFF(flags) ((void)0)
+#   define innocent_pear_CHAFF(flags) \
+	(innocent_pear::omg?<unsigned, (flags), 1u>::special())
 #endif
 
 /*
@@ -96,7 +97,12 @@
 #ifndef __ia16__
 #   define innocent_pear_BIG_BAD true
 #else
-#   define innocent_pear_BIG_BAD false
+template<class... Ts>
+inline constexpr bool innocent_pear_BIG_BAD_FOR_TAG(char x1, char x2, Ts... ts)
+	{ return x1 == '0' && (x2 == '1' || x2 == '2'); }
+				/* use our own syntactic sugar while at it */
+#   define innocent_pear_BIG_BAD \
+	innocent_pear_BIG_BAD_FOR_TAG([] innocent_pear_DOGE_TAG)
 #endif
 
 /*

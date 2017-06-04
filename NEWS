@@ -8,6 +8,18 @@
 		- changed "g" and "=g" assembly operand constraints into "r,m"
 		  and "=r,m", to work around an ia16-elf-gcc issue
 
+		include/innocent-pear/doge.h :
+		- somewhat redefined main(...) for ia16-elf
+
+		share/innocent-pear/doge-i.h :
+		- somewhat redefined innocent_pear_BIG_BAD for ia16-elf
+
+		share/innocent-pear/doge-04.cc :
+		- fewer scrambling layers under ia16-elf
+
+		GNUmakefile :
+		- added include/innocent-pear/doge.h as an installable
+
 2017-06-01	"Toddlers are the stormtroopers of the Lord of Entropy."
 
 		include/innocent-pear/rofl.h :

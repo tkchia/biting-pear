@@ -52,6 +52,7 @@ config.h.target = include/innocent-pear/derp.h
 headers.target = \
     include/innocent-pear/bbq.h \
     include/innocent-pear/dawg.h \
+    include/innocent-pear/doge.h \
     include/innocent-pear/kthxbai.h \
     include/innocent-pear/lolwut.h \
     include/innocent-pear/nowai.h \
