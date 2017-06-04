@@ -485,7 +485,7 @@ class lolwut_impl
 				    : "0" (cast(v) + Disp));
 #endif
 		}
-		__asm("" : "=g" (p_) : "0" (p_));
+		__asm("" : "=r,m" (p_) : "0,0" (p_));
 	}
     public:
 	/* For cases where we do not want to scramble the displacement. */

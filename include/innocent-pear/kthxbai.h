@@ -142,7 +142,7 @@ class kthxbai_impl<State, T, Flags, 0u>
 #endif
 		    default:
 			if (sizeof(T) <= sizeof(uintptr_t))
-				__asm __volatile("" : "=g" (x) : "0" (v));
+				__asm __volatile("" : "=r,m" (x) : "0,0" (v));
 #ifdef __ia16__
 			else if (sizeof(T) <= 2 * sizeof(uintptr_t))
 				__asm __volatile("" : "=k" (x) : "0" (v));
@@ -367,13 +367,13 @@ class kthxbai_impl
 				{ omg_n zomg(x1); }
 				{ impl_n2(x2, v); }
 				__asm __volatile(""
-				    : "=g" (x2)
-				    : "0" (orly<NewState3, T, Boreal1, false,
-					       Flags, 1u>()(x2, x1)));
+				    : "=r,m" (x2)
+				    : "0,0" (orly<NewState3, T, Boreal1,
+					       false, Flags, 1u>()(x2, x1)));
 				__asm __volatile(""
-				    : "=g" (x)
-				    : "0" (orly<NewState3, T, !Boreal1, false,
-					       Flags, 1u>()(x2, x1)));
+				    : "=r,m" (x)
+				    : "0,0" (orly<NewState3, T, !Boreal1,
+					       false, Flags, 1u>()(x2, x1)));
 			}
 			if (false)
 #ifdef __i386__

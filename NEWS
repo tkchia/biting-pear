@@ -1,3 +1,13 @@
+2017-06-04	test-orly-wut now works on ia16-elf.
+
+		include/innocent-pear/kthxbai.h ,
+		include/innocent-pear/lolwut.h ,
+		include/innocent-pear/omg.h ,
+		include/innocent-pear/orly.h ,
+		include/innocent-pear/unpossible.h :
+		- changed "g" and "=g" assembly operand constraints into "r,m"
+		  and "=r,m", to work around an ia16-elf-gcc issue
+
 2017-06-01	"Toddlers are the stormtroopers of the Lord of Entropy."
 
 		include/innocent-pear/rofl.h :

@@ -258,7 +258,7 @@ omg<State, T, Flags, 0u>
 				constexpr T v = pick_hi<T>(State4);
 				kthxbai_impl<State5, T, Flags, 0>(x, v);
 			} else
-				__asm __volatile("" : "=g" (x));
+				__asm __volatile("" : "=r,m" (x));
 		}
 	}
 	innocent_pear_always_inline
@@ -761,9 +761,9 @@ omg
 				omg<NewState, T, Flags, Levels - 1> zomg(x);
 				omg<NewState2, T, Flags, Levels - 1> zomg2(y);
 				__asm __volatile(""
-				    : "=g" (x)
-				    : "0" (do_op<pick_hi<unsigned>(NewState3)>
-					   (x, y)));
+				    : "=r,m" (x)
+				    : "0,0" (do_op<pick_hi<unsigned>
+					(NewState3)>(x, y)));
 			}
 			break;
 		    case 3:
