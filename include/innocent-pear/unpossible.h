@@ -73,7 +73,7 @@ class unpossible<State, T, 0u>
 	unpossible(T& x)
 	{
 		unpossible();
-		__asm("" : "=r,m" (x));
+		__asm("" : innocent_pear_ASM_GEN_OUT (x));
 	}
 };
 

@@ -357,10 +357,19 @@ using ops::ops_flags_t;
 		".elseif 7 == %c" #o "; " \
 			"repnz; " \
 		".endif; "
-#    else
+#   else
 #	define innocent_pear_X86_PREFIX(o) ""
 #	define innocent_pear_X86_BR_PREFIX(o) ""
-#    endif
+#   endif
+#endif
+#ifndef __ia16__
+#   define innocent_pear_ASM_GEN_OUT	"=g"
+#   define innocent_pear_ASM_GEN_IN	"g"
+#   define innocent_pear_ASM_GEN_MATCH	"0"
+#else
+#   define innocent_pear_ASM_GEN_OUT	"=r,m"
+#   define innocent_pear_ASM_GEN_IN	"r,m"
+#   define innocent_pear_ASM_GEN_MATCH	"0,0"
 #endif
 
 #endif

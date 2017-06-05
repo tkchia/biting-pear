@@ -1,3 +1,26 @@
+2017-06-05	test-doge-with-c now works on ia16-elf.  And, fixed x86-64
+		clang++ regression.
+
+		include/innocent-pear/bbq.h :
+		- now defines innocent_pear_ASM_GEN_{OUT, IN, MATCH} to
+		  factor out uses of "=g"/"=r,m" (and "g"/"r,m") in other
+		  headers -- "g" causes internal ia16-elf-g++ errors, while
+		  while "r,m" gives weird code on (x86-64) clang++
+
+		include/innocent-pear/kthxbai.h ,
+		include/innocent-pear/omg.h ,
+		include/innocent-pear/unpossible.h :
+		- now uses innocent_pear_ASM_GEN_{OUT, IN, MATCH}
+
+		include/innocent-pear/lolwut.h :
+		- now uses innocent_pear_ASM_GEN_{OUT, IN, MATCH}
+		- now scopes kthxbai_impl<...> uses
+
+		include/innocent-pear/orly.h :
+		- now uses innocent_pear_ASM_GEN_{OUT, IN, MATCH}
+		- orly<...>::wut(...) no longer scrambles starting values on
+		  ia16-elf
+
 2017-06-04	test-orly-wut now works on ia16-elf.
 
 		include/innocent-pear/kthxbai.h ,

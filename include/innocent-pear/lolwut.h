@@ -293,8 +293,8 @@ class lolwut_impl
 			 */
 			{
 				unsigned disp;
-				impl::kthxbai_impl<State4, unsigned, Flags,
-				    Levels2>(disp, Disp);
+				{ impl::kthxbai_impl<State4, unsigned, Flags,
+				    Levels2>(disp, Disp); }
 				__asm("" : "=r" (p_) : "0" (&&quux));
 				__asm(".ifc \"$%P3\", \"%3@PLT\"; "
 					"addl $_GLOBAL_OFFSET_TABLE_" \
@@ -394,8 +394,8 @@ class lolwut_impl
 		    case 3:
 			{
 				unsigned disp3, scratch;
-				impl::kthxbai_impl<State5, unsigned, Flags,
-				    Levels2>(disp3, Disp3);
+				{ impl::kthxbai_impl<State5, unsigned, Flags,
+				    Levels2>(disp3, Disp3); }
 				__asm(".ifc \"#%a2\", \"\%2\"; "
 					".subsection %a3; "
 #	ifndef __thumb2__
@@ -485,7 +485,8 @@ class lolwut_impl
 				    : "0" (cast(v) + Disp));
 #endif
 		}
-		__asm("" : "=r,m" (p_) : "0,0" (p_));
+		__asm("" : innocent_pear_ASM_GEN_OUT (p_)
+			 : innocent_pear_ASM_GEN_MATCH (p_));
 	}
     public:
 	/* For cases where we do not want to scramble the displacement. */
@@ -528,8 +529,8 @@ class lolwut<State, T, Flags, 0u> : public lolwut_impl<State, T, Flags, 0u>
 	operator T *() const
 	{
 		unsigned disp;
-		kthxbai_impl<super::NewState, unsigned, Flags, 0u>(disp,
-		    this->Disp);
+		{ kthxbai_impl<super::NewState, unsigned, Flags, 0u>(disp,
+		    this->Disp); }
 		if (this->Sign)
 			return reinterpret_cast<T *>(this->p_ + disp);
 		else	return reinterpret_cast<T *>(this->p_ - disp);
@@ -560,8 +561,8 @@ class lolwut : public lolwut_impl<State, T, Flags, Levels>
 	operator T *() const
 	{
 		unsigned disp;
-		kthxbai_impl<super::NewState, unsigned, Flags, Levels>(disp,
-		    this->Disp);
+		{ kthxbai_impl<super::NewState, unsigned, Flags, Levels>(disp,
+		    this->Disp); }
 		char *p;
 		if (((super::NewState ^ super::NewNewState) >> 32) % 4) {
 			lolwut<super::NewNewState, char, Flags, Levels - 1>

@@ -80,7 +80,9 @@ class orly_impl
 		}
 		y = do_op<TaintOp>(y, t);
 		if (sizeof(y) <= sizeof(uintptr_t))
-			__asm __volatile("" : "=r,m" (y) : "0,0" (y));
+			__asm __volatile(""
+			    : innocent_pear_ASM_GEN_OUT (y)
+			    : innocent_pear_ASM_GEN_MATCH (y));
 #ifdef __ia16__
 		else if (sizeof(y) <= 2 * sizeof(uintptr_t))
 			__asm __volatile("" : "=k" (y) : "0" (y));
@@ -139,7 +141,11 @@ template<rand_state_t State, class T, bool Boreal, bool BigBad,
 class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 {
 	typedef orly_impl<State, T, Boreal, BigBad, Flags, Levels> super;
+#ifndef __ia16__
 	typedef orly<State, T, false, BigBad, Flags, Levels> austral;
+#else
+	typedef orly<State, T, false, false, Flags, Levels> austral;
+#endif
 	template<class PT = T *>
 	class woot
 	{
@@ -205,7 +211,9 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 		 */
 		if (std::is_same<QT, T *>::value &&
 		    !__builtin_constant_p(q - p))
-			__asm __volatile("" : "=r,m" (q) : "0,0" (q));
+			__asm __volatile(""
+			    : innocent_pear_ASM_GEN_OUT (q)
+			    : innocent_pear_ASM_GEN_MATCH (q));
 		std::size_t n = q - p;
 		if (Boreal) {
 #ifndef __ia16__
@@ -308,7 +316,8 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 				y9 = y0;
 			}
 		}
-		__asm __volatile("" : : "r,m" (p) : "memory");
+		__asm __volatile("" : : innocent_pear_ASM_GEN_IN (p)
+		    : "memory");
 	}
 	template<class PT = T *, class QT = T *>
 	innocent_pear_always_inline
@@ -346,7 +355,9 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 		  x8 = (*this)(x7, x6, x5, x4, x3, x2, x1),
 		  x9 = (*this)(x8, x7, x6, x5, x4, x3, x2, x1);
 		if (!__builtin_constant_p(q - p))
-			__asm __volatile("" : "=r,m" (q) : "0,0" (q));
+			__asm __volatile(""
+			    : innocent_pear_ASM_GEN_OUT (q)
+			    : innocent_pear_ASM_GEN_MATCH (q));
 		std::size_t n = q - p;
 #ifndef __ia16__
 		while (n >= 10) {
@@ -402,7 +413,9 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 		  x8 = (*this)(x7, x6, x5, x4, x3, x2, x1),
 		  x9 = (*this)(x8, x7, x6, x5, x4, x3, x2, x1);
 		if (!__builtin_constant_p(q - p))
-			__asm __volatile("" : "=r,m" (q) : "0,0" (q));
+			__asm __volatile(""
+			    : innocent_pear_ASM_GEN_OUT (q)
+			    : innocent_pear_ASM_GEN_MATCH (q));
 		T *r = p;
 		std::size_t n = q - p;
 		while (n-- != 0) {
@@ -419,7 +432,8 @@ class orly : public orly_impl<State, T, Boreal, BigBad, Flags, Levels>
 			x8 = x9;
 			x9 = x0;
 		}
-		__asm __volatile("" : : "r,m" (p) : "memory");
+		__asm __volatile("" : : innocent_pear_ASM_GEN_IN (p)
+		    : "memory");
 	}
 };
 
