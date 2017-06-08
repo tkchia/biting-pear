@@ -204,6 +204,9 @@ class kthxbai_impl
 	innocent_pear_always_inline
 	kthxbai_impl(T& x, T v)
 	{
+#if defined __ia16__ && defined innocent_pear_DEBUG
+		__asm __volatile("# %a0 %a1" : : "n" (Levels), "n" (v));
+#endif
 		constexpr unsigned BitP =
 		    (State2 >> 20) % (sizeof(T) * CHAR_BIT);
 		switch ((State2 >> 32) % 27) {
@@ -435,9 +438,11 @@ class kthxbai_impl
 			if ((State2 >> 32) % 2) {
 				T x1;
 				lolwut<State3, T, Flags, Levels - 1> p1(&x1);
+				{ omg_n(); }
 				lolwut<update_outer(State3, Levels), T, Flags,
 				    Levels - 1> p2(&x1);
 				{ impl_n(*p1, v); }
+				{ omg_n3(); }
 				{ impl_z(x, *p2); }
 			} else {
 				constexpr uintptr_t N = (State2 >> 48) % 8191;
@@ -459,6 +464,10 @@ class kthxbai_impl
 			}
 			break;
 		}
+#if defined __ia16__ && defined innocent_pear_DEBUG
+		__asm __volatile("# %a0 %a1 %2" : : "n,n" (Levels), "n,n" (v),
+		    "r,m" (x));
+#endif
 	}
 };
 

@@ -1,3 +1,33 @@
+2017-06-08	test-doge-with-c now _really_ works on ia16-elf.
+
+		share/innocent-pear/doge-i-ctors.ld :
+		- now puts constants from teh<...> into separate .rodata.doge
+		  and .data.doge sections, so that they will not be (wrongly)
+		  scrambled by `-Xinnocent-pear -doge'; this fixes some
+		  test-doge-with-c crashes
+
+		share/innocent-pear/doge-04.cc :
+		- removed laxity
+
+		share/innocent-pear/doge-99.cc :
+		- slightly tweaked
+
+		include/innocent-pear/kthxbai.h :
+		- kthxbai<...> now invokes omg<...> for default case, for
+		  fun and profit
+
+		include/innocent-pear/lolwut.h :
+		- streamlined lolwut<...>::lolwut(, 3) code
+
+		include/innocent-pear/omg.h :
+		- now spews inline assembly commands for ia16-elf
+		- now may spew `cwtd' and short jumps with 1 junk byte each,
+		  for x86-64/-32/-16
+		- now may spew `cwtl' and `cltd' for x86-64/-32
+
+		include/innocent-pear/yarly.h :
+		- reduced scrambling layers for ia16-elf
+
 2017-06-05	test-doge-with-c now works on ia16-elf.  And, fixed x86-64
 		clang++ regression.
 

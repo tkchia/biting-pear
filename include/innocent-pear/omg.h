@@ -77,7 +77,10 @@ omg<State, T, Flags, 0u>
 		    State5 = update_inner(State4);
 		constexpr unsigned Which = (State2 >> 16) % 37;
 		constexpr unsigned WhichPfx = (State3 >> 32) % 6;
-#if defined __amd64__ || defined __i386__ || defined __arm__
+#if defined __amd64__ || defined __i386__ || defined __ia16__ || \
+    defined __arm__
+			/* Really only used for x86-64/-32/-16. */
+		constexpr uint_least8_t WhichJunk = State4 >> 56;
 		uintptr_t y, z;
 #   ifndef __arm__
 		struct { uintptr_t h, l; } dt;
@@ -85,7 +88,7 @@ omg<State, T, Flags, 0u>
 #   endif
 #endif
 		switch (Which) {
-#if defined __amd64__ || defined __i386__
+#if defined __amd64__ || defined __i386__ || defined __ia16__
 		    case 0:
 		    case 1:
 #   if defined __amd64__
@@ -99,6 +102,7 @@ omg<State, T, Flags, 0u>
 			x = static_cast<T>(y);
 			break;
 #   endif
+#   ifndef __ia16__
 		    case 2:
 		    case 3:
 			__asm(innocent_pear_X86_PREFIX(1) "smsw %0"
@@ -121,6 +125,7 @@ omg<State, T, Flags, 0u>
 			__asm __volatile("sidt %0" : "=m" (dt));
 			x = static_cast<T>(Which % 2 ? dt.h : dt.l);
 			break;
+#   endif
 		    case 10:
 			__asm __volatile("" : "=a" (z));
 			__asm __volatile(innocent_pear_X86_PREFIX(2) "cbtw"
@@ -128,40 +133,52 @@ omg<State, T, Flags, 0u>
 			x = static_cast<T>(y);
 			break;
 		    case 11:
+			__asm __volatile(innocent_pear_X86_PREFIX(1) "cwtd"
+			    : "=d" (y) : "n" (WhichPfx));
+			x = static_cast<T>(y);
+			break;
+#   ifndef __ia16__
+		    case 12:
 			__asm __volatile("" : "=a" (z));
 			__asm __volatile(innocent_pear_X86_PREFIX(2) "cwtl"
 			    : "=a" (y) : "0" (z), "n" (WhichPfx));
 			x = static_cast<T>(y);
 			break;
+		    case 13:
+			__asm __volatile(innocent_pear_X86_PREFIX(1) "cltd"
+			    : "=d" (y) : "n" (WhichPfx));
+			x = static_cast<T>(y);
+			break;
+#   endif
 #   ifdef __amd64__
-		    case 12:
+		    case 14:
 			__asm __volatile("" : "=a" (z));
 			__asm __volatile(innocent_pear_X86_PREFIX(2) "cltq"
 			    : "=a" (y) : "0" (z), "n" (WhichPfx));
 			x = static_cast<T>(y);
 			break;
-		    case 13:
+		    case 15:
 			__asm __volatile(innocent_pear_X86_PREFIX(1) "cqto"
 			    : "=d" (y) : "n" (WhichPfx));
 			x = static_cast<T>(y);
 			break;
 #   endif
-		    case 14:
+		    case 16:
 			__asm __volatile(innocent_pear_X86_PREFIX(1) "clc"
 			    : "=r" (y) : "n" (WhichPfx) : "cc");
 			x = static_cast<T>(y);
 			break;
-		    case 15:
+		    case 17:
 			__asm __volatile(innocent_pear_X86_PREFIX(1) "stc"
 			    : "=r" (y) : "n" (WhichPfx) : "cc");
 			x = static_cast<T>(y);
 			break;
-		    case 16:
+		    case 18:
 			__asm __volatile(innocent_pear_X86_PREFIX(1) "cmc"
 			    : "=r" (y) : "n" (WhichPfx) : "cc");
 			x = static_cast<T>(y);
 			break;
-		    case 17:
+		    case 19:
 			__asm __volatile(innocent_pear_X86_PREFIX(1) "cld"
 			    : "=r" (y) : "n" (WhichPfx) : "cc");
 			x = static_cast<T>(y);
@@ -172,21 +189,33 @@ omg<State, T, Flags, 0u>
 			 *
 			 * -- 20150608
 			 */
-		    case 18:
+		    case 20:
 			__asm __volatile(innocent_pear_X86_PREFIX(1) "nop"
 			    : "=r" (y) : "n" (WhichPfx));
 			x = static_cast<T>(y);
 			break;
-		    case 19:
-		    case 20:
+		    case 21:
+#   ifndef __ia16__
+		    case 22:
 			__asm __volatile(innocent_pear_X86_PREFIX(1) "verr %w0"
 			    : "=r" (y) : "n" (WhichPfx) : "cc");
 			x = static_cast<T>(y);
 			break;
-		    case 21:
-		    case 22:
+		    case 23:
+		    case 24:
 			__asm __volatile(innocent_pear_X86_PREFIX(1) "verw %w0"
 			    : "=r" (y) : "n" (WhichPfx) : "cc");
+			x = static_cast<T>(y);
+			break;
+#   endif
+		    case 25:
+		    case 26:
+		    case 27:
+		    case 28:
+			__asm __volatile(innocent_pear_X86_PREFIX(1) "jmp 1f; "
+					 ".byte %a2; "
+					 "1:"
+			    : "=r" (y) : "n" (WhichPfx), "n" (WhichJunk));
 			x = static_cast<T>(y);
 			break;
 #elif defined __arm__ && defined __thumb2__

@@ -6,10 +6,11 @@ extern const unsigned char startup_text_end[0]
 	innocent_pear_HIDDEN)) = { };
 extern const unsigned char our_text_end[0]
     __asm("_.innocent_pear.text.end")
+    __attribute__((
 #ifndef __ia16__
-    __attribute__((section(".gnu.linkonce.t.zzzzzzzzzzzzzzzzzzzzzzzz"),
+	section(".gnu.linkonce.t.zzzzzzzzzzzzzzzzzzzzzzzz"),
 #else
-    __attribute__((section(".text.zzzzzzzzzzzzzzzzzzzzzzzz"),
+	section(".text.zzzzzzzzzzzzzzzzzzzzzzzz"),
 #endif
 	innocent_pear_HIDDEN)) = { };
 extern const unsigned char our_rodata_end[0]
@@ -18,11 +19,11 @@ extern const unsigned char our_rodata_end[0]
 	innocent_pear_HIDDEN)) = { };
 extern const unsigned char our_relro_end[0]
     __asm("_.innocent_pear.relro.end")
+    __attribute__((
 #ifndef __ia16__
-    __attribute__((section(".gnu.linkonce.d.rel.ro."
-			   "zzzzzzzzzzzzzzzzzzzzzzzz"),
+	section(".gnu.linkonce.d.rel.ro.zzzzzzzzzzzzzzzzzzzzzzzz"),
 #else
-    __attribute__((section(".data.rel.ro.zzzzzzzzzzzzzzzzzzzzzzzz"),
+	section(".data.rel.ro.zzzzzzzzzzzzzzzzzzzzzzzz"),
 #endif
 	innocent_pear_HIDDEN)) = { };
 unsigned char our_data_end[0]

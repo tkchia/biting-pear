@@ -81,7 +81,8 @@ class yarly_impl_2<State, T, true, Flags, Levels> :
 		constexpr unsigned Sublevels =
 		    ((super::State5 >> 32) % 8u) / 3u;
 #else
-		constexpr unsigned Sublevels = (super::State5 >> 32) % 2u;
+		constexpr unsigned Sublevels =
+		    ((super::State5 >> 32) % 3u) / 2u;
 #endif
 		T y;
 		{ kthxbai_impl<super::State12, T, Flags, Sublevels>(y,

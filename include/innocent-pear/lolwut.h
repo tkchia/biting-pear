@@ -325,30 +325,22 @@ class lolwut_impl
 		    case 3:
 			if (Sign) {
 				char *q;
-				uintptr_t r;
-				__asm("" : "=r" (q)
-					 : "0" ((char *)&&qux - Disp2));
 				__asm(".reloc 1f-2, R_386_PC16, %a1; "
-				      "movw $1f-2-%a2+%a3, %0; "
+				      "movw %2, %0; "
 				      "1: "
-				    : "=r" (r)
-				    : "X" (v), "X" (&&qux),
-				      "n" (-Disp + Disp2));
-				p_ = q + r;
+				      "addw $1b-2+%a3, %0"
+				    : "=&r" (p_)
+				    : "X" (v), "n" (-Disp + Disp2),
+				      "n" (-Disp2));
 			} else {
-				char *q;
-				uintptr_t r;
-				__asm("" : "=r" (q)
-					 : "0" ((char *)&&qux + Disp2));
 				__asm(".reloc 1f-2, R_386_PC16, %a1; "
-				      "movw $1f-2-%a2+%a3, %0; "
+				      "movw %2, %0; "
 				      "1: "
-				    : "=r" (r)
-				    : "X" (v), "X" (&&qux),
-				      "n" (Disp - Disp2));
-				p_ = q + r;
+				      "addw $1b-2+%a3, %0"
+				    : "=&r" (p_)
+				    : "X" (v), "n" (Disp - Disp2),
+				      "n" (Disp2));
 			}
-		    qux:
 			break;
 #elif defined __arm__ && defined __thumb__ && defined __OPTIMIZE__ && \
       (defined __pic__ || defined __pie__) && defined __ELF__
