@@ -1,3 +1,8 @@
+2017-06-09	"Now assay said Syre Ector vnto Syre Kay"
+
+		README.md :
+		- added note on ia16-elf support
+
 2017-06-08	test-doge-with-c now _really_ works on ia16-elf.
 
 		share/innocent-pear/doge-i-ctors.ld :
