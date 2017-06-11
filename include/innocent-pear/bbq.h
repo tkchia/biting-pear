@@ -266,13 +266,16 @@ enum ops_flags_t
     allow_signal_unsafes	= 0x00000002u,
     allow_debugger_unsafes	= 0x00000004u,
     allow_resource_unsafes	= 0x00000008u,
+    allow_loop_plenty		= 0x00000010u,
     allow_for_startup		= allow_signal_safes |
 				  allow_signal_unsafes |
 				  allow_debugger_unsafes |
-				  allow_resource_unsafes,
-    under_munged_terminal	= 0x00000010u,
-    under_ptrace		= 0x00000020u,
-    under_unpossible		= 0x00000040u
+				  allow_resource_unsafes |
+				  allow_loop_plenty,
+    under_munged_terminal	= 0x00000020u,
+    under_ptrace		= 0x00000040u,
+    under_unpossible		= 0x00000080u,
+    under_disabled_irqs		= 0x00000100u,
 };
 
 } // innocent_pear::ops

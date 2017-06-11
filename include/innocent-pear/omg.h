@@ -194,8 +194,8 @@ omg<State, T, Flags, 0u>
 			    : "=r" (y) : "n" (WhichPfx));
 			x = static_cast<T>(y);
 			break;
-		    case 21:
 #   ifndef __ia16__
+		    case 21:
 		    case 22:
 			__asm __volatile(innocent_pear_X86_PREFIX(1) "verr %w0"
 			    : "=r" (y) : "n" (WhichPfx) : "cc");
@@ -208,10 +208,34 @@ omg<State, T, Flags, 0u>
 			x = static_cast<T>(y);
 			break;
 #   endif
+#   ifndef __amd64__	/*
+			 * Some x86-64 machines understand `lahf' and `sahf'
+			 * -- but apparently not all.  As for `salc', it is
+			 * undocumented and does not work on my box anyway...
+			 */
 		    case 25:
+			__asm __volatile(innocent_pear_X86_PREFIX(1) "lahf"
+			    : "=a" (y) : "n" (WhichPfx));
+			x = static_cast<T>(y);
+			break;
 		    case 26:
+			__asm __volatile(innocent_pear_X86_PREFIX(1) "sahf"
+			    : "=r" (y) : "n" (WhichPfx) : "cc");
+			x = static_cast<T>(y);
+			break;
 		    case 27:
 		    case 28:
+		    case 29:
+			__asm __volatile(innocent_pear_X86_PREFIX(1)
+					 ".byte 0xd6"	/* salc */
+			    : "=a" (y) : "n" (WhichPfx));
+			x = static_cast<T>(y);
+			break;
+#   endif
+		    case 30:
+		    case 31:
+		    case 32:
+		    case 33:
 			__asm __volatile(innocent_pear_X86_PREFIX(1) "jmp 1f; "
 					 ".byte %a2; "
 					 "1:"
@@ -865,7 +889,8 @@ omg
 		    case 18:
 		    case 19:
 			{
-				constexpr uintptr_t N = (State3 >> 48) % 8191;
+				constexpr uintptr_t N = (State3 >> 48)
+				    % (Flags & allow_loop_plenty ? 8191 : 31);
 				constexpr unsigned WhichOp =
 				    (unsigned)(State4 >> 16);
 				T w, y, z;

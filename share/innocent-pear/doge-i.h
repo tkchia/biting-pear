@@ -73,11 +73,19 @@
 	extern unsigned char next_end[] \
 	    __asm("_.innocent_pear.text.doge." innocent_pear_DOGE_TAG_2_NEXT \
 		  ".start");
-#define innocent_pear_FLAGS \
+#ifndef __ia16__
+#   define innocent_pear_FLAGS \
 	((innocent_pear::ops_flags_t) \
 	    (innocent_pear::ops::allow_for_startup | \
 	     innocent_pear::ops::under_munged_terminal | \
 	     innocent_pear::ops::under_ptrace))
+#else
+#   define innocent_pear_FLAGS \
+	((innocent_pear::ops_flags_t) \
+	    ((innocent_pear::ops::allow_for_startup & \
+	     ~innocent_pear::ops::allow_loop_plenty) | \
+	      innocent_pear::ops::under_disabled_irqs))
+#endif
 /*
  * This needs to be a macro so that the `?' will be expanded to a different
  * seed each time.

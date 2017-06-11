@@ -198,6 +198,17 @@ class kthxbai_impl
 #   endif
 			return true;
 		}
+#elif defined __ia16__
+		if ((Flags & ops::under_disabled_irqs) != 0) {
+			constexpr unsigned WhichOp = (unsigned)(State3 >> 16);
+			uint_least8_t y;
+			__asm("inb $0x21, %0" : "=Ral" (y));
+			T z;
+			{ impl_n(z,
+			    do_op<WhichOp>(v, (T)(uint_least8_t)0xff)); }
+			{ impl_z(x, do_inv_op<WhichOp>(z, (T)y)); }
+			return true;
+		}
 #endif
 		return false;
 	}
@@ -445,7 +456,9 @@ class kthxbai_impl
 				{ omg_n3(); }
 				{ impl_z(x, *p2); }
 			} else {
-				constexpr uintptr_t N = (State2 >> 48) % 8191;
+				constexpr uintptr_t N = (State2 >> 48)
+				    % (Flags & ops::allow_loop_plenty ?
+					8191 : 31);
 				constexpr unsigned WhichOp =
 				    (unsigned)(State3 >> 16);
 				constexpr T Y = pick_hi<T>(State3 ^ State4);

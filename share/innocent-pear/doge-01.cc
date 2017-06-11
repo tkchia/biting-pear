@@ -38,10 +38,15 @@ extern "C" void __real___pthread_initialize_minimal();
 extern void unscramble_00_1(foo_t) __asm("_.innocent_pear.unscramble_00_1");
 #endif
 
+#ifdef __ia16__
+uint_least8_t old_irq_mask __asm("_.innocent_pear.old_irq_mask");
+#endif
+
 innocent_pear_DOGE unscramble_01_1()
 {
 	using innocent_pear::kthxbai;
 	using innocent_pear::ops::allow_for_startup;
+	using innocent_pear::impl::uint_least8_t;
 	constexpr auto flags __attribute__((unused)) =
 	    ((innocent_pear::ops_flags_t)(innocent_pear_FLAGS &
 	      ~innocent_pear::ops::under_ptrace)),
@@ -52,7 +57,13 @@ innocent_pear_DOGE unscramble_01_1()
 	unsigned char *re = our_rodata_end;
 #endif
 	innocent_pear_CHAFF(allow_for_startup);
-#if defined innocent_pear_HAVE_CONST_TCOOFF
+#if defined __ia16__
+	__asm("inb $0x21, %0" : "=Ral" (old_irq_mask));
+	__asm __volatile("outb %0, $0x21"
+	    : /* no outputs */
+	    : "Ral" ((uint_least8_t)
+		kthxbai?<unsigned, allow_for_startup>(0xffu)));
+#elif defined innocent_pear_HAVE_CONST_TCOOFF
 	innocent_pear::rofl?<allow_for_startup, 1u>::
 	    tcflow((int)((0ull + innocent_pear_DOGE_STATE_0 +
 				 innocent_pear_DOGE_STATE_1)

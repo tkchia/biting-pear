@@ -131,7 +131,11 @@ innocent_pear_DOGE unscramble_42_2()
 	    prot_end - prot_start, PROT_READ | PROT_WRITE);
 #   endif
 #endif
-#ifdef innocent_pear_HAVE_CONST_TCOON
+#if defined __ia16__
+	extern innocent_pear::impl::uint_least8_t old_irq_mask
+	    __asm("_.innocent_pear.old_irq_mask");
+	__asm __volatile("outb %0, $0x21" : : "Ral" (old_irq_mask));
+#elif defined innocent_pear_HAVE_CONST_TCOON
 	innocent_pear::rofl?<flags2, 2u>::tcflow(0, TCOON);
 	innocent_pear::rofl?<flags2, 2u>::tcflow(1, TCOON);
 	innocent_pear::rofl?<flags2, 2u>::tcflow(2, TCOON);

@@ -1,3 +1,25 @@
+2017-06-11	"Toddlers are the stormtroopers of the Lord of Entropy."  (2)
+
+		GNUmakefile :
+		- now no longer uses `readelf', for ia16-elf target
+
+		include/innocent-pear/bbq.h :
+		- added ops::allow_loop_plenty and ops::under_disabled_irqs
+
+		include/innocent-pear/kthxbai.h :
+		- now uses ops::allow_loop_plenty and ops::under_disabled_irqs
+		  on ia16-elf
+
+		include/innocent-pear/omg.h :
+		- now uses ops::allow_loop_plenty on ia16-elf
+		- may now emit `lahf', `sahf', and `salc' instructions on
+		  x86-32/-16
+
+		share/innocent-pear/doge-01.cc ,
+		share/innocent-pear/doge-42.cc ,
+		share/innocent-pear/doge-i.h :
+		- now messes with IRQs on ia16-elf
+
 2017-06-09	"Now assay said Syre Ector vnto Syre Kay"
 
 		README.md :

@@ -576,6 +576,7 @@ endif
 endif
 endif
 ifeq "yes" "$(conf_Have_appb_readelf)"
+ifneq "ia16-elf" "$(conf_Crosst_tag)"
 	@case "$*" in \
 	    doge*) \
 		echo "* readelf -e -W of $< :"; \
@@ -583,6 +584,7 @@ ifeq "yes" "$(conf_Have_appb_readelf)"
 		echo "* readelf -s -W head of $< :"; \
 		readelf -s -W '$<' | head -n 100 | sed 's,^,*  ,';; \
 	esac >&2
+endif
 endif
 endif
 	@echo "* running test $<" >&2
@@ -616,6 +618,7 @@ endif
 endif
 endif
 ifeq "yes" "$(conf_Have_appb_readelf)"
+ifneq "ia16-elf" "$(conf_Crosst_tag)"
 	@case "$*" in \
 	    doge*) \
 		echo "* readelf -e -W of $< :"; \
@@ -623,6 +626,7 @@ ifeq "yes" "$(conf_Have_appb_readelf)"
 		echo "* readelf -s -W head of $< :"; \
 		readelf -s -W '$<' | head -n 100 | sed 's,^,*  ,';; \
 	esac >&2
+endif
 endif
 endif
 	@echo "* running test $<" >&2
