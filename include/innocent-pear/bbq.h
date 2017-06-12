@@ -234,7 +234,8 @@ T do_inv_op_rept(T x, T y)
 	    case 3:
 		return crealf(x, cpowf<T, (T)N>(y));
 	    case 4:
-		return pow<T, std::numeric_limits<T>::max() / 2 + 1 - (T)N>(5)
+		return pow<T, std::numeric_limits<T>::max() / 2 + 1
+		    - (T)(N % (std::numeric_limits<T>::max / 2 + 1))>(5)
 		    * (x - cpowf<T, (T)N>(1) * y);
 	    default:
 		return N % 2 ? x ^ y : x;
@@ -251,7 +252,7 @@ inline constexpr T pick_hi(rand_state_t x)
 template<class T>
 bool bit_set(T x, unsigned i)
 {
-	return (x & ((T)1 << i)) != 0;
+	return (x & ((T)1 << (T)i)) != 0;
 }
 
 } // innocent_pear::impl

@@ -69,6 +69,7 @@ ifneq "ia16-elf" "$(conf_Crosst_tag)"
     tests.target = \
 	$(patsubst %,%$(conf_Target_exe_ext), \
 	    test/test-kthxbai \
+	    test/test-kthxbai-b \
 	    test/test-kthxbai-p \
 	    test/test-omg-wheee.debug \
 	    test/test-omg-wheee \
@@ -93,6 +94,7 @@ ifneq "ia16-elf" "$(conf_Crosst_tag)"
 else
     tests.target = \
 	$(patsubst %,%$(conf_Target_exe_ext), \
+	    test/test-kthxbai-b \
 	    test/test-kthxbai-p \
 	    test/test-orly-1 \
 	    test/test-orly-2 \

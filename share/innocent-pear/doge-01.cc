@@ -62,7 +62,7 @@ innocent_pear_DOGE unscramble_01_1()
 	__asm __volatile("outb %0, $0x21"
 	    : /* no outputs */
 	    : "Ral" ((uint_least8_t)
-		kthxbai?<unsigned, allow_for_startup>(0xffu)));
+		kthxbai?<uint_least8_t, allow_for_startup>(0xffu)));
 #elif defined innocent_pear_HAVE_CONST_TCOOFF
 	innocent_pear::rofl?<allow_for_startup, 1u>::
 	    tcflow((int)((0ull + innocent_pear_DOGE_STATE_0 +

@@ -1,3 +1,25 @@
+2017-06-12	Removed unwanted type promotions and wrap-arounds.
+
+		include/innocent-pear/bbq.h :
+		- removed unwanted type promotions in `<<'s
+		- do_inv_opt_rept(...) now clips value of N for case 4
+
+		include/innocent-pear/kthxbai.h ,
+		include/innocent-pear/orly.h ,
+		include/innocent-pear/yarly.h ,
+		include/innocent-pear/host/rly.h :
+		- removed unwanted type promotions in `<<'s and `>>'s
+
+		share/innocent-pear/doge-01.cc :
+		- for ia16-elf, now directly scrambles 0xff as an 8-bit value
+
+		test/test-kthxbai-b.cc ,
+		test/test-kthxbai-b.good :
+		- new; tests for unwanted type promotions affecting results
+
+		GNUmakefile :
+		- added test-kthxbai-b test case
+
 2017-06-11	"Toddlers are the stormtroopers of the Lord of Entropy."  (2)
 
 		GNUmakefile :

@@ -92,11 +92,11 @@ class orly_impl
 			break;
 		    case 2:
 		    case 3:
-			t &= ~((T)1 << BitP);
+			t &= ~((T)1 << (T)BitP);
 			break;
 		    case 5:
 		    case 6:
-			t |= (T)1 << BitP;
+			t |= (T)1 << (T)BitP;
 		}
 		y = do_inv_op<TaintOp>(y, t);
 		return y;

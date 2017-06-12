@@ -224,8 +224,8 @@ class kthxbai_impl
 		    case 0:
 			{
 				constexpr unsigned NB = sizeof(T) * CHAR_BIT;
-				constexpr unsigned S = (State3 >> 16) % NB,
-						   RS = (NB - S) % NB;
+				constexpr T S = (State3 >> 16) % NB,
+					    RS = (NB - S) % NB;
 				if (S) {
 					T x1, v1 = v << S | v >> RS;
 					{ impl_n(x1, v1); }
@@ -294,7 +294,7 @@ class kthxbai_impl
 			{
 				T x1, v1 = v ^
 				    (pick_hi<T>(State2 ^ NewState) |
-				     (T)1 << BitP);
+				     (T)1 << (T)BitP);
 				{ impl_n(x1, v1); }
 				// first true, then false
 				while (bit_set(v, BitP) ? !bit_set(x1, BitP) :
@@ -526,7 +526,7 @@ struct kthxbai_impl_split<State, T, IntoT, Flags, Levels, Left, true>
 		    NewState = Levels ? update_outer(State, Levels - 1) :
 			update_inner(State),
 		    NewState2 = update_outer(State, Levels);
-		constexpr unsigned Shift = sizeof(IntoT) * CHAR_BIT;
+		constexpr T Shift = sizeof(IntoT) * CHAR_BIT;
 		IntoT y;
 		T z;
 		kthxbai_impl<NewState, IntoT, Flags, Levels ? Levels - 1 : 0>

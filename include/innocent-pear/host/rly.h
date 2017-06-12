@@ -107,8 +107,8 @@ class rly : public rly_impl<T, Levels>
 		    case 3:	return y1 & y2;
 		    case 4:	return y1 | y2;
 		    case 5:	return y1 ^ y2;
-		    case 6:	return y1 << (y2 % (sizeof(T) * CHAR_BIT));
-		    default:	return y1 >> (y2 % (sizeof(T) * CHAR_BIT));
+		    case 6:	return y1 << (T)(y2 % (sizeof(T) * CHAR_BIT));
+		    default:	return y1 >> (T)(y2 % (sizeof(T) * CHAR_BIT));
 		}
 	}
 };
