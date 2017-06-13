@@ -202,10 +202,37 @@ class kthxbai_impl
 		if ((Flags & ops::under_disabled_irqs) != 0) {
 			constexpr unsigned WhichOp = (unsigned)(State3 >> 16);
 			uint_least8_t y;
-			__asm("inb $0x21, %0" : "=Ral" (y));
+			switch ((State3 >> 24) % 4) {
+			    case 0:
+				__asm("outb %0, %1"
+				    : "=Ral" (y)
+				    : "d" ((uintptr_t)kthxbai<NewState2,
+					  uintptr_t, Flags, Levels - 1>
+					  (0x21u)),
+				      "0" ((uint_least8_t)kthxbai<NewState3,
+					  uint_least8_t, Flags, Levels - 1>
+					  (0xffu)));
+				break;
+			    case 1:
+				__asm("outb %0, $0x21"
+				    : "=Ral" (y)
+				    : "0" ((uint_least8_t)kthxbai<NewState3,
+					  uint_least8_t, Flags, Levels - 1>
+					  (0xffu)));
+				break;
+			    case 2:
+				__asm("inb %1, %0"
+				    : "=Ral" (y)
+				    : "d" ((uintptr_t)kthxbai<NewState2,
+					  uintptr_t, Flags, Levels - 1>
+					  (0x21u)));
+				break;
+			    default:
+				__asm("inb $0x21, %0" : "=Ral" (y));
+			}
 			T z;
 			{ impl_n(z,
-			    do_op<WhichOp>(v, (T)(uint_least8_t)0xff)); }
+			    do_op<WhichOp>(v, (T)(uint_least8_t)0xffu)); }
 			{ impl_z(x, do_inv_op<WhichOp>(z, (T)y)); }
 			return true;
 		}

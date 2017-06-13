@@ -1,3 +1,8 @@
+2017-06-12	"Toddlers are the stormtroopers of the Lord of Entropy."  (3)
+
+		include/innocent-pear/kthxbai.h :
+		- more messing with IRQs (via port 0x21) on ia16-elf
+
 2017-06-12	Removed unwanted type promotions and wrap-arounds.
 
 		include/innocent-pear/bbq.h :
