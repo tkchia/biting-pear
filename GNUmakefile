@@ -18,6 +18,13 @@ includedir.target = $(conf_Target_prefix)/include
 #
 CPPFLAGS += -Iinfra/keccak
 
+ifeq "ia16-elf" "$(conf_Crosst_tag)"
+    target_is_ia16_elf = yes
+else ifneq "$(conf_Crosst_tag:ia16-elf\,%=%)" "$(conf_Crosst_tag)"
+    target_is_ia16_elf = yes
+else
+    target_is_ia16_elf = no
+endif
 prefix_opts = \
     -Xinnocent-pear -prefix='$(conf_Srcdir)' \
     -Xinnocent-pear -exec-prefix=. \
@@ -65,7 +72,7 @@ headers.target = \
     include/innocent-pear/yarly.h \
     include/innocent-pear/yodawg.h \
     $(config.h.target)
-ifneq "ia16-elf" "$(conf_Crosst_tag)"
+ifeq "no" "$(target_is_ia16_elf)"
     tests.target = \
 	$(patsubst %,%$(conf_Target_exe_ext), \
 	    test/test-kthxbai \
@@ -578,7 +585,7 @@ endif
 endif
 endif
 ifeq "yes" "$(conf_Have_appb_readelf)"
-ifneq "ia16-elf" "$(conf_Crosst_tag)"
+ifeq "no" "$(target_is_ia16_elf)"
 	@case "$*" in \
 	    doge*) \
 		echo "* readelf -e -W of $< :"; \
@@ -620,7 +627,7 @@ endif
 endif
 endif
 ifeq "yes" "$(conf_Have_appb_readelf)"
-ifneq "ia16-elf" "$(conf_Crosst_tag)"
+ifeq "no" "$(target_is_ia16_elf)"
 	@case "$*" in \
 	    doge*) \
 		echo "* readelf -e -W of $< :"; \
@@ -640,7 +647,7 @@ endif
 	     echo "* $< exited with error: $$res" >&2 && \
 	     $(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
 	     exit 1)
-ifneq "ia16-elf" "$(conf_Crosst_tag)"
+ifeq "no" "$(target_is_ia16_elf)"
 	@LANG=en_US.UTF-8 diff -U2 /dev/null $(@:.passed=.2.tmp) || \
 	    (echo "* base64 dump of xz'd $< :" >&2 && \
 	     xz -9c <'$<' | base64 | sed 's,^,*  ,' && \
@@ -684,7 +691,7 @@ test/test-orly-wut.s : \
 
 test/test-orly-wut$(conf_Target_exe_ext): test/test-orly-wut.o \
     test/test-orly-wut.ld bin/innocent-pear-doge$(conf_Host_exe_ext)
-ifneq "ia16-elf" "$(conf_Crosst_tag)"
+ifeq "no" "$(target_is_ia16_elf)"
 	time $(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
 	    $(LDFLAGS_FOR_TARGET) -o$@.tmp $(filter %.o %.ld,$^) \
 	    $(LDLIBS_FOR_TARGET)
@@ -734,7 +741,7 @@ test/test-doge-eh.s : \
 	-s -time
 
 # for debugging
-ifeq "ia16-elf" "$(conf_Crosst_tag)"
+ifeq "yes" "$(target_is_ia16_elf)"
 test/test-doge-with-c$(conf_Target_exe_ext) \
 test/test-doge-with-c.o \
 test/test-doge-with-c.s : \

@@ -1,14 +1,18 @@
-2017-06-20	"Toddlers are the stormtroopers of the Lord of Entropy."  (4)
+2017-06-20	"So little time, so little to do."
 
 		.travis.yml :
 		- now says e.g. `arm-linux-gnueabi,armv6' rather than
 		  `armv6-linux-gnueabi', following lolwutconf/ changes
 
+		GNUmakefile :
+		- now handles `ia16-elf,*' in addition to `ia16-elf' target
+		  specifier
+
 		KeccakCodePackage/ :
 		- bumped to 83f4063446
 
 		lolwutconf/ :
-		- bumped to 70cde895c6
+		- bumped to 61b05be5c0
 
 		infra/KeccakCodePackage.tar.xz ,
 		infra/lolwutconf.tar.xz :
