@@ -1,3 +1,19 @@
+2017-06-20	"Toddlers are the stormtroopers of the Lord of Entropy."  (4)
+
+		.travis.yml :
+		- now says e.g. `arm-linux-gnueabi,armv6' rather than
+		  `armv6-linux-gnueabi', following lolwutconf/ changes
+
+		KeccakCodePackage/ :
+		- bumped to 83f4063446
+
+		lolwutconf/ :
+		- bumped to 70cde895c6
+
+		infra/KeccakCodePackage.tar.xz ,
+		infra/lolwutconf.tar.xz :
+		- updated
+
 2017-06-12	"Toddlers are the stormtroopers of the Lord of Entropy."  (3)
 
 		include/innocent-pear/kthxbai.h :

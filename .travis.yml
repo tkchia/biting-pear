@@ -60,24 +60,24 @@ env:
     CC_FOR_TARGET=gcc
     CXXFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -fPIC -pie -Wall"
     CFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -fPIC -pie -Wall"
-  - TARGET=armv7-a-linux-gnueabi
-  - TARGET=armv7-a-linux-gnueabi
+  - TARGET=arm-linux-gnueabi,armv7-a
+  - TARGET=arm-linux-gnueabi,armv7-a
     CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
     CFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
-  - TARGET=armv6-linux-gnueabi
-  - TARGET=armv6-linux-gnueabi
+  - TARGET=arm-linux-gnueabi,armv6
+  - TARGET=arm-linux-gnueabi,armv6
     CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
     CFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
-  - TARGET=armv4t-linux-gnueabi
-  - TARGET=armv4t-linux-gnueabi
+  - TARGET=arm-linux-gnueabi,armv4t
+  - TARGET=arm-linux-gnueabi,armv4t
     CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
     CFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
-  - TARGET=armv4-linux-gnueabi
-  - TARGET=armv4-linux-gnueabi
+  - TARGET=arm-linux-gnueabi,armv4
+  - TARGET=arm-linux-gnueabi,armv4
     CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
     CFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
-  - TARGET=armv7-a-linux-gnueabihf
-  - TARGET=armv7-a-linux-gnueabihf
+  - TARGET=arm-linux-gnueabihf,armv7-a
+  - TARGET=arm-linux-gnueabihf,armv7-a
     CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
     CFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
 install: ./infra/travis-install-deps.sh
