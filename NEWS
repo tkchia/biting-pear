@@ -1,3 +1,8 @@
+2017-06-21	"So little time, so little to do."  (2)
+
+		infra/travis-install-deps.sh :
+		- now handles `arm-*hf,*' target specifiers properly
+
 2017-06-20	"So little time, so little to do."
 
 		.travis.yml :

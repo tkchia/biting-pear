@@ -21,10 +21,10 @@ case "$TARGET" in
 	else
 		set -- ${1+"$@"} g++-multilib gcc-multilib
 	fi;;
-    armv[45678]*hf | arm-*hf)
+    arm-*hf | arm-*hf,*)
 	set -- ${1+"$@"} g++-arm-linux-gnueabihf gcc-arm-linux-gnueabihf \
 	    qemu-user;;
-    armv[45678]* | arm-*)
+    arm-*)
 	set -- ${1+"$@"} g++-arm-linux-gnueabi gcc-arm-linux-gnueabi \
 	    qemu-user;;
 esac
