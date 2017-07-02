@@ -604,6 +604,11 @@ endif
 	     echo "* $< exited with error: $$res" >&2 && \
 	     $(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
 	     exit 1)
+ifeq "yes" "$(conf_Have_appb_dos2unix)"
+ifeq "yes" "$(target_is_ia16_elf)"
+	@dos2unix -q $(@:.passed=.1.tmp)
+endif
+endif
 	@LANG=en_US.UTF-8 diff -U2 $(word 2,$+) $(@:.passed=.1.tmp) || \
 	    (echo "* base64 dump of xz'd $< :" >&2 && \
 	     xz -9c <'$<' | base64 | sed 's,^,*  ,' && \
@@ -654,6 +659,11 @@ ifeq "no" "$(target_is_ia16_elf)"
 	     echo "* $< produced output on stderr" >&2 && \
 	     $(RM) $(@:.passed=.1.tmp) $(@:.passed=.2.tmp) && \
 	     exit 1)
+endif
+ifeq "yes" "$(conf_Have_appb_dos2unix)"
+ifeq "yes" "$(target_is_ia16_elf)"
+	@dos2unix -q $(@:.passed=.1.tmp)
+endif
 endif
 	@LANG=en_US.UTF-8 diff -U2 $(word 2,$+) $(@:.passed=.1.tmp) || \
 	    (echo "* base64 dump of xz'd $< :" >&2 && \

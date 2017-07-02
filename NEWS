@@ -1,3 +1,11 @@
+2017-07-02	"So little time, so little to do."  (3)
+
+		GNUmakefile :
+		- now passes output of ia16-elf programs to dos2unix
+
+		configure :
+		- now looks for dos2unix program build-side
+
 2017-06-21	"So little time, so little to do."  (2)
 
 		infra/travis-install-deps.sh :
