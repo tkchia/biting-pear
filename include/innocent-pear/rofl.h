@@ -61,10 +61,7 @@ class rofl_impl_base
 	    NewState4 = update_outer(State4, Levels),
 	    State5 = update_inner(State4),
 	    NewState5 = update_outer(State5, Levels),
-	    NewState6 = update_outer(NewState5, Levels),
-	    NewState7 = update_outer(NewState6, Levels),
-	    NewState8 = update_outer(NewState7, Levels),
-	    NewState9 = update_outer(NewState8, Levels);
+	    State6 = update_inner(State5);
 };
 
 /*
@@ -96,6 +93,10 @@ template<rand_state_t State, ops_flags_t Flags, unsigned Levels>
 class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 {
 	typedef rofl_impl_base<State, Levels> super;
+#ifdef __amd64__
+    protected:
+	static constexpr bool Use0x80 = ((super::State6 >> 63) % 2 != 0);
+#endif
     public:
 	class syscall_ret
 	{
@@ -145,6 +146,15 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		    no(scno);
 		return (long)(unsigned long)no;
 	}
+#ifdef __amd64__
+	innocent_pear_always_inline
+	static int re_scno32(int scno)
+	{
+		typedef rofl_impl_base<State, Levels> super;
+		kthxbai<super::NewState, unsigned, Flags, Levels> no(scno);
+		return (int)(unsigned)no;
+	}
+#endif
 	template<class... Ts>
 	innocent_pear_always_inline
 	static syscall_ret use_libc_syscall(long scno, Ts... xs)
@@ -175,6 +185,17 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 	innocent_pear_always_inline
 	static bool wutwut(T x, Ts... xs)
 		{ return sizeof(x) > sizeof(uintptr_t) || wutwut(xs...); }
+#   ifdef __amd64__
+	innocent_pear_always_inline
+	static bool wutwut32()
+		{ return false; }
+	template<class T, class... Ts>
+	innocent_pear_always_inline
+	static bool wutwut32(T x, Ts... xs)
+	{
+		return sizeof(x) > sizeof(uint_least32_t) || wutwut32(xs...);
+	}
+#   endif
 	template<class T>
 	innocent_pear_always_inline
 	static uintptr_t re_arg(T x)
@@ -189,6 +210,22 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		u.x = x;
 		return u.up;
 	}
+#   ifdef __amd64__
+	template<class T>
+	innocent_pear_always_inline
+	static uintptr_t re_arg32(T x)
+	{
+		if (std::is_integral<T>::value || std::is_enum<T>::value ||
+		    std::is_pointer<T>::value)
+			return (uint_least32_t)x;
+		union {
+			uint_least32_t up;
+			T x;
+		} u = { 0, };
+		u.x = x;
+		return u.up;
+	}
+#   endif
 #   if defined __i386__ && !defined __clang__ && __GNUC__ < 5
 #	pragma message \
 	    "may emit inferior code, as g++ < 5 cannot spill %ebx"
@@ -316,6 +353,20 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		    : "rcx", "r11", "memory", "cc");
 		return re_rv(rv);
 	}
+	innocent_pear_always_inline
+	static syscall_ret syscall32(int scno)
+	{
+		int rv;
+		__asm __volatile("int $0x80"
+		    : "=a" (rv)
+		    : "0" (re_scno32(scno))
+			/*
+			 * The x86-64 Linux kernel sets pt_regs->r8 = ->r9
+			 * = ->r10 = ->r11 = 0 when handling "int $0x80".
+			 */
+		    : "r8", "r9", "r10", "r11", "memory", "cc");
+		return re_rv((long)rv);
+	}
 	template<class T1>
 	innocent_pear_always_inline
 	static syscall_ret syscall(long scno, T1 x1)
@@ -329,6 +380,19 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		    : "rcx", "r11", "memory", "cc");
 		return re_rv(rv);
 	}
+	template<class T1>
+	innocent_pear_always_inline
+	static syscall_ret syscall32(int scno, T1 x1)
+	{
+		if (wutwut32(x1))
+			return use_libc_syscall((long)scno, x1);
+		int rv;
+		__asm __volatile("int $0x80"
+		    : "=a" (rv)
+		    : "0" (re_scno32(scno)), "b" (re_arg32(x1))
+		    : "r8", "r9", "r10", "r11", "memory", "cc");
+		return re_rv((long)rv);
+	}
 	template<class T1, class T2>
 	innocent_pear_always_inline
 	static syscall_ret syscall(long scno, T1 x1, T2 x2)
@@ -341,6 +405,20 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		    : "0" (re_scno(scno)), "D" (re_arg(x1)), "S" (re_arg(x2))
 		    : "rcx", "r11", "memory", "cc");
 		return re_rv(rv);
+	}
+	template<class T1, class T2>
+	innocent_pear_always_inline
+	static syscall_ret syscall32(int scno, T1 x1, T2 x2)
+	{
+		if (wutwut32(x1, x2))
+			return use_libc_syscall((long)scno, x1, x2);
+		int rv;
+		__asm __volatile("int $0x80"
+		    : "=a" (rv)
+		    : "0" (re_scno32(scno)), "b" (re_arg32(x1)),
+		      "c" (re_arg32(x2))
+		    : "r8", "r9", "r10", "r11", "memory", "cc");
+		return re_rv((long)rv);
 	}
 	template<class T1, class T2, class T3>
 	innocent_pear_always_inline
@@ -356,6 +434,20 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		    : "rcx", "r11", "memory", "cc");
 		return re_rv(rv);
 	}
+	template<class T1, class T2, class T3>
+	innocent_pear_always_inline
+	static syscall_ret syscall32(int scno, T1 x1, T2 x2, T3 x3)
+	{
+		if (wutwut32(x1, x2, x3))
+			return use_libc_syscall((long)scno, x1, x2, x3);
+		int rv;
+		__asm __volatile("int $0x80"
+		    : "=a" (rv)
+		    : "0" (re_scno32(scno)), "b" (re_arg32(x1)),
+		      "c" (re_arg32(x2)), "d" (re_arg32(x3))
+		    : "r8", "r9", "r10", "r11", "memory", "cc");
+		return re_rv((long)rv);
+	}
 	template<class T1, class T2, class T3, class T4>
 	innocent_pear_always_inline
 	static syscall_ret syscall(long scno, T1 x1, T2 x2, T3 x3, T4 x4)
@@ -370,6 +462,21 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		      "d" (re_arg(x3)), "g" (re_arg(x4))
 		    : "r10", "rcx", "r11", "memory", "cc");
 		return re_rv(rv);
+	}
+	template<class T1, class T2, class T3, class T4>
+	innocent_pear_always_inline
+	static syscall_ret syscall32(int scno, T1 x1, T2 x2, T3 x3, T4 x4)
+	{
+		if (wutwut32(x1, x2, x3, x4))
+			return use_libc_syscall((long)scno, x1, x2, x3, x4);
+		int rv;
+		__asm __volatile("int $0x80"
+		    : "=a" (rv)
+		    : "0" (re_scno32(scno)), "b" (re_arg32(x1)),
+		      "c" (re_arg32(x2)), "d" (re_arg32(x3)),
+		      "S" (re_arg32(x4))
+		    : "r8", "r9", "r10", "r11", "memory", "cc");
+		return re_rv((long)rv);
 	}
 	template<class T1, class T2, class T3, class T4, class T5>
 	innocent_pear_always_inline
@@ -840,6 +947,28 @@ class rofl_impl_ptrace :
 #   endif
 	}
 #endif
+    private:
+	template<class... Ts>
+	innocent_pear_always_inline
+	static typename super::syscall_ret
+	ptrace_raw_nullptr_nullptr(Ts... xs)
+	{
+#   if defined __amd64__
+		if (super::Use0x80) {
+			uint_least32_t addr = kthxbai<super::NewState3,
+			    unsigned, Flags, Levels ? Levels - 1 : 0>(0u);
+			uint_least32_t data = kthxbai<super::NewState4,
+			    unsigned, Flags, Levels ? Levels - 1 : 0>(0u);
+			return super::syscall32(26, xs..., addr, data);
+		}
+#   endif
+		uintptr_t addr = kthxbai<super::NewState3, uintptr_t, Flags,
+		    Levels ? Levels - 1 : 0>((uintptr_t)(void *)nullptr);
+		uintptr_t data = kthxbai<super::NewState3, uintptr_t, Flags,
+		    Levels ? Levels - 1 : 0>((uintptr_t)(void *)nullptr);
+		return ptrace_raw(xs..., addr, data);
+	}
+    public:
 	innocent_pear_always_inline
 	static typename super::syscall_ret
 	ptrace(
@@ -889,7 +1018,10 @@ class rofl_impl_ptrace :
 			if (rv == 0)
 				return typename super::syscall_ret(val, 0);
 			return rv;
-		} else
+		} else if (__builtin_constant_p(addr) && !addr &&
+			   __builtin_constant_p(data) && !data)
+			return ptrace_raw_nullptr_nullptr(req, pid);
+		else
 			return ptrace_raw(req, pid, addr, data);
 #elif defined innocent_pear_HAVE_FUNC_PTRACE
 		return ptrace_lib(req, pid, addr, data);
@@ -911,7 +1043,8 @@ class rofl_impl_getpid :
 #if defined __linux__ && (defined __i386__ || defined __arm__)
 		return super::syscall(20);
 #elif defined __linux__ && defined __amd64__
-		return super::syscall(39);
+		return super::Use0x80 ?
+		    super::syscall32(20) : super::syscall(39);
 #elif defined innocent_pear_HAVE_FUNC_GETPID
 		int rv = (kthxbai<super::NewState2,
 		    innocent_pear_decltype(&::getpid), Flags, Levels>
@@ -935,7 +1068,8 @@ class rofl_impl_getppid :
 #if defined __linux__ && (defined __i386__ || defined __arm__)
 		return super::syscall(64);
 #elif defined __linux__ && defined __amd64__
-		return super::syscall(110);
+		return super::Use0x80 ?
+		    super::syscall32(64) : super::syscall(110);
 #elif defined innocent_pear_HAVE_FUNC_GETPPID
 		int rv = (kthxbai<super::NewState2,
 		    innocent_pear_decltype(&::getppid), Flags, Levels>
@@ -959,7 +1093,8 @@ class rofl_impl_kill :
 #if defined __linux__ && (defined __i386__ || defined __arm__)
 		return super::syscall(37, pid, sig);
 #elif defined __linux__ && defined __amd64__
-		return super::syscall(62, pid, sig);
+		return super::Use0x80 ? super::syscall32(37, pid, sig) :
+		    super::syscall(62, pid, sig);
 #elif defined innocent_pear_HAVE_FUNC_KILL
 		int rv = (kthxbai<super::NewState2,
 		    innocent_pear_decltype(&::kill), Flags, Levels>(::kill))
@@ -1124,7 +1259,8 @@ class rofl_impl_close :
 #if defined __linux__ && (defined __i386__ || defined __arm__)
 		return super::syscall(6, fd);
 #elif defined __linux__ && defined __amd64__
-		return super::syscall(3, fd);
+		return super::Use0x80 ?
+		    super::syscall32(6, fd) : super::syscall(3, fd);
 #elif defined __linux__ && defined __aarch64__
 		return super::syscall(57, fd);
 #else

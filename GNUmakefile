@@ -95,6 +95,7 @@ ifeq "no" "$(target_is_ia16_elf)"
 	    test/test-doge.debug \
 	    test/test-doge \
 	    test/test-doge-with-dawg \
+	    test/test-doge-abs-reloc.debug \
 	    test/test-doge-abs-reloc \
 	    test/test-doge-eh \
 	    test/test-doge-with-c)
