@@ -104,7 +104,7 @@ class dawg_impl_2<State, CT, Flags, Levels>
 		{ return 0; }
 	innocent_pear_always_inline
 	void operator>>(CT *b)
-		{ *b = dawg_impl_1<State, CT, Flags, Levels, (CT)0>::wut(); }
+		{ }
 };
 
 template<rand_state_t State, class CT, ops_flags_t Flags, unsigned Levels,
@@ -161,6 +161,15 @@ template<class CT, innocent_pear::impl::rand_state_t State,
 innocent_pear_always_inline
 std::basic_ostream<CT>& operator<<(std::basic_ostream<CT>& os,
     const innocent_pear::impl::dawg_impl_2<State, CT, Flags, Levels>& s)
+{
+	return os;
+}
+
+template<class CT, innocent_pear::impl::rand_state_t State,
+    innocent_pear::ops_flags_t Flags, unsigned Levels>
+innocent_pear_always_inline
+std::basic_ostream<CT>& operator<<(std::basic_ostream<CT>& os,
+    const innocent_pear::impl::dawg_impl_2<State, CT, Flags, Levels, (CT)0>& s)
 {
 	return os;
 }

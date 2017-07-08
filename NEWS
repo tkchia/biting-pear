@@ -1,3 +1,17 @@
+2017-07-08	"It was all so different before everything changed."  (2)
+
+		include/innocent-pear/dawg.h :
+		- interface change:  dawg_impl_1<...>, dawg_impl_2<...>, and
+		  dawg<...> no longer add an implicit '\0' at the end of a
+		  string
+		- updated operator<<(...) to suppress a trailing '\0' at the
+		  end of a string, if present
+
+		include/innocent-pear/omg.h ,
+		share/innocent-pear/omnomnom.lxx :
+		- adds a trailing '\0' at the end of a scrambled string, to
+		  agree with dawg.h's new interface
+
 2017-07-03	"It was all so different before everything changed."
 
 		include/innocent-pear/rofl.h :

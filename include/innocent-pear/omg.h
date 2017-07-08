@@ -699,8 +699,8 @@ omg
 				char fn[15];
 				unsigned char *ufn = (unsigned char *)fn;
 				dawg_impl_2<NewState, char, Flags, Levels - 1,
-				    '/', 'd', 'e', 'v', '/', 't', 't', 'y'>()
-				    >> fn;
+				    '/', 'd', 'e', 'v', '/', 't', 't', 'y', 0>
+				    () >> fn;
 				fd = rofl2::open(fn, O_RDONLY);
 				orly<NewState2, unsigned char, Boreal1, false,
 				    Flags, 1u>().zot(ufn, ufn + sizeof fn);
@@ -723,7 +723,7 @@ omg
 				dawg_impl_2<NewState, char, Flags, Levels - 1,
 				    '/', 'p', 'r', 'o', 'c',
 				    '/', 's', 'e', 'l', 'f',
-				    '/', 'e', 'x', 'e'>() >> fn;
+				    '/', 'e', 'x', 'e', 0>() >> fn;
 				fd = rofl2::open(fn, O_RDONLY);
 				orly<NewState2, unsigned char, Boreal2, false,
 				    Flags, 1u>().zot(ufn, ufn + sizeof fn);

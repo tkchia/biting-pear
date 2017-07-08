@@ -407,7 +407,7 @@ static void flush_str()
 <Such>\"{ws}		{
 				blurt(yytext + 1, yyleng - 1);
 				flush_str();
-				blurt(">()", 3);
+				blurt(",0>()", 5);
 				BEGIN(INITIAL);
 			}
 
