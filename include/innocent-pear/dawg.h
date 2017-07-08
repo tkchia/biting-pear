@@ -166,21 +166,30 @@ std::basic_ostream<CT>& operator<<(std::basic_ostream<CT>& os,
 }
 
 template<class CT, innocent_pear::impl::rand_state_t State,
-    innocent_pear::ops_flags_t Flags, unsigned Levels>
+    innocent_pear::ops_flags_t Flags, unsigned Levels, CT Ch>
 innocent_pear_always_inline
 std::basic_ostream<CT>& operator<<(std::basic_ostream<CT>& os,
-    const innocent_pear::impl::dawg_impl_2<State, CT, Flags, Levels, (CT)0>& s)
+    const innocent_pear::impl::dawg_impl_2<State, CT, Flags, Levels, Ch>& s)
 {
-	return os;
+	if (!Ch)
+		return os;
+	constexpr innocent_pear::impl::rand_state_t
+	    State2 = innocent_pear::impl::update_inner(State),
+	    State3 = innocent_pear::impl::update_inner(State2),
+	    NewState2 = innocent_pear::impl::update_outer(State3, 3u);
+	typedef std::basic_ostream<CT>& FT(std::basic_ostream<CT>&, CT);
+	innocent_pear::impl::kthxbai<NewState2, FT *, Flags, 1u>
+	    f(static_cast<FT *>(&std::operator<<));
+	return f(os, s.front());
 }
 
 template<class CT, innocent_pear::impl::rand_state_t State,
     innocent_pear::ops_flags_t Flags, unsigned Levels,
-    CT Ch, CT... Chs>
+    CT Ch0, CT Ch1, CT... Chs>
 innocent_pear_always_inline
 std::basic_ostream<CT>& operator<<(std::basic_ostream<CT>& os,
     const innocent_pear::impl::dawg_impl_2<State, CT, Flags, Levels,
-    Ch, Chs...>& s)
+    Ch0, Ch1, Chs...>& s)
 {
 	constexpr innocent_pear::impl::rand_state_t
 	    State2 = innocent_pear::impl::update_inner(State),
