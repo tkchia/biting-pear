@@ -185,17 +185,6 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 	innocent_pear_always_inline
 	static bool wutwut(T x, Ts... xs)
 		{ return sizeof(x) > sizeof(uintptr_t) || wutwut(xs...); }
-#   ifdef __amd64__
-	innocent_pear_always_inline
-	static bool wutwut32()
-		{ return false; }
-	template<class T, class... Ts>
-	innocent_pear_always_inline
-	static bool wutwut32(T x, Ts... xs)
-	{
-		return sizeof(x) > sizeof(uint_least32_t) || wutwut32(xs...);
-	}
-#   endif
 	template<class T>
 	innocent_pear_always_inline
 	static uintptr_t re_arg(T x)
@@ -213,6 +202,10 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 #   ifdef __amd64__
 	template<class T>
 	innocent_pear_always_inline
+	static uintptr_t re_arg32(T *x)
+		{ __builtin_unreachable(); }
+	template<class T>
+	innocent_pear_always_inline
 	static uintptr_t re_arg32(T x)
 	{
 		if (std::is_integral<T>::value || std::is_enum<T>::value ||
@@ -224,6 +217,16 @@ class rofl_impl_syscall : virtual public rofl_impl_base<State, Levels>
 		} u = { 0, };
 		u.x = x;
 		return u.up;
+	}
+    protected:
+	innocent_pear_always_inline
+	static bool wutwut32()
+		{ return false; }
+	template<class T, class... Ts>
+	innocent_pear_always_inline
+	static bool wutwut32(T x, Ts... xs)
+	{
+		return sizeof(x) > sizeof(uint_least32_t) || wutwut32(xs...);
 	}
 #   endif
 #   if defined __i386__ && !defined __clang__ && __GNUC__ < 5
@@ -1122,12 +1125,21 @@ class rofl_impl_ioctl :
 		unsigned long k = __atomic_fetch_add(&k_, 1,
 		    __ATOMIC_SEQ_CST);
 #endif
+#if defined __linux__ && defined __amd64__
+		bool use32 = false;
+#endif
 		if (__builtin_constant_p(fd))
 			fd = kthxbai<super::NewState4, unsigned, Flags,
 			    Levels ? Levels - 1 : 0>((unsigned)fd);
-		if (__builtin_constant_p(req))
+		if (__builtin_constant_p(req)) {
+#if defined __linux__ && defined __amd64__
+			if ((uint_least32_t)req == req)
+				use32 = super::Use0x80 &&
+				    !super::wutwut32(args...);
+#endif
 			req = kthxbai<super::NewState3, unsigned long,
 			    Flags, Levels ? Levels - 1 : 0>(req);
+		}
 #ifdef innocent_pear_DEBUG
 		if (k <= 200) {
 			if (sizeof...(args))
@@ -1141,6 +1153,9 @@ class rofl_impl_ioctl :
 #if defined __linux__ && (defined __i386__ || defined __arm__)
 		return super::syscall(54, fd, req, args...);
 #elif defined __linux__ && defined __amd64__
+		if (use32)
+			return super::syscall32(54, fd, (uint_least32_t)req,
+			    args...);
 		return super::syscall(16, fd, req, args...);
 #elif defined innocent_pear_HAVE_FUNC_IOCTL
 		int rv = (kthxbai<super::NewState2,
@@ -1462,7 +1477,7 @@ class rofl_impl_mmap :
 		    (addr, length, prot, flags, fd, off);
 		return typename super::syscall_mmap_ret(rv, errno);
 #   else
-		return typename super::syscall_map_ret(failed, ENOSYS);
+		return typename super::syscall_mmap_ret(failed, ENOSYS);
 #   endif
 #endif
 	}
