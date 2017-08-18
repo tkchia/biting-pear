@@ -2,12 +2,21 @@
 
 set -e -v
 mkdir build-$$
+prefix="`pwd`/install-$$"
 cd build-$$
-case "$1" in
-    -x)	sh='sh -x';;
-    *)	sh=;;
-esac
+sh=sh
+while test $# != 0; do
+	case "$1" in
+	    -x)	sh="$sh -x"
+		shift;;
+	    -l)	prefix="$HOME/.local"
+		shift;;
+	    *)	break;;
+	esac
+done
 $sh ../configure --help
-$sh ../configure ${TARGET:+"--target=$TARGET"}
+mkdir -p "$prefix"
+$sh ../configure ${TARGET:+"--target=$TARGET"} --prefix="$prefix" ${1+"$@"}
 make
-exec make check
+make check
+exec make install

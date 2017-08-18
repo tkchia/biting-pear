@@ -1,3 +1,12 @@
+2017-08-18	"a.out is a misspelling of the French word for ... August."
+
+		GNUmakefile :
+		- fixed a bug in `make install'
+
+		infra/travis-build-and-check.sh :
+		- now tests that `make install' works
+		- added `-l' option, which will install into ~/.local/ :-)
+
 2017-07-20	"It was all so different before everything changed."  (3)
 
 		include/innocent-pear/rofl.h :

@@ -185,7 +185,7 @@ install-host-files: $(installables.host)
 
 install-target-files: $(installables.target)
 	install -d $(includedir.target)/innocent-pear
-	install -m 644 $(headers.target) $(includedir.target)/innocent-pear
+	install -m 644 $^ $(includedir.target)/innocent-pear
 
 uninstall: uninstall-host-files uninstall-target-files
 
