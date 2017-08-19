@@ -13,72 +13,72 @@ env:
     CXX_FOR_TARGET=clang++
     CC_FOR_TARGET=clang
   - TARGET=
-    CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall -static-libstdc++"
-    CFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall -static-libstdc++"
+    CXXFLAGS_FOR_TARGET="-Os -fPIC -pie -Wall -static-libstdc++"
+    CFLAGS_FOR_TARGET="-Os -fPIC -pie -Wall -static-libstdc++"
   - TARGET=i686-linux-gnu
     CXX_FOR_TARGET=clang++
     CC_FOR_TARGET=clang
-    CXXFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -Wall -static"
-    CFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -Wall -static"
+    CXXFLAGS_FOR_TARGET="-m32 -march=i686 -Os -Wall -static"
+    CFLAGS_FOR_TARGET="-m32 -march=i686 -Os -Wall -static"
   - TARGET=i386-linux-gnu
     CXX_FOR_TARGET=clang++
     CC_FOR_TARGET=clang
-    CXXFLAGS_FOR_TARGET="-m32 -march=i386 -O3 -Wall -static"
-    CFLAGS_FOR_TARGET="-m32 -march=i386 -O3 -Wall -static"
+    CXXFLAGS_FOR_TARGET="-m32 -march=i386 -Os -Wall -static"
+    CFLAGS_FOR_TARGET="-m32 -march=i386 -Os -Wall -static"
   - TARGET=i686-linux-gnu
     CXX_FOR_TARGET=clang++
     CC_FOR_TARGET=clang
-    CXXFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -fPIC -pie -Wall -static-libstdc++"
-    CFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -fPIC -pie -Wall -static-libstdc++"
+    CXXFLAGS_FOR_TARGET="-m32 -march=i686 -Os -fPIC -pie -Wall -static-libstdc++"
+    CFLAGS_FOR_TARGET="-m32 -march=i686 -Os -fPIC -pie -Wall -static-libstdc++"
   - TARGET=i686-linux-gnu
     CXX_FOR_TARGET=g++-5
     CC_FOR_TARGET=gcc-5
-    CXXFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -Wall -static"
-    CFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -Wall -static"
+    CXXFLAGS_FOR_TARGET="-m32 -march=i686 -Os -Wall -static"
+    CFLAGS_FOR_TARGET="-m32 -march=i686 -Os -Wall -static"
   - TARGET=i386-linux-gnu
     CXX_FOR_TARGET=g++-5
     CC_FOR_TARGET=gcc-5
-    CXXFLAGS_FOR_TARGET="-m32 -march=i386 -O3 -Wall -static"
-    CFLAGS_FOR_TARGET="-m32 -march=i386 -O3 -Wall -static"
+    CXXFLAGS_FOR_TARGET="-m32 -march=i386 -Os -Wall -static"
+    CFLAGS_FOR_TARGET="-m32 -march=i386 -Os -Wall -static"
   - TARGET=i686-linux-gnu
     CXX_FOR_TARGET=g++-5
     CC_FOR_TARGET=gcc-5
-    CXXFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -fPIC -pie -Wall"
-    CFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -fPIC -pie -Wall"
+    CXXFLAGS_FOR_TARGET="-m32 -march=i686 -Os -fPIC -pie -Wall"
+    CFLAGS_FOR_TARGET="-m32 -march=i686 -Os -fPIC -pie -Wall"
   - TARGET=i686-linux-gnu
     CXX_FOR_TARGET=g++
     CC_FOR_TARGET=gcc
-    CXXFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -Wall -static"
-    CFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -Wall -static"
+    CXXFLAGS_FOR_TARGET="-m32 -march=i686 -Os -Wall -static"
+    CFLAGS_FOR_TARGET="-m32 -march=i686 -Os -Wall -static"
   - TARGET=i386-linux-gnu
     CXX_FOR_TARGET=g++
     CC_FOR_TARGET=gcc
-    CXXFLAGS_FOR_TARGET="-m32 -march=i386 -O3 -Wall -static"
-    CFLAGS_FOR_TARGET="-m32 -march=i386 -O3 -Wall -static"
+    CXXFLAGS_FOR_TARGET="-m32 -march=i386 -Os -Wall -static"
+    CFLAGS_FOR_TARGET="-m32 -march=i386 -Os -Wall -static"
   - TARGET=i686-linux-gnu
     CXX_FOR_TARGET=g++
     CC_FOR_TARGET=gcc
-    CXXFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -fPIC -pie -Wall"
-    CFLAGS_FOR_TARGET="-m32 -march=i686 -O3 -fPIC -pie -Wall"
+    CXXFLAGS_FOR_TARGET="-m32 -march=i686 -Os -fPIC -pie -Wall"
+    CFLAGS_FOR_TARGET="-m32 -march=i686 -Os -fPIC -pie -Wall"
   - TARGET=arm-linux-gnueabi,armv7-a
   - TARGET=arm-linux-gnueabi,armv7-a
-    CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
-    CFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
+    CXXFLAGS_FOR_TARGET="-Os -fPIC -pie -Wall"
+    CFLAGS_FOR_TARGET="-Os -fPIC -pie -Wall"
   - TARGET=arm-linux-gnueabi,armv6
   - TARGET=arm-linux-gnueabi,armv6
-    CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
-    CFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
+    CXXFLAGS_FOR_TARGET="-Os -fPIC -pie -Wall"
+    CFLAGS_FOR_TARGET="-Os -fPIC -pie -Wall"
   - TARGET=arm-linux-gnueabi,armv4t
   - TARGET=arm-linux-gnueabi,armv4t
-    CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
-    CFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
+    CXXFLAGS_FOR_TARGET="-Os -fPIC -pie -Wall"
+    CFLAGS_FOR_TARGET="-Os -fPIC -pie -Wall"
   - TARGET=arm-linux-gnueabi,armv4
   - TARGET=arm-linux-gnueabi,armv4
-    CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
-    CFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
+    CXXFLAGS_FOR_TARGET="-Os -fPIC -pie -Wall"
+    CFLAGS_FOR_TARGET="-Os -fPIC -pie -Wall"
   - TARGET=arm-linux-gnueabihf,armv7-a
   - TARGET=arm-linux-gnueabihf,armv7-a
-    CXXFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
-    CFLAGS_FOR_TARGET="-O3 -fPIC -pie -Wall"
+    CXXFLAGS_FOR_TARGET="-Os -fPIC -pie -Wall"
+    CFLAGS_FOR_TARGET="-Os -fPIC -pie -Wall"
 install: ./infra/travis-install-deps.sh
 script: ./infra/travis-build-and-check.sh

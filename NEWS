@@ -1,3 +1,9 @@
+2017-08-19	"a.out is a misspelling of the French word for ... August." (2)
+
+		configure ,
+		.travis.yml :
+		- optimize for size rather than speed, for host and target
+
 2017-08-18	"a.out is a misspelling of the French word for ... August."
 
 		GNUmakefile :
