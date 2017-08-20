@@ -60,6 +60,9 @@ env:
     CC_FOR_TARGET=gcc
     CXXFLAGS_FOR_TARGET="-m32 -march=i686 -Os -fPIC -pie -Wall"
     CFLAGS_FOR_TARGET="-m32 -march=i686 -Os -fPIC -pie -Wall"
+  - TARGET=ia16-elf
+  - TARGET=ia16-elf,i80186
+  - TARGET=ia16-elf,i80286
   - TARGET=arm-linux-gnueabi,armv7-a
   - TARGET=arm-linux-gnueabi,armv7-a
     CXXFLAGS_FOR_TARGET="-Os -fPIC -pie -Wall"

@@ -30,6 +30,7 @@ static int main_(int argc, char **argv)
 		switch (wut) {
 		    case UNKNOWN:
 			base = shocked(opt);
+			base = shocked(base, '-');
 			if (strcmp(base, "clang") == 0)
 				wut = CLANG;
 			else if (strcmp(base, "as") == 0)

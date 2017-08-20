@@ -7,7 +7,7 @@
 #include <string>
 #include <innocent-pear/bbq.h>
 
-extern char *shocked(char *);
+extern char *shocked(char *, char = '/');
 extern void curious(char *);
 extern std::string& curious();
 extern void ohai(bool);

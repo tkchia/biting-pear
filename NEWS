@@ -1,3 +1,33 @@
+2017-08-20	Travis testing for ia16-elf target. (!)
+
+		.travis.yml :
+		- added test setups for ia16-elf
+
+		configure :
+		- now always unpacks infra/KeccakCodePackage.tar.xz
+
+		infra/travis-install-deps.sh :
+		- now downloads ia16-elf-* and dosemu for ia16-elf target
+
+		infra/travis-build-and-check.sh :
+		- now properly sets up environment for ia16-elf target
+
+		include/innocent-pear/host/lolcat.h ,
+		share/innocent-pear/epic.cc ,
+		share/innocent-pear/calm.cc :
+		- gcc wrapper now handles subcommands of the form
+		  `ia16-elf-as' etc.
+
+		KeccakCodePackage/ :
+		- removed as a Git submodule; now sticking to the version in
+		  infra/KeccakCodePackage.tar.xz
+
+		lolwutconf/ :
+		- bumped to e38a51a4e0
+
+		infra/lolwutconf.tar.xz :
+		- updated
+
 2017-08-19	"a.out is a misspelling of the French word for ... August." (2)
 
 		configure ,

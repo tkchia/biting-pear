@@ -5,10 +5,10 @@ set -e
 : "${CXXFLAGS_FOR_TARGET=-Os -Wall -static}"
 : "${CFLAGS_FOR_TARGET=-Os -Wall -static}"
 us="`dirname "$0"`"
+xz -dc "$us"/infra/KeccakCodePackage.tar.xz | tar xvf -
 if test -e "$us"/lolwutconf/configure.inc; then
 	. "$us"/lolwutconf/configure.inc
 else
-	xz -dc "$us"/infra/KeccakCodePackage.tar.xz | tar xvf -
 	xz -dc "$us"/infra/lolwutconf.tar.xz | tar xvf -
 	. lolwutconf/configure.inc
 fi

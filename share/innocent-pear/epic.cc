@@ -3,13 +3,14 @@
 #include <string>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <innocent-pear/host/lolcat.h>
 
 static std::string me;
 static bool bla = false;
 
-char *shocked(char *s)
+char *shocked(char *s, char d)
 {
-	char *ss = std::strrchr(s, (int)(unsigned char)'/');
+	char *ss = std::strrchr(s, (int)(unsigned char)d);
 	if (!ss)
 		return s;
 	return ss + 1;
