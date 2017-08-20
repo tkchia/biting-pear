@@ -7,7 +7,8 @@
 		- now always unpacks infra/KeccakCodePackage.tar.xz
 
 		infra/travis-install-deps.sh :
-		- now downloads ia16-elf-* and dosemu for ia16-elf target
+		- now downloads ia16-elf-*, dosemu, and dos2unix, for
+		  ia16-elf target
 
 		infra/travis-build-and-check.sh :
 		- now properly sets up environment for ia16-elf target

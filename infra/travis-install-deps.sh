@@ -34,7 +34,8 @@ case "$TARGET" in
 	    https://github.com/tkchia/build-ia16/releases/download/` \
 		`20170820-redist/build-ia16-redist.tar.xz
 	rm -rf prefix
-	xzcat infra/build-ia16-redist.tar.xz | tar xvf -;;
+	xzcat infra/build-ia16-redist.tar.xz | tar xvf -
+	set -- ${1+"$@"} dos2unix;;
     arm-*hf | arm-*hf,*)
 	set -- ${1+"$@"} g++-arm-linux-gnueabihf gcc-arm-linux-gnueabihf \
 	    qemu-user;;
