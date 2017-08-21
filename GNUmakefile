@@ -206,12 +206,12 @@ uninstall-target-files:
 	    $(datarootdir)/innocent-pear
 
 clean:
-	find . -name '*.[ios]' -a \! -path './KeccakCodePackage/*' \
-	    -o -name '*~' -o -name '*.ii' \
+	find . -name '*.[ios]' -o -name '*~' -o -name '*.ii' \
 	    -o -name '*.pear.t.??????' | \
 	    xargs $(RM) -r $(config.h.host) $(config.h.target) \
 		lex.backup share/innocent-pear/omnomnom.cc \
-		$(tests.target) $(utils.host) infra/keccak lolwutconf.*
+		$(tests.target) $(utils.host) infra/keccak \
+		infra/KeccakCodePackage lolwutconf.*
 ifeq "$(conf_Separate_build_dir)" "yes"
 	-$(RM) -r test
 endif
@@ -782,7 +782,8 @@ endef
 
 define keccak_cp
 	mkdir -p $(@D)
-	cp $^ $@.tmp
+	tar xvf $< -C infra KeccakCodePackage/$1/$(@F:.cc=.c)
+	cp infra/KeccakCodePackage/$1/$(@F:.cc=.c) $@.tmp
 	mv $@.tmp $@
 endef
 
@@ -943,37 +944,23 @@ share/innocent-pear/omnomnom.cc: share/innocent-pear/omnomnom.lxx
 	$(LEX) $(LFLAGS) -t -o$@ $< >$@.tmp
 	mv $@.tmp $@
 
-infra/keccak/KeccakPRG.h: KeccakCodePackage/Modes/KeccakPRG.h
-	$(keccak_cp)
+infra/keccak/KeccakPRG.h \
+infra/keccak/KeccakPRG.cc \
+infra/keccak/KeccakPRG.inc: infra/KeccakCodePackage.tar.xz
+	$(call keccak_cp,Modes)
 
-infra/keccak/KeccakPRG.cc: KeccakCodePackage/Modes/KeccakPRG.c
-	$(keccak_cp)
+infra/keccak/align.h \
+infra/keccak/brg_endian.h: infra/KeccakCodePackage.tar.xz
+	$(call keccak_cp,Common)
 
-infra/keccak/KeccakPRG.inc: KeccakCodePackage/Modes/KeccakPRG.inc
-	$(keccak_cp)
+infra/keccak/KeccakDuplex.h \
+infra/keccak/KeccakDuplex.cc \
+infra/keccak/KeccakDuplex.inc: infra/KeccakCodePackage.tar.xz
+	$(call keccak_cp,Constructions)
 
-infra/keccak/align.h: KeccakCodePackage/Common/align.h
-	$(keccak_cp)
-
-infra/keccak/brg_endian.h: KeccakCodePackage/Common/brg_endian.h
-	$(keccak_cp)
-
-infra/keccak/KeccakDuplex.h: KeccakCodePackage/Constructions/KeccakDuplex.h
-	$(keccak_cp)
-
-infra/keccak/KeccakDuplex.cc: KeccakCodePackage/Constructions/KeccakDuplex.c
-	$(keccak_cp)
-
-infra/keccak/KeccakDuplex.inc: KeccakCodePackage/Constructions/KeccakDuplex.inc
-	$(keccak_cp)
-
-infra/keccak/KeccakP-1600-SnP.h: \
-    KeccakCodePackage/SnP/KeccakP-1600/Reference/KeccakP-1600-SnP.h
-	$(keccak_cp)
-
-infra/keccak/KeccakP-1600-reference.cc: \
-    KeccakCodePackage/SnP/KeccakP-1600/Reference/KeccakP-1600-reference.c
-	$(keccak_cp)
+infra/keccak/KeccakP-1600-SnP.h \
+infra/keccak/KeccakP-1600-reference.cc: infra/KeccakCodePackage.tar.xz
+	$(call keccak_cp,SnP/KeccakP-1600/Reference)
 
 .PHONY: test/test-%.passed test/test-%.debug.passed
 
