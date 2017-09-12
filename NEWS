@@ -1,10 +1,14 @@
+2017-09-12	Very minor change...
+
+		.gitignore :
+		- added build-ia16-redist.tar.xz
+
 2017-08-21	"a.out is a misspelling of the French word for ... August." (3)
 
 		configure ,
 		GNUmakefile :
 		- now unpacks files from infra/KeccakCodePackage.tar.xz at
 		  build time, not at configuration time
-
 2017-08-20	Travis testing for ia16-elf target. (!)
 
 		.travis.yml :
