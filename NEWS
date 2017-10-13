@@ -1,3 +1,8 @@
+2017-10-13	"a.out is a misspelling of the French word for ... August." (4)
+
+		infra/travis-install-deps.sh :
+		- bumped pre-release (tag) to download ia16-elf-* et al. from
+
 2017-09-12	Very minor change...
 
 		.gitignore :
@@ -9,6 +14,7 @@
 		GNUmakefile :
 		- now unpacks files from infra/KeccakCodePackage.tar.xz at
 		  build time, not at configuration time
+
 2017-08-20	Travis testing for ia16-elf target. (!)
 
 		.travis.yml :

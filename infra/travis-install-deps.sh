@@ -23,16 +23,16 @@ case "$TARGET" in
 	fi;;
     ia16-elf | ia16-elf,*)
 		#
-		# To reduce testing time, I precompiled g++ and gcc binaries
-		# for Linux host and DOS target (from my development fork),
-		# as well as dosemu2 Linux binaries.  Here I retrieve the
-		# binaries.
+		# To reduce testing time, I precompiled g++, gcc, binutils,
+		# and newlib binaries for Linux host and DOS target (from my
+		# development fork), as well as dosemu2 Linux binaries. 
+		# Here I retrieve the binaries.
 		#
 		# The tag number may need to be bumped up in the future.
 		#
 	curl -L -o infra/build-ia16-redist.tar.xz \
 	    https://github.com/tkchia/build-ia16/releases/download/` \
-		`20170820-redist/build-ia16-redist.tar.xz
+		`20171013-redist/build-ia16-redist.tar.xz
 	rm -rf prefix
 	xzcat infra/build-ia16-redist.tar.xz | tar xvf -
 	set -- ${1+"$@"} dos2unix;;
