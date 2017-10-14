@@ -83,7 +83,11 @@ omg<State, T, Flags, 0u>
 		constexpr uint_least8_t WhichJunk = State4 >> 56;
 		uintptr_t y, z;
 #   ifndef __arm__
-		struct { uintptr_t h, l; } dt;
+#	ifdef __ia16__
+		struct { uint_least32_t l, h; } dt;
+#	else
+		struct { uintptr_t l, h; } dt;
+#	endif
 		unsigned w;
 #   endif
 #endif
@@ -102,19 +106,21 @@ omg<State, T, Flags, 0u>
 			x = static_cast<T>(y);
 			break;
 #   endif
-#   ifndef __ia16__
+#   if !defined __ia16__ || defined __IA16_ARCH_I80286
 		    case 2:
 		    case 3:
 			__asm(innocent_pear_X86_PREFIX(1) "smsw %0"
 			    : "=r" (w) : "n" (WhichPfx));
 			x = static_cast<T>(w);
 			break;
+#	ifndef __ia16__
 		    case 4:
 		    case 5:
 			__asm(innocent_pear_X86_PREFIX(1) "sldt %0"
 			    : "=r" (w) : "n" (WhichPfx));
 			x = static_cast<T>(w);
 			break;
+#	endif
 		    case 6:
 		    case 7:
 			__asm __volatile("sgdt %0" : "=m" (dt));
@@ -195,6 +201,10 @@ omg<State, T, Flags, 0u>
 			x = static_cast<T>(y);
 			break;
 #   ifndef __ia16__
+			/*
+			 * These opcodes do exist on the i80286, but they only
+			 * really work in protected mode!
+			 */
 		    case 21:
 		    case 22:
 			__asm __volatile(innocent_pear_X86_PREFIX(1) "verr %w0"

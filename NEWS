@@ -1,3 +1,10 @@
+2017-10-14	"a.out is a misspelling of the French word for ... August." (5)
+
+		include/innocent-pear/kthxbai.h ,
+		include/innocent-pear/omg.h :
+		- ia16-elf code may now emit real-mode i80286 instructions
+		  such as `sgdt' if it sees compiler macro __IA16_ARCH_I80286
+
 2017-10-13	"a.out is a misspelling of the French word for ... August." (4)
 
 		infra/travis-install-deps.sh :

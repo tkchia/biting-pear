@@ -421,7 +421,7 @@ class kthxbai_impl
 					    false, Flags, 1u>()(x2, x1)));
 			}
 			if (false)
-#ifdef __i386__
+#if defined __i386__
 		    case 19:
 			if (sizeof(T) <= sizeof(unsigned)) {
 				unsigned x1, x2;
