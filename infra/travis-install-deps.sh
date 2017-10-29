@@ -32,7 +32,7 @@ case "$TARGET" in
 		#
 	curl -L -o infra/build-ia16-redist.tar.xz \
 	    https://github.com/tkchia/build-ia16/releases/download/` \
-		`20171013-redist/build-ia16-redist.tar.xz
+		`20171028-redist/build-ia16-redist.tar.xz
 	rm -rf prefix
 	xzcat infra/build-ia16-redist.tar.xz | tar xvf -
 	set -- ${1+"$@"} dos2unix;;

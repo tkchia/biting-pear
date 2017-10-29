@@ -1,3 +1,8 @@
+2017-10-29	"a.out is a misspelling of the French word for ... August." (6)
+
+		infra/travis-install-deps.sh :
+		- bumped tag to download ia16-elf-* from, again
+
 2017-10-14	"a.out is a misspelling of the French word for ... August." (5)
 
 		include/innocent-pear/kthxbai.h ,
