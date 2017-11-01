@@ -946,13 +946,16 @@ omg
 				T x1;
 				lolwut<NewState, T, Flags, Levels-1> p1(&x1);
 				lolwut<NewState2, T, Flags, Levels-1> p2(&x1);
-				{
+				if (Levels < 2u) {
 					omg<NewState4, T, Flags, Levels - 1>
+					    zomg(*p2);
+				}
+				{
+					omg<NewState5, T, Flags, Levels - 1>
 					    zomg(*p1);
 				}
-				kthxbai_impl<NewState5, T, Flags, 0>(x, *p2);
+				kthxbai_impl<NewState6, T, Flags, 0>(x, *p2);
 			}
-
 		}
 	}
 	innocent_pear_always_inline

@@ -1,3 +1,9 @@
+2017-11-01	"Less is more or less more"
+
+		include/innocent-pear/omg.h :
+		- omg<...>: somewhat increased amount of random stuff at the
+		  lowest layers
+
 2017-10-29	"a.out is a misspelling of the French word for ... August." (6)
 
 		infra/travis-install-deps.sh :
