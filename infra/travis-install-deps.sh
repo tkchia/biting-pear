@@ -33,7 +33,7 @@ case "$TARGET" in
 	sudo add-apt-repository -y ppa:dosemu2/ppa
 	sudo apt-get update -y
 	set -- ${1+"$@"} gcc-ia16-elf dosemu2 dos2unix
-	tar xvzf infra/dosemu-freedos-1.0.tar.gz
+	tar xvzf infra/dosemu-freedos-1.0-bin.tgz
 		#
 		# Well, we do need to tweak the FreeDOS setup a little so
 		# that things will work...
