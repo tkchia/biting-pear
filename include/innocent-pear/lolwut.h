@@ -325,18 +325,18 @@ class lolwut_impl
 		    case 3:
 			if (Sign) {
 				char *q;
-				__asm(".reloc 1f-2, R_386_PC16, %a1; "
+				__asm(".reloc 1f-2, R_386_PC16, %c1; "
 				      "movw %2, %0; "
 				      "1: "
-				      "addw $1b-2+%a3, %0"
+				      "addw $1b-2+%c3, %0"
 				    : "=&r" (p_)
 				    : "X" (v), "n" (-Disp + Disp2),
 				      "n" (-Disp2));
 			} else {
-				__asm(".reloc 1f-2, R_386_PC16, %a1; "
+				__asm(".reloc 1f-2, R_386_PC16, %c1; "
 				      "movw %2, %0; "
 				      "1: "
-				      "addw $1b-2+%a3, %0"
+				      "addw $1b-2+%c3, %0"
 				    : "=&r" (p_)
 				    : "X" (v), "n" (Disp - Disp2),
 				      "n" (Disp2));

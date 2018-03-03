@@ -243,7 +243,7 @@ class kthxbai_impl
 	kthxbai_impl(T& x, T v)
 	{
 #if defined __ia16__ && defined innocent_pear_DEBUG
-		__asm __volatile("# %a0 %a1" : : "n" (Levels), "n" (v));
+		__asm __volatile("# %c0 %c1" : : "n" (Levels), "n" (v));
 #endif
 		constexpr unsigned BitP =
 		    (State2 >> 20) % (sizeof(T) * CHAR_BIT);
@@ -505,7 +505,7 @@ class kthxbai_impl
 			break;
 		}
 #if defined __ia16__ && defined innocent_pear_DEBUG
-		__asm __volatile("# %a0 %a1 %2" : : "n,n" (Levels), "n,n" (v),
+		__asm __volatile("# %c0 %c1 %2" : : "n,n" (Levels), "n,n" (v),
 		    "r,m" (x));
 #endif
 	}

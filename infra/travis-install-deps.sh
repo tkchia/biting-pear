@@ -23,19 +23,16 @@ case "$TARGET" in
 	fi;;
     ia16-elf | ia16-elf,*)
 		#
-		# To reduce testing time, I precompiled g++, gcc, binutils,
-		# and newlib binaries for Linux host and DOS target (from my
-		# development fork), as well as dosemu2 Linux binaries. 
-		# Here I retrieve the binaries.
+		# (March 2018) w00t!  I have created a PPA for ia16-elf-gcc,
+		# and it now also has packages for Trusty.
 		#
-		# The tag number may need to be bumped up in the future.
+		# Combine this with Andrew Bird et al.'s PPA for dosemu, and
+		# we should be good to go.
 		#
-	curl -L -o infra/build-ia16-redist.tar.xz \
-	    https://github.com/tkchia/build-ia16/releases/download/` \
-		`20171028-redist/build-ia16-redist.tar.xz
-	rm -rf prefix
-	xzcat infra/build-ia16-redist.tar.xz | tar xvf -
-	set -- ${1+"$@"} dos2unix;;
+	sudo add-apt-repository -y ppa:tkchia/build-ia16
+	sudo add-apt-repository -y ppa:dosemu2/ppa
+	sudo apt-get update -y
+	set -- ${1+"$@"} gcc-ia16-elf dosemu2 dos2unix;;
     arm-*hf | arm-*hf,*)
 	set -- ${1+"$@"} g++-arm-linux-gnueabihf gcc-arm-linux-gnueabihf \
 	    qemu-user;;

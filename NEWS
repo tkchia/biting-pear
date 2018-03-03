@@ -1,3 +1,16 @@
+2018-03-03	ia16-elf-gcc updates. :-)
+
+		infra/travis-build-and-check.sh ,
+		infra/travis-install-deps.sh :
+		- now uses Ubuntu PPAs for getting binaries for gcc-ia16-elf
+		  and dosemu2
+
+		include/innocent-pear/kthxbai.h ,
+		include/innocent-pear/lolwut.h ,
+		include/innocent-pear/omg.h :
+		- "%a3" (e.g.) within __asm causes an `%ss:' override to pop
+		  up, so use "%c3" instead
+
 2017-11-01	"Less is more or less more"
 
 		include/innocent-pear/omg.h :

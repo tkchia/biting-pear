@@ -3,15 +3,6 @@
 set -e -v
 mkdir build-$$
 tgt="`echo "$TARGET" | sed 's/,.*$//'`"
-if test -d prefix -a -x prefix/bin/"$tgt"-gcc -a \
-    -x prefix/bin/"$tgt"-g++; then
-	PATH="`pwd`/prefix/bin:$PATH"
-	: "${CFLAGS_FOR_TARGET=-Os -Wall -static}"
-	CFLAGS_FOR_TARGET="-B`pwd`/prefix/bin/$tgt- $CFLAGS_FOR_TARGET"
-	: "${CXXFLAGS_FOR_TARGET=-Os -Wall -static}"
-	CXXFLAGS_FOR_TARGET="-B`pwd`/prefix/bin/$tgt- $CXXFLAGS_FOR_TARGET"
-	export PATH CFLAGS_FOR_TARGET CXXFLAGS_FOR_TARGET
-fi
 inst_prefix="`pwd`/install-$$"
 cd build-$$
 sh=sh

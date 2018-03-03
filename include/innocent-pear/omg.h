@@ -247,7 +247,7 @@ omg<State, T, Flags, 0u>
 		    case 32:
 		    case 33:
 			__asm __volatile(innocent_pear_X86_PREFIX(1) "jmp 1f; "
-					 ".byte %a2; "
+					 ".byte %c2; "
 					 "1:"
 			    : "=r" (y) : "n" (WhichPfx), "n" (WhichJunk));
 			x = static_cast<T>(y);
