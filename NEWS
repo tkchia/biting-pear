@@ -11,6 +11,12 @@
 		- "%a3" (e.g.) within __asm causes an `%ss:' override to pop
 		  up, so use "%c3" instead
 
+		infra/dosemu-freedos-1.0-bin.tgz :
+		- added
+
+		lolwutconf/ :
+		- bumped to 1ae66a2f12
+
 2017-11-01	"Less is more or less more"
 
 		include/innocent-pear/omg.h :

@@ -26,13 +26,24 @@ case "$TARGET" in
 		# (March 2018) w00t!  I have created a PPA for ia16-elf-gcc,
 		# and it now also has packages for Trusty.
 		#
-		# Combine this with Andrew Bird et al.'s PPA for dosemu, and
-		# we should be good to go.
+		# Combine this with Andrew Bird et al.'s PPA for dosemu,
+		# plus FreeDOS binaries, and we should be good to go.
 		#
 	sudo add-apt-repository -y ppa:tkchia/build-ia16
 	sudo add-apt-repository -y ppa:dosemu2/ppa
 	sudo apt-get update -y
-	set -- ${1+"$@"} gcc-ia16-elf dosemu2 dos2unix;;
+	set -- ${1+"$@"} gcc-ia16-elf dosemu2 dos2unix
+	tar xvzf infra/dosemu-freedos-1.0.tar.gz
+		#
+		# Well, we do need to tweak the FreeDOS setup a little so
+		# that things will work...
+		#
+	rm -rf ~/.dosemu
+	mkdir -p ~/.dosemu/drives
+	ln -s "`pwd`"/dosemu/freedos ~/.dosemu/drives/c
+	ln -s /usr/share/dosemu/dosemu2-cmds-0.1 ~/.dosemu/drives/d
+	rm -f dosemu/freedos/config.sys
+	echo -n 'd:\dosemu\unix -e' >dosemu/freedos/autoexec.bat;;
     arm-*hf | arm-*hf,*)
 	set -- ${1+"$@"} g++-arm-linux-gnueabihf gcc-arm-linux-gnueabihf \
 	    qemu-user;;
