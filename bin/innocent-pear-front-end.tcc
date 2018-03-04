@@ -336,7 +336,16 @@ static void playest(char **argv, const char *in, const char *out,
 	std::snprintf(cheese, sizeof cheese, "%s.pear.t", cheeses);
 	sleepier_t cheesy(cheese);
 	std::string burger;
-	keyboardest(argv, in, out, cheesy(), seriouser, v);
+	try
+		{ keyboardest(argv, in, out, cheesy(), seriouser, v); }
+	catch (int ugh) {
+		wow("error messages from ", *argv, ':');
+		std::ifstream cheesier(cheesy());
+		if (cheesier)
+			while (std::getline(cheesier, burger))
+				wow('\t', burger);
+		throw ugh;
+	}
 	std::ifstream cheesier(cheesy());
 	if (!cheesier)
 		concern("cannot read ", cheesy());
@@ -851,8 +860,9 @@ static int main_(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
-	try
-		{ return main_(argc, argv); }
-	catch (int ugh)
+	try {
+		ohai(true);
+		return main_(argc, argv);
+	} catch (int ugh)
 		{ return ugh; }
 }

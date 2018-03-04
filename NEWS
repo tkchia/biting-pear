@@ -1,3 +1,9 @@
+2018-03-04	"Ah say, son, you're about as sharp as a bowlin' ball."
+
+		bin/innocent-pear-front-end.tcc :
+		- better error reporting for case where `-wrapper' is not
+		  supported (i.e. when using clang)
+
 2018-03-03	ia16-elf-gcc updates. :-)
 
 		infra/travis-build-and-check.sh ,
