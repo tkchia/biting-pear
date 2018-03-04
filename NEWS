@@ -1,8 +1,16 @@
 2018-03-04	"Ah say, son, you're about as sharp as a bowlin' ball."
 
+		GNUmakefile ,
+		configure :
+		- test for target-side `-fno-toplevel-reorder' support
+
 		bin/innocent-pear-front-end.tcc :
 		- better error reporting for case where `-wrapper' is not
 		  supported (i.e. when using clang)
+		- test for target-side `-fno-toplevel-reorder' support
+
+		lolwutconf/ :
+		- bumped to e264aa85e4
 
 2018-03-03	ia16-elf-gcc updates. :-)
 

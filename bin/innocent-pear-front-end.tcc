@@ -198,7 +198,9 @@ static void nyan(sleepier_t& cheesy, const char *cheeses, states_t st,
 		debug_doge ? (char *)"-Dinnocent_pear_DEBUG=1" :
 			     (char *)"-Uinnocent_pear_DEBUG",
 		"-c", cheesier, "-o", (char *)cheesy(),
+#ifdef innocent_pear_CXX_FOR_TARGET_HAVE_OPT_NO_TOPLEVEL_REORDER
 		"-fno-toplevel-reorder",
+#endif
 #ifdef innocent_pear_CXX_FOR_TARGET_HAVE_WRITABLE_STRINGS
 		"-fwritable-strings",
 #endif

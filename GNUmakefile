@@ -543,6 +543,15 @@ endif
 			  'innocent_pear_CXX_FOR_TARGET_HAVE_WRITABLE_STRINGS'\
 			  ; \
 		fi; \
+		if test '$(conf_Have_cxxt_opt_fno_toplevel_reorder)' = yes; \
+		then \
+			echo '#define' \
+			    'innocent_pear_CXX_FOR_TARGET_HAVE_OPT_$(or \
+			    )NO_TOPLEVEL_REORDER' 1; \
+		else	echo '#undef' \
+			    'innocent_pear_CXX_FOR_TARGET_HAVE_OPT_$(or \
+			    )NO_TOPLEVEL_REORDER'; \
+		fi; \
 		if test '$(conf_Have_cxxt_opt_wrapper)' = yes; then \
 			echo '#define' \
 			  'innocent_pear_CXX_FOR_TARGET_HAVE_OPT_WRAPPER 1'; \
