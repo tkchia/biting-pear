@@ -15,7 +15,7 @@ There is also a rather undocumented C++ API for various code obfuscation subtask
 `innocent-pear-c++` and `innocent-pear-cc` are being tested with
 
   * `g++` and `clang++` targeting Linux on x86-64, x86-32, and 32-bit ARM target platforms, and
-  * [Mentor's `ia16-elf-g++`](https://sourcery.mentor.com/GNUToolchain/subscription57091) targeting MS-DOS on Intel 8086 (x86-16).
+  * `ia16-elf-g++` (specifically, [my fork of it](https://github.com/tkchia/build-ia16)) targeting MS-DOS on Intel 8086 (x86-16).
 
 They *may* partially work with other targets.
 
