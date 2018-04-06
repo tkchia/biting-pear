@@ -47,9 +47,7 @@ case "$TARGET" in
 	rm -f dosemu/freedos/config.sys
 	dos2unix </usr/share/dosemu/dosemu2-cmds-0.1/autoexec.bat | \
 	    sed 's,e:\\dosemu,c:\\dosemu,g' >dosemu/freedos/autoexec.bat
-	cat dosemu/freedos/autoexec.bat
-	echo -ne '\xc3' >test.com
-	dosemu.bin -q --Flibdir /usr/share/dosemu -I 'video {none}' -K test.com;;
+	cat dosemu/freedos/autoexec.bat;;
     arm-*hf | arm-*hf,*)
 	set -- ${1+"$@"} g++-arm-linux-gnueabihf gcc-arm-linux-gnueabihf \
 	    qemu-user;;
