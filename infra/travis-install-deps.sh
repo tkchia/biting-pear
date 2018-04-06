@@ -32,12 +32,14 @@ case "$TARGET" in
 	sudo add-apt-repository -y ppa:tkchia/build-ia16
 	sudo add-apt-repository -y ppa:dosemu2/ppa
 	sudo apt-get update -y
-	set -- ${1+"$@"} gcc-ia16-elf dosemu2 dos2unix
+	set -- ${1+"$@"} gcc-ia16-elf
 	tar xvzf infra/dosemu-freedos-1.0-bin.tgz
 		#
 		# Well, we do need to tweak the FreeDOS setup a little so
-		# that things will work...
+		# that things will work.  Install dosemu2 and dos2unix here,
+		# since we need them now.
 		#
+	sudo apt-get install -y dosemu2 dos2unix
 	rm -rf ~/.dosemu
 	mkdir -p ~/.dosemu/drives
 	ln -s "`pwd`"/dosemu/freedos ~/.dosemu/drives/c
