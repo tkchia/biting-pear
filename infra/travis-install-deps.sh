@@ -43,7 +43,8 @@ case "$TARGET" in
 	ln -s "`pwd`"/dosemu/freedos ~/.dosemu/drives/c
 	ln -s /usr/share/dosemu/dosemu2-cmds-0.1 ~/.dosemu/drives/d
 	rm -f dosemu/freedos/config.sys
-	echo -n 'd:\dosemu\unix -e' >dosemu/freedos/autoexec.bat;;
+	dos2unix </usr/share/dosemu/dosemu2-cmds-0.1/autoexec.bat | \
+	    sed 's,e:\\dosemu,c:\\dosemu,g' >dosemu/freedos/autoexec.bat;;
     arm-*hf | arm-*hf,*)
 	set -- ${1+"$@"} g++-arm-linux-gnueabihf gcc-arm-linux-gnueabihf \
 	    qemu-user;;
