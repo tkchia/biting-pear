@@ -3,6 +3,9 @@
 		infra/travis-install-deps.sh :
 		- updated commands for tweaking FreeDOS setup for dosemu2
 
+		.travis.yml :
+		- try builds for ia16-elf targets first
+
 2018-03-05	"A businessman is a hybrid of a dancer and a calculator."
 
 		README.md :
