@@ -1,3 +1,8 @@
+2018-06-07	"Do you have lysdexia?"
+
+		.travis.yml :
+		- re-enabling ia16-elf builds
+
 2018-04-06	"A businessman is a hybrid of a dancer and a calculator."  (2)
 
 		infra/travis-install-deps.sh :
