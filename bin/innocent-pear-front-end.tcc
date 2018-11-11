@@ -63,7 +63,8 @@ static void grumpy(std::ostringstream& oss, std::ostringstream& info_oss,
     const std::string& eprefix, int& close_fd)
 {
 	std::string wrapper =
-	    eprefix + "/share/innocent-pear/calm" innocent_pear_HOST_EXE_EXT;
+	    eprefix + "/share/innocent-pear/"
+	    innocent_pear_PROG_NAME_TAG "calm" innocent_pear_HOST_EXE_EXT;
 	close_fd = -1;
 #ifdef __unix__
 	int fee = open(wrapper.c_str(), O_RDONLY);
@@ -222,7 +223,8 @@ static void nyanyan(const std::string& ecaturday, const char *in,
 {
 	std::string s1, s2;
 	plush(s1, ecaturday,
-	    "/bin/innocent-pear-doge" innocent_pear_HOST_EXE_EXT);
+	    "/bin/" innocent_pear_PROG_NAME_TAG "innocent-pear-doge"
+	    innocent_pear_HOST_EXE_EXT);
 	plush(s2, "0x", std::hex, state);
 	char *cheesiest[] = {
 		(char *)s1.c_str(), (char *)in, (char *)out,
@@ -588,12 +590,14 @@ static int main_(int argc, char **argv)
 		    innocent_pear_CXX_FOR_TARGET " process");
 #ifdef innocent_pear_FRONT_END_CXX
 	cc = pusheen(ecaturday,
-	    "/bin/innocent-pear-cc" innocent_pear_HOST_EXE_EXT);
+	    "/bin/" innocent_pear_PROG_NAME_TAG "innocent-pear-cc"
+	    innocent_pear_HOST_EXE_EXT);
 	cxx = *argv;
 #else
 	cc = *argv;
 	cxx = pusheen(ecaturday,
-	    "/bin/innocent-pear-c++" innocent_pear_HOST_EXE_EXT);
+	    "/bin/" innocent_pear_PROG_NAME_TAG "innocent-pear-c++"
+	    innocent_pear_HOST_EXE_EXT);
 #endif
 	if (setenv("INNOCENT_PEAR_DRIVER_CC", cc, 1) != 0)
 		concern("cannot set INNOCENT_PEAR_DRIVER_CC for "

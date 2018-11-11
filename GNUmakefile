@@ -30,9 +30,14 @@ prefix_opts = \
     -Xinnocent-pear -exec-prefix=. \
     -Xinnocent-pear -target-prefix='$(conf_Srcdir)' \
     -Xinnocent-pear -target-exec-prefix=.
-wrap_cxx = bin/innocent-pear-c++$(conf_Host_exe_ext)
+ifeq "" "$(conf_Crosst_tag)"
+    prog_name_tag =
+else
+    prog_name_tag = $(conf_Crosst_tag)-
+endif
+wrap_cxx = bin/$(prog_name_tag)innocent-pear-c++$(conf_Host_exe_ext)
 wrap_cxx.staged = $(wrap_cxx) $(prefix_opts)
-wrap_cc = bin/innocent-pear-cc$(conf_Host_exe_ext)
+wrap_cc = bin/$(prog_name_tag)innocent-pear-cc$(conf_Host_exe_ext)
 wrap_cc.staged = $(wrap_cc) $(prefix_opts)
 CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET)
 CFLAGS_FOR_TARGET.test = $(CFLAGS_FOR_TARGET)
@@ -112,11 +117,11 @@ else
 endif
 utils.host = \
     $(patsubst %,%$(conf_Host_exe_ext), \
-	bin/innocent-pear-c++ \
-	bin/innocent-pear-cc \
-	bin/innocent-pear-doge \
-	bin/innocent-pear-dogecoin \
-	share/innocent-pear/calm \
+	bin/$(prog_name_tag)innocent-pear-c++ \
+	bin/$(prog_name_tag)innocent-pear-cc \
+	bin/$(prog_name_tag)innocent-pear-doge \
+	bin/$(prog_name_tag)innocent-pear-dogecoin \
+	share/innocent-pear/$(prog_name_tag)calm \
 	share/innocent-pear/omnomnom)
 modules.host = \
     bin/innocent-pear-c++.o \
@@ -710,20 +715,21 @@ test/test-orly-wut.s : \
     CXXFLAGS_FOR_TARGET.test = $(CXXFLAGS_FOR_TARGET) -DSTATE=$(state)
 
 test/test-orly-wut$(conf_Target_exe_ext): test/test-orly-wut.o \
-    test/test-orly-wut.ld bin/innocent-pear-doge$(conf_Host_exe_ext)
+    test/test-orly-wut.ld \
+    bin/$(prog_name_tag)innocent-pear-doge$(conf_Host_exe_ext)
 ifeq "no" "$(target_is_ia16_elf)"
 	time $(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
 	    $(LDFLAGS_FOR_TARGET) -o$@.tmp $(filter %.o %.ld,$^) \
 	    $(LDLIBS_FOR_TARGET)
-	bin/innocent-pear-doge$(conf_Host_exe_ext) $@.tmp $@ \
+	bin/$(prog_name_tag)innocent-pear-doge$(conf_Host_exe_ext) $@.tmp $@ \
 	    __doge_start __doge_end $(state) -v
 	$(RM) $@.tmp
 else
 	time $(conf_Host_exec) $(wrap_cxx.staged) $(CXXFLAGS_FOR_TARGET) \
 	    $(LDFLAGS_FOR_TARGET) -o$@.tmp $(filter %.o %.ld,$^) \
 	    -Wl,--oformat=elf32-i386 $(LDLIBS_FOR_TARGET)
-	bin/innocent-pear-doge$(conf_Host_exe_ext) $@.tmp $@.2.tmp \
-	    __doge_start __doge_end $(state) -v
+	bin/$(prog_name_tag)innocent-pear-doge$(conf_Host_exe_ext) $@.tmp \
+	    $@.2.tmp __doge_start __doge_end $(state) -v
 	$(STRIP_FOR_TARGET) -O binary -o $@ $@.2.tmp
 	$(RM) $@.tmp $@.2.tmp
 endif
@@ -796,27 +802,32 @@ define keccak_cp
 	mv $@.tmp $@
 endef
 
-bin/innocent-pear-c++$(conf_Host_exe_ext): bin/innocent-pear-c++.o \
+bin/$(prog_name_tag)innocent-pear-c++$(conf_Host_exe_ext): \
+    bin/innocent-pear-c++.o \
     share/innocent-pear/epic.o share/innocent-pear/keyboard.o \
     share/innocent-pear/moar.o share/innocent-pear/sleepier.o \
     infra/keccak/KeccakPRG.o infra/keccak/KeccakDuplex.o \
     infra/keccak/KeccakP-1600-reference.o
 
-bin/innocent-pear-cc$(conf_Host_exe_ext): bin/innocent-pear-cc.o \
+bin/$(prog_name_tag)innocent-pear-cc$(conf_Host_exe_ext): \
+    bin/innocent-pear-cc.o \
     share/innocent-pear/epic.o share/innocent-pear/keyboard.o \
     share/innocent-pear/moar.o share/innocent-pear/sleepier.o \
     infra/keccak/KeccakPRG.o infra/keccak/KeccakDuplex.o \
     infra/keccak/KeccakP-1600-reference.o
 
-bin/innocent-pear-doge$(conf_Host_exe_ext): bin/innocent-pear-doge.o \
+bin/$(prog_name_tag)innocent-pear-doge$(conf_Host_exe_ext): \
+    bin/innocent-pear-doge.o \
     share/innocent-pear/epic.o share/innocent-pear/lolrus.o \
     share/innocent-pear/sleepier.o
 
-bin/innocent-pear-dogecoin$(conf_Host_exe_ext): bin/innocent-pear-dogecoin.o \
+bin/$(prog_name_tag)innocent-pear-dogecoin$(conf_Host_exe_ext): \
+    bin/innocent-pear-dogecoin.o \
     share/innocent-pear/epic.o share/innocent-pear/lolrus.o \
     share/innocent-pear/sleepier.o
 
-share/innocent-pear/calm$(conf_Host_exe_ext): share/innocent-pear/calm.o \
+share/innocent-pear/$(prog_name_tag)calm$(conf_Host_exe_ext): \
+    share/innocent-pear/calm.o \
     share/innocent-pear/epic.o share/innocent-pear/keyboard.o \
     share/innocent-pear/sleepier.o
 
@@ -828,6 +839,7 @@ $(foreach m,$(modules.host), \
 #
 bin/%.ii share/innocent-pear/%.ii infra/keccak/%.ii: \
     CPPFLAGS += -Dinnocent_pear_HOST_PREFIX=\"$(conf_Prefix)\" \
+		-Dinnocent_pear_PROG_NAME_TAG=\"$(prog_name_tag)\" \
 		-Dinnocent_pear_HOST_EXE_EXT=\"$(conf_Host_exe_ext)\" \
 		-Dinnocent_pear_TARGET_PREFIX=\"$(conf_Target_prefix)\" \
 		-Dinnocent_pear_CC_FOR_TARGET=\"$(CC_FOR_TARGET)\" \
@@ -862,6 +874,11 @@ bin/%.ii share/innocent-pear/%.ii infra/keccak/%.ii: \
 bin/%$(conf_Host_exe_ext): bin/%.o
 	time $(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)
 
+ifneq "" "$(prog_name_tag)"
+bin/$(prog_name_tag)%$(conf_Host_exe_ext): bin/%.o
+	time $(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)
+endif
+
 # for debugging
 ifeq "$(conf_Have_cxx_opt_fno_integrated_as)" "yes"
 bin/%.s : CXXFLAGS += -fno-integrated-as
@@ -873,12 +890,18 @@ bin/%.o: bin/%.ii
 	time $(CXX) $(CXXFLAGS) -c -o$@ $<
 
 bin/%.ii: bin/%.cc $(headers.host) $(headers.target) \
-    share/innocent-pear/calm$(conf_Host_exe_ext) \
+    share/innocent-pear/$(prog_name_tag)calm$(conf_Host_exe_ext) \
     share/innocent-pear/omnomnom$(conf_Host_exe_ext)
 	$(preproc_for_host)
 
 share/innocent-pear/%$(conf_Host_exe_ext): share/innocent-pear/%.o
 	time $(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)
+
+ifneq "" "$(prog_name_tag)"
+share/innocent-pear/$(prog_name_tag)%$(conf_Host_exe_ext): \
+    share/innocent-pear/%.o
+	time $(CXX) $(CXXFLAGS) $(LDFLAGS) -o$@ $^ $(LDLIBS)
+endif
 
 share/innocent-pear/%.o: share/innocent-pear/%.ii
 	time $(CXX) $(CXXFLAGS) -c -o$@ $<

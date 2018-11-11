@@ -183,7 +183,8 @@ static int main_(int argc, char **argv)
 			sleepier_t grumpy(lulz), grumpier(lulz);
 			*calmest = (char *)grumpy();
 			keyboardest(calm, 0, 0, 0, 0, is.v);
-			lolz += "/bin/innocent-pear-dogecoin";
+			lolz += "/bin/" innocent_pear_PROG_NAME_TAG
+				"innocent-pear-dogecoin";
 			char *wut[6];
 			wut[0] = (char *)lolz.c_str();
 			wut[1] = (char *)grumpy();

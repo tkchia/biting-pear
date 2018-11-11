@@ -1,5 +1,11 @@
 2018-11-11	"Do you have lysdexia?"  (3)
 
+		GNUmakefile ,
+		bin/innocent-pear-front-end.tcc ,
+		share/innocent-pear/calm.cc :
+		- now adds prefix tags (e.g. ia16-elf-innocent-pear-cc) to
+		  names of target-dependent programs for cross builds
+
 		lolwutconf/ :
 		- bumped to fbde447de2
 
