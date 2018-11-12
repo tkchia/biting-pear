@@ -1,3 +1,12 @@
+2018-11-12	"Do you have lysdexia?"  (4)
+
+		infra/travis-install-deps.sh :
+		- now always does an `sudo apt-get update -y' to properly
+		  prime the APT database
+
+		lolwutconf/ :
+		- bumped to 47bb66cddb
+
 2018-11-11	"Do you have lysdexia?"  (3)
 
 		GNUmakefile ,

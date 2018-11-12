@@ -16,7 +16,6 @@ case "$TARGET" in
 		# go, but until then...
 		#
 		sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-		sudo apt-get update -y
 		set -- ${1+"$@"} g++-5-multilib gcc-5-multilib
 	else
 		set -- ${1+"$@"} g++-multilib gcc-multilib
@@ -31,7 +30,6 @@ case "$TARGET" in
 		#
 	sudo add-apt-repository -y ppa:tkchia/build-ia16
 	sudo add-apt-repository -y ppa:dosemu2/ppa
-	sudo apt-get update -y
 	set -- ${1+"$@"} gcc-ia16-elf
 	tar xvzf infra/dosemu-freedos-1.0-bin.tgz
 		#
@@ -57,4 +55,5 @@ case "$TARGET" in
 esac
 if test clang++ = "$CXX_FOR_TARGET" -o clang = "$CC_FOR_TARGET"
 	then set -- ${1+"$@"} clang; fi
+sudo apt-get update -y
 exec sudo apt-get install -y ${1+"$@"}
