@@ -37,6 +37,7 @@ case "$TARGET" in
 		# that things will work.  Install dosemu2 and dos2unix here,
 		# since we need them now.
 		#
+	sudo apt-get update -y
 	sudo apt-get install -y dosemu2 dos2unix
 	rm -rf ~/.dosemu
 	mkdir -p ~/.dosemu/drives
