@@ -39,13 +39,24 @@ case "$TARGET" in
 		#
 	sudo apt-get update -y
 	sudo apt-get install -y dosemu2 dos2unix
+	dpkg -L dosemu2
 	rm -rf ~/.dosemu
 	mkdir -p ~/.dosemu/drives
 	ln -s "`pwd`"/dosemu/freedos ~/.dosemu/drives/c
-	ln -s /usr/share/dosemu/dosemu2-cmds-0.? ~/.dosemu/drives/d
+	ln -s /usr/share/dosemu/dosemu2-cmds-[0-9].[0-9] ~/.dosemu/drives/d
 	rm -f dosemu/freedos/config.sys
-	dos2unix </usr/share/dosemu/dosemu2-cmds-0.?/autoexec.bat | \
-	    sed 's,e:\\dosemu,c:\\dosemu,g' >dosemu/freedos/autoexec.bat
+	if [ -f /usr/share/dosemu/dosemu2-cmds-[0-9].[0-9]/autoexec.bat ]; then
+		dos2unix \
+		    </usr/share/dosemu/dosemu2-cmds-[0-9].[0-9]/autoexec.bat |\
+		    sed 's,e:\\dosemu,c:\\dosemu;d:\\dosemu,g' \
+		    >dosemu/freedos/autoexec.bat
+	else
+		dos2unix <dosemu/freedos/autoexec.bat | \
+		    sed -e 's,z:\\dosemu,c:\\dosemu;d:\\dosemu,g' \
+			-e 's,unix -e,system -e,g' \
+		    >dosemu/freedos/autoexec.bat.new
+		mv dosemu/freedos/autoexec.bat.new dosemu/freedos/autoexec.bat
+	fi
 	cat dosemu/freedos/autoexec.bat;;
     arm-*hf | arm-*hf,*)
 	set -- ${1+"$@"} g++-arm-linux-gnueabihf gcc-arm-linux-gnueabihf \

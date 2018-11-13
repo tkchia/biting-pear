@@ -2,6 +2,7 @@
 
 		infra/travis-install-deps.sh :
 		- updated full path to dosemu2 VM programs, sort of
+		- fix autoexec.bat handling
 
 		lolwutconf/ :
 		- bumped to e74b3182d9
