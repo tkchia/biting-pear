@@ -46,10 +46,14 @@ case "$TARGET" in
 	ln -s /usr/share/dosemu/dosemu2-cmds-[0-9].[0-9] ~/.dosemu/drives/d
 	rm -f dosemu/freedos/config.sys
 	dos2unix <dosemu/freedos/autoexec.bat | \
-	    sed -e 's,z:\\dosemu,c:\\dosemu;d:\\dosemu,g' \
+	    sed -e 's,z:\\dosemu,c:\\bin;c:\\dosemu;d:\\dosemu,g' \
 		-e 's,unix -e,system -e,g' >dosemu/freedos/autoexec.bat.new
 	mv dosemu/freedos/autoexec.bat.new dosemu/freedos/autoexec.bat
-	cat dosemu/freedos/autoexec.bat;;
+	cat dosemu/freedos/autoexec.bat
+		#
+		# Do a quick test to see if dosemu2 works as expected.
+		#
+	dosemu -I 'video {none}' dosemu/freedos/bin/mem.exe;;
     arm-*hf | arm-*hf,*)
 	set -- ${1+"$@"} g++-arm-linux-gnueabihf gcc-arm-linux-gnueabihf \
 	    qemu-user;;
