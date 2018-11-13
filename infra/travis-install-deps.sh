@@ -45,18 +45,10 @@ case "$TARGET" in
 	ln -s "`pwd`"/dosemu/freedos ~/.dosemu/drives/c
 	ln -s /usr/share/dosemu/dosemu2-cmds-[0-9].[0-9] ~/.dosemu/drives/d
 	rm -f dosemu/freedos/config.sys
-	if [ -f /usr/share/dosemu/dosemu2-cmds-[0-9].[0-9]/autoexec.bat ]; then
-		dos2unix \
-		    </usr/share/dosemu/dosemu2-cmds-[0-9].[0-9]/autoexec.bat |\
-		    sed 's,e:\\dosemu,c:\\dosemu;d:\\dosemu,g' \
-		    >dosemu/freedos/autoexec.bat
-	else
-		dos2unix <dosemu/freedos/autoexec.bat | \
-		    sed -e 's,z:\\dosemu,c:\\dosemu;d:\\dosemu,g' \
-			-e 's,unix -e,system -e,g' \
-		    >dosemu/freedos/autoexec.bat.new
-		mv dosemu/freedos/autoexec.bat.new dosemu/freedos/autoexec.bat
-	fi
+	dos2unix <dosemu/freedos/autoexec.bat | \
+	    sed -e 's,z:\\dosemu,c:\\dosemu;d:\\dosemu,g' \
+		-e 's,unix -e,system -e,g' >dosemu/freedos/autoexec.bat.new
+	mv dosemu/freedos/autoexec.bat.new dosemu/freedos/autoexec.bat
 	cat dosemu/freedos/autoexec.bat;;
     arm-*hf | arm-*hf,*)
 	set -- ${1+"$@"} g++-arm-linux-gnueabihf gcc-arm-linux-gnueabihf \
