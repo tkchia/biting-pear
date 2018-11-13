@@ -53,7 +53,8 @@ case "$TARGET" in
 		#
 		# Do a quick test to see if dosemu2 works as expected.
 		#
-	dosemu -I 'video {none}' dosemu/freedos/bin/mem.exe;;
+	dosemu.bin -I 'video {none} keyboard {layout us}' -p -K \
+	    dosemu/freedos/bin/mem.exe;;
     arm-*hf | arm-*hf,*)
 	set -- ${1+"$@"} g++-arm-linux-gnueabihf gcc-arm-linux-gnueabihf \
 	    qemu-user;;
