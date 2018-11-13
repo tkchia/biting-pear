@@ -1,3 +1,11 @@
+2018-11-13	"Do you have lysdexia?"  (5)
+
+		infra/travis-install-deps.sh :
+		- updated full path to dosemu2 VM programs, sort of
+
+		lolwutconf/ :
+		- bumped to e74b3182d9
+
 2018-11-12	"Do you have lysdexia?"  (4)
 
 		infra/travis-install-deps.sh :

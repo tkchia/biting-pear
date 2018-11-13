@@ -42,9 +42,9 @@ case "$TARGET" in
 	rm -rf ~/.dosemu
 	mkdir -p ~/.dosemu/drives
 	ln -s "`pwd`"/dosemu/freedos ~/.dosemu/drives/c
-	ln -s /usr/share/dosemu/dosemu2-cmds-0.1 ~/.dosemu/drives/d
+	ln -s /usr/share/dosemu/dosemu2-cmds-0.? ~/.dosemu/drives/d
 	rm -f dosemu/freedos/config.sys
-	dos2unix </usr/share/dosemu/dosemu2-cmds-0.1/autoexec.bat | \
+	dos2unix </usr/share/dosemu/dosemu2-cmds-0.?/autoexec.bat | \
 	    sed 's,e:\\dosemu,c:\\dosemu,g' >dosemu/freedos/autoexec.bat
 	cat dosemu/freedos/autoexec.bat;;
     arm-*hf | arm-*hf,*)
