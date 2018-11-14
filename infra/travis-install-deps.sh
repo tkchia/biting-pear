@@ -41,15 +41,21 @@ case "$TARGET" in
 	sudo apt-get install -y dosemu2 dos2unix
 	dpkg -L dosemu2
 	rm -rf ~/.dosemu
-	mkdir -p ~/.dosemu/drives
-	ln -s "`pwd`"/dosemu/freedos ~/.dosemu/drives/c
-	ln -s /usr/share/dosemu/dosemu2-cmds-[0-9].[0-9] ~/.dosemu/drives/d
 	rm -f dosemu/freedos/config.sys
+	echo lastdrive=z >dosemu/freedos/config.sys
 	dos2unix <dosemu/freedos/autoexec.bat | \
 	    sed -e 's,z:\\dosemu,c:\\bin;c:\\dosemu;d:\\dosemu,g' \
-		-e 's,unix -e,system -e,g' >dosemu/freedos/autoexec.bat.new
+		-e 's,unix -,system -,g' >dosemu/freedos/autoexec.bat.new
 	mv dosemu/freedos/autoexec.bat.new dosemu/freedos/autoexec.bat
 	cat dosemu/freedos/autoexec.bat
+		#
+		# Prime the dosemu2 installation.  For some reason, dosemu.bin
+		# may segfault the first time it tries to set up ~/.dosemu/ .
+		#
+	until (echo; echo exitemu) | \
+	    dosemu.bin -I 'video {none} keyboard {layout us}' \
+	    -i"`pwd`"/dosemu/freedos
+		do true; done
 		#
 		# Do a quick test to see if dosemu2 works as expected.
 		#

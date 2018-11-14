@@ -1,3 +1,8 @@
+2018-11-14	"Do you have lysdexia?"  (6)
+
+		infra/travis-install-deps.sh :
+		- further fix setup of dosemu2...
+
 2018-11-13	"Do you have lysdexia?"  (5)
 
 		infra/travis-install-deps.sh :
