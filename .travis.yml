@@ -1,5 +1,5 @@
 os: linux
-dist: trusty
+dist: xenial
 language: cpp
 compiler:
   - clang
@@ -33,21 +33,6 @@ env:
     CC_FOR_TARGET=clang
     CXXFLAGS_FOR_TARGET="-m32 -march=i686 -Os -fPIC -pie -Wall -static-libstdc++"
     CFLAGS_FOR_TARGET="-m32 -march=i686 -Os -fPIC -pie -Wall -static-libstdc++"
-  - TARGET=i686-linux-gnu
-    CXX_FOR_TARGET=g++-5
-    CC_FOR_TARGET=gcc-5
-    CXXFLAGS_FOR_TARGET="-m32 -march=i686 -Os -Wall -static"
-    CFLAGS_FOR_TARGET="-m32 -march=i686 -Os -Wall -static"
-  - TARGET=i386-linux-gnu
-    CXX_FOR_TARGET=g++-5
-    CC_FOR_TARGET=gcc-5
-    CXXFLAGS_FOR_TARGET="-m32 -march=i386 -Os -Wall -static"
-    CFLAGS_FOR_TARGET="-m32 -march=i386 -Os -Wall -static"
-  - TARGET=i686-linux-gnu
-    CXX_FOR_TARGET=g++-5
-    CC_FOR_TARGET=gcc-5
-    CXXFLAGS_FOR_TARGET="-m32 -march=i686 -Os -fPIC -pie -Wall"
-    CFLAGS_FOR_TARGET="-m32 -march=i686 -Os -fPIC -pie -Wall"
   - TARGET=i686-linux-gnu
     CXX_FOR_TARGET=g++
     CC_FOR_TARGET=gcc

@@ -4,3 +4,6 @@
 [submodule "KeccakCodePackage"]
 	path = KeccakCodePackage
 	url = https://github.com/gvanas/KeccakCodePackage.git
+[submodule "dosemu-on-travis-ci"]
+	path = dosemu-on-travis-ci
+	url = https://github.com/tkchia/dosemu-on-travis-ci.git

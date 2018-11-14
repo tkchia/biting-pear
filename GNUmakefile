@@ -33,7 +33,7 @@ prefix_opts = \
 ifeq "" "$(conf_Crosst_tag)"
     prog_name_tag =
 else
-    prog_name_tag = $(conf_Crosst_tag)-
+    prog_name_tag = $(conf_Crosst_tag:,%=)-
 endif
 wrap_cxx = bin/$(prog_name_tag)innocent-pear-c++$(conf_Host_exe_ext)
 wrap_cxx.staged = $(wrap_cxx) $(prefix_opts)
