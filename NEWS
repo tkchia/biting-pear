@@ -4,10 +4,6 @@
 		- removed stuff specific to installing gcc-5 or g++-5
 		- now uses dosemu-on-travis-ci/Makefile to install dosemu
 
-		GNUmakefile :
-		- fixed program prefixes: e.g. ia16-elf-innocent-pear-cc
-		  rather than ia16-elf,i80186-innocent-pear-cc
-
 		.travis.yml :
 		- removed tests specifically asking for gcc-5 or g++-5
 		- now uses Ubuntu Xenial distribution
